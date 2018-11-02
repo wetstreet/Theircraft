@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour {
     
-    public float HorizontalSpeed;
-    public float VerticalSpeed;
+    public float horizontalScale;
+    public float verticalScale;
+
+    private Vector3 verticalSpeed;
     
     private bool isMoving;
-    private Rigidbody rigidbody;
     private Camera camera;
-
-    bool inTheAir { get { return Mathf.Abs(rigidbody.velocity.y) > 0.3f; } }
+    private CharacterController cc;
 
     private static GameObject instance;
 
@@ -41,8 +41,8 @@ public class PlayerController : MonoBehaviour {
     // Use this for initialization
     void Start () {
         Cursor.lockState = CursorLockMode.Locked;
-        rigidbody = GetComponent<Rigidbody>();
         camera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
+        cc = GetComponent<CharacterController>();
     }
 
     // Update is called once per frame
@@ -50,34 +50,34 @@ public class PlayerController : MonoBehaviour {
     {
         RotateView();
         ChangeFieldOfView();
-    }
-    
-    void Jump()
-    {
-        if (inTheAir)
-        {
-            print("cannot jump now");
-            return;
-        }
-
-        //rigidbody.velocity = new Vector3(0, 7f, 0);
-        rigidbody.AddForce(Vector3.up * VerticalSpeed);
-    }
-
-    float verticalSpeed = 0;
-    void ProcessMovement()
-    {
-        //print(rigidbody.velocity);
-        
-        Vector3 verticalMovement = new Vector3(0, -1, 0) * Time.fixedDeltaTime;
-        float v = Input.GetAxisRaw("Vertical");
-        float h = Input.GetAxisRaw("Horizontal");
-        Vector3 horizontalMovement = transform.forward * v + transform.right * h;
-        rigidbody.MovePosition(transform.localPosition + horizontalMovement * HorizontalSpeed * Time.fixedDeltaTime);
-
         if (Input.GetKeyDown(KeyCode.Space))
         {
             Jump();
+        }
+    }
+
+    void Jump()
+    {
+        if (!cc.isGrounded)
+        {
+            return;
+        }
+        
+        verticalSpeed = -Physics.gravity / 2;
+    }
+    
+    void ProcessMovement()
+    {
+        verticalSpeed += Physics.gravity * Time.fixedDeltaTime;
+        Vector3 verticalMovement = verticalSpeed * Time.fixedDeltaTime;
+        float v = Input.GetAxisRaw("Vertical");
+        float h = Input.GetAxisRaw("Horizontal");
+        Vector3 horizontalMovement = transform.forward * v + transform.right * h;
+        cc.Move(horizontalMovement * horizontalScale + verticalMovement * verticalScale);
+        
+        if (cc.isGrounded)
+        {
+            verticalSpeed = Vector3.zero;
         }
     }
 
@@ -99,6 +99,5 @@ public class PlayerController : MonoBehaviour {
     void FixedUpdate()
     {
         ProcessMovement();
-        Debug.DrawLine(Vector3.zero, new Vector3(0, 5, 0));
     }
 }
