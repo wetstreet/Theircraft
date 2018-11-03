@@ -17,6 +17,7 @@ class GenerateCoroutine : MonoBehaviour
             return _prefab;
         }
     }
+    static Dictionary<Vector2Int, GameObject> blockmap = new Dictionary<Vector2Int, GameObject>();
 
     private static Queue<Vector2Int> LoadQueue = new Queue<Vector2Int>();
 
@@ -80,9 +81,35 @@ public static class TerrainGenerator {
         gc = obj.AddComponent<GenerateCoroutine>();
     }
 
+    public static bool HideChunk(Vector2Int chunk)
+    {
+        if (!blockmap.ContainsKey(chunk))
+            return false;
+
+        GameObject obj = blockmap[chunk];
+        obj.SetActive(false);
+        return true;
+    }
+
+    public static void HideChunks(List<Vector2Int> list)
+    {
+        foreach (Vector2Int chunk in list)
+        {
+            HideChunk(chunk);
+        }
+    }
+
     public static void GenerateChunk(Vector2Int chunk)
     {
         gc.Enqueue(chunk);
+    }
+
+    public static void GenerateChunks(List<Vector2Int> list)
+    {
+        foreach (Vector2Int chunk in list)
+        {
+            GenerateChunk(chunk);
+        }
     }
 
     public static void SyncGenerateChunk(Vector2Int chunk)

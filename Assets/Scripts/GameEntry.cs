@@ -26,10 +26,9 @@ public class GameEntry : MonoBehaviour {
             List<Vector2Int> lastSurroudingChunks = Ultiities.GetSurroudingChunks(lastChunk);
             List<Vector2Int> surroudingChunks = Ultiities.GetSurroudingChunks(chunk);
             List<Vector2Int> loadChunks = surroudingChunks.Except(lastSurroudingChunks).ToList();
-            foreach(Vector2Int c in loadChunks)
-            {
-                TerrainGenerator.GenerateChunk(c);
-            }
+            List<Vector2Int> unloadChunks = lastSurroudingChunks.Except(surroudingChunks).ToList();
+            TerrainGenerator.GenerateChunks(loadChunks);
+            TerrainGenerator.HideChunks(unloadChunks);
         }
 
         lastChunk = chunk;
