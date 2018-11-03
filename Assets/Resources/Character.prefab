@@ -130,8 +130,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd97dbfa050d40341953e9b7a344ce63, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  horizontalScale: 0.2
-  verticalScale: 0.2
+  horizontalScale: 0.1
+  verticalScale: 1
 --- !u!143 &143223878412349064
 CharacterController:
   m_ObjectHideFlags: 1
@@ -146,6 +146,6 @@ CharacterController:
   m_Radius: 0.5
   m_SlopeLimit: 45
   m_StepOffset: 0.3
-  m_SkinWidth: 0.08
+  m_SkinWidth: 0.05
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0, z: 0}

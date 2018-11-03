@@ -1,82 +1,100 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Threading;
-using System;
 
-public static class TerrainGenerator {
-    private class GenerateCoroutine : MonoBehaviour
+#region GenerateCoroutine, do not directly reference this class from outside this script.
+class GenerateCoroutine : MonoBehaviour
+{
+    static private Object _prefab;
+    static Object prefab
     {
-        private static GenerateCoroutine instance;
-        public static GenerateCoroutine Instance
+        get
         {
-            get
+            if (_prefab == null)
             {
-                if (instance == null)
-                {
-                    GameObject obj = new GameObject("GenerateCoroutine");
-                    instance = obj.AddComponent<GenerateCoroutine>();
-                }
-                return instance;
+                _prefab = Resources.Load("Cube");
             }
-        }
-        int scale = 35;
-        int maxHeight = 15;
-
-        IEnumerator GenerateEnumerator()
-        {
-            UnityEngine.Object prefab = Resources.Load("Cube");
-            while (true)
-            {
-                if (LoadQueue.Count > 0)
-                {
-                    Vector2 chunk = LoadQueue.Dequeue();
-                    Transform chunkParent = new GameObject(string.Format("chunk({0},{1})", chunk.x, chunk.y)).transform;
-                    chunkParent.parent = transform;
-                    chunkParent.localPosition = Vector3.zero;
-                    for (int i = 0; i < 16; i++)
-                    {
-                        for (int j = 0; j < 16; j++)
-                        {
-                            GameObject obj = Instantiate(prefab) as GameObject;
-                            obj.transform.parent = chunkParent;
-                            float x = (float)0.5 + i + chunk.x * 16;
-                            float z = (float)0.5 + j + chunk.y * 16;
-                            float noise = Mathf.PerlinNoise(x / scale, z / scale);
-                            int height = Mathf.RoundToInt(maxHeight * noise);
-                            obj.transform.localPosition = new Vector3(x, height, z);
-                        }
-                    }
-                    if (finishCallback != null)
-                    {
-                        finishCallback();
-                        finishCallback = null;
-                    }
-                }
-                yield return null;
-            }
-        }
-
-        public void Generate()
-        {
-            StartCoroutine(GenerateEnumerator());
+            return _prefab;
         }
     }
 
-    private static Queue<Vector2> LoadQueue = new Queue<Vector2>();
+    private static Queue<Vector2Int> LoadQueue = new Queue<Vector2Int>();
 
-    static Action finishCallback;
+    static int scale = 35;
+    static int maxHeight = 15;
 
-    public static void GenerateTerrain(Action _finishCallback = null)
+    private void Start()
     {
-        finishCallback = _finishCallback;
-        for (int i = -1; i <= 1; i++)
+        StartCoroutine(GenerateLoop());
+    }
+
+    public void Enqueue(Vector2Int chunk)
+    {
+        LoadQueue.Enqueue(chunk);
+    }
+
+    public void GenerateChunk(Vector2Int chunk)
+    {
+        Transform chunkParent = new GameObject(string.Format("chunk({0},{1})", chunk.x, chunk.y)).transform;
+        chunkParent.parent = transform;
+        chunkParent.localPosition = Vector3.zero;
+        for (int i = 0; i < 16; i++)
         {
-            for (int j = -1; j <= 1; j++)
+            for (int j = 0; j < 16; j++)
             {
-                LoadQueue.Enqueue(new Vector2(i, j));
+                GameObject obj = Instantiate(prefab) as GameObject;
+                obj.transform.parent = chunkParent;
+                float x = (float)0.5 + i + chunk.x * 16;
+                float z = (float)0.5 + j + chunk.y * 16;
+                float noise = Mathf.PerlinNoise(x / scale, z / scale);
+                int height = Mathf.RoundToInt(maxHeight * noise);
+                obj.transform.localPosition = new Vector3(x, height, z);
             }
         }
-        GenerateCoroutine.Instance.Generate();
+    }
+    IEnumerator GenerateLoop()
+    {
+        while (true)
+        {
+            if (LoadQueue.Count > 0)
+            {
+                Vector2Int chunk = LoadQueue.Dequeue();
+                GenerateChunk(chunk);
+            }
+            yield return new WaitForEndOfFrame();
+        }
+    }
+}
+#endregion
+
+public static class TerrainGenerator {
+    
+    static GenerateCoroutine gc;
+
+    public static void Init()
+    {
+        if (gc != null)
+            return;
+
+        GameObject obj = new GameObject("GenerateCoroutine");
+        gc = obj.AddComponent<GenerateCoroutine>();
+    }
+
+    public static void GenerateChunk(Vector2Int chunk)
+    {
+        gc.Enqueue(chunk);
+    }
+
+    public static void SyncGenerateChunk(Vector2Int chunk)
+    {
+        gc.GenerateChunk(chunk);
+    }
+
+    public static void SyncGenerateChunks(List<Vector2Int> list)
+    {
+        foreach (Vector2Int chunk in list)
+        {
+            SyncGenerateChunk(chunk);
+        }
     }
 }
