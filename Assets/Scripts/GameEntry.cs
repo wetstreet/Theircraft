@@ -9,7 +9,7 @@ public class GameEntry : MonoBehaviour {
 	void Start () {
         TerrainGenerator.Init();
         List<Vector2Int> preloadChunks = Ultiities.GetSurroudingChunks(Vector2Int.zero);
-        TerrainGenerator.SyncGenerateChunks(preloadChunks);
+        TerrainGenerator.ShowChunks(preloadChunks, true);
         //load chunks before create player character, to make sure player character don't spawn under the ground.
         PlayerController.Init();
     }
@@ -27,9 +27,11 @@ public class GameEntry : MonoBehaviour {
             List<Vector2Int> surroudingChunks = Ultiities.GetSurroudingChunks(chunk);
             List<Vector2Int> loadChunks = surroudingChunks.Except(lastSurroudingChunks).ToList();
             List<Vector2Int> unloadChunks = lastSurroudingChunks.Except(surroudingChunks).ToList();
-            TerrainGenerator.GenerateChunks(loadChunks);
+            TerrainGenerator.ShowChunks(loadChunks);
             TerrainGenerator.HideChunks(unloadChunks);
+            Debug.Log("load=" + loadChunks.Count + ",unload=" + unloadChunks.Count);
         }
+        Debug.Log("showingNum=" + TerrainGenerator.GetShowingChunkNum());
 
         lastChunk = chunk;
     }

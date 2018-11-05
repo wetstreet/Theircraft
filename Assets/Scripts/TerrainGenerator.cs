@@ -23,18 +23,43 @@ class GenerateCoroutine : MonoBehaviour
 
     static int scale = 35;
     static int maxHeight = 15;
+    public int showingChunkCount;
 
     private void Start()
     {
         StartCoroutine(GenerateLoop());
     }
 
-    public void Enqueue(Vector2Int chunk)
+    public void ShowChunk(Vector2Int chunk, bool isSync)
     {
-        LoadQueue.Enqueue(chunk);
+        if (blockmap.ContainsKey(chunk))
+        {
+            showingChunkCount++;
+            blockmap[chunk].SetActive(true);
+            //Debug.Log("show" + chunk);
+            return;
+        }
+
+        //Debug.Log("generate" + chunk);
+        if (isSync)
+            blockmap[chunk] = GenerateChunk(chunk);
+        else
+            LoadQueue.Enqueue(chunk);
     }
 
-    public void GenerateChunk(Vector2Int chunk)
+    public bool HideChunk(Vector2Int chunk)
+    {
+        if (!blockmap.ContainsKey(chunk))
+            return false;
+
+        GameObject obj = blockmap[chunk];
+        obj.SetActive(false);
+        showingChunkCount--;
+        //Debug.Log("hide" + chunk);
+        return true;
+    }
+
+    public GameObject GenerateChunk(Vector2Int chunk)
     {
         Transform chunkParent = new GameObject(string.Format("chunk({0},{1})", chunk.x, chunk.y)).transform;
         chunkParent.parent = transform;
@@ -52,6 +77,8 @@ class GenerateCoroutine : MonoBehaviour
                 obj.transform.localPosition = new Vector3(x, height, z);
             }
         }
+        showingChunkCount++;
+        return chunkParent.gameObject;
     }
     IEnumerator GenerateLoop()
     {
@@ -83,12 +110,7 @@ public static class TerrainGenerator {
 
     public static bool HideChunk(Vector2Int chunk)
     {
-        if (!blockmap.ContainsKey(chunk))
-            return false;
-
-        GameObject obj = blockmap[chunk];
-        obj.SetActive(false);
-        return true;
+        return gc.HideChunk(chunk);
     }
 
     public static void HideChunks(List<Vector2Int> list)
@@ -99,29 +121,21 @@ public static class TerrainGenerator {
         }
     }
 
-    public static void GenerateChunk(Vector2Int chunk)
+    public static void ShowChunk(Vector2Int chunk, bool isSync = false)
     {
-        gc.Enqueue(chunk);
+        gc.ShowChunk(chunk, isSync);
     }
 
-    public static void GenerateChunks(List<Vector2Int> list)
+    public static void ShowChunks(List<Vector2Int> list, bool isSync = false)
     {
         foreach (Vector2Int chunk in list)
         {
-            GenerateChunk(chunk);
+            ShowChunk(chunk, isSync);
         }
     }
 
-    public static void SyncGenerateChunk(Vector2Int chunk)
+    public static int GetShowingChunkNum()
     {
-        gc.GenerateChunk(chunk);
-    }
-
-    public static void SyncGenerateChunks(List<Vector2Int> list)
-    {
-        foreach (Vector2Int chunk in list)
-        {
-            SyncGenerateChunk(chunk);
-        }
+        return gc.showingChunkCount;
     }
 }
