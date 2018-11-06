@@ -44,7 +44,7 @@ public class PlayerController : MonoBehaviour {
     }
 
     // Update is called once per frame
-    void Update ()
+    void Update()
     {
         RotateView();
         ChangeFieldOfView();
@@ -52,6 +52,33 @@ public class PlayerController : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.Space))
         {
             Jump();
+        }
+        if (Input.GetKeyDown(KeyCode.Mouse1))
+        {
+            RaycastHit hit;
+            Vector3 center = new Vector3(Screen.width / 2, Screen.height / 2, 0);
+            bool b = Physics.Raycast(Camera.main.ScreenPointToRay(center), out hit, 5f);
+            if (b && hit.transform.tag == "Block")
+            {
+                Vector3? position = null;
+                if (hit.normal == Vector3.right)
+                    position = hit.transform.localPosition + Vector3.right;
+                else if (hit.normal == Vector3.left)
+                    position = hit.transform.localPosition + Vector3.left;
+                else if (hit.normal == Vector3.forward)
+                    position = hit.transform.localPosition + Vector3.forward;
+                else if (hit.normal == Vector3.back)
+                    position = hit.transform.localPosition + Vector3.back;
+                else if (hit.normal == Vector3.up)
+                    position = hit.transform.localPosition + Vector3.up;
+                else if (hit.normal == Vector3.down)
+                    position = hit.transform.localPosition + Vector3.down;
+                if (position != null)
+                {
+                    GameObject obj = Instantiate(Resources.Load("Cube")) as GameObject;
+                    obj.transform.localPosition = position.Value;
+                }
+            }
         }
     }
 
@@ -61,7 +88,7 @@ public class PlayerController : MonoBehaviour {
         RaycastHit hit;
         Vector3 center = new Vector3(Screen.width / 2, Screen.height / 2, 0);
         bool b = Physics.Raycast(Camera.main.ScreenPointToRay(center), out hit, 5f);
-        if (b)
+        if (b && hit.transform.tag == "Block")
         {
             Material material = hit.transform.GetComponent<Renderer>().material;
             if (lastMaterial != null && lastMaterial != material)
