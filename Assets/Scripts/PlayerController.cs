@@ -48,9 +48,32 @@ public class PlayerController : MonoBehaviour {
     {
         RotateView();
         ChangeFieldOfView();
+        ShowWireFrame();
         if (Input.GetKeyDown(KeyCode.Space))
         {
             Jump();
+        }
+    }
+
+    Material lastMaterial;
+    void ShowWireFrame()
+    {
+        RaycastHit hit;
+        Vector3 center = new Vector3(Screen.width / 2, Screen.height / 2, 0);
+        bool b = Physics.Raycast(Camera.main.ScreenPointToRay(center), out hit, 5f);
+        if (b)
+        {
+            Material material = hit.transform.GetComponent<Renderer>().material;
+            if (lastMaterial != null && lastMaterial != material)
+                lastMaterial.color = Color.white;
+            material.color = new Color(58, 255, 0);
+            lastMaterial = material;
+        }
+        else
+        {
+            if (lastMaterial != null)
+                lastMaterial.color = Color.white;
+            lastMaterial = null;
         }
     }
 

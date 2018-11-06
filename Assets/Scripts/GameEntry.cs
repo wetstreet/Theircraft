@@ -3,8 +3,7 @@ using System.Linq;
 using UnityEngine;
 
 public class GameEntry : MonoBehaviour {
-
-	// Use this for initialization
+    
 	void Start () {
         TerrainGenerator.Init();
         List<Vector2Int> preloadChunks = Ultiities.GetSurroudingChunks(Vector2Int.zero);
@@ -13,9 +12,8 @@ public class GameEntry : MonoBehaviour {
         PlayerController.Init();
     }
 
-    // Update is called once per frame
     Vector2Int lastChunk;
-	void Update ()
+    void ChunkChecker()
     {
         Vector3 pos = PlayerController.Instance.transform.localPosition;
         Vector2Int chunk = Ultiities.GetChunk(pos);
@@ -31,5 +29,10 @@ public class GameEntry : MonoBehaviour {
         }
 
         lastChunk = chunk;
+    }
+
+    void Update ()
+    {
+        ChunkChecker();
     }
 }
