@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -29,9 +28,7 @@ public class GameEntry : MonoBehaviour {
             List<Vector2Int> unloadChunks = lastSurroudingChunks.Except(surroudingChunks).ToList();
             TerrainGenerator.ShowChunks(loadChunks);
             TerrainGenerator.HideChunks(unloadChunks);
-            Debug.Log("load=" + loadChunks.Count + ",unload=" + unloadChunks.Count);
         }
-        Debug.Log("showingNum=" + TerrainGenerator.GetShowingChunkNum());
 
         lastChunk = chunk;
     }

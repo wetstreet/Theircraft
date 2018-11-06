@@ -19,6 +19,7 @@ class GenerateCoroutine : MonoBehaviour
     }
     static Dictionary<Vector2Int, GameObject> blockmap = new Dictionary<Vector2Int, GameObject>();
 
+    static LinkedList<Vector2Int> linkedList = new LinkedList<Vector2Int>();
     private static Queue<Vector2Int> LoadQueue = new Queue<Vector2Int>();
 
     static int scale = 35;
@@ -36,21 +37,35 @@ class GenerateCoroutine : MonoBehaviour
         {
             showingChunkCount++;
             blockmap[chunk].SetActive(true);
-            //Debug.Log("show" + chunk);
             return;
         }
-
-        //Debug.Log("generate" + chunk);
+        
         if (isSync)
             blockmap[chunk] = GenerateChunk(chunk);
         else
-            LoadQueue.Enqueue(chunk);
+        {
+            lock (linkedList)
+            {
+                linkedList.AddLast(chunk);
+            }
+        }
     }
 
     public bool HideChunk(Vector2Int chunk)
     {
         if (!blockmap.ContainsKey(chunk))
+        {
+            Debug.Log("no need to hide" + chunk);
+            lock (linkedList)
+            {
+                if (linkedList.Contains(chunk))
+                {
+                    linkedList.Remove(chunk);
+                    return true;
+                }
+            }
             return false;
+        }
 
         GameObject obj = blockmap[chunk];
         obj.SetActive(false);
@@ -84,10 +99,14 @@ class GenerateCoroutine : MonoBehaviour
     {
         while (true)
         {
-            if (LoadQueue.Count > 0)
+            lock (linkedList)
             {
-                Vector2Int chunk = LoadQueue.Dequeue();
-                GenerateChunk(chunk);
+                if (linkedList.Count > 0)
+                {
+                    Vector2Int chunk = linkedList.First.Value;
+                    linkedList.RemoveFirst();
+                    blockmap[chunk] = GenerateChunk(chunk);
+                }
             }
             yield return new WaitForEndOfFrame();
         }
