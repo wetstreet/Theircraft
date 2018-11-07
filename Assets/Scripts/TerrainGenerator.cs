@@ -31,6 +31,19 @@ class GenerateCoroutine : MonoBehaviour
         StartCoroutine(GenerateLoop());
     }
 
+    public void GenerateBlock(Vector3 pos)
+    {
+        Vector2Int chunk = Ultiities.GetChunk(pos);
+        GameObject obj = Instantiate(prefab) as GameObject;
+        if (!blockmap.ContainsKey(chunk))
+        {
+            Transform chunkParent = GenerateChunkParent(chunk);
+            blockmap[chunk] = chunkParent.gameObject;
+        }
+        obj.transform.parent = blockmap[chunk].transform;
+        obj.transform.localPosition = pos;
+    }
+
     public void ShowChunk(Vector2Int chunk, bool isSync)
     {
         if (blockmap.ContainsKey(chunk))
@@ -74,11 +87,17 @@ class GenerateCoroutine : MonoBehaviour
         return true;
     }
 
-    public GameObject GenerateChunk(Vector2Int chunk)
+    Transform GenerateChunkParent(Vector2Int chunk)
     {
         Transform chunkParent = new GameObject(string.Format("chunk({0},{1})", chunk.x, chunk.y)).transform;
         chunkParent.parent = transform;
         chunkParent.localPosition = Vector3.zero;
+        return chunkParent;
+    }
+
+    public GameObject GenerateChunk(Vector2Int chunk)
+    {
+        Transform chunkParent = GenerateChunkParent(chunk);
         for (int i = 0; i < 16; i++)
         {
             for (int j = 0; j < 16; j++)
@@ -156,5 +175,10 @@ public static class TerrainGenerator {
     public static int GetShowingChunkNum()
     {
         return gc.showingChunkCount;
+    }
+
+    public static void GenerateBlock(Vector3 pos)
+    {
+        gc.GenerateBlock(pos);
     }
 }

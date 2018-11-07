@@ -8,7 +8,7 @@ public class PlayerController : MonoBehaviour {
     private Vector3 verticalSpeed;
     
     private bool isMoving;
-    private Camera camera;
+    private new Camera camera;
     private CharacterController cc;
 
     private static GameObject instance;
@@ -43,6 +43,18 @@ public class PlayerController : MonoBehaviour {
         cc = GetComponent<CharacterController>();
     }
 
+    bool GetPointingBlockInfo(out RaycastHit rh)
+    {
+        Vector3 center = new Vector3(Screen.width / 2, Screen.height / 2, 0);
+        RaycastHit hit;
+        bool b = Physics.Raycast(Camera.main.ScreenPointToRay(center), out hit, 5f);
+        if (b && hit.transform.tag == "Block")
+            rh = hit;
+        else
+            rh = default(RaycastHit);
+        return b;
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -53,31 +65,31 @@ public class PlayerController : MonoBehaviour {
         {
             Jump();
         }
+        if (Input.GetKeyDown(KeyCode.Mouse0))
+        {
+            RaycastHit hit;
+            bool b = GetPointingBlockInfo(out hit);
+            if (b)
+                Destroy(hit.transform.gameObject);
+        }
         if (Input.GetKeyDown(KeyCode.Mouse1))
         {
             RaycastHit hit;
-            Vector3 center = new Vector3(Screen.width / 2, Screen.height / 2, 0);
-            bool b = Physics.Raycast(Camera.main.ScreenPointToRay(center), out hit, 5f);
-            if (b && hit.transform.tag == "Block")
+            bool b = GetPointingBlockInfo(out hit);
+            if (b)
             {
-                Vector3? position = null;
                 if (hit.normal == Vector3.right)
-                    position = hit.transform.localPosition + Vector3.right;
+                    TerrainGenerator.GenerateBlock(hit.transform.localPosition + Vector3.right);
                 else if (hit.normal == Vector3.left)
-                    position = hit.transform.localPosition + Vector3.left;
+                    TerrainGenerator.GenerateBlock(hit.transform.localPosition + Vector3.left);
                 else if (hit.normal == Vector3.forward)
-                    position = hit.transform.localPosition + Vector3.forward;
+                    TerrainGenerator.GenerateBlock(hit.transform.localPosition + Vector3.forward);
                 else if (hit.normal == Vector3.back)
-                    position = hit.transform.localPosition + Vector3.back;
+                    TerrainGenerator.GenerateBlock(hit.transform.localPosition + Vector3.back);
                 else if (hit.normal == Vector3.up)
-                    position = hit.transform.localPosition + Vector3.up;
+                    TerrainGenerator.GenerateBlock(hit.transform.localPosition + Vector3.up);
                 else if (hit.normal == Vector3.down)
-                    position = hit.transform.localPosition + Vector3.down;
-                if (position != null)
-                {
-                    GameObject obj = Instantiate(Resources.Load("Cube")) as GameObject;
-                    obj.transform.localPosition = position.Value;
-                }
+                    TerrainGenerator.GenerateBlock(hit.transform.localPosition + Vector3.down);
             }
         }
     }
