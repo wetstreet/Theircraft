@@ -20,11 +20,9 @@ class GenerateCoroutine : MonoBehaviour
     static Dictionary<Vector2Int, GameObject> blockmap = new Dictionary<Vector2Int, GameObject>();
 
     static LinkedList<Vector2Int> linkedList = new LinkedList<Vector2Int>();
-    private static Queue<Vector2Int> LoadQueue = new Queue<Vector2Int>();
 
     static int scale = 35;
     static int maxHeight = 15;
-    public int showingChunkCount;
 
     private void Start()
     {
@@ -48,7 +46,6 @@ class GenerateCoroutine : MonoBehaviour
     {
         if (blockmap.ContainsKey(chunk))
         {
-            showingChunkCount++;
             blockmap[chunk].SetActive(true);
             return;
         }
@@ -68,7 +65,6 @@ class GenerateCoroutine : MonoBehaviour
     {
         if (!blockmap.ContainsKey(chunk))
         {
-            Debug.Log("no need to hide" + chunk);
             lock (linkedList)
             {
                 if (linkedList.Contains(chunk))
@@ -82,8 +78,6 @@ class GenerateCoroutine : MonoBehaviour
 
         GameObject obj = blockmap[chunk];
         obj.SetActive(false);
-        showingChunkCount--;
-        //Debug.Log("hide" + chunk);
         return true;
     }
 
@@ -109,9 +103,9 @@ class GenerateCoroutine : MonoBehaviour
                 float noise = Mathf.PerlinNoise(x / scale, z / scale);
                 int height = Mathf.RoundToInt(maxHeight * noise);
                 obj.transform.localPosition = new Vector3(x, height, z);
+                obj.transform.name = string.Format("block({0},{1})", i + chunk.x * 16, j + chunk.y * 16);
             }
         }
-        showingChunkCount++;
         return chunkParent.gameObject;
     }
     IEnumerator GenerateLoop()
@@ -170,11 +164,6 @@ public static class TerrainGenerator {
         {
             ShowChunk(chunk, isSync);
         }
-    }
-
-    public static int GetShowingChunkNum()
-    {
-        return gc.showingChunkCount;
     }
 
     public static void GenerateBlock(Vector3 pos)
