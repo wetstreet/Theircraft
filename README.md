@@ -13,7 +13,7 @@ Unity Version: Unity 2018.2.11f1
 
 支持每个面显示不同材质的方块（正在开发）
 
-支持读取材质包
+支持读取材质包（准备开发）
 
 
 
@@ -27,3 +27,5 @@ Unity Version: Unity 2018.2.11f1
 1.玩家的移动使用CharacterController，而不是rigidbody，否则碰撞时会疯狂鬼畜。
 
 2.贴图的fileter mode需要选择point（no filter）
+
+3.材质需要勾选enable gpu instancing，否则不会动态合并drawcall
