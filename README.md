@@ -29,3 +29,5 @@ Unity Version: Unity 2018.2.11f1
 2.贴图的fileter mode需要选择point（no filter）
 
 3.材质需要勾选enable gpu instancing，否则不会动态合并drawcall
+
+4.使用Rider第一次打开项目报错: .netframework 3.5找不到，解决方法是在unity 设置中选择Rider作为编辑器，再使用Rider自带的.net库
