@@ -1,6 +1,14 @@
 # Theircraft-unity
 踩坑项目，目标是实现Minecraft的功能。
 
+参考：
+
+- https://github.com/skligys/cardboard-creeper
+
+- https://github.com/fogleman/Craft
+
+- https://github.com/Team-RTG/Realistic-Terrain-Generation
+
 Unity版本: Unity 2018.2.11f1
 
 需求池（想到的点子都丢进去，有兴趣的就接下来并挂在自己名下，一个模块可以挂在多人名下）：
