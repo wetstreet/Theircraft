@@ -42,6 +42,19 @@ class GenerateCoroutine : MonoBehaviour
         obj.transform.localPosition = pos;
     }
 
+    public void GenerateTnt(Vector3 pos)
+    {
+        Vector2Int chunk = Ultiities.GetChunk(pos);
+        GameObject obj = BlockGenerator.CreateCube();
+        if (!blockmap.ContainsKey(chunk))
+        {
+            Transform chunkParent = GenerateChunkParent(chunk);
+            blockmap[chunk] = chunkParent.gameObject;
+        }
+        obj.transform.parent = blockmap[chunk].transform;
+        obj.transform.localPosition = pos;
+    }
+
     public void ShowChunk(Vector2Int chunk, bool isSync)
     {
         if (blockmap.ContainsKey(chunk))
@@ -169,5 +182,10 @@ public static class TerrainGenerator {
     public static void GenerateBlock(Vector3 pos)
     {
         gc.GenerateBlock(pos);
+    }
+
+    public static void GenerateTnt(Vector3 pos)
+    {
+        gc.GenerateTnt(pos);
     }
 }

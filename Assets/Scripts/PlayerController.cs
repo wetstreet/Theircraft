@@ -79,17 +79,17 @@ public class PlayerController : MonoBehaviour {
             if (b)
             {
                 if (hit.normal == Vector3.right)
-                    TerrainGenerator.GenerateBlock(hit.transform.localPosition + Vector3.right);
+                    TerrainGenerator.GenerateTnt(hit.transform.localPosition + Vector3.right);
                 else if (hit.normal == Vector3.left)
-                    TerrainGenerator.GenerateBlock(hit.transform.localPosition + Vector3.left);
+                    TerrainGenerator.GenerateTnt(hit.transform.localPosition + Vector3.left);
                 else if (hit.normal == Vector3.forward)
-                    TerrainGenerator.GenerateBlock(hit.transform.localPosition + Vector3.forward);
+                    TerrainGenerator.GenerateTnt(hit.transform.localPosition + Vector3.forward);
                 else if (hit.normal == Vector3.back)
-                    TerrainGenerator.GenerateBlock(hit.transform.localPosition + Vector3.back);
+                    TerrainGenerator.GenerateTnt(hit.transform.localPosition + Vector3.back);
                 else if (hit.normal == Vector3.up)
-                    TerrainGenerator.GenerateBlock(hit.transform.localPosition + Vector3.up);
+                    TerrainGenerator.GenerateTnt(hit.transform.localPosition + Vector3.up);
                 else if (hit.normal == Vector3.down)
-                    TerrainGenerator.GenerateBlock(hit.transform.localPosition + Vector3.down);
+                    TerrainGenerator.GenerateTnt(hit.transform.localPosition + Vector3.down);
             }
         }
     }
