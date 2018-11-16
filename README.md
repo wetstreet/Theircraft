@@ -1,9 +1,19 @@
 # Theircraft-unity
-A Minecraft clone using Unity.
+踩坑项目，目标是实现Minecraft的功能。
 
-Unity Version: Unity 2018.2.11f1
+Unity版本: Unity 2018.2.11f1
 
-功能：
+待领取需求池（想到的点子都丢进去，有兴趣的就接下来并挂在自己名下）：
+
+背包系统
+
+合成系统
+
+战斗系统
+
+怪物及AI
+
+ericchan:
 
 移动（基本功能已完成，待优化）
 
