@@ -8,3 +8,6 @@ Assembly-CSharp-Editor-firstpass.csproj
 Assembly-CSharp-firstpass.csproj
 Theircraft-unity.sln
 Theircraft.sln
+.idea/
+Theircraft-unity.sln.DotSettings.user
+ProjectSettings/ProjectVersion.txt
