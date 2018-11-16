@@ -90,6 +90,7 @@ public class PlayerController : MonoBehaviour {
                     TerrainGenerator.GenerateTnt(hit.transform.localPosition + Vector3.up);
                 else if (hit.normal == Vector3.down)
                     TerrainGenerator.GenerateTnt(hit.transform.localPosition + Vector3.down);
+                FastTips.Show("放置了一个方块");
             }
         }
     }
