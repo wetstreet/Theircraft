@@ -25,6 +25,7 @@ public static class BlockGenerator {
     public static GameObject CreateCube()
     {
         GameObject cube = new GameObject("cube");
+        cube.AddComponent<BoxCollider>();
 
         AddFace(cube, FaceType.FrontFace, "tnt_side");
         AddFace(cube, FaceType.BackFace, "tnt_side");
