@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class GameEntry : MonoBehaviour {
     
-	void Start () {
+	void Start ()
+    {
+        ChatPanel.ShowChatPanel();
         TerrainGenerator.Init();
         List<Vector2Int> preloadChunks = Ultiities.GetSurroudingChunks(Vector2Int.zero);
         TerrainGenerator.ShowChunks(preloadChunks, true);
