@@ -1,4 +1,32 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
+
+public enum BlockType
+{
+    Grass,
+    Tnt
+}
+
+public struct BlockTexture
+{
+    public string TopTexture, BottomTexture, LeftTexture, RightTexture, FrontTexture, BackTexture;
+    BlockTexture(string topTexture, string bottomTexture, string leftTexture, string rightTexture, string frontTexture, string backTexture)
+    {
+        TopTexture = topTexture;
+        BottomTexture = bottomTexture;
+        LeftTexture = leftTexture;
+        RightTexture = rightTexture;
+        FrontTexture = frontTexture;
+        BackTexture = backTexture;
+    }
+    //类型对应贴图，后续改成xml
+    public static Dictionary<BlockType, BlockTexture> type2texture = new Dictionary<BlockType, BlockTexture>
+    {
+        {BlockType.Grass, new BlockTexture("grass_top","dirt","grass_side","grass_side","grass_side","grass_side") },
+        {BlockType.Tnt, new BlockTexture("tnt_top","tnt_bottom","tnt_side","tnt_side","tnt_side","tnt_side") },
+    };
+}
+
 
 public static class BlockGenerator {
 
@@ -22,17 +50,19 @@ public static class BlockGenerator {
     static Vector3 far_right_top = new Vector3(0.5f, 0.5f, 0.5f);
     static Vector3 far_left_top = new Vector3(-0.5f, 0.5f, 0.5f);
 
-    public static GameObject CreateCube()
+    public static GameObject CreateCube(BlockType blockType)
     {
         GameObject cube = new GameObject("cube");
         cube.AddComponent<BoxCollider>();
 
-        AddFace(cube, FaceType.FrontFace, "tnt_side");
-        AddFace(cube, FaceType.BackFace, "tnt_side");
-        AddFace(cube, FaceType.LeftFace, "tnt_side");
-        AddFace(cube, FaceType.RightFace, "tnt_side");
-        AddFace(cube, FaceType.TopFace, "tnt_top");
-        AddFace(cube, FaceType.BottomFace, "tnt_bottom");
+        BlockTexture bt = BlockTexture.type2texture[blockType];
+
+        AddFace(cube, FaceType.TopFace, bt.TopTexture);
+        AddFace(cube, FaceType.BottomFace, bt.BottomTexture);
+        AddFace(cube, FaceType.FrontFace, bt.FrontTexture);
+        AddFace(cube, FaceType.BackFace, bt.BackTexture);
+        AddFace(cube, FaceType.LeftFace, bt.LeftTexture);
+        AddFace(cube, FaceType.RightFace, bt.RightTexture);
 
         return cube;
     }

@@ -29,29 +29,16 @@ class GenerateCoroutine : MonoBehaviour
         StartCoroutine(GenerateLoop());
     }
 
-    public void GenerateBlock(Vector3 pos)
+    public void GenerateBlock(Vector3 pos, BlockType blockType = BlockType.Grass)
     {
         Vector2Int chunk = Ultiities.GetChunk(pos);
-        GameObject obj = Instantiate(prefab) as GameObject;
+        GameObject obj = BlockGenerator.CreateCube(blockType);
         if (!blockmap.ContainsKey(chunk))
         {
-            Transform chunkParent = GenerateChunkParent(chunk);
-            blockmap[chunk] = chunkParent.gameObject;
+            GenerateChunkParent(chunk);
         }
         obj.transform.parent = blockmap[chunk].transform;
-        obj.transform.localPosition = pos;
-    }
-
-    public void GenerateTnt(Vector3 pos)
-    {
-        Vector2Int chunk = Ultiities.GetChunk(pos);
-        GameObject obj = BlockGenerator.CreateCube();
-        if (!blockmap.ContainsKey(chunk))
-        {
-            Transform chunkParent = GenerateChunkParent(chunk);
-            blockmap[chunk] = chunkParent.gameObject;
-        }
-        obj.transform.parent = blockmap[chunk].transform;
+        obj.transform.name = string.Format("block({0},{1})", pos.x, pos.y);
         obj.transform.localPosition = pos;
     }
 
@@ -64,7 +51,7 @@ class GenerateCoroutine : MonoBehaviour
         }
         
         if (isSync)
-            blockmap[chunk] = GenerateChunk(chunk);
+            GenerateChunk(chunk);
         else
         {
             lock (linkedList)
@@ -99,6 +86,7 @@ class GenerateCoroutine : MonoBehaviour
         Transform chunkParent = new GameObject(string.Format("chunk({0},{1})", chunk.x, chunk.y)).transform;
         chunkParent.parent = transform;
         chunkParent.localPosition = Vector3.zero;
+        blockmap[chunk] = chunkParent.gameObject;
         return chunkParent;
     }
 
@@ -109,14 +97,11 @@ class GenerateCoroutine : MonoBehaviour
         {
             for (int j = 0; j < 16; j++)
             {
-                GameObject obj = Instantiate(prefab) as GameObject;
-                obj.transform.parent = chunkParent;
                 float x = (float)0.5 + i + chunk.x * 16;
                 float z = (float)0.5 + j + chunk.y * 16;
                 float noise = Mathf.PerlinNoise(x / scale, z / scale);
                 int height = Mathf.RoundToInt(maxHeight * noise);
-                obj.transform.localPosition = new Vector3(x, height, z);
-                obj.transform.name = string.Format("block({0},{1})", i + chunk.x * 16, j + chunk.y * 16);
+                GenerateBlock(new Vector3(x, height, z));
             }
         }
         return chunkParent.gameObject;
@@ -179,13 +164,8 @@ public static class TerrainGenerator {
         }
     }
 
-    public static void GenerateBlock(Vector3 pos)
+    public static void GenerateBlock(Vector3 pos, BlockType blockType = BlockType.Grass)
     {
-        gc.GenerateBlock(pos);
-    }
-
-    public static void GenerateTnt(Vector3 pos)
-    {
-        gc.GenerateTnt(pos);
+        gc.GenerateBlock(pos, blockType);
     }
 }

@@ -79,17 +79,17 @@ public class PlayerController : MonoBehaviour {
             if (b)
             {
                 if (hit.normal == Vector3.right)
-                    TerrainGenerator.GenerateTnt(hit.transform.localPosition + Vector3.right);
+                    TerrainGenerator.GenerateBlock(hit.transform.localPosition + Vector3.right, BlockType.Tnt);
                 else if (hit.normal == Vector3.left)
-                    TerrainGenerator.GenerateTnt(hit.transform.localPosition + Vector3.left);
+                    TerrainGenerator.GenerateBlock(hit.transform.localPosition + Vector3.left, BlockType.Tnt);
                 else if (hit.normal == Vector3.forward)
-                    TerrainGenerator.GenerateTnt(hit.transform.localPosition + Vector3.forward);
+                    TerrainGenerator.GenerateBlock(hit.transform.localPosition + Vector3.forward, BlockType.Tnt);
                 else if (hit.normal == Vector3.back)
-                    TerrainGenerator.GenerateTnt(hit.transform.localPosition + Vector3.back);
+                    TerrainGenerator.GenerateBlock(hit.transform.localPosition + Vector3.back, BlockType.Tnt);
                 else if (hit.normal == Vector3.up)
-                    TerrainGenerator.GenerateTnt(hit.transform.localPosition + Vector3.up);
+                    TerrainGenerator.GenerateBlock(hit.transform.localPosition + Vector3.up, BlockType.Tnt);
                 else if (hit.normal == Vector3.down)
-                    TerrainGenerator.GenerateTnt(hit.transform.localPosition + Vector3.down);
+                    TerrainGenerator.GenerateBlock(hit.transform.localPosition + Vector3.down, BlockType.Tnt);
                 FastTips.Show("放置了一个方块");
             }
         }
