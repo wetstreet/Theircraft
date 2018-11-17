@@ -11,3 +11,4 @@ Theircraft.sln
 .idea/
 Theircraft-unity.sln.DotSettings.user
 ProjectSettings/ProjectVersion.txt
+Assembly-CSharp-Editor.csproj
