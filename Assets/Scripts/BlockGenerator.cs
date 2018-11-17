@@ -37,26 +37,39 @@ public static class BlockGenerator {
         return cube;
     }
 
-    static void AddFace(GameObject cube, FaceType faceType, string texturePath)
+    static void AddFace(GameObject cube, FaceType faceType, string blockTexturePath)
     {
-        GameObject face = CreateFace(faceType, texturePath);
+        GameObject face = CreateFace(faceType, blockTexturePath);
         face.transform.parent = cube.transform;
     }
 
-    static GameObject CreateFace(FaceType faceType, string texturePath)
+    static GameObject CreateFace(FaceType faceType, string blockTexturePath)
     {
         GameObject face = new GameObject("face");
         MeshFilter mf = face.AddComponent<MeshFilter>();
         MeshRenderer mr = face.AddComponent<MeshRenderer>();
-        mr.material = LoadMaterial(texturePath);
+        mr.material = LoadMaterial(blockTexturePath);
         mf.mesh = CreateFaceMesh(faceType);
         return face;
     }
 
-    static Material LoadMaterial(string texturePath)
+    public static Texture LoadTexture(string texturePath)
+    {
+        Texture t = Resources.Load<Texture>(texturePath);
+        if (t.filterMode != FilterMode.Point)
+            t.filterMode = FilterMode.Point;
+        return t;
+    }
+
+    public static Texture LoadBlockTexture(string blockTexturePath)
+    {
+        return LoadTexture("textures/blocks/" + blockTexturePath);
+    }
+
+    static Material LoadMaterial(string blockTexturePath)
     {
         Material m = new Material(Shader.Find("Unlit/Texture"));
-        m.mainTexture = Resources.Load<Texture>(texturePath);
+        m.mainTexture = LoadBlockTexture(blockTexturePath);
         return m;
     }
 
