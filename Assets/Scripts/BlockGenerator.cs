@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System.IO;
 
 public enum BlockType
 {
@@ -137,4 +138,79 @@ public static class BlockGenerator {
         m.triangles = triangles;
         return m;
     }
+    #region 动态合并texture测试
+
+
+    static List<Vector3> vertex = new List<Vector3>();
+    static List<Vector2> uv = new List<Vector2>();
+    static List<int> triangles = new List<int>();
+    static void AddFace(FaceType faceType, Rect rect)
+    {
+        Vector2 uv_left_bottom = new Vector2(rect.x, rect.y);
+        Vector2 uv_right_bottom = new Vector2(rect.x + rect.width, rect.y);
+        Vector2 uv_right_top = new Vector2(rect.x + rect.width, rect.y + rect.height);
+        Vector2 uv_left_top = new Vector2(rect.x, rect.y + rect.height);
+        uv.AddRange(new Vector2[] { uv_left_bottom, uv_right_bottom, uv_right_top, uv_left_top });
+
+        triangles.AddRange(new int[] { vertex.Count + 0, vertex.Count + 2, vertex.Count + 1, vertex.Count + 0, vertex.Count + 3, vertex.Count + 2 });
+        switch (faceType)
+        {
+            case FaceType.FrontFace:
+                vertex.AddRange(new Vector3[] { near_left_bottom, near_right_bottom, near_right_top, near_left_top });
+                break;
+            case FaceType.BackFace:
+                vertex.AddRange(new Vector3[] { far_right_bottom, far_left_bottom, far_left_top, far_right_top });
+                break;
+            case FaceType.LeftFace:
+                vertex.AddRange(new Vector3[] { far_left_bottom, near_left_bottom, near_left_top, far_left_top });
+                break;
+            case FaceType.RightFace:
+                vertex.AddRange(new Vector3[] { near_right_bottom, far_right_bottom, far_right_top, near_right_top });
+                break;
+            case FaceType.TopFace:
+                vertex.AddRange(new Vector3[] { near_left_top, near_right_top, far_right_top, far_left_top });
+                break;
+            case FaceType.BottomFace:
+                vertex.AddRange(new Vector3[] { far_left_bottom, far_right_bottom, near_right_bottom, near_left_bottom });
+                break;
+        }
+    }
+
+    public static Texture2D[] textures;
+    static void GenerateBlock(BlockType blockType)
+    {
+        Texture2D atlas = new Texture2D(512, 512);
+        Rect[] rects = atlas.PackTextures(textures, 0, 512);
+        Material material = Resources.Load<Material>("New Material 2");
+        //material.mainTexture = atlas;
+        byte[] bytes = atlas.EncodeToPNG();
+        string path = Directory.GetCurrentDirectory() + "/Assets/Resources/atlas.png";
+        using (FileStream file = File.Open(path, FileMode.Create))
+        {
+            BinaryWriter writer = new BinaryWriter(file);
+            writer.Write(bytes);
+        }
+
+        vertex.Clear();
+        uv.Clear();
+        triangles.Clear();
+
+        AddFace(FaceType.TopFace, rects[0]);
+        AddFace(FaceType.BottomFace, rects[2]);
+        AddFace(FaceType.FrontFace, rects[1]);
+        AddFace(FaceType.BackFace, rects[1]);
+        AddFace(FaceType.LeftFace, rects[1]);
+        AddFace(FaceType.RightFace, rects[1]);
+
+        Mesh mesh = new Mesh();
+        mesh.vertices = vertex.ToArray();
+        mesh.uv = uv.ToArray();
+        mesh.triangles = triangles.ToArray();
+
+
+        //GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        //cube.GetComponent<MeshFilter>().mesh = mesh;
+        //cube.GetComponent<MeshRenderer>().material = 
+    }
+    #endregion
 }
