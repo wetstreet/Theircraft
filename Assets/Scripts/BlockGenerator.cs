@@ -172,6 +172,7 @@ public static class BlockGenerator {
         MeshAndMaterial mam = blockType2MeshAndMaterial[blockType];
 
         GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        cube.tag = "Block";
         MeshFilter mf = cube.GetComponent<MeshFilter>();
         mf.mesh = mam.mesh;
         Renderer renderer = cube.GetComponent<Renderer>();
