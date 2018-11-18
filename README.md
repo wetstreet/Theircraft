@@ -27,7 +27,7 @@ VR支持
 
 移动端支持  roshan
 
-热更机制
+热更机制 roshan 
 
 移动 ericchan
 
