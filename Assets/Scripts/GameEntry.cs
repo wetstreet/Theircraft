@@ -10,6 +10,7 @@ public class GameEntry : MonoBehaviour {
         BlockGenerator.RegisterBlockType(BlockType.Tnt);
         GameKernel.Create();
         ChatPanel.ShowChatPanel();
+        ItemSelectPanel.Show();
         TerrainGenerator.Init();
         List<Vector2Int> preloadChunks = Ultiities.GetSurroudingChunks(Vector2Int.zero);
         TerrainGenerator.ShowChunks(preloadChunks, true);

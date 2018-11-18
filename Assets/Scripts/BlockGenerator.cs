@@ -5,8 +5,9 @@ using UnityEditor;
 
 public enum BlockType
 {
+    None,
     Grass,
-    Tnt
+    Tnt,
 }
 
 public struct BlockTexture

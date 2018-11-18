@@ -79,23 +79,26 @@ public class PlayerController : MonoBehaviour {
         }
         if (Input.GetKeyDown(KeyCode.Mouse1))
         {
-            RaycastHit hit;
-            bool b = GetPointingBlockInfo(out hit);
-            if (b)
+            if (ItemSelectPanel.curBlockType != BlockType.None)
             {
-                if (hit.normal == Vector3.right)
-                    TerrainGenerator.GenerateBlock(hit.transform.localPosition + Vector3.right, BlockType.Tnt);
-                else if (hit.normal == Vector3.left)
-                    TerrainGenerator.GenerateBlock(hit.transform.localPosition + Vector3.left, BlockType.Tnt);
-                else if (hit.normal == Vector3.forward)
-                    TerrainGenerator.GenerateBlock(hit.transform.localPosition + Vector3.forward, BlockType.Tnt);
-                else if (hit.normal == Vector3.back)
-                    TerrainGenerator.GenerateBlock(hit.transform.localPosition + Vector3.back, BlockType.Tnt);
-                else if (hit.normal == Vector3.up)
-                    TerrainGenerator.GenerateBlock(hit.transform.localPosition + Vector3.up, BlockType.Tnt);
-                else if (hit.normal == Vector3.down)
-                    TerrainGenerator.GenerateBlock(hit.transform.localPosition + Vector3.down, BlockType.Tnt);
-                FastTips.Show("放置了一个方块");
+                RaycastHit hit;
+                bool b = GetPointingBlockInfo(out hit);
+                if (b)
+                {
+                    if (hit.normal == Vector3.right)
+                        TerrainGenerator.GenerateBlock(hit.transform.localPosition + Vector3.right, ItemSelectPanel.curBlockType);
+                    else if (hit.normal == Vector3.left)
+                        TerrainGenerator.GenerateBlock(hit.transform.localPosition + Vector3.left, ItemSelectPanel.curBlockType);
+                    else if (hit.normal == Vector3.forward)
+                        TerrainGenerator.GenerateBlock(hit.transform.localPosition + Vector3.forward, ItemSelectPanel.curBlockType);
+                    else if (hit.normal == Vector3.back)
+                        TerrainGenerator.GenerateBlock(hit.transform.localPosition + Vector3.back, ItemSelectPanel.curBlockType);
+                    else if (hit.normal == Vector3.up)
+                        TerrainGenerator.GenerateBlock(hit.transform.localPosition + Vector3.up, ItemSelectPanel.curBlockType);
+                    else if (hit.normal == Vector3.down)
+                        TerrainGenerator.GenerateBlock(hit.transform.localPosition + Vector3.down, ItemSelectPanel.curBlockType);
+                    FastTips.Show("放置了一个方块");
+                }
             }
         }
     }
