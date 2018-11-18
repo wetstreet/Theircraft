@@ -6,6 +6,8 @@ public class GameEntry : MonoBehaviour {
     
 	void Start ()
     {
+        BlockGenerator.RegisterBlockType(BlockType.Grass);
+        BlockGenerator.RegisterBlockType(BlockType.Tnt);
         GameKernel.Create();
         ChatPanel.ShowChatPanel();
         TerrainGenerator.Init();
