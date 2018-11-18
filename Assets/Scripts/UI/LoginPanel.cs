@@ -7,6 +7,8 @@ public class LoginPanel : MonoBehaviour {
 
     InputField input;
 
+    static string AccountKey = "account";
+
     public static void ShowLoginPanel()
     {
         UISystem.InstantiateUI("LoginPanel");
@@ -19,6 +21,10 @@ public class LoginPanel : MonoBehaviour {
 
         input = transform.Find("InputField").GetComponent<InputField>();
         transform.Find("Button").GetComponent<Button>().onClick.AddListener(OnClickEnterRoom);
+
+        string account = PlayerPrefs.GetString(AccountKey);
+        if (account != null)
+            input.text = account;
 	}
 	
 	// Update is called once per frame
@@ -31,7 +37,10 @@ public class LoginPanel : MonoBehaviour {
         if (input.text != "")
         {
             EnterRoomReq(input.text);
+            PlayerPrefs.SetString(AccountKey, input.text);
         }
+        else
+            FastTips.Show("用户名不能为空！");
     }
 
     string playername;

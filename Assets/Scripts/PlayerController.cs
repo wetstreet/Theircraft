@@ -49,10 +49,15 @@ public class PlayerController : MonoBehaviour {
         RaycastHit hit;
         bool b = Physics.Raycast(Camera.main.ScreenPointToRay(center), out hit, 5f);
         if (b && hit.transform.tag == "Block")
+        {
             rh = hit;
+            return true;
+        }
         else
+        {
             rh = default(RaycastHit);
-        return b;
+            return false;
+        }
     }
 
     // Update is called once per frame
