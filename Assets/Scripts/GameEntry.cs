@@ -6,6 +6,7 @@ public class GameEntry : MonoBehaviour {
     
 	void Start ()
     {
+        GameKernel.Create();
         ChatPanel.ShowChatPanel();
         TerrainGenerator.Init();
         List<Vector2Int> preloadChunks = Ultiities.GetSurroudingChunks(Vector2Int.zero);
@@ -36,5 +37,10 @@ public class GameEntry : MonoBehaviour {
     void Update ()
     {
         ChunkChecker();
+    }
+
+    private void OnDestroy()
+    {
+        GameKernel.Dispose();
     }
 }
