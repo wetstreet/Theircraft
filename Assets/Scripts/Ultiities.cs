@@ -4,7 +4,7 @@ using UnityEngine;
 
 public static class Ultiities {
 
-    static int chunkRange = 1;
+    static int chunkRange = 4;
 
     public static Vector2Int GetChunk(Vector3 position)
     {
