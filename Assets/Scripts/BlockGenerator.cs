@@ -164,7 +164,7 @@ public static class BlockGenerator {
             mesh.uv = uv.ToArray();
             mesh.triangles = triangles.ToArray();
 
-            Material material = new Material(Shader.Find("Unlit/Texture"));
+            Material material = new Material(Shader.Find("Custom/HighlightShader"));
             material.mainTexture = combinedTex;
 
             blockType2MeshAndMaterial[blockType] = new MeshAndMaterial(mesh, material);

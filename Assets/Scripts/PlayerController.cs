@@ -113,8 +113,8 @@ public class PlayerController : MonoBehaviour {
         {
             Material material = hit.transform.GetComponent<Renderer>().material;
             if (lastMaterial != null && lastMaterial != material)
-                lastMaterial.color = Color.white;
-            material.color = new Color(58, 255, 0);
+                lastMaterial.SetFloat("_Lightness", 1);
+            material.SetFloat("_Lightness", 1.5f);
             lastMaterial = material;
         }
         else
