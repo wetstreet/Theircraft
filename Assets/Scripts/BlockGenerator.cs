@@ -8,6 +8,9 @@ public enum BlockType
     None,
     Grass,
     Tnt,
+    Brick,
+    Furnace,
+    HayBlock,
 }
 
 public struct BlockTexture
@@ -22,16 +25,35 @@ public struct BlockTexture
         FrontTexture = frontTexture;
         BackTexture = backTexture;
     }
-    //类型对应贴图，后续改成xml
     public static Dictionary<BlockType, BlockTexture> type2texture = new Dictionary<BlockType, BlockTexture>
     {
         {BlockType.Grass, new BlockTexture("grass_top","dirt","grass_side","grass_side","grass_side","grass_side") },
         {BlockType.Tnt, new BlockTexture("tnt_top","tnt_bottom","tnt_side","tnt_side","tnt_side","tnt_side") },
+        {BlockType.Brick, new BlockTexture("brick","brick","brick","brick","brick","brick") },
+        {BlockType.Furnace, new BlockTexture("furnace_top","furnace_top","furnace_side","furnace_side","furnace_front_off","furnace_side") },
+        {BlockType.HayBlock, new BlockTexture("hay_block_top","hay_block_top","hay_block_side","hay_block_side","hay_block_side","hay_block_side") },
+    };
+    public static Dictionary<BlockType, string> type2icon = new Dictionary<BlockType, string>
+    {
+        {BlockType.Grass, "grass" },
+        {BlockType.Tnt, "tnt" },
+        {BlockType.Brick, "brick" },
+        {BlockType.Furnace, "furnace" },
+        {BlockType.HayBlock, "hayblock" },
     };
 }
 
 
-public static class BlockGenerator {
+public static class BlockGenerator
+{
+    static public void RegisterBlocks()
+    {
+        RegisterBlockType(BlockType.Grass);
+        RegisterBlockType(BlockType.Tnt);
+        RegisterBlockType(BlockType.Brick);
+        RegisterBlockType(BlockType.Furnace);
+        RegisterBlockType(BlockType.HayBlock);
+    }
 
 
     enum FaceType
@@ -111,6 +133,8 @@ public static class BlockGenerator {
             Texture2D tex = Resources.Load<Texture2D>("textures/blocks/" + path);
             if (tex != null)
                 path2texture[path] = tex;
+            else
+                Debug.Log("空材质：" + path);
         }
         return path2texture[path];
     }
