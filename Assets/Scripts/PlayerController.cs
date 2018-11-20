@@ -120,7 +120,7 @@ public class PlayerController : MonoBehaviour {
         else
         {
             if (lastMaterial != null)
-                lastMaterial.color = Color.white;
+                lastMaterial.SetFloat("_Lightness", 1);
             lastMaterial = null;
         }
     }
