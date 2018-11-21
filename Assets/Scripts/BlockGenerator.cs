@@ -37,6 +37,7 @@ public struct BlockTexture
 
 public static class BlockGenerator
 {
+#if UNITY_EDITOR
     enum FaceType
     {
         TopFace,
@@ -179,6 +180,8 @@ public static class BlockGenerator
 
         Object.DestroyImmediate(cube);
     }
+
+#endif
 
     static Dictionary<BlockType, GameObject> blockType2prefab = new Dictionary<BlockType, GameObject>();
     static public GameObject CreateCube(BlockType blockType)
