@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEditor;
 using Theircraft;
+using System.IO;
 
 public struct BlockTexture
 {
@@ -152,6 +153,54 @@ public static class BlockGenerator
         return textures;
     }
 
+    public static void GenerateBlockPrefab(BlockType blockType)
+    {
+        Texture2D[] textures = GetTexturesByBlockType(blockType);
+        Texture2D combinedTex = new Texture2D(128, 128);
+        Rect[] rects = combinedTex.PackTextures(textures, 0, 128);
+        combinedTex.filterMode = FilterMode.Point;
+
+        vertex.Clear();
+        uv.Clear();
+        triangles.Clear();
+
+        AddFace(FaceType.TopFace, rects[0]);
+        AddFace(FaceType.BottomFace, rects[1]);
+        AddFace(FaceType.FrontFace, rects[2]);
+        AddFace(FaceType.BackFace, rects[3]);
+        AddFace(FaceType.LeftFace, rects[4]);
+        AddFace(FaceType.RightFace, rects[5]);
+
+        Mesh mesh = new Mesh();
+        mesh.vertices = vertex.ToArray();
+        mesh.uv = uv.ToArray();
+        mesh.triangles = triangles.ToArray();
+
+        Material material = new Material(Shader.Find("Custom/HighlightShader"));
+        material.mainTexture = combinedTex;
+
+        GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        cube.GetComponent<MeshFilter>().mesh = mesh;
+        cube.GetComponent<MeshRenderer>().material = material;
+
+        string name = BlockTexture.type2icon[blockType];
+
+        string blockMeshDirectory = string.Format("Assets/Meshes/{0}/", name);
+        if (!Directory.Exists(blockMeshDirectory))
+        {
+            Directory.CreateDirectory(blockMeshDirectory);
+        }
+
+        AssetDatabase.CreateAsset(combinedTex, blockMeshDirectory + string.Format("{0}_tex.asset", name));
+        AssetDatabase.CreateAsset(mesh, blockMeshDirectory + string.Format("{0}_mesh.asset", name));
+        AssetDatabase.CreateAsset(material, blockMeshDirectory + string.Format("{0}_mat.mat", name));
+        
+        PrefabUtility.CreatePrefab(string.Format("Assets/Resources/Blocks/{0}.prefab", name), cube);
+
+        Object.DestroyImmediate(cube);
+    }
+
+
     static public void RegisterBlockType(BlockType blockType)
     {
         if (!blockType2MeshAndMaterial.ContainsKey(blockType))
@@ -184,19 +233,32 @@ public static class BlockGenerator
         }
     }
 
+    static Dictionary<BlockType, GameObject> blockType2prefab = new Dictionary<BlockType, GameObject>();
     static public GameObject CreateCube(BlockType blockType)
     {
-        RegisterBlockType(blockType);
-
-        MeshAndMaterial mam = blockType2MeshAndMaterial[blockType];
-
-        GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        cube.tag = "Block";
-        MeshFilter mf = cube.GetComponent<MeshFilter>();
-        mf.mesh = mam.mesh;
-        Renderer renderer = cube.GetComponent<Renderer>();
-        renderer.material = mam.material;
-
-        return cube;
+        if (!blockType2prefab.ContainsKey(blockType))
+        {
+            string path = string.Format("Blocks/{0}", BlockTexture.type2icon[blockType]);
+            Debug.Log(path);
+            blockType2prefab[blockType] = Resources.Load(path) as GameObject;
+        }
+        GameObject obj = Object.Instantiate(blockType2prefab[blockType]);
+        return obj;
     }
+
+    //static public GameObject CreateCube(BlockType blockType)
+    //{
+    //    RegisterBlockType(blockType);
+
+    //    MeshAndMaterial mam = blockType2MeshAndMaterial[blockType];
+
+    //    GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+    //    cube.tag = "Block";
+    //    MeshFilter mf = cube.GetComponent<MeshFilter>();
+    //    mf.mesh = mam.mesh;
+    //    Renderer renderer = cube.GetComponent<Renderer>();
+    //    renderer.material = mam.material;
+
+    //    return cube;
+    //}
 }
