@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using Theircraft;
 
 public class PlayerController : MonoBehaviour {
     
@@ -10,6 +11,8 @@ public class PlayerController : MonoBehaviour {
     private bool isMoving;
     private new Camera camera;
     private CharacterController cc;
+
+    public static bool acceptInput = true;
 
     private static GameObject instance;
 
@@ -60,12 +63,8 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
-    // Update is called once per frame
-    void Update()
+    void ProcessKeyBoard()
     {
-        RotateView();
-        ChangeFieldOfView();
-        ShowWireFrame();
         if (Input.GetKeyDown(KeyCode.Space))
         {
             Jump();
@@ -103,6 +102,18 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
+    // Update is called once per frame
+    void Update()
+    {
+        if (acceptInput)
+        {
+            RotateView();
+            ProcessKeyBoard();
+        }
+        ChangeFieldOfView();
+        ShowWireFrame();
+    }
+
     Material lastMaterial;
     void ShowWireFrame()
     {
@@ -135,12 +146,10 @@ public class PlayerController : MonoBehaviour {
         verticalSpeed = -Physics.gravity / 2;
     }
     
-    void ProcessMovement()
+    void ProcessMovement(float v, float h)
     {
         verticalSpeed += Physics.gravity * Time.fixedDeltaTime;
         Vector3 verticalMovement = verticalSpeed * Time.fixedDeltaTime;
-        float v = Input.GetAxisRaw("Vertical");
-        float h = Input.GetAxisRaw("Horizontal");
         Vector3 horizontalMovement = transform.forward * v + transform.right * h;
         cc.Move(horizontalMovement * horizontalScale + verticalMovement * verticalScale);
         
@@ -167,6 +176,13 @@ public class PlayerController : MonoBehaviour {
 
     void FixedUpdate()
     {
-        ProcessMovement();
+        float v = 0;
+        float h = 0;
+        if (acceptInput)
+        {
+            v = Input.GetAxisRaw("Vertical");
+            h = Input.GetAxisRaw("Horizontal");
+        }
+        ProcessMovement(v, h);
     }
 }

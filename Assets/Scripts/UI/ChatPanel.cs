@@ -1,35 +1,35 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
-using ChatRoom;
+using Theircraft;
 
 public class ChatPanel : MonoBehaviour
 {
-    static List<Transform> ItemList = new List<Transform>();
-    static Transform itemUnit;
-    static GridLayoutGroup grid;
+    List<Transform> ItemList = new List<Transform>();
+    Transform itemUnit;
+    GridLayoutGroup grid;
+    GameObject inputParent;
+    InputField inputField;
 
     static Queue<string> _message = new Queue<string>();
 
-    static InputField inputField;
-
-    static GameObject instance;
+    static ChatPanel instance;
 
     public static void ShowChatPanel()
     {
         if (instance != null)
         {
-            instance.SetActive(true);
+            instance.gameObject.SetActive(true);
         }
         else
-            instance = UISystem.InstantiateUI("ChatPanel");
+            instance = UISystem.InstantiateUI("ChatPanel").GetComponent<ChatPanel>();
     }
 
     public static void Hide()
     {
         if (instance != null)
         {
-            instance.SetActive(false);
+            instance.gameObject.SetActive(false);
         }
     }
 
@@ -39,7 +39,7 @@ public class ChatPanel : MonoBehaviour
     {
         if (initialized)
         {
-            AddLineItem(content);
+            instance.AddLineItem(content);
         }
         else
         {
@@ -58,9 +58,10 @@ public class ChatPanel : MonoBehaviour
         itemUnit.gameObject.SetActive(false);
         grid = transform.Find("Scroll View/Viewport/Content").GetComponent<GridLayoutGroup>();
 
-        transform.Find("SendButton").GetComponent<Button>().onClick.AddListener(OnClickSendButton);
-        inputField = transform.Find("InputField").GetComponent<InputField>();
-
+        inputParent = transform.Find("InputParent").gameObject;
+        inputParent.SetActive(false);
+        transform.Find("InputParent/SendButton").GetComponent<Button>().onClick.AddListener(OnClickSendButton);
+        inputField = transform.Find("InputParent/InputField").GetComponent<InputField>();
 
         while (_message.Count > 0)
         {
@@ -69,36 +70,40 @@ public class ChatPanel : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
+    void ShowInput()
+    {
+        inputParent.SetActive(true);
+        inputField.ActivateInputField();
+        PlayerController.acceptInput = false;
+        Cursor.lockState = CursorLockMode.None;
+    }
 
-    bool isFocused;
+    void HideInput()
+    {
+        inputField.DeactivateInputField();
+        PlayerController.acceptInput = true;
+        Cursor.lockState = CursorLockMode.Locked;
+        inputParent.SetActive(false);
+    }
+    
     void ProcessInput()
     {
-        //if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
-        //{
-        //    if (isFocused)
-        //    {
-        //        if (inputField.text != "")
-        //        {
-        //            OnClickSendButton();
-        //        }
-        //        else
-        //            inputField.DeactivateInputField();
-        //    }
-        //    else
-        //        inputField.ActivateInputField();
-        //}
-        //isFocused = inputField.isFocused;
-
         if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
         {
-            if (inputField.text != "")
+            if (inputParent.activeSelf)
             {
-                OnClickSendButton();
+                if (inputField.text != "")
+                {
+                    OnClickSendButton();
+                }
+                else
+                {
+                    HideInput();
+                }
             }
             else
             {
-                gameObject.SetActive(false);
+                ShowInput();
             }
         }
     }
@@ -121,7 +126,7 @@ public class ChatPanel : MonoBehaviour
         ItemList.Clear();
     }
 
-    static void AddLineItem(string content)
+    void AddLineItem(string content)
     {
         Transform item = Instantiate(itemUnit);
         item.gameObject.SetActive(true);
@@ -157,7 +162,7 @@ public class ChatPanel : MonoBehaviour
         NetworkManager.Enqueue(MessageType.SEND_MESSAGE_REQ, req);
     }
 
-    static void OnSendMessageRes(byte[] data)
+    void OnSendMessageRes(byte[] data)
     {
         SendMessageRes rsp = NetworkManager.Deserialzie<SendMessageRes>(data);
         //Debug.Log("OnSendMessageRes,retCode=" + res.RetCode);
@@ -165,6 +170,7 @@ public class ChatPanel : MonoBehaviour
         {
             inputField.text = "";
             inputField.ActivateInputField();
+            HideInput();
         }
         else
         {

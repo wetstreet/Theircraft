@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Theircraft;
 
 #region GenerateCoroutine, do not directly reference this class from outside this script.
 class GenerateCoroutine : MonoBehaviour
@@ -106,6 +107,18 @@ class GenerateCoroutine : MonoBehaviour
         }
         return chunkParent.gameObject;
     }
+
+    //根据服务器数据或者本地数据库的数据来生成方块
+    public GameObject GenerateChunkFromList(Vector2Int chunk, Block[] blockArray)
+    {
+        Transform chunkParent = GenerateChunkParent(chunk);
+        foreach (Block block in blockArray)
+        {
+            GenerateBlock(new Vector3(block.position.x, block.position.y, block.position.z), block.type);
+        }
+        return chunkParent.gameObject;
+    }
+
     IEnumerator GenerateLoop()
     {
         while (true)

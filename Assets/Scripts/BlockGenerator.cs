@@ -1,17 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
-using System.IO;
 using UnityEditor;
-
-public enum BlockType
-{
-    None,
-    Grass,
-    Tnt,
-    Brick,
-    Furnace,
-    HayBlock,
-}
+using Theircraft;
 
 public struct BlockTexture
 {
@@ -54,7 +44,6 @@ public static class BlockGenerator
         RegisterBlockType(BlockType.Furnace);
         RegisterBlockType(BlockType.HayBlock);
     }
-
 
     enum FaceType
     {
