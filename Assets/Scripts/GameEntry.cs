@@ -6,7 +6,6 @@ public class GameEntry : MonoBehaviour {
     
 	void Start ()
     {
-        BlockGenerator.RegisterBlocks();
         GameKernel.Create();
         ChatPanel.ShowChatPanel();
         ItemSelectPanel.Show();

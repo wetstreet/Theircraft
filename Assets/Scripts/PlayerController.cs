@@ -42,6 +42,7 @@ public class PlayerController : MonoBehaviour {
     // Use this for initialization
     void Start () {
         Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
         camera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
         cc = GetComponent<CharacterController>();
     }

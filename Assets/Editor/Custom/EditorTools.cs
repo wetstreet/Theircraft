@@ -2,6 +2,8 @@
 
 using UnityEditor;
 using UnityEngine;
+using Theircraft;
+using System;
 
 public class EditorTools
 {
@@ -15,6 +17,19 @@ public class EditorTools
             UISystem.InstantiatePrefab(prefab);
         }
     }
+
+    [MenuItem("Assets/Generate Block Prefabs")]
+    public static void GenerateBlockPrefabs()
+    {
+        foreach (BlockType blockType in Enum.GetValues(typeof(BlockType)))
+        {
+            if (blockType != BlockType.None)
+            {
+                BlockGenerator.GenerateBlockPrefab(blockType);
+            }
+        }
+    }
+
 }
 
 #endif

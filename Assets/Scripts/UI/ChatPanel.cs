@@ -76,6 +76,7 @@ public class ChatPanel : MonoBehaviour
         inputField.ActivateInputField();
         PlayerController.acceptInput = false;
         Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
 
     void HideInput()
@@ -83,6 +84,7 @@ public class ChatPanel : MonoBehaviour
         inputField.DeactivateInputField();
         PlayerController.acceptInput = true;
         Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
         inputParent.SetActive(false);
     }
     
