@@ -37,15 +37,6 @@ public struct BlockTexture
 
 public static class BlockGenerator
 {
-    static public void RegisterBlocks()
-    {
-        RegisterBlockType(BlockType.Grass);
-        RegisterBlockType(BlockType.Tnt);
-        RegisterBlockType(BlockType.Brick);
-        RegisterBlockType(BlockType.Furnace);
-        RegisterBlockType(BlockType.HayBlock);
-    }
-
     enum FaceType
     {
         TopFace,
@@ -70,18 +61,6 @@ public static class BlockGenerator
     static List<int> triangles = new List<int>();
 
     static Dictionary<string, Texture2D> path2texture = new Dictionary<string, Texture2D>();
-    static Dictionary<BlockType, MeshAndMaterial> blockType2MeshAndMaterial = new Dictionary<BlockType, MeshAndMaterial>();
-
-    struct MeshAndMaterial
-    {
-        public Mesh mesh;
-        public Material material;
-        public MeshAndMaterial(Mesh _mesh, Material _material)
-        {
-            mesh = _mesh;
-            material = _material;
-        }
-    }
 
     static void AddFace(FaceType faceType, Rect rect)
     {
@@ -182,6 +161,7 @@ public static class BlockGenerator
         GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
         cube.GetComponent<MeshFilter>().mesh = mesh;
         cube.GetComponent<MeshRenderer>().material = material;
+        cube.tag = "Block";
 
         string name = BlockTexture.type2icon[blockType];
 
@@ -200,65 +180,15 @@ public static class BlockGenerator
         Object.DestroyImmediate(cube);
     }
 
-
-    static public void RegisterBlockType(BlockType blockType)
-    {
-        if (!blockType2MeshAndMaterial.ContainsKey(blockType))
-        {
-            Texture2D[] textures = GetTexturesByBlockType(blockType);
-            Texture2D combinedTex = new Texture2D(128, 128);
-            Rect[] rects = combinedTex.PackTextures(textures, 0, 128);
-            combinedTex.filterMode = FilterMode.Point;
-
-            vertex.Clear();
-            uv.Clear();
-            triangles.Clear();
-
-            AddFace(FaceType.TopFace, rects[0]);
-            AddFace(FaceType.BottomFace, rects[1]);
-            AddFace(FaceType.FrontFace, rects[2]);
-            AddFace(FaceType.BackFace, rects[3]);
-            AddFace(FaceType.LeftFace, rects[4]);
-            AddFace(FaceType.RightFace, rects[5]);
-
-            Mesh mesh = new Mesh();
-            mesh.vertices = vertex.ToArray();
-            mesh.uv = uv.ToArray();
-            mesh.triangles = triangles.ToArray();
-
-            Material material = new Material(Shader.Find("Custom/HighlightShader"));
-            material.mainTexture = combinedTex;
-
-            blockType2MeshAndMaterial[blockType] = new MeshAndMaterial(mesh, material);
-        }
-    }
-
     static Dictionary<BlockType, GameObject> blockType2prefab = new Dictionary<BlockType, GameObject>();
     static public GameObject CreateCube(BlockType blockType)
     {
         if (!blockType2prefab.ContainsKey(blockType))
         {
             string path = string.Format("Blocks/{0}", BlockTexture.type2icon[blockType]);
-            Debug.Log(path);
             blockType2prefab[blockType] = Resources.Load(path) as GameObject;
         }
         GameObject obj = Object.Instantiate(blockType2prefab[blockType]);
         return obj;
     }
-
-    //static public GameObject CreateCube(BlockType blockType)
-    //{
-    //    RegisterBlockType(blockType);
-
-    //    MeshAndMaterial mam = blockType2MeshAndMaterial[blockType];
-
-    //    GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-    //    cube.tag = "Block";
-    //    MeshFilter mf = cube.GetComponent<MeshFilter>();
-    //    mf.mesh = mam.mesh;
-    //    Renderer renderer = cube.GetComponent<Renderer>();
-    //    renderer.material = mam.material;
-
-    //    return cube;
-    //}
 }
