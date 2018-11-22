@@ -63,7 +63,7 @@ public class LoginPanel : MonoBehaviour {
             DataCenter.name = playername;
             playername = null;
             DataCenter.state = ClientState.InRoom;
-            SceneManager.LoadScene("MainScene");
+            SceneManager.LoadScene("MultiplayerScene");
             ChatPanel.AddLine("hello " + DataCenter.name + ", now you can chat freely in this room!");
         }
         else

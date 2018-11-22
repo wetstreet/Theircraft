@@ -3,21 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using Theircraft;
 
-#region GenerateCoroutine, do not directly reference this class from outside this script.
-class GenerateCoroutine : MonoBehaviour
-{
-    static private Object _prefab;
-    static Object prefab
-    {
-        get
-        {
-            if (_prefab == null)
-            {
-                _prefab = Resources.Load("Cube");
-            }
-            return _prefab;
-        }
-    }
+public class TerrainGenerator : MonoBehaviour{
+
     static Dictionary<Vector2Int, GameObject> blockmap = new Dictionary<Vector2Int, GameObject>();
 
     static LinkedList<Vector2Int> linkedList = new LinkedList<Vector2Int>();
@@ -25,12 +12,26 @@ class GenerateCoroutine : MonoBehaviour
     static int scale = 35;
     static int maxHeight = 15;
 
+    static TerrainGenerator _instance;
+    static TerrainGenerator instance
+    {
+        get
+        {
+            if (_instance == null)
+            {
+                GameObject obj = new GameObject("TerrainGenerator");
+                _instance = obj.AddComponent<TerrainGenerator>();
+            }
+            return _instance;
+        }
+    }
+
     private void Start()
     {
         StartCoroutine(GenerateLoop());
     }
 
-    public void GenerateBlock(Vector3 pos, BlockType blockType = BlockType.Grass)
+    public static void GenerateBlock(Vector3 pos, BlockType blockType = BlockType.Grass)
     {
         Vector2Int chunk = Ultiities.GetChunk(pos);
         GameObject obj = BlockGenerator.CreateCube(blockType);
@@ -39,18 +40,18 @@ class GenerateCoroutine : MonoBehaviour
             GenerateChunkParent(chunk);
         }
         obj.transform.parent = blockmap[chunk].transform;
-        obj.transform.name = string.Format("block({0},{1})", pos.x, pos.y);
+        obj.transform.name = string.Format("block({0},{1},{2})", pos.x, pos.y, pos.z);
         obj.transform.localPosition = pos;
     }
 
-    public void ShowChunk(Vector2Int chunk, bool isSync)
+    public static void ShowChunk(Vector2Int chunk, bool isSync)
     {
         if (blockmap.ContainsKey(chunk))
         {
             blockmap[chunk].SetActive(true);
             return;
         }
-        
+
         if (isSync)
             GenerateChunk(chunk);
         else
@@ -62,7 +63,7 @@ class GenerateCoroutine : MonoBehaviour
         }
     }
 
-    public bool HideChunk(Vector2Int chunk)
+    public static bool HideChunk(Vector2Int chunk)
     {
         if (!blockmap.ContainsKey(chunk))
         {
@@ -82,16 +83,16 @@ class GenerateCoroutine : MonoBehaviour
         return true;
     }
 
-    Transform GenerateChunkParent(Vector2Int chunk)
+    public static Transform GenerateChunkParent(Vector2Int chunk)
     {
         Transform chunkParent = new GameObject(string.Format("chunk({0},{1})", chunk.x, chunk.y)).transform;
-        chunkParent.parent = transform;
+        chunkParent.parent = instance.transform;
         chunkParent.localPosition = Vector3.zero;
         blockmap[chunk] = chunkParent.gameObject;
         return chunkParent;
     }
 
-    public GameObject GenerateChunk(Vector2Int chunk)
+    public static GameObject GenerateChunk(Vector2Int chunk)
     {
         Transform chunkParent = GenerateChunkParent(chunk);
         for (int i = 0; i < 16; i++)
@@ -104,17 +105,6 @@ class GenerateCoroutine : MonoBehaviour
                 int height = Mathf.RoundToInt(maxHeight * noise);
                 GenerateBlock(new Vector3(x, height, z));
             }
-        }
-        return chunkParent.gameObject;
-    }
-
-    //根据服务器数据或者本地数据库的数据来生成方块
-    public GameObject GenerateChunkFromList(Vector2Int chunk, Block[] blockArray)
-    {
-        Transform chunkParent = GenerateChunkParent(chunk);
-        foreach (Block block in blockArray)
-        {
-            GenerateBlock(new Vector3(block.position.x, block.position.y, block.position.z), block.type);
         }
         return chunkParent.gameObject;
     }
@@ -135,26 +125,7 @@ class GenerateCoroutine : MonoBehaviour
             yield return new WaitForEndOfFrame();
         }
     }
-}
-#endregion
-
-public static class TerrainGenerator {
     
-    static GenerateCoroutine gc;
-
-    public static void Init()
-    {
-        if (gc != null)
-            return;
-
-        GameObject obj = new GameObject("GenerateCoroutine");
-        gc = obj.AddComponent<GenerateCoroutine>();
-    }
-
-    public static bool HideChunk(Vector2Int chunk)
-    {
-        return gc.HideChunk(chunk);
-    }
 
     public static void HideChunks(List<Vector2Int> list)
     {
@@ -162,11 +133,6 @@ public static class TerrainGenerator {
         {
             HideChunk(chunk);
         }
-    }
-
-    public static void ShowChunk(Vector2Int chunk, bool isSync = false)
-    {
-        gc.ShowChunk(chunk, isSync);
     }
 
     public static void ShowChunks(List<Vector2Int> list, bool isSync = false)
@@ -177,8 +143,14 @@ public static class TerrainGenerator {
         }
     }
 
-    public static void GenerateBlock(Vector3 pos, BlockType blockType = BlockType.Grass)
+    //根据服务器数据或者本地数据库的数据来生成方块
+    public static GameObject GenerateChunkFromList(Vector2Int chunk, Block[] blockArray)
     {
-        gc.GenerateBlock(pos, blockType);
+        Transform chunkParent = GenerateChunkParent(chunk);
+        foreach (Block block in blockArray)
+        {
+            GenerateBlock(new Vector3(block.position.x, block.position.y, block.position.z), block.type);
+        }
+        return chunkParent.gameObject;
     }
 }

@@ -9,7 +9,6 @@ public class GameEntry : MonoBehaviour {
         GameKernel.Create();
         ChatPanel.ShowChatPanel();
         ItemSelectPanel.Show();
-        TerrainGenerator.Init();
         List<Vector2Int> preloadChunks = Ultiities.GetSurroudingChunks(Vector2Int.zero);
         TerrainGenerator.ShowChunks(preloadChunks, true);
         //load chunks before create player character, to make sure player character don't spawn under the ground.
