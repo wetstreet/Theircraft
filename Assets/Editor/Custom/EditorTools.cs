@@ -21,9 +21,9 @@ public class EditorTools
     [MenuItem("Assets/Generate Block Prefabs")]
     public static void GenerateBlockPrefabs()
     {
-        foreach (BlockType blockType in Enum.GetValues(typeof(BlockType)))
+        foreach (CSBlockType blockType in Enum.GetValues(typeof(CSBlockType)))
         {
-            if (blockType != BlockType.None)
+            if (blockType != CSBlockType.None)
             {
                 BlockGenerator.GenerateBlockPrefab(blockType);
             }

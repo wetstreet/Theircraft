@@ -5,10 +5,10 @@ using Theircraft;
 public class ItemSelectPanel : MonoBehaviour
 {
     public static int curIndex;
-    public static BlockType curBlockType { get { return dataList[curIndex]; } }
+    public static CSBlockType curBlockType { get { return dataList[curIndex]; } }
 
     static Item[] itemList = new Item[9];
-    static BlockType[] dataList = new BlockType[9];
+    static CSBlockType[] dataList = new CSBlockType[9];
 
     struct Item
     {
@@ -21,7 +21,7 @@ public class ItemSelectPanel : MonoBehaviour
         UISystem.InstantiateUI("ItemSelectPanel");
     }
 
-    public static void SetSlotItem(int slotID, BlockType blockType)
+    public static void SetSlotItem(int slotID, CSBlockType blockType)
     {
         dataList[slotID] = blockType;
         string iconPath = BlockTexture.type2icon[blockType];
@@ -58,11 +58,11 @@ public class ItemSelectPanel : MonoBehaviour
     void Start () {
         Init();
 
-        SetSlotItem(0, BlockType.Grass);
-        SetSlotItem(1, BlockType.Tnt);
-        SetSlotItem(2, BlockType.Brick);
-        SetSlotItem(3, BlockType.Furnace);
-        SetSlotItem(4, BlockType.HayBlock);
+        SetSlotItem(0, CSBlockType.Grass);
+        SetSlotItem(1, CSBlockType.Tnt);
+        SetSlotItem(2, CSBlockType.Brick);
+        SetSlotItem(3, CSBlockType.Furnace);
+        SetSlotItem(4, CSBlockType.HayBlock);
 
         RefreshUI();
     }

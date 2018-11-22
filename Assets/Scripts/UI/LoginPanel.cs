@@ -17,7 +17,7 @@ public class LoginPanel : MonoBehaviour {
     // Use this for initialization
     void Start ()
     {
-        NetworkManager.Register(MessageType.ENTER_ROOM_RES, OnEnterRoomRes);
+        NetworkManager.Register(CSMessageType.ENTER_ROOM_RES, OnEnterRoomRes);
 
         input = transform.Find("InputField").GetComponent<InputField>();
         transform.Find("Button").GetComponent<Button>().onClick.AddListener(OnClickEnterRoom);
@@ -47,16 +47,16 @@ public class LoginPanel : MonoBehaviour {
     void EnterRoomReq(string _name)
     {
         playername = _name;
-        EnterRoomReq enterRoomReq = new EnterRoomReq
+        CSEnterRoomReq enterRoomReq = new CSEnterRoomReq
         {
             Name = _name
         };
-        NetworkManager.Enqueue(MessageType.ENTER_ROOM_REQ, enterRoomReq);
+        NetworkManager.Enqueue(CSMessageType.ENTER_ROOM_REQ, enterRoomReq);
     }
 
     void OnEnterRoomRes(byte[] data)
     {
-        EnterRoomRes rsp = NetworkManager.Deserialzie<EnterRoomRes>(data);
+        CSEnterRoomRes rsp = NetworkManager.Deserialzie<CSEnterRoomRes>(data);
         Debug.Log("OnEnterRoomRes,retCode="+ rsp.RetCode);
         if(rsp.RetCode == 0)
         {
@@ -64,7 +64,7 @@ public class LoginPanel : MonoBehaviour {
             playername = null;
             DataCenter.state = ClientState.InRoom;
             SceneManager.LoadScene("MultiplayerScene");
-            ChatPanel.AddLine("hello " + DataCenter.name + ", now you can chat freely in this room!");
+            ChatPanel.AddLine(DataCenter.name + ", 欢迎回来！");
         }
         else
         {

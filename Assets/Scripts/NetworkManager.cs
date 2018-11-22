@@ -46,10 +46,10 @@ public static class NetworkManager
     {
         get
         {
-            if (Main.instance.mode == GameMode.Local)
+            if (Main.instance.mode == ServerMode.Local)
                 return Main.instance.LocalServerIP;
-            else if (Main.instance.mode == GameMode.Online)
-                return Main.instance.OnlineServerIP;
+            else if (Main.instance.mode == ServerMode.Public)
+                return Main.instance.PublicServerIP;
             return null;
         }
     }
@@ -58,11 +58,11 @@ public static class NetworkManager
     static TcpClient tcpClient;
 
     static Queue<byte[]> _message;
-    static Dictionary<MessageType, CallbackFunction> _callback = new Dictionary<MessageType, CallbackFunction>();
+    static Dictionary<CSMessageType, CallbackFunction> _callback = new Dictionary<CSMessageType, CallbackFunction>();
 
     static BinaryFormatter formatter = new BinaryFormatter();
 
-    public static void Register(MessageType type, CallbackFunction func)
+    public static void Register(CSMessageType type, CallbackFunction func)
     {
         if (!_callback.ContainsKey(type))
         {
@@ -101,7 +101,7 @@ public static class NetworkManager
             {
                 MemoryStream lengthStream = new MemoryStream(data);
                 BinaryReader binary = new BinaryReader(lengthStream, Encoding.UTF8);
-                MessageType type = (MessageType)binary.ReadUInt16();
+                CSMessageType type = (CSMessageType)binary.ReadUInt16();
                 int length = binary.ReadUInt16();
 
                 data = new byte[length];
@@ -132,7 +132,7 @@ public static class NetworkManager
         return (T)formatter.Deserialize(stream);
     }
 
-    public static void Enqueue(MessageType type, object obj)
+    public static void Enqueue(CSMessageType type, object obj)
     {
         MemoryStream stream = new MemoryStream();
         formatter.Serialize(stream, obj);

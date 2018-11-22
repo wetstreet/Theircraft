@@ -64,6 +64,41 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
+    void OnLeftMouseClick()
+    {
+        RaycastHit hit;
+        bool b = GetPointingBlockInfo(out hit);
+        if (b)
+            Destroy(hit.transform.gameObject);
+    }
+
+    void OnRightMouseClick()
+    {
+        if (ItemSelectPanel.curBlockType != CSBlockType.None)
+        {
+            RaycastHit hit;
+            bool b = GetPointingBlockInfo(out hit);
+            if (b)
+            {
+                if (hit.normal == Vector3.right)
+                {
+                    //AddBlockReq(Vector3Int.FloorToInt(hit.transform.localPosition) + Vector3Int.right, ItemSelectPanel.curBlockType);
+                    TerrainGenerator.GenerateBlock(hit.transform.localPosition + Vector3.right, ItemSelectPanel.curBlockType);
+                }
+                else if (hit.normal == Vector3.left)
+                    TerrainGenerator.GenerateBlock(hit.transform.localPosition + Vector3.left, ItemSelectPanel.curBlockType);
+                else if (hit.normal == Vector3.forward)
+                    TerrainGenerator.GenerateBlock(hit.transform.localPosition + Vector3.forward, ItemSelectPanel.curBlockType);
+                else if (hit.normal == Vector3.back)
+                    TerrainGenerator.GenerateBlock(hit.transform.localPosition + Vector3.back, ItemSelectPanel.curBlockType);
+                else if (hit.normal == Vector3.up)
+                    TerrainGenerator.GenerateBlock(hit.transform.localPosition + Vector3.up, ItemSelectPanel.curBlockType);
+                else if (hit.normal == Vector3.down)
+                    TerrainGenerator.GenerateBlock(hit.transform.localPosition + Vector3.down, ItemSelectPanel.curBlockType);
+            }
+        }
+    }
+
     void ProcessKeyBoard()
     {
         if (Input.GetKeyDown(KeyCode.Space))
@@ -72,34 +107,11 @@ public class PlayerController : MonoBehaviour {
         }
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
-            RaycastHit hit;
-            bool b = GetPointingBlockInfo(out hit);
-            if (b)
-                Destroy(hit.transform.gameObject);
+            OnLeftMouseClick();
         }
         if (Input.GetKeyDown(KeyCode.Mouse1))
         {
-            if (ItemSelectPanel.curBlockType != BlockType.None)
-            {
-                RaycastHit hit;
-                bool b = GetPointingBlockInfo(out hit);
-                if (b)
-                {
-                    if (hit.normal == Vector3.right)
-                        TerrainGenerator.GenerateBlock(hit.transform.localPosition + Vector3.right, ItemSelectPanel.curBlockType);
-                    else if (hit.normal == Vector3.left)
-                        TerrainGenerator.GenerateBlock(hit.transform.localPosition + Vector3.left, ItemSelectPanel.curBlockType);
-                    else if (hit.normal == Vector3.forward)
-                        TerrainGenerator.GenerateBlock(hit.transform.localPosition + Vector3.forward, ItemSelectPanel.curBlockType);
-                    else if (hit.normal == Vector3.back)
-                        TerrainGenerator.GenerateBlock(hit.transform.localPosition + Vector3.back, ItemSelectPanel.curBlockType);
-                    else if (hit.normal == Vector3.up)
-                        TerrainGenerator.GenerateBlock(hit.transform.localPosition + Vector3.up, ItemSelectPanel.curBlockType);
-                    else if (hit.normal == Vector3.down)
-                        TerrainGenerator.GenerateBlock(hit.transform.localPosition + Vector3.down, ItemSelectPanel.curBlockType);
-                    FastTips.Show("放置了一个方块");
-                }
-            }
+            OnRightMouseClick();
         }
     }
 
@@ -185,5 +197,36 @@ public class PlayerController : MonoBehaviour {
             h = Input.GetAxisRaw("Horizontal");
         }
         ProcessMovement(v, h);
+    }
+
+    void AddBlockReq(Vector3Int pos, CSBlockType type)
+    {
+        CSBlock b = new CSBlock();
+        b.position = new CSVector3Int();
+        b.position.x = pos.x;
+        b.position.y = pos.y;
+        b.position.z = pos.z;
+        b.type = type;
+        CSAddBlockReq addBlockReq = new CSAddBlockReq
+        {
+            block = b
+        };
+        NetworkManager.Enqueue(CSMessageType.ADD_BLOCK_REQ, addBlockReq);
+    }
+
+    void AddBlockRes(byte[] data)
+    {
+        CSAddBlockRes rsp = NetworkManager.Deserialzie<CSAddBlockRes>(data);
+        Debug.Log("AddBlockRes,retCode=" + rsp.RetCode);
+        if (rsp.RetCode == 0)
+        {
+            CSVector3Int p = rsp.block.position;
+            TerrainGenerator.GenerateBlock(new Vector3Int(p.x, p.y, p.z), rsp.block.type);
+            FastTips.Show("放置了一个方块");
+        }
+        else
+        {
+            FastTips.Show(rsp.RetCode);
+        }
     }
 }

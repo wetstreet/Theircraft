@@ -51,8 +51,8 @@ public class ChatPanel : MonoBehaviour
     void Start ()
     {
         initialized = true;
-        NetworkManager.Register(MessageType.SEND_MEESAGE_RES, OnSendMessageRes);
-        NetworkManager.Register(MessageType.MESSAGE_NOTIFY, OnMessageNotify);
+        NetworkManager.Register(CSMessageType.SEND_MEESAGE_RES, OnSendMessageRes);
+        NetworkManager.Register(CSMessageType.MESSAGE_NOTIFY, OnMessageNotify);
 
         itemUnit = transform.Find("Scroll View/Viewport/Content/chat_item");
         itemUnit.gameObject.SetActive(false);
@@ -157,16 +157,16 @@ public class ChatPanel : MonoBehaviour
 
     static void SendMessageReq(string content)
     {
-        SendMessageReq req = new SendMessageReq
+        CSSendMessageReq req = new CSSendMessageReq
         {
             Content = content
         };
-        NetworkManager.Enqueue(MessageType.SEND_MESSAGE_REQ, req);
+        NetworkManager.Enqueue(CSMessageType.SEND_MESSAGE_REQ, req);
     }
 
     void OnSendMessageRes(byte[] data)
     {
-        SendMessageRes rsp = NetworkManager.Deserialzie<SendMessageRes>(data);
+        CSSendMessageRes rsp = NetworkManager.Deserialzie<CSSendMessageRes>(data);
         //Debug.Log("OnSendMessageRes,retCode=" + res.RetCode);
         if (rsp.RetCode == 0)
         {
@@ -181,7 +181,7 @@ public class ChatPanel : MonoBehaviour
     }
     static void OnMessageNotify(byte[] data)
     {
-        MessageNotify notify = NetworkManager.Deserialzie<MessageNotify>(data);
+        CSMessageNotify notify = NetworkManager.Deserialzie<CSMessageNotify>(data);
         //Debug.Log($"OnMessageNotify,name={notify.Name},content={notify.Content}");
         AddLine("[" + notify.Name + "]" + notify.Content);
     }

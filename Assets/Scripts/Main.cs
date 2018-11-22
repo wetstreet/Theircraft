@@ -1,18 +1,20 @@
 ﻿using UnityEngine;
-public enum GameMode
+
+//连接本地服务器还是外网服务器
+public enum ServerMode
 {
     Local,
-    Online,
+    Public,
 }
 
 public class Main : MonoBehaviour {
 
     public static Main instance;
 
-    //禁止在运行时改变游戏模式
-    public GameMode mode = GameMode.Local;
+    //禁止在建立链接后改变服务器
+    public ServerMode mode = ServerMode.Public;
     //外网服务器ip
-    public string OnlineServerIP = "39.108.139.67";
+    public string PublicServerIP = "39.108.139.67";
     //内网服务器ip
     public string LocalServerIP = "10.0.4.254";
 

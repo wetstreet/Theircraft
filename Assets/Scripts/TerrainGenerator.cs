@@ -31,7 +31,7 @@ public class TerrainGenerator : MonoBehaviour{
         StartCoroutine(GenerateLoop());
     }
 
-    public static void GenerateBlock(Vector3 pos, BlockType blockType = BlockType.Grass)
+    public static void GenerateBlock(Vector3 pos, CSBlockType blockType = CSBlockType.Grass)
     {
         Vector2Int chunk = Ultiities.GetChunk(pos);
         GameObject obj = BlockGenerator.CreateCube(blockType);
@@ -144,10 +144,10 @@ public class TerrainGenerator : MonoBehaviour{
     }
 
     //根据服务器数据或者本地数据库的数据来生成方块
-    public static GameObject GenerateChunkFromList(Vector2Int chunk, Block[] blockArray)
+    public static GameObject GenerateChunkFromList(Vector2Int chunk, CSBlock[] blockArray)
     {
         Transform chunkParent = GenerateChunkParent(chunk);
-        foreach (Block block in blockArray)
+        foreach (CSBlock block in blockArray)
         {
             GenerateBlock(new Vector3(block.position.x, block.position.y, block.position.z), block.type);
         }

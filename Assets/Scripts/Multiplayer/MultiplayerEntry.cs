@@ -8,7 +8,7 @@ public class MultiplayerEntry : MonoBehaviour {
     // Use this for initialization
     void Start ()
     {
-        NetworkManager.Register(MessageType.CHUNK_INFO_RES, ChunkInfoRes);
+        NetworkManager.Register(CSMessageType.CHUNK_INFO_RES, ChunkInfoRes);
         ChunkInfoReq(new Vector2Int(0, 0));
         ChunkInfoReq(new Vector2Int(-1, 0));
         ChunkInfoReq(new Vector2Int(0, -1));
@@ -22,17 +22,17 @@ public class MultiplayerEntry : MonoBehaviour {
 
     void ChunkInfoReq(Vector2Int chunk)
     {
-        ChunkInfoReq req = new ChunkInfoReq
+        CSChunkInfoReq req = new CSChunkInfoReq
         {
             ChunkX = chunk.x,
             ChunkZ = chunk.y,
         };
-        NetworkManager.Enqueue(MessageType.CHUNK_INFO_REQ, req);
+        NetworkManager.Enqueue(CSMessageType.CHUNK_INFO_REQ, req);
     }
 
     void ChunkInfoRes(byte[] data)
     {
-        ChunkInfoRes rsp = NetworkManager.Deserialzie<ChunkInfoRes>(data);
+        CSChunkInfoRes rsp = NetworkManager.Deserialzie<CSChunkInfoRes>(data);
         Debug.Log("ChunkInfoRes=" + rsp.RetCode + "," + rsp.ChunkX + "," + rsp.ChunkZ);
         if (rsp.RetCode == 0)
         {
