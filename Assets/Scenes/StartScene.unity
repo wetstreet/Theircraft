@@ -141,7 +141,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mode: 1
-  OnlineServerIP: 39.108.139.67
+  PublicServerIP: 39.108.139.67
   LocalServerIP: 10.0.4.254
 --- !u!4 &936682913
 Transform:

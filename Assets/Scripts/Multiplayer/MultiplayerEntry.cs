@@ -8,6 +8,10 @@ public class MultiplayerEntry : MonoBehaviour {
     // Use this for initialization
     void Start ()
     {
+        GameKernel.Create();
+        ChatPanel.ShowChatPanel();
+        ItemSelectPanel.Show();
+
         NetworkManager.Register(CSMessageType.CHUNK_INFO_RES, ChunkInfoRes);
         ChunkInfoReq(new Vector2Int(0, 0));
         ChunkInfoReq(new Vector2Int(-1, 0));

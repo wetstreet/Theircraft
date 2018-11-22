@@ -39,20 +39,8 @@ public static class NetworkManager
     }
 
     public static bool connected;
-
-    //自测服务器的改动时，把ip指向LOCAL_SERVER_IP，并把LOCAL_SERVER_IP改为本地服务器启动后第一行输出的ip（每台电脑都不一样）
-    //这个ip的改动不要提交，否则别的客户端连不上外网服务器
-    static string ip
-    {
-        get
-        {
-            if (Main.instance.mode == ServerMode.Local)
-                return Main.instance.LocalServerIP;
-            else if (Main.instance.mode == ServerMode.Public)
-                return Main.instance.PublicServerIP;
-            return null;
-        }
-    }
+    
+    public static string ip;
     static readonly int port = 8848;
 
     static TcpClient tcpClient;
