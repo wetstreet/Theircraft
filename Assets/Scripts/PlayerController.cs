@@ -41,13 +41,17 @@ public class PlayerController : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
+        transform.localPosition = DataCenter.initialPosition;
+
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         camera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
         cc = GetComponent<CharacterController>();
 
         NetworkManager.Register(CSMessageType.ADD_BLOCK_RES, AddBlockRes);
+        NetworkManager.Register(CSMessageType.ADD_BLOCK_NOTIFY, OnAddBlockNotify);
         NetworkManager.Register(CSMessageType.DELETE_BLOCK_RES, DeleteBlockRes);
+        NetworkManager.Register(CSMessageType.DELETE_BLOCK_NOTIFY, OnDeleteBlockNotify);
     }
 
     bool GetPointingBlockInfo(out RaycastHit rh)
@@ -219,7 +223,7 @@ public class PlayerController : MonoBehaviour {
     void AddBlockRes(byte[] data)
     {
         CSAddBlockRes rsp = NetworkManager.Deserialzie<CSAddBlockRes>(data);
-        Debug.Log("AddBlockRes,retCode=" + rsp.RetCode);
+        //Debug.Log("AddBlockRes,retCode=" + rsp.RetCode);
         if (rsp.RetCode == 0)
         {
             CSVector3Int p = rsp.block.position;
@@ -230,6 +234,14 @@ public class PlayerController : MonoBehaviour {
         {
             FastTips.Show(rsp.RetCode);
         }
+    }
+
+    void OnAddBlockNotify(byte[] data)
+    {
+        //Debug.Log("OnAddBlockNotify");
+        CSAddBlockNotify notify = NetworkManager.Deserialzie<CSAddBlockNotify>(data);
+        CSVector3Int p = notify.block.position;
+        TerrainGenerator.GenerateBlock(new Vector3Int(p.x, p.y, p.z), notify.block.type);
     }
 
     void DeleteBlockReq(Vector3 pos)
@@ -246,7 +258,7 @@ public class PlayerController : MonoBehaviour {
     void DeleteBlockRes(byte[] data)
     {
         CSDeleteBlockRes rsp = NetworkManager.Deserialzie<CSDeleteBlockRes>(data);
-        Debug.Log("DeleteBlockRes,retCode=" + rsp.RetCode);
+        //Debug.Log("DeleteBlockRes,retCode=" + rsp.RetCode);
         if (rsp.RetCode == 0)
         {
             CSVector3Int pos = rsp.position;
@@ -258,5 +270,15 @@ public class PlayerController : MonoBehaviour {
         {
             FastTips.Show(rsp.RetCode);
         }
+    }
+
+    void OnDeleteBlockNotify(byte[] data)
+    {
+        //Debug.Log("OnDeleteBlockNotify");
+        CSDeleteBlockNotify notify = NetworkManager.Deserialzie<CSDeleteBlockNotify>(data);
+        CSVector3Int pos = notify.position;
+        string name = string.Format("block({0},{1},{2})", pos.x, pos.y, pos.z);
+        GameObject obj = GameObject.Find(name);
+        Destroy(obj);
     }
 }

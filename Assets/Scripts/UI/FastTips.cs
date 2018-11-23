@@ -21,6 +21,12 @@ public class FastTips : MonoBehaviour {
             case 3:
                 content = "方块不存在";
                 break;
+            case 4:
+                content = "该区块不存在";
+                break;
+            case 5:
+                content = "用户已登录";
+                break;
             default:
                 content = "未知错误";
                 break;

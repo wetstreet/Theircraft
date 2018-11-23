@@ -17,7 +17,7 @@ public class LoginPanel : MonoBehaviour {
     // Use this for initialization
     void Start ()
     {
-        NetworkManager.Register(CSMessageType.ENTER_ROOM_RES, OnEnterRoomRes);
+        NetworkManager.Register(CSMessageType.LOGIN_RES, OnLoginRes);
 
         input = transform.Find("InputField").GetComponent<InputField>();
         transform.Find("Button").GetComponent<Button>().onClick.AddListener(OnClickEnterRoom);
@@ -36,7 +36,7 @@ public class LoginPanel : MonoBehaviour {
     {
         if (input.text != "")
         {
-            EnterRoomReq(input.text);
+            LoginReq(input.text);
             PlayerPrefs.SetString(AccountKey, input.text);
         }
         else
@@ -44,23 +44,24 @@ public class LoginPanel : MonoBehaviour {
     }
 
     string playername;
-    void EnterRoomReq(string _name)
+    void LoginReq(string _name)
     {
         playername = _name;
-        CSEnterRoomReq enterRoomReq = new CSEnterRoomReq
+        CSLoginReq enterRoomReq = new CSLoginReq
         {
             Name = _name
         };
-        NetworkManager.Enqueue(CSMessageType.ENTER_ROOM_REQ, enterRoomReq);
+        NetworkManager.Enqueue(CSMessageType.LOGIN_REQ, enterRoomReq);
     }
 
-    void OnEnterRoomRes(byte[] data)
+    void OnLoginRes(byte[] data)
     {
-        CSEnterRoomRes rsp = NetworkManager.Deserialzie<CSEnterRoomRes>(data);
+        CSLoginRes rsp = NetworkManager.Deserialzie<CSLoginRes>(data);
         Debug.Log("OnEnterRoomRes,retCode="+ rsp.RetCode);
         if(rsp.RetCode == 0)
         {
             DataCenter.name = playername;
+            DataCenter.initialPosition = new Vector3(0, 10, 0);
             playername = null;
             DataCenter.state = ClientState.InRoom;
             SceneManager.LoadScene("MultiplayerScene");

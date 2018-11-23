@@ -1,5 +1,6 @@
 ﻿using System.Runtime.Serialization.Formatters.Binary;
 using Theircraft;
+using UnityEngine;
 
 public enum ClientState
 {
@@ -10,7 +11,7 @@ public enum ClientState
 
 public static class DataCenter
 {
-
+    public static Vector3 initialPosition;
     public static string name;
 
     public static ClientState state;

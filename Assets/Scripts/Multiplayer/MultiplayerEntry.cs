@@ -12,11 +12,11 @@ public class MultiplayerEntry : MonoBehaviour {
         ChatPanel.ShowChatPanel();
         ItemSelectPanel.Show();
 
-        NetworkManager.Register(CSMessageType.CHUNK_INFO_RES, ChunkInfoRes);
-        ChunkInfoReq(new Vector2Int(0, 0));
-        ChunkInfoReq(new Vector2Int(-1, 0));
-        ChunkInfoReq(new Vector2Int(0, -1));
-        ChunkInfoReq(new Vector2Int(-1, -1));
+        NetworkManager.Register(CSMessageType.CHUNK_ENTER_VIEW_RES, ChunkEnterViewRes);
+        ChunkEnterViewReq(new Vector2Int(0, 0));
+        ChunkEnterViewReq(new Vector2Int(-1, 0));
+        ChunkEnterViewReq(new Vector2Int(0, -1));
+        ChunkEnterViewReq(new Vector2Int(-1, -1));
     }
 	
 	// Update is called once per frame
@@ -24,19 +24,19 @@ public class MultiplayerEntry : MonoBehaviour {
 
     }
 
-    void ChunkInfoReq(Vector2Int chunk)
+    void ChunkEnterViewReq(Vector2Int chunk)
     {
-        CSChunkInfoReq req = new CSChunkInfoReq
+        CSChunkEnterViewReq req = new CSChunkEnterViewReq
         {
             ChunkX = chunk.x,
             ChunkZ = chunk.y,
         };
-        NetworkManager.Enqueue(CSMessageType.CHUNK_INFO_REQ, req);
+        NetworkManager.Enqueue(CSMessageType.CHUNK_ENTER_VIEW_REQ, req);
     }
 
-    void ChunkInfoRes(byte[] data)
+    void ChunkEnterViewRes(byte[] data)
     {
-        CSChunkInfoRes rsp = NetworkManager.Deserialzie<CSChunkInfoRes>(data);
+        CSChunkEnterViewRes rsp = NetworkManager.Deserialzie<CSChunkEnterViewRes>(data);
         Debug.Log("ChunkInfoRes=" + rsp.RetCode + "," + rsp.ChunkX + "," + rsp.ChunkZ);
         if (rsp.RetCode == 0)
         {
