@@ -45,6 +45,9 @@ public class PlayerController : MonoBehaviour {
         Cursor.visible = false;
         camera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
         cc = GetComponent<CharacterController>();
+
+        NetworkManager.Register(CSMessageType.ADD_BLOCK_RES, AddBlockRes);
+        NetworkManager.Register(CSMessageType.DELETE_BLOCK_RES, DeleteBlockRes);
     }
 
     bool GetPointingBlockInfo(out RaycastHit rh)
@@ -69,9 +72,11 @@ public class PlayerController : MonoBehaviour {
         RaycastHit hit;
         bool b = GetPointingBlockInfo(out hit);
         if (b)
-            Destroy(hit.transform.gameObject);
+            DeleteBlockReq(hit.transform.localPosition);
     }
 
+    static Vector3Int forward = new Vector3Int(0, 0, 1);
+    static Vector3Int back = new Vector3Int(0, 0, -1);
     void OnRightMouseClick()
     {
         if (ItemSelectPanel.curBlockType != CSBlockType.None)
@@ -81,20 +86,17 @@ public class PlayerController : MonoBehaviour {
             if (b)
             {
                 if (hit.normal == Vector3.right)
-                {
-                    //AddBlockReq(Vector3Int.FloorToInt(hit.transform.localPosition) + Vector3Int.right, ItemSelectPanel.curBlockType);
-                    TerrainGenerator.GenerateBlock(hit.transform.localPosition + Vector3.right, ItemSelectPanel.curBlockType);
-                }
+                    AddBlockReq(Vector3Int.FloorToInt(hit.transform.localPosition) + Vector3Int.right, ItemSelectPanel.curBlockType);
                 else if (hit.normal == Vector3.left)
-                    TerrainGenerator.GenerateBlock(hit.transform.localPosition + Vector3.left, ItemSelectPanel.curBlockType);
+                    AddBlockReq(Vector3Int.FloorToInt(hit.transform.localPosition) + Vector3Int.left, ItemSelectPanel.curBlockType);
                 else if (hit.normal == Vector3.forward)
-                    TerrainGenerator.GenerateBlock(hit.transform.localPosition + Vector3.forward, ItemSelectPanel.curBlockType);
+                    AddBlockReq(Vector3Int.FloorToInt(hit.transform.localPosition) + forward, ItemSelectPanel.curBlockType);
                 else if (hit.normal == Vector3.back)
-                    TerrainGenerator.GenerateBlock(hit.transform.localPosition + Vector3.back, ItemSelectPanel.curBlockType);
+                    AddBlockReq(Vector3Int.FloorToInt(hit.transform.localPosition) + back, ItemSelectPanel.curBlockType);
                 else if (hit.normal == Vector3.up)
-                    TerrainGenerator.GenerateBlock(hit.transform.localPosition + Vector3.up, ItemSelectPanel.curBlockType);
+                    AddBlockReq(Vector3Int.FloorToInt(hit.transform.localPosition) + Vector3Int.up, ItemSelectPanel.curBlockType);
                 else if (hit.normal == Vector3.down)
-                    TerrainGenerator.GenerateBlock(hit.transform.localPosition + Vector3.down, ItemSelectPanel.curBlockType);
+                    AddBlockReq(Vector3Int.FloorToInt(hit.transform.localPosition) + Vector3Int.down, ItemSelectPanel.curBlockType);
             }
         }
     }
@@ -223,6 +225,34 @@ public class PlayerController : MonoBehaviour {
             CSVector3Int p = rsp.block.position;
             TerrainGenerator.GenerateBlock(new Vector3Int(p.x, p.y, p.z), rsp.block.type);
             FastTips.Show("放置了一个方块");
+        }
+        else
+        {
+            FastTips.Show(rsp.RetCode);
+        }
+    }
+
+    void DeleteBlockReq(Vector3 pos)
+    {
+        CSVector3Int position = new CSVector3Int();
+        position.x = Mathf.RoundToInt(pos.x);
+        position.y = Mathf.RoundToInt(pos.y);
+        position.z = Mathf.RoundToInt(pos.z);
+        CSDeleteBlockReq req = new CSDeleteBlockReq();
+        req.position = position;
+        NetworkManager.Enqueue(CSMessageType.DELETE_BLOCK_REQ, req);
+    }
+
+    void DeleteBlockRes(byte[] data)
+    {
+        CSDeleteBlockRes rsp = NetworkManager.Deserialzie<CSDeleteBlockRes>(data);
+        Debug.Log("DeleteBlockRes,retCode=" + rsp.RetCode);
+        if (rsp.RetCode == 0)
+        {
+            CSVector3Int pos = rsp.position;
+            string name = string.Format("block({0},{1},{2})", pos.x, pos.y, pos.z);
+            GameObject obj = GameObject.Find(name);
+            Destroy(obj);
         }
         else
         {
