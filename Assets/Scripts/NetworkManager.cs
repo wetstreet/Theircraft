@@ -84,7 +84,15 @@ public static class NetworkManager
             {
                 yield return null;
             }
-            int readNum = stream.EndRead(headerResult);
+            int readNum = 0;
+            try
+            {
+                readNum = stream.EndRead(headerResult);
+            }
+            catch
+            {
+                Disconnect(true);
+            }
             if (readNum > 0)
             {
                 MemoryStream lengthStream = new MemoryStream(data);

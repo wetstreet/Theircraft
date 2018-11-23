@@ -10,13 +10,19 @@ public class FastTips : MonoBehaviour {
         switch(retCode)
         {
             case -1:
-                content = "you are not in room";
+                content = "未连接";
                 break;
             case 1:
-                content = "cannot send empty message";
+                content = "无法发送空数据";
+                break;
+            case 2:
+                content = "方块已存在";
+                break;
+            case 3:
+                content = "方块不存在";
                 break;
             default:
-                content = "unknown error";
+                content = "未知错误";
                 break;
         }
         Show(content);
