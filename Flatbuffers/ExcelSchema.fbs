@@ -1,0 +1,15 @@
+namespace MyData;
+
+enum Type : byte {WORKER,MANAGER}
+
+struct Data {
+    age : int = 20;
+}
+
+table Worker {
+    name : string;
+    type:Type = MANAGER;
+    info:Data;
+}
+
+root_type Worker;
