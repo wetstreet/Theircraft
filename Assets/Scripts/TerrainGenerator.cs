@@ -135,6 +135,16 @@ public class TerrainGenerator : MonoBehaviour{
         }
     }
 
+    public static void DestroyChunk(Vector2Int chunk)
+    {
+        GameObject obj = GameObject.Find(string.Format("chunk({0},{1})", chunk.x, chunk.y));
+        if (obj != null)
+        {
+            Destroy(obj);
+            blockmap.Remove(chunk);
+        }
+    }
+
     public static void ShowChunks(List<Vector2Int> list, bool isSync = false)
     {
         foreach (Vector2Int chunk in list)
@@ -152,5 +162,14 @@ public class TerrainGenerator : MonoBehaviour{
             GenerateBlock(new Vector3(block.position.x, block.position.y, block.position.z), block.type);
         }
         return chunkParent.gameObject;
+    }
+
+    //根据服务器数据或者本地数据库的数据来生成方块
+    public static void GenerateChunksFromList(CSChunk[] chunks)
+    {
+        foreach (CSChunk chunk in chunks)
+        {
+            GenerateChunkFromList(new Vector2Int(chunk.Position.x, chunk.Position.y), chunk.Blocks);
+        }
     }
 }

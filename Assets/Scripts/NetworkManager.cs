@@ -78,7 +78,7 @@ public static class NetworkManager
         NetworkStream stream = tcpClient.GetStream();
         while (connected)
         {
-            byte[] data = new byte[4];
+            byte[] data = new byte[6];
             IAsyncResult headerResult = stream.BeginRead(data, 0, data.Length, null, null);
             while (!headerResult.IsCompleted)
             {
@@ -98,7 +98,7 @@ public static class NetworkManager
                 MemoryStream lengthStream = new MemoryStream(data);
                 BinaryReader binary = new BinaryReader(lengthStream, Encoding.UTF8);
                 CSMessageType type = (CSMessageType)binary.ReadUInt16();
-                int length = binary.ReadUInt16();
+                uint length = binary.ReadUInt32();
 
                 data = new byte[length];
 
@@ -107,6 +107,7 @@ public static class NetworkManager
                 {
                     yield return null;
                 }
+                Debug.Log(length + "," + type);
                 if (_callback.ContainsKey(type))
                 {
                     CallbackFunction func = _callback[type];
@@ -136,7 +137,7 @@ public static class NetworkManager
         int length = data.Length;
         List<byte> bytes = new List<byte>();
         bytes.AddRange(BitConverter.GetBytes((ushort)type));
-        bytes.AddRange(BitConverter.GetBytes((ushort)length));
+        bytes.AddRange(BitConverter.GetBytes((uint)length));
         bytes.AddRange(data);
         _message.Enqueue(bytes.ToArray());
     }

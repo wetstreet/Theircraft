@@ -22,7 +22,7 @@ public class FastTips : MonoBehaviour {
                 content = "方块不存在";
                 break;
             case 4:
-                content = "该区块不存在";
+                content = "区块进出视野错误";
                 break;
             case 5:
                 content = "用户已登录";
