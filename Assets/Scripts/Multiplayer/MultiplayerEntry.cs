@@ -62,7 +62,6 @@ public class MultiplayerEntry : MonoBehaviour {
                 leave.Add(c);
             }
             req.LeaveViewChunks = leave.ToArray();
-            print(req.LeaveViewChunks.Length);
         }
 
 
@@ -79,7 +78,6 @@ public class MultiplayerEntry : MonoBehaviour {
             {
                 TerrainGenerator.GenerateChunkFromList(new Vector2Int(chunk.Position.x, chunk.Position.y), chunk.Blocks);
             }
-            print(rsp.LeaveViewChunks.Length);
             foreach (CSVector2Int chunk in rsp.LeaveViewChunks)
             {
                 TerrainGenerator.DestroyChunk(new Vector2Int(chunk.x, chunk.y));
