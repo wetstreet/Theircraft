@@ -107,7 +107,8 @@ public static class NetworkManager
                 {
                     yield return null;
                 }
-                Debug.Log(length + "," + type);
+                int num = stream.EndRead(contentResult);
+                Debug.Log("num=" + num + ",length=" + length + "," + type);
                 if (_callback.ContainsKey(type))
                 {
                     CallbackFunction func = _callback[type];
