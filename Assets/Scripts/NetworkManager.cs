@@ -73,11 +73,41 @@ public static class NetworkManager
         yield return null;
     }
 
+    static Queue<Package> packageQueue = new Queue<Package>();
+    struct Package
+    {
+        public CSMessageType type;
+        public byte[] data;
+    }
+
+    static IEnumerator HandlePackage()
+    {
+        while (true)
+        {
+            lock (packageQueue)
+            {
+                if (packageQueue.Count > 0)
+                {
+                    Package package = packageQueue.Dequeue();
+                    if (_callback.ContainsKey(package.type))
+                    {
+                        CallbackFunction func = _callback[package.type];
+                        func(package.data);
+                    }
+                }
+            }
+            yield return null;
+        }
+    }
+
+
     static IEnumerator Receive()
     {
-        NetworkStream stream = tcpClient.GetStream();
+        yield return null;
         while (connected)
         {
+            NetworkStream stream = tcpClient.GetStream();
+            
             byte[] data = new byte[6];
             IAsyncResult headerResult = stream.BeginRead(data, 0, data.Length, null, null);
             while (!headerResult.IsCompleted)
@@ -99,20 +129,35 @@ public static class NetworkManager
                 BinaryReader binary = new BinaryReader(lengthStream, Encoding.UTF8);
                 CSMessageType type = (CSMessageType)binary.ReadUInt16();
                 uint length = binary.ReadUInt32();
-
-                data = new byte[length];
-
-                IAsyncResult contentResult = stream.BeginRead(data, 0, data.Length, null, null);
-                while (!contentResult.IsCompleted)
+                
+                MemoryStream bodyStream = new MemoryStream();
+                Debug.Log("length=" + length);
+                int totalBytesRead = 0;
+                byte[] bufdata;
+                if (length > 1024)
+                    bufdata = new byte[1024];
+                else
+                    bufdata = new byte[length];
+                do
                 {
-                    yield return null;
-                }
-                int num = stream.EndRead(contentResult);
-                Debug.Log("num=" + num + ",length=" + length + "," + type);
-                if (_callback.ContainsKey(type))
+                    if (stream.DataAvailable)
+                    {
+                        int bytesRead = stream.Read(bufdata, 0, bufdata.Length);
+                        totalBytesRead += bytesRead;
+                        bodyStream.Write(bufdata, 0, bytesRead);
+                    }
+                    else
+                        yield return new WaitForEndOfFrame();
+
+                } while (totalBytesRead < length);
+                Debug.Log("length=" + length + ",totalBytesRead=" + totalBytesRead);
+
+                Package package = new Package();
+                package.type = type;
+                package.data = bodyStream.ToArray();
+                lock (packageQueue)
                 {
-                    CallbackFunction func = _callback[type];
-                    func(data);
+                    packageQueue.Enqueue(package);
                 }
             }
             else
@@ -121,7 +166,6 @@ public static class NetworkManager
             }
             yield return null;
         }
-        yield return null;
     }
 
     public static T Deserialzie<T>(byte[] data)
@@ -166,6 +210,7 @@ public static class NetworkManager
 
         NetworkCoroutine.Instance.StartCoroutine(Send());
         NetworkCoroutine.Instance.StartCoroutine(Receive());
+        NetworkCoroutine.Instance.StartCoroutine(HandlePackage());
         return true;
     }
 
