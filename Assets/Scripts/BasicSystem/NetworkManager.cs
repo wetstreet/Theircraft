@@ -131,7 +131,6 @@ public static class NetworkManager
                 uint length = binary.ReadUInt32();
                 
                 MemoryStream bodyStream = new MemoryStream();
-                Debug.Log("length=" + length);
                 int totalBytesRead = 0;
                 byte[] bufdata;
                 if (length > 1024)
@@ -150,7 +149,7 @@ public static class NetworkManager
                         yield return new WaitForEndOfFrame();
 
                 } while (totalBytesRead < length);
-                Debug.Log("length=" + length + ",totalBytesRead=" + totalBytesRead);
+                Debug.Log("receive message, type=" + type + ",length=" + length + ",totalBytesRead=" + totalBytesRead);
 
                 Package package = new Package();
                 package.type = type;

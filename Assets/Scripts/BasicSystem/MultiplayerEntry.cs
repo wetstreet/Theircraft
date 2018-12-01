@@ -19,6 +19,11 @@ public class MultiplayerEntry : MonoBehaviour {
         ChunksEnterLeaveViewReq(preloadChunks.ToArray());
     }
 
+    void OnDestroy()
+    {
+        GameKernel.Dispose();
+    }
+
     Vector2Int lastChunk;
     void Update()
     {
