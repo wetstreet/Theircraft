@@ -5,8 +5,6 @@ using System.Linq;
 
 public class MultiplayerEntry : MonoBehaviour {
 
-    bool playerInited = false;
-
     // Use this for initialization
     void Start()
     {
@@ -27,19 +25,22 @@ public class MultiplayerEntry : MonoBehaviour {
     Vector2Int lastChunk;
     void Update()
     {
-        Vector3 pos = PlayerController.Instance.transform.localPosition;
-        Vector2Int chunk = Ultiities.GetChunk(pos);
-
-        if (lastChunk != chunk)
+        if (PlayerController.isInitialized)
         {
-            List<Vector2Int> lastSurroudingChunks = Ultiities.GetSurroudingChunks(lastChunk);
-            List<Vector2Int> surroudingChunks = Ultiities.GetSurroudingChunks(chunk);
-            List<Vector2Int> loadChunks = surroudingChunks.Except(lastSurroudingChunks).ToList();
-            List<Vector2Int> unloadChunks = lastSurroudingChunks.Except(surroudingChunks).ToList();
-            ChunksEnterLeaveViewReq(loadChunks.ToArray(),unloadChunks.ToArray());
-        }
+            Vector3 pos = PlayerController.Instance.transform.localPosition;
+            Vector2Int chunk = Ultiities.GetChunk(pos);
 
-        lastChunk = chunk;
+            if (lastChunk != chunk)
+            {
+                List<Vector2Int> lastSurroudingChunks = Ultiities.GetSurroudingChunks(lastChunk);
+                List<Vector2Int> surroudingChunks = Ultiities.GetSurroudingChunks(chunk);
+                List<Vector2Int> loadChunks = surroudingChunks.Except(lastSurroudingChunks).ToList();
+                List<Vector2Int> unloadChunks = lastSurroudingChunks.Except(surroudingChunks).ToList();
+                ChunksEnterLeaveViewReq(loadChunks.ToArray(), unloadChunks.ToArray());
+            }
+
+            lastChunk = chunk;
+        }
     }
 
     void ChunksEnterLeaveViewReq(Vector2Int[] enterViewChunks, Vector2Int[] leaveViewChunks = null)
@@ -90,10 +91,9 @@ public class MultiplayerEntry : MonoBehaviour {
                     TerrainGenerator.DestroyChunk(new Vector2Int(chunk.x, chunk.y));
                 }
             }
-            if (!playerInited)
+            if (!PlayerController.isInitialized)
             {
                 PlayerController.Init();
-                playerInited = true;
             }
         }
         else

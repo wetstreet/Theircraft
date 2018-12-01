@@ -13,29 +13,18 @@ public class PlayerController : MonoBehaviour {
     private CharacterController cc;
 
     public static bool acceptInput = true;
-
-    private static GameObject instance;
-
-    public static GameObject Instance
-    {
-        get
-        {
-            if (instance == null)
-            {
-                Object prefab = Resources.Load("Character");
-                instance = Instantiate(prefab) as GameObject;
-            }
-            return instance;
-        }
-    }
+    public static bool isInitialized = false;
+    
+    public static GameObject Instance;
 
     public static void Init()
     {
-        if (instance == null)
+        if (Instance == null)
         {
-            Object prefab = Resources.Load("Character");
-            instance = Instantiate(prefab) as GameObject;
-            instance.transform.localPosition = new Vector3(0, 10, 0);
+            Object prefab = Resources.Load("Prefabs/Character");
+            Instance = Instantiate(prefab) as GameObject;
+            Instance.transform.localPosition = new Vector3(0, 10, 0);
+            isInitialized = true;
         }
     }
 

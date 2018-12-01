@@ -25,7 +25,7 @@ public class ItemSelectPanel : MonoBehaviour
     {
         dataList[slotID] = blockType;
         string iconPath = BlockTexture.type2icon[blockType];
-        itemList[slotID].icon.sprite = Resources.Load<Sprite>(iconPath);
+        itemList[slotID].icon.sprite = Resources.Load<Sprite>("GUI/" + iconPath);
         itemList[slotID].icon.gameObject.SetActive(true);
     }
 

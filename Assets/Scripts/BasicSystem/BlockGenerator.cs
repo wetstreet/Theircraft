@@ -176,7 +176,7 @@ public static class BlockGenerator
         AssetDatabase.CreateAsset(mesh, blockMeshDirectory + string.Format("{0}_mesh.asset", name));
         AssetDatabase.CreateAsset(material, blockMeshDirectory + string.Format("{0}_mat.mat", name));
         
-        PrefabUtility.CreatePrefab(string.Format("Assets/Resources/Blocks/{0}.prefab", name), cube);
+        PrefabUtility.CreatePrefab(string.Format("Assets/Resources/Prefabs/Blocks/{0}.prefab", name), cube);
 
         Object.DestroyImmediate(cube);
     }
@@ -188,7 +188,7 @@ public static class BlockGenerator
     {
         if (!blockType2prefab.ContainsKey(CSBlockType))
         {
-            string path = string.Format("Blocks/{0}", BlockTexture.type2icon[CSBlockType]);
+            string path = string.Format("Prefabs/Blocks/{0}", BlockTexture.type2icon[CSBlockType]);
             blockType2prefab[CSBlockType] = Resources.Load(path) as GameObject;
         }
         GameObject obj = Object.Instantiate(blockType2prefab[CSBlockType]);

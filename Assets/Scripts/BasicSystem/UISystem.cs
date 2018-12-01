@@ -7,14 +7,14 @@ public static class UISystem
 
     static void InitializeCanvas()
     {
-        GameObject prefab = Resources.Load("ui_root") as GameObject;
+        GameObject prefab = Resources.Load("Prefabs/UI/ui_root") as GameObject;
         Object.Instantiate(prefab);
         canvas = GameObject.Find("Canvas");
     }
 
     public static GameObject InstantiateUI(string name)
     {
-        GameObject prefab = Resources.Load(name) as GameObject;
+        GameObject prefab = Resources.Load("Prefabs/UI/" + name) as GameObject;
         GameObject uiobj = Object.Instantiate(prefab);
 
         if (canvas == null)
