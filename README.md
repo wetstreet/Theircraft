@@ -21,7 +21,7 @@ Unity版本: Unity 2018.2.11f1
 
 怪物及AI
 
-设置界面
+设置界面 ericchan
 
 VR支持
 
@@ -33,21 +33,11 @@ VR支持
 
 地图生成 ericchan
 
-支持每个面显示不同材质的方块 ericchan
-
 UI系统 ericchan
 
 网络层 ericchan
 
-指示当前指向的方块 ericchan
-
-准星
-
-方块类
-
-支持读取材质包 ericchan
-
-数据库
+数据库 ericchan
 
 
 已踩的坑：
@@ -59,3 +49,5 @@ UI系统 ericchan
 3.材质需要勾选enable gpu instancing，否则不会动态合并drawcall
 
 4.使用Rider第一次打开项目报错: .netframework 3.5找不到，解决方法是在unity 设置中选择Rider作为编辑器，再使用Rider自带的.net库
+
+5.外网服务器发送包时会因为发送速度比客户端的接收速度慢，导致客户端的接收函数把已发送的部分数据读取完后以为包已结束就返回了。这个问题在本地服务器不存在，耗费了很多时间排查问题。解决方法是客户端接通过包头拿到该包的长度，在没有接收完这个包之前不进行下一步处理。
