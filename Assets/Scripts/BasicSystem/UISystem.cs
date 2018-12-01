@@ -16,28 +16,31 @@ public static class UISystem
     {
         GameObject prefab = Resources.Load("Prefabs/UI/" + name) as GameObject;
         GameObject uiobj = Object.Instantiate(prefab);
+        return InstantiateUI(uiobj);
+    }
 
+    public static GameObject InstantiateUI(GameObject uiobj)
+    {
         if (canvas == null)
         {
             InitializeCanvas();
         }
         uiobj.transform.SetParent(canvas.transform);
-        uiobj.transform.localPosition = Vector3.zero;
+        RectTransform rt = uiobj.GetComponent<RectTransform>();
+        rt.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Left, 0, 0);
+        rt.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Right, 0, 0);
+        rt.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Top, 0, 0);
+        rt.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Bottom, 0, 0);
+        rt.anchorMin = Vector2.zero;
+        rt.anchorMax = Vector2.one;
         return uiobj;
     }
 
-    #if UNITY_EDITOR
+#if UNITY_EDITOR
     public static GameObject InstantiatePrefab(GameObject prefab)
     {
         GameObject uiobj = PrefabUtility.InstantiatePrefab(prefab) as GameObject;
-
-        if (canvas == null)
-        {
-            InitializeCanvas();
-        }
-        uiobj.transform.SetParent(canvas.transform);
-        uiobj.transform.localPosition = Vector3.zero;
-        return uiobj;
+        return InstantiateUI(uiobj);
     }
     #endif
 
