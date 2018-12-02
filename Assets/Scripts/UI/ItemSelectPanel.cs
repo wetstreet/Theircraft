@@ -31,7 +31,7 @@ public class ItemSelectPanel : MonoBehaviour
 
     void Init()
     {
-        Transform grid = transform.Find("grid");
+        Transform grid = transform.Find("container/grid");
         for (int i = 0; i < grid.childCount; i++)
         {
             Transform trans = grid.GetChild(i);
@@ -79,6 +79,12 @@ public class ItemSelectPanel : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.Alpha7)) { curIndex = 6; }
         else if (Input.GetKeyDown(KeyCode.Alpha8)) { curIndex = 7; }
         else if (Input.GetKeyDown(KeyCode.Alpha9)) { curIndex = 8; }
+
+        if (Input.GetAxis("Mouse ScrollWheel") < 0)
+            curIndex++;
+        else if (Input.GetAxis("Mouse ScrollWheel") > 0)
+            curIndex--;
+        curIndex = Mathf.Clamp(curIndex, 0, 8);
 
         RefreshUI();
     }

@@ -23,7 +23,9 @@ public static class UISystem
     {
         if (canvas == null)
         {
-            InitializeCanvas();
+            canvas = GameObject.Find("Canvas");
+            if (canvas == null)
+                InitializeCanvas();
         }
         uiobj.transform.SetParent(canvas.transform);
         RectTransform rt = uiobj.GetComponent<RectTransform>();

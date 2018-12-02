@@ -54,14 +54,14 @@ public class ChatPanel : MonoBehaviour
         NetworkManager.Register(CSMessageType.SEND_MEESAGE_RES, OnSendMessageRes);
         NetworkManager.Register(CSMessageType.MESSAGE_NOTIFY, OnMessageNotify);
 
-        itemUnit = transform.Find("Scroll View/Viewport/Content/chat_item");
+        itemUnit = transform.Find("container/Scroll View/Viewport/Content/chat_item");
         itemUnit.gameObject.SetActive(false);
-        grid = transform.Find("Scroll View/Viewport/Content").GetComponent<GridLayoutGroup>();
+        grid = transform.Find("container/Scroll View/Viewport/Content").GetComponent<GridLayoutGroup>();
 
-        inputParent = transform.Find("InputParent").gameObject;
+        inputParent = transform.Find("container/InputParent").gameObject;
         inputParent.SetActive(false);
-        transform.Find("InputParent/SendButton").GetComponent<Button>().onClick.AddListener(OnClickSendButton);
-        inputField = transform.Find("InputParent/InputField").GetComponent<InputField>();
+        transform.Find("container/InputParent/SendButton").GetComponent<Button>().onClick.AddListener(OnClickSendButton);
+        inputField = transform.Find("container/InputParent/InputField").GetComponent<InputField>();
 
         while (_message.Count > 0)
         {
@@ -74,17 +74,13 @@ public class ChatPanel : MonoBehaviour
     {
         inputParent.SetActive(true);
         inputField.ActivateInputField();
-        PlayerController.acceptInput = false;
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
+        PlayerController.LockCursor(false);
     }
 
     void HideInput()
     {
         inputField.DeactivateInputField();
-        PlayerController.acceptInput = true;
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        PlayerController.LockCursor(true);
         inputParent.SetActive(false);
     }
     

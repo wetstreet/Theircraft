@@ -11,11 +11,27 @@ public class PlayerController : MonoBehaviour {
     private bool isMoving;
     private new Camera camera;
     private CharacterController cc;
-
-    public static bool acceptInput = true;
+    
+    static bool acceptInput = true;
     public static bool isInitialized = false;
     
     public static GameObject Instance;
+
+    public static void LockCursor(bool isLock)
+    {
+        if (isLock)
+        {
+            acceptInput = true;
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+        else
+        {
+            acceptInput = false;
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+    }
 
     public static void Init()
     {
