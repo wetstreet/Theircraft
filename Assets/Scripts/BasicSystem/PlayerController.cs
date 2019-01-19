@@ -42,6 +42,7 @@ public class PlayerController : MonoBehaviour {
             Instance.transform.localPosition = new Vector3(0, 10, 0);
             isInitialized = true;
         }
+        LoadingUI.Close();
     }
 
     // Use this for initialization

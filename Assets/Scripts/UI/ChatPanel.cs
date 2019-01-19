@@ -129,6 +129,7 @@ public class ChatPanel : MonoBehaviour
         Transform item = Instantiate(itemUnit);
         item.gameObject.SetActive(true);
         item.SetParent(itemUnit.parent);
+        item.localScale = Vector3.one;
         Text text = item.GetComponent<Text>();
         text.text = content;
 

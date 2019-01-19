@@ -1,14 +1,16 @@
 ﻿using UnityEngine;
 using UnityEditor;
 
-public static class UISystem
+public class UISystem : MonoBehaviour
 {
     static GameObject canvas;
 
     static void InitializeCanvas()
     {
         GameObject prefab = Resources.Load("Prefabs/UI/ui_root") as GameObject;
-        Object.Instantiate(prefab);
+        GameObject uiroot = Object.Instantiate(prefab);
+        if (Application.isPlaying)
+            DontDestroyOnLoad(uiroot);
         canvas = GameObject.Find("Canvas");
     }
 
@@ -28,6 +30,11 @@ public static class UISystem
                 InitializeCanvas();
         }
         uiobj.transform.SetParent(canvas.transform);
+        uiobj.transform.localScale = Vector3.one;
+
+        if (LoadingUI.isLoading)
+            LoadingUI.SetOnTop();
+
         RectTransform rt = uiobj.GetComponent<RectTransform>();
         rt.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Left, 0, 0);
         rt.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Right, 0, 0);
@@ -38,7 +45,7 @@ public static class UISystem
         return uiobj;
     }
 
-#if UNITY_EDITOR
+    #if UNITY_EDITOR
     public static GameObject InstantiatePrefab(GameObject prefab)
     {
         GameObject uiobj = PrefabUtility.InstantiatePrefab(prefab) as GameObject;

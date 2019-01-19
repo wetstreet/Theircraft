@@ -64,6 +64,8 @@ public class LoginPanel : MonoBehaviour {
             DataCenter.initialPosition = new Vector3(0, 10, 0);
             playername = null;
             DataCenter.state = ClientState.InRoom;
+            Destroy(gameObject);
+            LoadingUI.Show();
             SceneManager.LoadScene("MultiplayerScene");
             ChatPanel.AddLine(DataCenter.name + ", 欢迎回来！");
         }
