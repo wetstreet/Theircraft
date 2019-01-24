@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using ChatRoom;
+using Theircraft;
 using UnityEngine.SceneManagement;
 
 public class LoginPanel : MonoBehaviour {
@@ -17,7 +17,7 @@ public class LoginPanel : MonoBehaviour {
     // Use this for initialization
     void Start ()
     {
-        NetworkManager.Register(MessageType.ENTER_ROOM_RES, OnEnterRoomRes);
+        NetworkManager.Register(CSMessageType.LOGIN_RES, OnLoginRes);
 
         input = transform.Find("InputField").GetComponent<InputField>();
         transform.Find("Button").GetComponent<Button>().onClick.AddListener(OnClickEnterRoom);
@@ -36,7 +36,7 @@ public class LoginPanel : MonoBehaviour {
     {
         if (input.text != "")
         {
-            EnterRoomReq(input.text);
+            LoginReq(input.text);
             PlayerPrefs.SetString(AccountKey, input.text);
         }
         else
@@ -44,27 +44,30 @@ public class LoginPanel : MonoBehaviour {
     }
 
     string playername;
-    void EnterRoomReq(string _name)
+    void LoginReq(string _name)
     {
         playername = _name;
-        EnterRoomReq enterRoomReq = new EnterRoomReq
+        CSLoginReq enterRoomReq = new CSLoginReq
         {
             Name = _name
         };
-        NetworkManager.Enqueue(MessageType.ENTER_ROOM_REQ, enterRoomReq);
+        NetworkManager.Enqueue(CSMessageType.LOGIN_REQ, enterRoomReq);
     }
 
-    void OnEnterRoomRes(byte[] data)
+    void OnLoginRes(byte[] data)
     {
-        EnterRoomRes rsp = NetworkManager.Deserialzie<EnterRoomRes>(data);
+        CSLoginRes rsp = NetworkManager.Deserialzie<CSLoginRes>(data);
         Debug.Log("OnEnterRoomRes,retCode="+ rsp.RetCode);
         if(rsp.RetCode == 0)
         {
             DataCenter.name = playername;
+            DataCenter.initialPosition = new Vector3(0, 10, 0);
             playername = null;
             DataCenter.state = ClientState.InRoom;
-            SceneManager.LoadScene("MainScene");
-            ChatPanel.AddLine("hello " + DataCenter.name + ", now you can chat freely in this room!");
+            Destroy(gameObject);
+            LoadingUI.Show();
+            SceneManager.LoadScene("MultiplayerScene");
+            ChatPanel.AddLine(DataCenter.name + ", 欢迎回来！");
         }
         else
         {

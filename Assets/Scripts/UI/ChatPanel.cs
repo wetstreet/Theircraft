@@ -1,35 +1,35 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
-using ChatRoom;
+using Theircraft;
 
 public class ChatPanel : MonoBehaviour
 {
-    static List<Transform> ItemList = new List<Transform>();
-    static Transform itemUnit;
-    static GridLayoutGroup grid;
+    List<Transform> ItemList = new List<Transform>();
+    Transform itemUnit;
+    GridLayoutGroup grid;
+    GameObject inputParent;
+    InputField inputField;
 
     static Queue<string> _message = new Queue<string>();
 
-    static InputField inputField;
-
-    static GameObject instance;
+    static ChatPanel instance;
 
     public static void ShowChatPanel()
     {
         if (instance != null)
         {
-            instance.SetActive(true);
+            instance.gameObject.SetActive(true);
         }
         else
-            instance = UISystem.InstantiateUI("ChatPanel");
+            instance = UISystem.InstantiateUI("ChatPanel").GetComponent<ChatPanel>();
     }
 
     public static void Hide()
     {
         if (instance != null)
         {
-            instance.SetActive(false);
+            instance.gameObject.SetActive(false);
         }
     }
 
@@ -39,7 +39,7 @@ public class ChatPanel : MonoBehaviour
     {
         if (initialized)
         {
-            AddLineItem(content);
+            instance.AddLineItem(content);
         }
         else
         {
@@ -51,16 +51,17 @@ public class ChatPanel : MonoBehaviour
     void Start ()
     {
         initialized = true;
-        NetworkManager.Register(MessageType.SEND_MEESAGE_RES, OnSendMessageRes);
-        NetworkManager.Register(MessageType.MESSAGE_NOTIFY, OnMessageNotify);
+        NetworkManager.Register(CSMessageType.SEND_MEESAGE_RES, OnSendMessageRes);
+        NetworkManager.Register(CSMessageType.MESSAGE_NOTIFY, OnMessageNotify);
 
-        itemUnit = transform.Find("Scroll View/Viewport/Content/chat_item");
+        itemUnit = transform.Find("container/Scroll View/Viewport/Content/chat_item");
         itemUnit.gameObject.SetActive(false);
-        grid = transform.Find("Scroll View/Viewport/Content").GetComponent<GridLayoutGroup>();
+        grid = transform.Find("container/Scroll View/Viewport/Content").GetComponent<GridLayoutGroup>();
 
-        transform.Find("SendButton").GetComponent<Button>().onClick.AddListener(OnClickSendButton);
-        inputField = transform.Find("InputField").GetComponent<InputField>();
-
+        inputParent = transform.Find("container/InputParent").gameObject;
+        inputParent.SetActive(false);
+        transform.Find("container/InputParent/SendButton").GetComponent<Button>().onClick.AddListener(OnClickSendButton);
+        inputField = transform.Find("container/InputParent/InputField").GetComponent<InputField>();
 
         while (_message.Count > 0)
         {
@@ -69,36 +70,38 @@ public class ChatPanel : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
+    void ShowInput()
+    {
+        inputParent.SetActive(true);
+        inputField.ActivateInputField();
+        PlayerController.LockCursor(false);
+    }
 
-    bool isFocused;
+    void HideInput()
+    {
+        inputField.DeactivateInputField();
+        PlayerController.LockCursor(true);
+        inputParent.SetActive(false);
+    }
+    
     void ProcessInput()
     {
-        //if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
-        //{
-        //    if (isFocused)
-        //    {
-        //        if (inputField.text != "")
-        //        {
-        //            OnClickSendButton();
-        //        }
-        //        else
-        //            inputField.DeactivateInputField();
-        //    }
-        //    else
-        //        inputField.ActivateInputField();
-        //}
-        //isFocused = inputField.isFocused;
-
         if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
         {
-            if (inputField.text != "")
+            if (inputParent.activeSelf)
             {
-                OnClickSendButton();
+                if (inputField.text != "")
+                {
+                    OnClickSendButton();
+                }
+                else
+                {
+                    HideInput();
+                }
             }
             else
             {
-                gameObject.SetActive(false);
+                ShowInput();
             }
         }
     }
@@ -121,11 +124,12 @@ public class ChatPanel : MonoBehaviour
         ItemList.Clear();
     }
 
-    static void AddLineItem(string content)
+    void AddLineItem(string content)
     {
         Transform item = Instantiate(itemUnit);
         item.gameObject.SetActive(true);
         item.SetParent(itemUnit.parent);
+        item.localScale = Vector3.one;
         Text text = item.GetComponent<Text>();
         text.text = content;
 
@@ -150,21 +154,22 @@ public class ChatPanel : MonoBehaviour
 
     static void SendMessageReq(string content)
     {
-        SendMessageReq req = new SendMessageReq
+        CSSendMessageReq req = new CSSendMessageReq
         {
             Content = content
         };
-        NetworkManager.Enqueue(MessageType.SEND_MESSAGE_REQ, req);
+        NetworkManager.Enqueue(CSMessageType.SEND_MESSAGE_REQ, req);
     }
 
-    static void OnSendMessageRes(byte[] data)
+    void OnSendMessageRes(byte[] data)
     {
-        SendMessageRes rsp = NetworkManager.Deserialzie<SendMessageRes>(data);
+        CSSendMessageRes rsp = NetworkManager.Deserialzie<CSSendMessageRes>(data);
         //Debug.Log("OnSendMessageRes,retCode=" + res.RetCode);
         if (rsp.RetCode == 0)
         {
             inputField.text = "";
             inputField.ActivateInputField();
+            HideInput();
         }
         else
         {
@@ -173,7 +178,7 @@ public class ChatPanel : MonoBehaviour
     }
     static void OnMessageNotify(byte[] data)
     {
-        MessageNotify notify = NetworkManager.Deserialzie<MessageNotify>(data);
+        CSMessageNotify notify = NetworkManager.Deserialzie<CSMessageNotify>(data);
         //Debug.Log($"OnMessageNotify,name={notify.Name},content={notify.Content}");
         AddLine("[" + notify.Name + "]" + notify.Content);
     }
