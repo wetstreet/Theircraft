@@ -43,6 +43,7 @@ public class PlayerController : MonoBehaviour {
             isInitialized = true;
         }
         LoadingUI.Close();
+        CrossHair.Show();
     }
 
     // Use this for initialization
