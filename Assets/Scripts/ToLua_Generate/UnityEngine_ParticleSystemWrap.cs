@@ -624,7 +624,7 @@ public class UnityEngine_ParticleSystemWrap
 		{
 			o = ToLua.ToObject(L, 1);
 			UnityEngine.ParticleSystem obj = (UnityEngine.ParticleSystem)o;
-			bool ret = obj.automaticCullingEnabled;
+			bool ret = obj.proceduralSimulationSupported;
 			LuaDLL.lua_pushboolean(L, ret);
 			return 1;
 		}
