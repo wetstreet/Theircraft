@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Theircraft;
+using Unity.Entities;
+using Unity.Transforms;
+using Unity.Mathematics;
 
 public class TerrainGenerator : MonoBehaviour{
 
@@ -31,10 +34,19 @@ public class TerrainGenerator : MonoBehaviour{
         StartCoroutine(GenerateLoop());
     }
 
+    static EntityManager manager;
     public static void GenerateBlock(Vector3 pos, CSBlockType blockType = CSBlockType.Grass)
     {
         Vector2Int chunk = Ultiities.GetChunk(pos);
-        GameObject obj = BlockGenerator.CreateCube(blockType);
+        //GameObject obj = BlockGenerator.CreateCube(blockType);
+        GameObject prefab = BlockGenerator.GetBlockPrefab(blockType);
+        if (manager == null)
+            manager = World.Active.GetOrCreateManager<EntityManager>();
+        var entity = manager.Instantiate(prefab);
+        manager.SetComponentData(entity, new Position { Value = new float3(pos.x, pos.y, pos.z) });
+
+        GameObject obj = new GameObject();
+        obj.AddComponent<BoxCollider>();
         if (!blockmap.ContainsKey(chunk))
         {
             GenerateChunkParent(chunk);
@@ -157,10 +169,12 @@ public class TerrainGenerator : MonoBehaviour{
     public static GameObject GenerateChunkFromList(Vector2Int chunk, CSBlock[] blockArray)
     {
         Transform chunkParent = GenerateChunkParent(chunk);
+        float time1 = Time.realtimeSinceStartup;
         foreach (CSBlock block in blockArray)
         {
             GenerateBlock(new Vector3(block.position.x, block.position.y, block.position.z), block.type);
         }
+        Debug.Log("generate time =" + (Time.realtimeSinceStartup - time1));
         return chunkParent.gameObject;
     }
 

@@ -26,11 +26,12 @@ public struct BlockTexture
     };
     public static Dictionary<CSBlockType, string> type2icon = new Dictionary<CSBlockType, string>
     {
-        {CSBlockType.Grass, "grass" },
-        {CSBlockType.Tnt, "tnt" },
-        {CSBlockType.Brick, "brick" },
-        {CSBlockType.Furnace, "furnace" },
-        {CSBlockType.HayBlock, "hayblock" },
+        {CSBlockType.Grass, "grass_ecs" },
+        {CSBlockType.Dirt, "grass_ecs" },
+        {CSBlockType.Tnt, "tnt_ecs" },
+        {CSBlockType.Brick, "brick_ecs" },
+        {CSBlockType.Furnace, "furnace_ecs" },
+        {CSBlockType.HayBlock, "hayblock_ecs" },
     };
 }
 
@@ -184,14 +185,18 @@ public static class BlockGenerator
 #endif
 
     static Dictionary<CSBlockType, GameObject> blockType2prefab = new Dictionary<CSBlockType, GameObject>();
-    static public GameObject CreateCube(CSBlockType CSBlockType)
+
+    public static GameObject GetBlockPrefab(CSBlockType type)
     {
-        if (!blockType2prefab.ContainsKey(CSBlockType))
+        if (!blockType2prefab.ContainsKey(type))
         {
-            string path = string.Format("Prefabs/Blocks/{0}", BlockTexture.type2icon[CSBlockType]);
-            blockType2prefab[CSBlockType] = Resources.Load(path) as GameObject;
+            string path = string.Format("Prefabs/Blocks/{0}", BlockTexture.type2icon[type]);
+            blockType2prefab[type] = Resources.Load(path) as GameObject;
         }
-        GameObject obj = Object.Instantiate(blockType2prefab[CSBlockType]);
-        return obj;
+        return blockType2prefab[type];
+    }
+    static public GameObject CreateCube(CSBlockType type)
+    {
+        return Object.Instantiate(GetBlockPrefab(type));
     }
 }
