@@ -26,12 +26,12 @@ public struct BlockTexture
     };
     public static Dictionary<CSBlockType, string> type2icon = new Dictionary<CSBlockType, string>
     {
-        {CSBlockType.Grass, "grass_ecs" },
-        {CSBlockType.Dirt, "grass_ecs" },
-        {CSBlockType.Tnt, "tnt_ecs" },
-        {CSBlockType.Brick, "brick_ecs" },
-        {CSBlockType.Furnace, "furnace_ecs" },
-        {CSBlockType.HayBlock, "hayblock_ecs" },
+        {CSBlockType.Grass, "grass" },
+        {CSBlockType.Dirt, "grass" },
+        {CSBlockType.Tnt, "tnt" },
+        {CSBlockType.Brick, "brick" },
+        {CSBlockType.Furnace, "furnace" },
+        {CSBlockType.HayBlock, "hayblock" },
     };
 }
 

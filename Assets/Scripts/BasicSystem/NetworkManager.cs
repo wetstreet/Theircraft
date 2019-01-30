@@ -7,6 +7,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using Theircraft;
 using UnityEngine;
+using System.Threading;
 
 public delegate void CallbackFunction(byte[] data);
 
@@ -58,7 +59,7 @@ public static class NetworkManager
         }
     }
 
-    static IEnumerator Send()
+    static void Send()
     {
         while (connected)
         {
@@ -68,9 +69,9 @@ public static class NetworkManager
                 NetworkStream stream = tcpClient.GetStream();
                 stream.Write(data, 0, data.Length);
             }
-            yield return null;
+            else
+                Thread.Sleep(100);
         }
-        yield return null;
     }
 
     static Queue<Package> packageQueue = new Queue<Package>();
@@ -101,9 +102,8 @@ public static class NetworkManager
     }
 
 
-    static IEnumerator Receive()
+    static void Receive()
     {
-        yield return null;
         while (connected)
         {
             NetworkStream stream = tcpClient.GetStream();
@@ -112,7 +112,7 @@ public static class NetworkManager
             IAsyncResult headerResult = stream.BeginRead(data, 0, data.Length, null, null);
             while (!headerResult.IsCompleted)
             {
-                yield return null;
+                Thread.Sleep(1);
             }
             int readNum = 0;
             try
@@ -146,7 +146,7 @@ public static class NetworkManager
                         bodyStream.Write(bufdata, 0, bytesRead);
                     }
                     else
-                        yield return new WaitForEndOfFrame();
+                        Thread.Sleep(1);
 
                 } while (totalBytesRead < length);
                 Debug.Log("receive message, type=" + type + ",length=" + length + ",totalBytesRead=" + totalBytesRead);
@@ -163,7 +163,6 @@ public static class NetworkManager
             {
                 Disconnect(true);
             }
-            yield return null;
         }
     }
 
@@ -207,8 +206,8 @@ public static class NetworkManager
 
         _message = new Queue<byte[]>();
 
-        NetworkCoroutine.Instance.StartCoroutine(Send());
-        NetworkCoroutine.Instance.StartCoroutine(Receive());
+        new Thread(Send).Start();
+        new Thread(Receive).Start();
         NetworkCoroutine.Instance.StartCoroutine(HandlePackage());
         return true;
     }
