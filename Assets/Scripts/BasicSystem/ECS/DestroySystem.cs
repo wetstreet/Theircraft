@@ -1,11 +1,10 @@
 ﻿using Unity.Collections;
 using Unity.Entities;
-using Unity.Burst;
-using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
 using System.Collections.Generic;
+using Theircraft;
 
 public class DestroySystem : ComponentSystem
 {
@@ -25,8 +24,9 @@ public class DestroySystem : ComponentSystem
     BlockGroup blockGroup;
 
 
-    static HashSet<Chunk> waitForDestroyChunkSet = new HashSet<Chunk>();
     static bool needDestroy;
+
+    static HashSet<Chunk> waitForDestroyChunkSet = new HashSet<Chunk>();
     public static void AsyncDestroyChunk(Vector2Int chunk)
     {
         Chunk c = new Chunk
@@ -37,7 +37,16 @@ public class DestroySystem : ComponentSystem
         waitForDestroyChunkSet.Add(c);
         needDestroy = true;
     }
-
+    static HashSet<Position> waitForDestroyBlockSet = new HashSet<Position>();
+    public static void AsyncDestroyBlock(CSVector3Int block)
+    {
+        Position pos = new Position
+        {
+            Value = new float3(block.x, block.y, block.z)
+        };
+        waitForDestroyBlockSet.Add(pos);
+        needDestroy = true;
+    }
 
     protected override void OnUpdate()
     {
@@ -45,12 +54,14 @@ public class DestroySystem : ComponentSystem
             return;
         for (int i = 0; i < blockGroup.Length; i++)
         {
-            if (waitForDestroyChunkSet.Contains(blockGroup.chunks[i]))
+            if (waitForDestroyChunkSet.Contains(blockGroup.chunks[i]) ||
+                waitForDestroyBlockSet.Contains(blockGroup.positions[i]))
             {
                 PostUpdateCommands.DestroyEntity(blockGroup.entity[i]);
             }
         }
         waitForDestroyChunkSet.Clear();
+        waitForDestroyBlockSet.Clear();
         needDestroy = false;
     }
 }

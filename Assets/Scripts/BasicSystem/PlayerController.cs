@@ -137,7 +137,7 @@ public class PlayerController : MonoBehaviour {
             ProcessKeyBoard();
         }
         ChangeFieldOfView();
-        ShowWireFrame();
+        //ShowWireFrame();
     }
 
     Material lastMaterial;
@@ -272,6 +272,7 @@ public class PlayerController : MonoBehaviour {
             string name = string.Format("block({0},{1},{2})", pos.x, pos.y, pos.z);
             GameObject obj = GameObject.Find(name);
             Destroy(obj);
+            DestroySystem.AsyncDestroyBlock(pos);
         }
         else
         {
@@ -287,5 +288,6 @@ public class PlayerController : MonoBehaviour {
         string name = string.Format("block({0},{1},{2})", pos.x, pos.y, pos.z);
         GameObject obj = GameObject.Find(name);
         Destroy(obj);
+        DestroySystem.AsyncDestroyBlock(pos);
     }
 }
