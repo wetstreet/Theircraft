@@ -21,10 +21,16 @@ public class TerrainGenerator : MonoBehaviour{
         public CSBlock[] blocks;
     }
     static List<ChunkBlocks> waitForGenerateList = new List<ChunkBlocks>();
+    static GameObject boxColliderPrefab;
+    static EntityManager manager;
+    static EntityArchetype blockArchetype;
 
     public static void Init()
     {
         instance = new GameObject("TerrainGenerator").AddComponent<TerrainGenerator>();
+        boxColliderPrefab = Resources.Load<GameObject>("Prefabs/boxcollider");
+        manager = World.Active.GetOrCreateManager<EntityManager>();
+        blockArchetype = manager.CreateArchetype(typeof(Position));
     }
 
     private void Start()
@@ -52,12 +58,17 @@ public class TerrainGenerator : MonoBehaviour{
                 ChunkBlocks cb = waitForGenerateList[0];
                 waitForGenerateList.RemoveAt(0);
                 Transform chunkParent = GenerateChunkParent(cb.chunk);
-                float time1 = Time.realtimeSinceStartup;
+                int count = 0;
                 foreach (CSBlock block in cb.blocks)
                 {
                     GenerateBlock(new Vector3(block.position.x, block.position.y, block.position.z), block.type);
+                    count++;
+                    if (count > 1000)
+                    {
+                        yield return new WaitForEndOfFrame();
+                        count = 0;
+                    }
                 }
-                Debug.Log("generate time =" + (Time.realtimeSinceStartup - time1));
             }
             yield return new WaitForEndOfFrame();
         }
@@ -76,19 +87,15 @@ public class TerrainGenerator : MonoBehaviour{
         return chunkParent.gameObject;
     }
 
-    static EntityManager manager;
     public static void GenerateBlock(Vector3 pos, CSBlockType blockType = CSBlockType.Grass)
     {
         Vector2Int chunk = Ultiities.GetChunk(pos);
-        //GameObject obj = BlockGenerator.CreateCube(blockType);
         GameObject prefab = BlockGenerator.GetBlockPrefab(blockType);
-        if (manager == null)
-            manager = World.Active.GetOrCreateManager<EntityManager>();
         var entity = manager.Instantiate(prefab);
         manager.SetComponentData(entity, new Position { Value = new float3(pos.x, pos.y, pos.z) });
+        manager.AddComponentData(entity, new BlockTag { });
 
-        GameObject obj = new GameObject();
-        obj.AddComponent<BoxCollider>();
+        GameObject obj = Instantiate(boxColliderPrefab);
         if (!blockmap.ContainsKey(chunk))
         {
             GenerateChunkParent(chunk);
@@ -113,6 +120,14 @@ public class TerrainGenerator : MonoBehaviour{
         GameObject obj = GameObject.Find(string.Format("chunk({0},{1})", chunk.x, chunk.y));
         if (obj != null)
         {
+            for (int i = 0; i < obj.transform.childCount; i++)
+            {
+                Transform block = obj.transform.GetChild(i);
+                Entity entity = manager.CreateEntity(blockArchetype);
+                manager.SetComponentData(entity, new Position { Value = block.transform.position });
+                manager.AddComponentData(entity, new DestroyTag { });
+            }
+
             Destroy(obj);
             blockmap.Remove(chunk);
         }

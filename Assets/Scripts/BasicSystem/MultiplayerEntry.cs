@@ -79,11 +79,8 @@ public class MultiplayerEntry : MonoBehaviour {
     {
         float time1 = Time.realtimeSinceStartup;
         CSChunksEnterLeaveViewRes rsp = NetworkManager.Deserialzie<CSChunksEnterLeaveViewRes>(data);
-
         Debug.Log("deserialize time =" + (Time.realtimeSinceStartup - time1));
         Debug.Log("CSChunksEnterLeaveViewRes");
-
-        float time2 = Time.realtimeSinceStartup;
         if (rsp.RetCode == 0)
         {
             if (!PlayerController.isInitialized)
@@ -110,6 +107,5 @@ public class MultiplayerEntry : MonoBehaviour {
         {
             FastTips.Show(rsp.RetCode);
         }
-        Debug.Log("handle time =" + (Time.realtimeSinceStartup - time2));
     }
 }
