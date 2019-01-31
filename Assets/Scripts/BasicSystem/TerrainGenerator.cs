@@ -93,7 +93,7 @@ public class TerrainGenerator : MonoBehaviour{
         GameObject prefab = BlockGenerator.GetBlockPrefab(blockType);
         var entity = manager.Instantiate(prefab);
         manager.SetComponentData(entity, new Position { Value = new float3(pos.x, pos.y, pos.z) });
-        manager.AddComponentData(entity, new BlockTag { });
+        manager.AddComponentData(entity, new Chunk { x = chunk.x, z = chunk.y });
 
         GameObject obj = Instantiate(boxColliderPrefab);
         if (!blockmap.ContainsKey(chunk))
@@ -120,13 +120,7 @@ public class TerrainGenerator : MonoBehaviour{
         GameObject obj = GameObject.Find(string.Format("chunk({0},{1})", chunk.x, chunk.y));
         if (obj != null)
         {
-            for (int i = 0; i < obj.transform.childCount; i++)
-            {
-                Transform block = obj.transform.GetChild(i);
-                Entity entity = manager.CreateEntity(blockArchetype);
-                manager.SetComponentData(entity, new Position { Value = block.transform.position });
-                manager.AddComponentData(entity, new DestroyTag { });
-            }
+            DestroySystem.AsyncDestroyChunk(chunk);
 
             Destroy(obj);
             blockmap.Remove(chunk);

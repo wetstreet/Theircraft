@@ -5,58 +5,52 @@ using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
+using System.Collections.Generic;
 
-namespace Minecraft
+public class DestroySystem : ComponentSystem
 {
-    public class DestroySystem : ComponentSystem
+    struct BlockGroup
     {
-        struct BlockGroup
-        {
-            [ReadOnly]
-            public readonly int Length;
-            [ReadOnly]
-            public EntityArray entity;
-            [ReadOnly]
-            public ComponentDataArray<Position> positions;
-            [ReadOnly]
-            public ComponentDataArray<BlockTag> tags;
-        }
-
-        struct DestoryBlockGroup
-        {
-            [ReadOnly]
-            public readonly int Length;
-            [ReadOnly]
-            public EntityArray entity;
-            [ReadOnly]
-            public ComponentDataArray<Position> positions;
-            [ReadOnly]
-            public ComponentDataArray<DestroyTag> tags;
-        }
+        [ReadOnly]
+        public readonly int Length;
+        [ReadOnly]
+        public EntityArray entity;
+        [ReadOnly]
+        public ComponentDataArray<Position> positions;
+        [ReadOnly]
+        public ComponentDataArray<Chunk> chunks;
+    }
         
-        [Inject]
-        BlockGroup targetBlocks;
-        [Inject]
-        DestoryBlockGroup sourceBlock;
+    [Inject]
+    BlockGroup blockGroup;
 
-        protected override void OnUpdate()
+
+    static HashSet<Chunk> waitForDestroyChunkSet = new HashSet<Chunk>();
+    static bool needDestroy;
+    public static void AsyncDestroyChunk(Vector2Int chunk)
+    {
+        Chunk c = new Chunk
         {
-            //for (int i = 0; i < sourceBlock.Length; i++)
-            //{
-            //    for (int j = 0; j < targetBlocks.Length; j++)
-            //    {
-            //        Vector3 offset = targetBlocks.positions[j].Value - sourceBlock.positions[i].Value;
-            //        float sqrLen = offset.sqrMagnitude;
+            x = chunk.x,
+            z = chunk.y
+        };
+        waitForDestroyChunkSet.Add(c);
+        needDestroy = true;
+    }
 
-            //        //find the block to destroy
-            //        if (sqrLen == 0)
-            //        {
-            //            //remove blocks
-            //            PostUpdateCommands.DestroyEntity(sourceBlock.entity[i]);
-            //            PostUpdateCommands.DestroyEntity(targetBlocks.entity[j]);
-            //        }
-            //    }
-            //}
+
+    protected override void OnUpdate()
+    {
+        if (!needDestroy)
+            return;
+        for (int i = 0; i < blockGroup.Length; i++)
+        {
+            if (waitForDestroyChunkSet.Contains(blockGroup.chunks[i]))
+            {
+                PostUpdateCommands.DestroyEntity(blockGroup.entity[i]);
+            }
         }
+        waitForDestroyChunkSet.Clear();
+        needDestroy = false;
     }
 }
