@@ -11,6 +11,7 @@ public class MultiplayerEntry : MonoBehaviour {
         GameKernel.Create();
         ChatPanel.ShowChatPanel();
         ItemSelectPanel.Show();
+        TerrainGenerator.Init();
 
         NetworkManager.Register(CSMessageType.CHUNKS_ENTER_LEAVE_VIEW_RES, ChunksEnterLeaveViewRes);
         List<Vector2Int> preloadChunks = Ultiities.GetSurroudingChunks(Vector2Int.zero);
@@ -73,32 +74,42 @@ public class MultiplayerEntry : MonoBehaviour {
 
         NetworkManager.Enqueue(CSMessageType.CHUNKS_ENTER_LEAVE_VIEW_REQ, req);
     }
-
+    
     void ChunksEnterLeaveViewRes(byte[] data)
     {
+        float time1 = Time.realtimeSinceStartup;
         CSChunksEnterLeaveViewRes rsp = NetworkManager.Deserialzie<CSChunksEnterLeaveViewRes>(data);
+
+        Debug.Log("deserialize time =" + (Time.realtimeSinceStartup - time1));
         Debug.Log("CSChunksEnterLeaveViewRes");
+
+        float time2 = Time.realtimeSinceStartup;
         if (rsp.RetCode == 0)
         {
-            foreach (CSChunk chunk in rsp.EnterViewChunks)
+            if (!PlayerController.isInitialized)
             {
-                TerrainGenerator.GenerateChunkFromList(new Vector2Int(chunk.Position.x, chunk.Position.y), chunk.Blocks);
+                foreach (CSChunk chunk in rsp.EnterViewChunks)
+                {
+                    TerrainGenerator.GenerateChunkFromList(new Vector2Int(chunk.Position.x, chunk.Position.y), chunk.Blocks);
+                }
+                PlayerController.Init();
             }
-            if (rsp.LeaveViewChunks != null)
+            else
             {
+                foreach (CSChunk chunk in rsp.EnterViewChunks)
+                {
+                    TerrainGenerator.AddToGenerateList(new Vector2Int(chunk.Position.x, chunk.Position.y), chunk.Blocks);
+                }
                 foreach (CSVector2Int chunk in rsp.LeaveViewChunks)
                 {
                     TerrainGenerator.DestroyChunk(new Vector2Int(chunk.x, chunk.y));
                 }
-            }
-            if (!PlayerController.isInitialized)
-            {
-                PlayerController.Init();
             }
         }
         else
         {
             FastTips.Show(rsp.RetCode);
         }
+        Debug.Log("handle time =" + (Time.realtimeSinceStartup - time2));
     }
 }

@@ -10,28 +10,70 @@ public class TerrainGenerator : MonoBehaviour{
 
     static Dictionary<Vector2Int, GameObject> blockmap = new Dictionary<Vector2Int, GameObject>();
 
-    static LinkedList<Vector2Int> linkedList = new LinkedList<Vector2Int>();
-
     static int scale = 35;
     static int maxHeight = 15;
 
-    static TerrainGenerator _instance;
-    static TerrainGenerator instance
+    static TerrainGenerator instance;
+
+    struct ChunkBlocks
     {
-        get
-        {
-            if (_instance == null)
-            {
-                GameObject obj = new GameObject("TerrainGenerator");
-                _instance = obj.AddComponent<TerrainGenerator>();
-            }
-            return _instance;
-        }
+        public Vector2Int chunk;
+        public CSBlock[] blocks;
+    }
+    static List<ChunkBlocks> waitForGenerateList = new List<ChunkBlocks>();
+
+    public static void Init()
+    {
+        instance = new GameObject("TerrainGenerator").AddComponent<TerrainGenerator>();
     }
 
     private void Start()
     {
-        StartCoroutine(GenerateLoop());
+        StartCoroutine(GenerateCoroutine());
+    }
+
+    public static void AddToGenerateList(Vector2Int chunk, CSBlock[] blockArray)
+    {
+        ChunkBlocks cb = new ChunkBlocks
+        {
+            chunk = chunk,
+            blocks = blockArray
+        };
+        waitForGenerateList.Add(cb);
+    }
+
+    IEnumerator GenerateCoroutine()
+    {
+        yield return null;
+        while (true)
+        {
+            if (waitForGenerateList.Count > 0)
+            {
+                ChunkBlocks cb = waitForGenerateList[0];
+                waitForGenerateList.RemoveAt(0);
+                Transform chunkParent = GenerateChunkParent(cb.chunk);
+                float time1 = Time.realtimeSinceStartup;
+                foreach (CSBlock block in cb.blocks)
+                {
+                    GenerateBlock(new Vector3(block.position.x, block.position.y, block.position.z), block.type);
+                }
+                Debug.Log("generate time =" + (Time.realtimeSinceStartup - time1));
+            }
+            yield return new WaitForEndOfFrame();
+        }
+    }
+
+    //根据服务器数据或者本地数据库的数据来生成方块
+    public static GameObject GenerateChunkFromList(Vector2Int chunk, CSBlock[] blockArray)
+    {
+        Transform chunkParent = GenerateChunkParent(chunk);
+        float time1 = Time.realtimeSinceStartup;
+        foreach (CSBlock block in blockArray)
+        {
+            GenerateBlock(new Vector3(block.position.x, block.position.y, block.position.z), block.type);
+        }
+        Debug.Log("generate time =" + (Time.realtimeSinceStartup - time1));
+        return chunkParent.gameObject;
     }
 
     static EntityManager manager;
@@ -56,44 +98,6 @@ public class TerrainGenerator : MonoBehaviour{
         obj.transform.localPosition = pos;
     }
 
-    public static void ShowChunk(Vector2Int chunk, bool isSync)
-    {
-        if (blockmap.ContainsKey(chunk))
-        {
-            blockmap[chunk].SetActive(true);
-            return;
-        }
-
-        if (isSync)
-            GenerateChunk(chunk);
-        else
-        {
-            lock (linkedList)
-            {
-                linkedList.AddLast(chunk);
-            }
-        }
-    }
-
-    public static bool HideChunk(Vector2Int chunk)
-    {
-        if (!blockmap.ContainsKey(chunk))
-        {
-            lock (linkedList)
-            {
-                if (linkedList.Contains(chunk))
-                {
-                    linkedList.Remove(chunk);
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        GameObject obj = blockmap[chunk];
-        obj.SetActive(false);
-        return true;
-    }
 
     public static Transform GenerateChunkParent(Vector2Int chunk)
     {
@@ -104,49 +108,6 @@ public class TerrainGenerator : MonoBehaviour{
         return chunkParent;
     }
 
-    public static GameObject GenerateChunk(Vector2Int chunk)
-    {
-        Transform chunkParent = GenerateChunkParent(chunk);
-        for (int i = 0; i < 16; i++)
-        {
-            for (int j = 0; j < 16; j++)
-            {
-                float x = (float)0.5 + i + chunk.x * 16;
-                float z = (float)0.5 + j + chunk.y * 16;
-                float noise = Mathf.PerlinNoise(x / scale, z / scale);
-                int height = Mathf.RoundToInt(maxHeight * noise);
-                GenerateBlock(new Vector3(x, height, z));
-            }
-        }
-        return chunkParent.gameObject;
-    }
-
-    IEnumerator GenerateLoop()
-    {
-        while (true)
-        {
-            lock (linkedList)
-            {
-                if (linkedList.Count > 0)
-                {
-                    Vector2Int chunk = linkedList.First.Value;
-                    linkedList.RemoveFirst();
-                    blockmap[chunk] = GenerateChunk(chunk);
-                }
-            }
-            yield return new WaitForEndOfFrame();
-        }
-    }
-    
-
-    public static void HideChunks(List<Vector2Int> list)
-    {
-        foreach (Vector2Int chunk in list)
-        {
-            HideChunk(chunk);
-        }
-    }
-
     public static void DestroyChunk(Vector2Int chunk)
     {
         GameObject obj = GameObject.Find(string.Format("chunk({0},{1})", chunk.x, chunk.y));
@@ -154,36 +115,6 @@ public class TerrainGenerator : MonoBehaviour{
         {
             Destroy(obj);
             blockmap.Remove(chunk);
-        }
-    }
-
-    public static void ShowChunks(List<Vector2Int> list, bool isSync = false)
-    {
-        foreach (Vector2Int chunk in list)
-        {
-            ShowChunk(chunk, isSync);
-        }
-    }
-
-    //根据服务器数据或者本地数据库的数据来生成方块
-    public static GameObject GenerateChunkFromList(Vector2Int chunk, CSBlock[] blockArray)
-    {
-        Transform chunkParent = GenerateChunkParent(chunk);
-        float time1 = Time.realtimeSinceStartup;
-        foreach (CSBlock block in blockArray)
-        {
-            GenerateBlock(new Vector3(block.position.x, block.position.y, block.position.z), block.type);
-        }
-        Debug.Log("generate time =" + (Time.realtimeSinceStartup - time1));
-        return chunkParent.gameObject;
-    }
-
-    //根据服务器数据或者本地数据库的数据来生成方块
-    public static void GenerateChunksFromList(CSChunk[] chunks)
-    {
-        foreach (CSChunk chunk in chunks)
-        {
-            GenerateChunkFromList(new Vector2Int(chunk.Position.x, chunk.Position.y), chunk.Blocks);
         }
     }
 }
