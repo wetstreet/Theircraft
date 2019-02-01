@@ -1,17 +1,13 @@
 # Theircraft-unity
 踩坑项目，目标是实现Minecraft的功能。
 
-参考：
+19/02/01 之后更新或安装的项目：
 
-- https://github.com/skligys/cardboard-creeper
+需要打开window->package manager，安装entities和hybrid renderer。然后在project视窗里选中packages下的Unity.Entities.PerformanceTests文件夹，打开同名的asmdef后缀文件，去掉第4行的Unity.Entities.PerformanceTests并保存.
 
-- https://github.com/fogleman/Craft
+Unity版本: 跟着最新版走（2018的Official Releases）
 
-- https://github.com/Team-RTG/Realistic-Terrain-Generation
-
-Unity版本: Unity 2018.2.11f1
-
-需求池（想到的点子都丢进去，有兴趣的就接下来并挂在自己名下，一个模块可以挂在多人名下）：
+需求池：
 
 背包系统  roshan
 
@@ -23,21 +19,13 @@ Unity版本: Unity 2018.2.11f1
 
 设置界面 ericchan
 
-VR支持
+VR支持 ericchan
 
 移动端支持  roshan
 
 热更机制 roshan 
 
-移动 ericchan
-
 地图生成 ericchan
-
-UI系统 ericchan
-
-网络层 ericchan
-
-数据库 ericchan
 
 
 已踩的坑：
@@ -46,7 +34,7 @@ UI系统 ericchan
 
 2.贴图的fileter mode需要选择point（no filter）
 
-3.材质需要勾选enable gpu instancing，否则不会动态合并drawcall
+3.材质需要勾选enable gpu instancing，否则不会开启gpu instancing来动态合批
 
 4.使用Rider第一次打开项目报错: .netframework 3.5找不到，解决方法是在unity 设置中选择Rider作为编辑器，再使用Rider自带的.net库
 
