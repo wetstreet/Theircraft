@@ -4,9 +4,6 @@ using UnityEngine;
 
 public class WireFrameHelper : MonoBehaviour
 {
-
-    public bool render = false;
-
     static Material lineMaterial;
     static void CreateLineMaterial()
     {
@@ -29,6 +26,9 @@ public class WireFrameHelper : MonoBehaviour
 
     float unit = 0.502f;
 
+    public static bool render = false;
+    public static Vector3 pos;
+
     // Will be called after all regular rendering is done
     public void OnRenderObject()
     {
@@ -37,47 +37,47 @@ public class WireFrameHelper : MonoBehaviour
         CreateLineMaterial();
         // Apply the line material
         lineMaterial.SetPass(0);
-
+        
         // Draw lines
         GL.Begin(GL.LINES);
         GL.Color(Color.black);
 
-        GL.Vertex3(-unit, -unit, -unit);
-        GL.Vertex3(unit, -unit, -unit);
+        GL.Vertex3(pos.x - unit, pos.y - unit, pos.z - unit);
+        GL.Vertex3(pos.x + unit, pos.y - unit, pos.z - unit);
 
-        GL.Vertex3(-unit, -unit, unit);
-        GL.Vertex3(unit, -unit, unit);
+        GL.Vertex3(pos.x - unit, pos.y - unit, pos.z + unit);
+        GL.Vertex3(pos.x + unit, pos.y - unit, pos.z + unit);
 
-        GL.Vertex3(-unit, unit, -unit);
-        GL.Vertex3(unit, unit, -unit);
+        GL.Vertex3(pos.x - unit, pos.y + unit, pos.z - unit);
+        GL.Vertex3(pos.x + unit, pos.y + unit, pos.z - unit);
 
-        GL.Vertex3(-unit, unit, unit);
-        GL.Vertex3(unit, unit, unit);
+        GL.Vertex3(pos.x - unit, pos.y + unit, pos.z + unit);
+        GL.Vertex3(pos.x + unit, pos.y + unit, pos.z + unit);
 
-        GL.Vertex3(-unit, -unit, -unit);
-        GL.Vertex3(-unit, -unit, unit);
+        GL.Vertex3(pos.x - unit, pos.y - unit, pos.z - unit);
+        GL.Vertex3(pos.x - unit, pos.y - unit, pos.z + unit);
 
-        GL.Vertex3(-unit, unit, -unit);
-        GL.Vertex3(-unit, unit, unit);
+        GL.Vertex3(pos.x - unit, pos.y + unit, pos.z - unit);
+        GL.Vertex3(pos.x - unit, pos.y + unit, pos.z + unit);
 
-        GL.Vertex3(unit, -unit, -unit);
-        GL.Vertex3(unit, -unit, unit);
+        GL.Vertex3(pos.x + unit, pos.y - unit, pos.z - unit);
+        GL.Vertex3(pos.x + unit, pos.y - unit, pos.z + unit);
 
-        GL.Vertex3(unit, unit, -unit);
-        GL.Vertex3(unit, unit, unit);
+        GL.Vertex3(pos.x + unit, pos.y + unit, pos.z - unit);
+        GL.Vertex3(pos.x + unit, pos.y + unit, pos.z + unit);
 
         //竖杠
-        GL.Vertex3(unit, unit, unit);
-        GL.Vertex3(unit, -unit, unit);
+        GL.Vertex3(pos.x + unit, pos.y + unit, pos.z + unit);
+        GL.Vertex3(pos.x + unit, pos.y - unit, pos.z + unit);
 
-        GL.Vertex3(unit, unit, -unit);
-        GL.Vertex3(unit, -unit, -unit);
+        GL.Vertex3(pos.x + unit, pos.y + unit, pos.z - unit);
+        GL.Vertex3(pos.x + unit, pos.y - unit, pos.z - unit);
 
-        GL.Vertex3(-unit, unit, unit);
-        GL.Vertex3(-unit, -unit, unit);
+        GL.Vertex3(pos.x - unit, pos.y + unit, pos.z + unit);
+        GL.Vertex3(pos.x - unit, pos.y - unit, pos.z + unit);
 
-        GL.Vertex3(-unit, unit, -unit);
-        GL.Vertex3(-unit, -unit, -unit);
+        GL.Vertex3(pos.x - unit, pos.y + unit, pos.z - unit);
+        GL.Vertex3(pos.x - unit, pos.y - unit, pos.z - unit);
 
         GL.End();
     }

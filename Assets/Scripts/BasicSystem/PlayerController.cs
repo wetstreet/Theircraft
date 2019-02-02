@@ -137,10 +137,10 @@ public class PlayerController : MonoBehaviour {
             ProcessKeyBoard();
         }
         ChangeFieldOfView();
-        //ShowWireFrame();
+        ShowWireFrame();
     }
 
-    Material lastMaterial;
+    //Material lastMaterial;
     void ShowWireFrame()
     {
         RaycastHit hit;
@@ -148,17 +148,20 @@ public class PlayerController : MonoBehaviour {
         bool b = Physics.Raycast(Camera.main.ScreenPointToRay(center), out hit, 5f);
         if (b && hit.transform.tag == "Block")
         {
-            Material material = hit.transform.GetComponent<Renderer>().material;
-            if (lastMaterial != null && lastMaterial != material)
-                lastMaterial.SetFloat("_Lightness", 1);
-            material.SetFloat("_Lightness", 1.5f);
-            lastMaterial = material;
+            WireFrameHelper.render = true;
+            WireFrameHelper.pos = hit.transform.localPosition;
+            //Material material = hit.transform.GetComponent<Renderer>().material;
+            //if (lastMaterial != null && lastMaterial != material)
+            //    lastMaterial.SetFloat("_Lightness", 1);
+            //material.SetFloat("_Lightness", 1.5f);
+            //lastMaterial = material;
         }
         else
         {
-            if (lastMaterial != null)
-                lastMaterial.SetFloat("_Lightness", 1);
-            lastMaterial = null;
+            WireFrameHelper.render = false;
+            //if (lastMaterial != null)
+            //    lastMaterial.SetFloat("_Lightness", 1);
+            //lastMaterial = null;
         }
     }
 
