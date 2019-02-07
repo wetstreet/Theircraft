@@ -93,14 +93,14 @@ public class MultiplayerEntry : MonoBehaviour {
             }
             else
             {
-                foreach (CSChunk chunk in rsp.EnterViewChunks)
-                {
-                    TerrainGenerator.AddToGenerateList(new Vector2Int(chunk.Position.x, chunk.Position.y), chunk.Blocks);
-                }
-                foreach (CSVector2Int chunk in rsp.LeaveViewChunks)
-                {
-                    TerrainGenerator.DestroyChunk(new Vector2Int(chunk.x, chunk.y));
-                }
+                //foreach (CSChunk chunk in rsp.EnterViewChunks)
+                //{
+                //    TerrainGenerator.AddToGenerateList(new Vector2Int(chunk.Position.x, chunk.Position.y), chunk.Blocks);
+                //}
+                //foreach (CSVector2Int chunk in rsp.LeaveViewChunks)
+                //{
+                //    TerrainGenerator.DestroyChunk(new Vector2Int(chunk.x, chunk.y));
+                //}
             }
         }
         else
