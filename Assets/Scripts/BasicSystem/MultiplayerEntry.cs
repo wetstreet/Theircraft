@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
-using Theircraft;
 using System.Collections.Generic;
 using System.Linq;
+using protocol.cs_enum;
+using protocol.cs_theircraft;
 
 public class MultiplayerEntry : MonoBehaviour {
 
@@ -13,7 +14,7 @@ public class MultiplayerEntry : MonoBehaviour {
         ItemSelectPanel.Show();
         TerrainGenerator.Init();
 
-        NetworkManager.Register(8, ChunksEnterLeaveViewRes);
+        NetworkManager.Register(ENUM_CMD.CS_CHUNKS_ENTER_LEAVE_VIEW_RES, ChunksEnterLeaveViewRes);
         List<Vector2Int> preloadChunks = Ultiities.GetSurroudingChunks(Vector2Int.zero);
         ChunksEnterLeaveViewReq(preloadChunks.ToArray());
     }
@@ -46,12 +47,12 @@ public class MultiplayerEntry : MonoBehaviour {
 
     void ChunksEnterLeaveViewReq(Vector2Int[] enterViewChunks, Vector2Int[] leaveViewChunks = null)
     {
-        protocol.cs_theircraft.CSChunksEnterLeaveViewReq req = new protocol.cs_theircraft.CSChunksEnterLeaveViewReq();
+        CSChunksEnterLeaveViewReq req = new CSChunksEnterLeaveViewReq();
 
-        List<protocol.cs_theircraft.CSVector2Int> enter = new List<protocol.cs_theircraft.CSVector2Int>();
+        List<CSVector2Int> enter = new List<CSVector2Int>();
         foreach (Vector2Int chunk in enterViewChunks)
         {
-            protocol.cs_theircraft.CSVector2Int c = new protocol.cs_theircraft.CSVector2Int
+            CSVector2Int c = new CSVector2Int
             {
                 x = chunk.x,
                 y = chunk.y
@@ -62,10 +63,10 @@ public class MultiplayerEntry : MonoBehaviour {
 
         if (leaveViewChunks != null)
         {
-            List<protocol.cs_theircraft.CSVector2Int> leave = new List<protocol.cs_theircraft.CSVector2Int>();
+            List<CSVector2Int> leave = new List<CSVector2Int>();
             foreach (Vector2Int chunk in leaveViewChunks)
             {
-                protocol.cs_theircraft.CSVector2Int c = new protocol.cs_theircraft.CSVector2Int
+                CSVector2Int c = new CSVector2Int
                 {
                     x = chunk.x,
                     y = chunk.y
@@ -75,20 +76,18 @@ public class MultiplayerEntry : MonoBehaviour {
             req.LeaveViewChunks.AddRange(leave);
         }
 
-        NetworkManager.EnqueueExt(protocol.cs_enum.ENUM_CMD.CS_CHUNKS_ENTER_LEVAE_VIEW_REQ, req);
+        NetworkManager.Enqueue(ENUM_CMD.CS_CHUNKS_ENTER_LEVAE_VIEW_REQ, req);
     }
     
     void ChunksEnterLeaveViewRes(byte[] data)
     {
-        float time1 = Time.realtimeSinceStartup;
-        protocol.cs_theircraft.CSChunksEnterLeaveViewRes rsp = NetworkManager.Deserialize<protocol.cs_theircraft.CSChunksEnterLeaveViewRes>(data);
-        Debug.Log("deserialize time =" + (Time.realtimeSinceStartup - time1));
+        CSChunksEnterLeaveViewRes rsp = NetworkManager.Deserialize<CSChunksEnterLeaveViewRes>(data);
         Debug.Log("CSChunksEnterLeaveViewRes");
         if (rsp.RetCode == 0)
         {
             if (!PlayerController.isInitialized)
             {
-                foreach (protocol.cs_theircraft.CSChunk chunk in rsp.EnterViewChunks)
+                foreach (CSChunk chunk in rsp.EnterViewChunks)
                 {
                     TerrainGenerator.GenerateChunkFromList(new Vector2Int(chunk.Position.x, chunk.Position.y), chunk.Blocks.ToArray());
                 }
@@ -96,14 +95,14 @@ public class MultiplayerEntry : MonoBehaviour {
             }
             else
             {
-                //foreach (CSChunk chunk in rsp.EnterViewChunks)
-                //{
-                //    TerrainGenerator.AddToGenerateList(new Vector2Int(chunk.Position.x, chunk.Position.y), chunk.Blocks);
-                //}
-                //foreach (CSVector2Int chunk in rsp.LeaveViewChunks)
-                //{
-                //    TerrainGenerator.DestroyChunk(new Vector2Int(chunk.x, chunk.y));
-                //}
+                foreach (CSChunk chunk in rsp.EnterViewChunks)
+                {
+                    TerrainGenerator.AddToGenerateList(new Vector2Int(chunk.Position.x, chunk.Position.y), chunk.Blocks.ToArray());
+                }
+                foreach (CSVector2Int chunk in rsp.LeaveViewChunks)
+                {
+                    TerrainGenerator.DestroyChunk(new Vector2Int(chunk.x, chunk.y));
+                }
             }
         }
         else

@@ -4,7 +4,7 @@ using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
 using System.Collections.Generic;
-using Theircraft;
+using protocol.cs_theircraft;
 
 public class DestroySystem : ComponentSystem
 {

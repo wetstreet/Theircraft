@@ -1,24 +1,22 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
-using UnityEditor;
-using Theircraft;
-using System.IO;
+using protocol.cs_theircraft;
 
 public static class BlockGenerator
 {
-    public static Dictionary<protocol.cs_theircraft.CSBlockType, string> type2icon = new Dictionary<protocol.cs_theircraft.CSBlockType, string>
+    public static Dictionary<CSBlockType, string> type2icon = new Dictionary<CSBlockType, string>
     {
-        {protocol.cs_theircraft.CSBlockType.Grass, "grass" },
-        {protocol.cs_theircraft.CSBlockType.Dirt, "grass" },
-        {protocol.cs_theircraft.CSBlockType.Tnt, "tnt" },
-        {protocol.cs_theircraft.CSBlockType.Brick, "brick" },
-        {protocol.cs_theircraft.CSBlockType.Furnace, "furnace" },
-        {protocol.cs_theircraft.CSBlockType.HayBlock, "hayblock" },
+        {CSBlockType.Grass, "grass" },
+        {CSBlockType.Dirt, "grass" },
+        {CSBlockType.Tnt, "tnt" },
+        {CSBlockType.Brick, "brick" },
+        {CSBlockType.Furnace, "furnace" },
+        {CSBlockType.HayBlock, "hayblock" },
     };
 
-    static Dictionary<protocol.cs_theircraft.CSBlockType, GameObject> blockType2prefab = new Dictionary<protocol.cs_theircraft.CSBlockType, GameObject>();
+    static Dictionary<CSBlockType, GameObject> blockType2prefab = new Dictionary<CSBlockType, GameObject>();
 
-    public static GameObject GetBlockPrefab(protocol.cs_theircraft.CSBlockType type)
+    public static GameObject GetBlockPrefab(CSBlockType type)
     {
         if (!blockType2prefab.ContainsKey(type))
         {
@@ -27,7 +25,7 @@ public static class BlockGenerator
         }
         return blockType2prefab[type];
     }
-    static public GameObject CreateCube(protocol.cs_theircraft.CSBlockType type)
+    static public GameObject CreateCube(CSBlockType type)
     {
         return Object.Instantiate(GetBlockPrefab(type));
     }

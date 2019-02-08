@@ -299,6 +299,122 @@ namespace protocol.cs_theircraft
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
   }
   
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"CSAddBlockReq")]
+  public partial class CSAddBlockReq : global::ProtoBuf.IExtensible
+  {
+    public CSAddBlockReq() {}
+    
+    private CSBlock _block;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"block", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public CSBlock block
+    {
+      get { return _block; }
+      set { _block = value; }
+    }
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"CSAddBlockRes")]
+  public partial class CSAddBlockRes : global::ProtoBuf.IExtensible
+  {
+    public CSAddBlockRes() {}
+    
+    private int _RetCode;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"RetCode", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public int RetCode
+    {
+      get { return _RetCode; }
+      set { _RetCode = value; }
+    }
+    private CSBlock _block;
+    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"block", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public CSBlock block
+    {
+      get { return _block; }
+      set { _block = value; }
+    }
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"CSAddBlockNotify")]
+  public partial class CSAddBlockNotify : global::ProtoBuf.IExtensible
+  {
+    public CSAddBlockNotify() {}
+    
+    private CSBlock _block;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"block", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public CSBlock block
+    {
+      get { return _block; }
+      set { _block = value; }
+    }
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"CSDeleteBlockReq")]
+  public partial class CSDeleteBlockReq : global::ProtoBuf.IExtensible
+  {
+    public CSDeleteBlockReq() {}
+    
+    private CSVector3Int _position;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"position", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public CSVector3Int position
+    {
+      get { return _position; }
+      set { _position = value; }
+    }
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"CSDeleteBlockRes")]
+  public partial class CSDeleteBlockRes : global::ProtoBuf.IExtensible
+  {
+    public CSDeleteBlockRes() {}
+    
+    private int _RetCode;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"RetCode", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public int RetCode
+    {
+      get { return _RetCode; }
+      set { _RetCode = value; }
+    }
+    private CSVector3Int _position;
+    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"position", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public CSVector3Int position
+    {
+      get { return _position; }
+      set { _position = value; }
+    }
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"CSDeleteBlockNotify")]
+  public partial class CSDeleteBlockNotify : global::ProtoBuf.IExtensible
+  {
+    public CSDeleteBlockNotify() {}
+    
+    private CSVector3Int _position;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"position", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public CSVector3Int position
+    {
+      get { return _position; }
+      set { _position = value; }
+    }
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
     [global::ProtoBuf.ProtoContract(Name=@"CSBlockType")]
     public enum CSBlockType
     {

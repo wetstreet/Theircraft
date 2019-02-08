@@ -1,10 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Theircraft;
 using Unity.Entities;
 using Unity.Transforms;
 using Unity.Mathematics;
+using protocol.cs_theircraft;
 
 public class TerrainGenerator : MonoBehaviour{
 
@@ -18,7 +18,7 @@ public class TerrainGenerator : MonoBehaviour{
     struct ChunkBlocks
     {
         public Vector2Int chunk;
-        public protocol.cs_theircraft.CSBlock[] blocks;
+        public CSBlock[] blocks;
     }
     static List<ChunkBlocks> waitForGenerateList = new List<ChunkBlocks>();
     static GameObject boxColliderPrefab;
@@ -38,7 +38,7 @@ public class TerrainGenerator : MonoBehaviour{
         StartCoroutine(GenerateCoroutine());
     }
 
-    public static void AddToGenerateList(Vector2Int chunk, protocol.cs_theircraft.CSBlock[] blockArray)
+    public static void AddToGenerateList(Vector2Int chunk, CSBlock[] blockArray)
     {
         ChunkBlocks cb = new ChunkBlocks
         {
@@ -59,7 +59,7 @@ public class TerrainGenerator : MonoBehaviour{
                 waitForGenerateList.RemoveAt(0);
                 Transform chunkParent = GenerateChunkParent(cb.chunk);
                 int count = 0;
-                foreach (protocol.cs_theircraft.CSBlock block in cb.blocks)
+                foreach (CSBlock block in cb.blocks)
                 {
                     GenerateBlock(new Vector3(block.position.x, block.position.y, block.position.z), block.type);
                     count++;
@@ -75,11 +75,11 @@ public class TerrainGenerator : MonoBehaviour{
     }
 
     //根据服务器数据或者本地数据库的数据来生成方块
-    public static GameObject GenerateChunkFromList(Vector2Int chunk, protocol.cs_theircraft.CSBlock[] blockArray)
+    public static GameObject GenerateChunkFromList(Vector2Int chunk, CSBlock[] blockArray)
     {
         Transform chunkParent = GenerateChunkParent(chunk);
         float time1 = Time.realtimeSinceStartup;
-        foreach (protocol.cs_theircraft.CSBlock block in blockArray)
+        foreach (CSBlock block in blockArray)
         {
             GenerateBlock(new Vector3(block.position.x, block.position.y, block.position.z), block.type);
         }
@@ -87,7 +87,7 @@ public class TerrainGenerator : MonoBehaviour{
         return chunkParent.gameObject;
     }
 
-    public static void GenerateBlock(Vector3 pos, protocol.cs_theircraft.CSBlockType blockType = protocol.cs_theircraft.CSBlockType.Grass)
+    public static void GenerateBlock(Vector3 pos, CSBlockType blockType = CSBlockType.Grass)
     {
         Vector2Int chunk = Ultiities.GetChunk(pos);
         GameObject prefab = BlockGenerator.GetBlockPrefab(blockType);

@@ -5,10 +5,10 @@ using System.Collections;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
-using Theircraft;
 using UnityEngine;
 using System.Threading;
 using ProtoBuf;
+using protocol.cs_enum;
 
 public delegate void CallbackFunction(byte[] data);
 
@@ -48,11 +48,11 @@ public static class NetworkManager
     static TcpClient tcpClient;
 
     static Queue<byte[]> _message;
-    static Dictionary<ushort, CallbackFunction> _callback = new Dictionary<ushort, CallbackFunction>();
+    static Dictionary<ENUM_CMD, CallbackFunction> _callback = new Dictionary<ENUM_CMD, CallbackFunction>();
 
     static BinaryFormatter formatter = new BinaryFormatter();
 
-    public static void Register(ushort type, CallbackFunction func)
+    public static void Register(ENUM_CMD type, CallbackFunction func)
     {
         if (!_callback.ContainsKey(type))
         {
@@ -78,7 +78,7 @@ public static class NetworkManager
     static Queue<Package> packageQueue = new Queue<Package>();
     struct Package
     {
-        public ushort type;
+        public ENUM_CMD type;
         public byte[] data;
     }
 
@@ -128,7 +128,7 @@ public static class NetworkManager
             {
                 MemoryStream lengthStream = new MemoryStream(data);
                 BinaryReader binary = new BinaryReader(lengthStream, Encoding.UTF8);
-                ushort type = binary.ReadUInt16();
+                ENUM_CMD type = (ENUM_CMD)binary.ReadUInt16();
                 uint length = binary.ReadUInt32();
                 
                 MemoryStream bodyStream = new MemoryStream();
@@ -167,32 +167,13 @@ public static class NetworkManager
         }
     }
 
-    public static T Deserialzie<T>(byte[] data)
-    {
-        MemoryStream stream = new MemoryStream(data);
-        return (T)formatter.Deserialize(stream);
-    }
-
     public static T Deserialize<T>(byte[] data)
     {
         MemoryStream stream = new MemoryStream(data);
         return Serializer.Deserialize<T>(stream);
     }
 
-    public static void Enqueue(CSMessageType type, object obj)
-    {
-        MemoryStream stream = new MemoryStream();
-        formatter.Serialize(stream, obj);
-        byte[] data = stream.ToArray();
-        int length = data.Length;
-        List<byte> bytes = new List<byte>();
-        bytes.AddRange(BitConverter.GetBytes((ushort)type));
-        bytes.AddRange(BitConverter.GetBytes((uint)length));
-        bytes.AddRange(data);
-        _message.Enqueue(bytes.ToArray());
-    }
-
-    public static void EnqueueExt<T>(protocol.cs_enum.ENUM_CMD cmdID, T obj)
+    public static void Enqueue<T>(ENUM_CMD cmdID, T obj)
     {
         using (MemoryStream ms = new MemoryStream())
         {

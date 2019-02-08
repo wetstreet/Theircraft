@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
-using Theircraft;
+using protocol.cs_enum;
+using protocol.cs_theircraft;
 
 public class ChatPanel : MonoBehaviour
 {
@@ -51,8 +52,8 @@ public class ChatPanel : MonoBehaviour
     void Start ()
     {
         initialized = true;
-        NetworkManager.Register(5, OnSendMessageRes);
-        NetworkManager.Register(6, OnMessageNotify);
+        NetworkManager.Register(ENUM_CMD.CS_SEND_MESSAGE_RES, OnSendMessageRes);
+        NetworkManager.Register(ENUM_CMD.CS_MESSAGE_NOTIFY, OnMessageNotify);
 
         itemUnit = transform.Find("container/Scroll View/Viewport/Content/chat_item");
         itemUnit.gameObject.SetActive(false);
@@ -164,16 +165,16 @@ public class ChatPanel : MonoBehaviour
 
     static void SendMessageReq(string content)
     {
-        protocol.cs_theircraft.CSSendMessageReq req = new protocol.cs_theircraft.CSSendMessageReq
+        CSSendMessageReq req = new CSSendMessageReq
         {
             Content = content
         };
-        NetworkManager.EnqueueExt(protocol.cs_enum.ENUM_CMD.CS_SEND_MESSAGE_REQ, req);
+        NetworkManager.Enqueue(ENUM_CMD.CS_SEND_MESSAGE_REQ, req);
     }
 
     void OnSendMessageRes(byte[] data)
     {
-        protocol.cs_theircraft.CSSendMessageRes rsp = NetworkManager.Deserialize<protocol.cs_theircraft.CSSendMessageRes>(data);
+        CSSendMessageRes rsp = NetworkManager.Deserialize<CSSendMessageRes>(data);
         //Debug.Log("OnSendMessageRes,retCode=" + res.RetCode);
         if (rsp.RetCode == 0)
         {
@@ -188,7 +189,7 @@ public class ChatPanel : MonoBehaviour
     }
     static void OnMessageNotify(byte[] data)
     {
-        protocol.cs_theircraft.CSMessageNotify notify = NetworkManager.Deserialize<protocol.cs_theircraft.CSMessageNotify>(data);
+        CSMessageNotify notify = NetworkManager.Deserialize<CSMessageNotify>(data);
         //Debug.Log($"OnMessageNotify,name={notify.Name},content={notify.Content}");
         AddLine("[" + notify.Name + "]" + notify.Content);
     }

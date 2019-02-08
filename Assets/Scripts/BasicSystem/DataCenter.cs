@@ -1,6 +1,4 @@
-﻿using System.Runtime.Serialization.Formatters.Binary;
-using Theircraft;
-using UnityEngine;
+﻿using UnityEngine;
 
 public enum ClientState
 {

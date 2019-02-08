@@ -2,8 +2,6 @@
 
 using UnityEditor;
 using UnityEngine;
-using Theircraft;
-using System;
 
 public class EditorTools
 {

@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using Theircraft;
 using UnityEngine.SceneManagement;
+using protocol.cs_enum;
+using protocol.cs_theircraft;
 
 public class LoginPanel : MonoBehaviour {
 
@@ -17,7 +18,7 @@ public class LoginPanel : MonoBehaviour {
     // Use this for initialization
     void Start ()
     {
-        NetworkManager.Register(1, OnLoginRes);
+        NetworkManager.Register(ENUM_CMD.CS_LOGIN_RES, OnLoginRes);
 
         input = transform.Find("InputField").GetComponent<InputField>();
         transform.Find("Button").GetComponent<Button>().onClick.AddListener(OnClickEnterRoom);
@@ -47,16 +48,16 @@ public class LoginPanel : MonoBehaviour {
     void LoginReq(string _name)
     {
         playername = _name;
-        protocol.cs_theircraft.CSLoginReq req = new protocol.cs_theircraft.CSLoginReq
+        CSLoginReq req = new CSLoginReq
         {
             Name = _name
         };
-        NetworkManager.EnqueueExt(protocol.cs_enum.ENUM_CMD.CS_LOGIN_REQ, req);
+        NetworkManager.Enqueue(ENUM_CMD.CS_LOGIN_REQ, req);
     }
 
     void OnLoginRes(byte[] data)
     {
-        protocol.cs_theircraft.CSLoginRes rsp = NetworkManager.Deserialize<protocol.cs_theircraft.CSLoginRes>(data);
+        CSLoginRes rsp = NetworkManager.Deserialize<CSLoginRes>(data);
         Debug.Log("OnLoginRes," + rsp.RetCode);
         if(rsp.RetCode == 0)
         {
