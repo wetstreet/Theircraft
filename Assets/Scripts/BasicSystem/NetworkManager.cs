@@ -8,6 +8,7 @@ using System.Text;
 using Theircraft;
 using UnityEngine;
 using System.Threading;
+using ProtoBuf;
 
 public delegate void CallbackFunction(byte[] data);
 
@@ -47,11 +48,11 @@ public static class NetworkManager
     static TcpClient tcpClient;
 
     static Queue<byte[]> _message;
-    static Dictionary<CSMessageType, CallbackFunction> _callback = new Dictionary<CSMessageType, CallbackFunction>();
+    static Dictionary<ushort, CallbackFunction> _callback = new Dictionary<ushort, CallbackFunction>();
 
     static BinaryFormatter formatter = new BinaryFormatter();
 
-    public static void Register(CSMessageType type, CallbackFunction func)
+    public static void Register(ushort type, CallbackFunction func)
     {
         if (!_callback.ContainsKey(type))
         {
@@ -77,7 +78,7 @@ public static class NetworkManager
     static Queue<Package> packageQueue = new Queue<Package>();
     struct Package
     {
-        public CSMessageType type;
+        public ushort type;
         public byte[] data;
     }
 
@@ -127,7 +128,7 @@ public static class NetworkManager
             {
                 MemoryStream lengthStream = new MemoryStream(data);
                 BinaryReader binary = new BinaryReader(lengthStream, Encoding.UTF8);
-                CSMessageType type = (CSMessageType)binary.ReadUInt16();
+                ushort type = binary.ReadUInt16();
                 uint length = binary.ReadUInt32();
                 
                 MemoryStream bodyStream = new MemoryStream();
@@ -172,6 +173,12 @@ public static class NetworkManager
         return (T)formatter.Deserialize(stream);
     }
 
+    public static T Deserialize<T>(byte[] data)
+    {
+        MemoryStream stream = new MemoryStream(data);
+        return Serializer.Deserialize<T>(stream);
+    }
+
     public static void Enqueue(CSMessageType type, object obj)
     {
         MemoryStream stream = new MemoryStream();
@@ -183,6 +190,21 @@ public static class NetworkManager
         bytes.AddRange(BitConverter.GetBytes((uint)length));
         bytes.AddRange(data);
         _message.Enqueue(bytes.ToArray());
+    }
+
+    public static void EnqueueExt<T>(protocol.cs_enum.ENUM_CMD cmdID, T obj)
+    {
+        using (MemoryStream ms = new MemoryStream())
+        {
+            Serializer.Serialize(ms, obj);
+            byte[] data = ms.ToArray();
+            int length = data.Length;
+            List<byte> bytes = new List<byte>();
+            bytes.AddRange(BitConverter.GetBytes((ushort)cmdID));
+            bytes.AddRange(BitConverter.GetBytes((uint)length));
+            bytes.AddRange(data);
+            _message.Enqueue(bytes.ToArray());
+        }
     }
 
     public static bool Connect()

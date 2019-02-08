@@ -1,4 +1,6 @@
-.\ProtoGen\protogen.exe -i:protocol\theircraft.proto -o:theircraft.cs
-move "theircraft.cs" ..\Assets\Scripts\Protocol_Generated\theircraft.cs
-
+@echo off
+for %%f in (protocol/*.proto) do (
+	.\ProtoGen\protogen.exe -i:protocol\%%~nf.proto -o:%%~nf.cs
+	move %%~nf.cs ..\Assets\Scripts\Protocol_Generated\%%~nf.cs
+)
 pause

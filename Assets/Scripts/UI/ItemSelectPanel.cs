@@ -5,10 +5,10 @@ using Theircraft;
 public class ItemSelectPanel : MonoBehaviour
 {
     public static int curIndex;
-    public static CSBlockType curBlockType { get { return dataList[curIndex]; } }
+    public static protocol.cs_theircraft.CSBlockType curBlockType { get { return dataList[curIndex]; } }
 
     static Item[] itemList = new Item[9];
-    static CSBlockType[] dataList = new CSBlockType[9];
+    static protocol.cs_theircraft.CSBlockType[] dataList = new protocol.cs_theircraft.CSBlockType[9];
 
     struct Item
     {
@@ -21,10 +21,10 @@ public class ItemSelectPanel : MonoBehaviour
         UISystem.InstantiateUI("ItemSelectPanel");
     }
 
-    public static void SetSlotItem(int slotID, CSBlockType blockType)
+    public static void SetSlotItem(int slotID, protocol.cs_theircraft.CSBlockType blockType)
     {
         dataList[slotID] = blockType;
-        string iconPath = BlockTexture.type2icon[blockType];
+        string iconPath = BlockGenerator.type2icon[blockType];
         itemList[slotID].icon.sprite = Resources.Load<Sprite>("GUI/" + iconPath);
         itemList[slotID].icon.gameObject.SetActive(true);
     }
@@ -58,11 +58,11 @@ public class ItemSelectPanel : MonoBehaviour
     void Start () {
         Init();
 
-        SetSlotItem(0, CSBlockType.Grass);
-        SetSlotItem(1, CSBlockType.Tnt);
-        SetSlotItem(2, CSBlockType.Brick);
-        SetSlotItem(3, CSBlockType.Furnace);
-        SetSlotItem(4, CSBlockType.HayBlock);
+        SetSlotItem(0, protocol.cs_theircraft.CSBlockType.Grass);
+        SetSlotItem(1, protocol.cs_theircraft.CSBlockType.Tnt);
+        SetSlotItem(2, protocol.cs_theircraft.CSBlockType.Brick);
+        SetSlotItem(3, protocol.cs_theircraft.CSBlockType.Furnace);
+        SetSlotItem(4, protocol.cs_theircraft.CSBlockType.HayBlock);
 
         RefreshUI();
     }

@@ -51,8 +51,8 @@ public class ChatPanel : MonoBehaviour
     void Start ()
     {
         initialized = true;
-        NetworkManager.Register(CSMessageType.SEND_MEESAGE_RES, OnSendMessageRes);
-        NetworkManager.Register(CSMessageType.MESSAGE_NOTIFY, OnMessageNotify);
+        NetworkManager.Register(5, OnSendMessageRes);
+        NetworkManager.Register(6, OnMessageNotify);
 
         itemUnit = transform.Find("container/Scroll View/Viewport/Content/chat_item");
         itemUnit.gameObject.SetActive(false);
@@ -144,7 +144,17 @@ public class ChatPanel : MonoBehaviour
     {
         if (inputField.text != "")
         {
-            SendMessageReq(inputField.text);
+            if (inputField.text == "@test")
+            {
+                // process gm
+                GM.Test();
+
+                inputField.text = "";
+                inputField.ActivateInputField();
+                HideInput();
+            }
+            else
+                SendMessageReq(inputField.text);
         }
         else
         {
@@ -154,16 +164,16 @@ public class ChatPanel : MonoBehaviour
 
     static void SendMessageReq(string content)
     {
-        CSSendMessageReq req = new CSSendMessageReq
+        protocol.cs_theircraft.CSSendMessageReq req = new protocol.cs_theircraft.CSSendMessageReq
         {
             Content = content
         };
-        NetworkManager.Enqueue(CSMessageType.SEND_MESSAGE_REQ, req);
+        NetworkManager.EnqueueExt(protocol.cs_enum.ENUM_CMD.CS_SEND_MESSAGE_REQ, req);
     }
 
     void OnSendMessageRes(byte[] data)
     {
-        CSSendMessageRes rsp = NetworkManager.Deserialzie<CSSendMessageRes>(data);
+        protocol.cs_theircraft.CSSendMessageRes rsp = NetworkManager.Deserialize<protocol.cs_theircraft.CSSendMessageRes>(data);
         //Debug.Log("OnSendMessageRes,retCode=" + res.RetCode);
         if (rsp.RetCode == 0)
         {
@@ -178,7 +188,7 @@ public class ChatPanel : MonoBehaviour
     }
     static void OnMessageNotify(byte[] data)
     {
-        CSMessageNotify notify = NetworkManager.Deserialzie<CSMessageNotify>(data);
+        protocol.cs_theircraft.CSMessageNotify notify = NetworkManager.Deserialize<protocol.cs_theircraft.CSMessageNotify>(data);
         //Debug.Log($"OnMessageNotify,name={notify.Name},content={notify.Content}");
         AddLine("[" + notify.Name + "]" + notify.Content);
     }

@@ -17,7 +17,7 @@ public class LoginPanel : MonoBehaviour {
     // Use this for initialization
     void Start ()
     {
-        NetworkManager.Register(CSMessageType.LOGIN_RES, OnLoginRes);
+        NetworkManager.Register(1, OnLoginRes);
 
         input = transform.Find("InputField").GetComponent<InputField>();
         transform.Find("Button").GetComponent<Button>().onClick.AddListener(OnClickEnterRoom);
@@ -47,17 +47,17 @@ public class LoginPanel : MonoBehaviour {
     void LoginReq(string _name)
     {
         playername = _name;
-        CSLoginReq enterRoomReq = new CSLoginReq
+        protocol.cs_theircraft.CSLoginReq req = new protocol.cs_theircraft.CSLoginReq
         {
             Name = _name
         };
-        NetworkManager.Enqueue(CSMessageType.LOGIN_REQ, enterRoomReq);
+        NetworkManager.EnqueueExt(protocol.cs_enum.ENUM_CMD.CS_LOGIN_REQ, req);
     }
 
     void OnLoginRes(byte[] data)
     {
-        CSLoginRes rsp = NetworkManager.Deserialzie<CSLoginRes>(data);
-        Debug.Log("OnEnterRoomRes,retCode="+ rsp.RetCode);
+        protocol.cs_theircraft.CSLoginRes rsp = NetworkManager.Deserialize<protocol.cs_theircraft.CSLoginRes>(data);
+        Debug.Log("OnLoginRes," + rsp.RetCode);
         if(rsp.RetCode == 0)
         {
             DataCenter.name = playername;

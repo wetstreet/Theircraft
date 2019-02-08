@@ -13,7 +13,7 @@ public class MultiplayerEntry : MonoBehaviour {
         ItemSelectPanel.Show();
         TerrainGenerator.Init();
 
-        NetworkManager.Register(CSMessageType.CHUNKS_ENTER_LEAVE_VIEW_RES, ChunksEnterLeaveViewRes);
+        NetworkManager.Register(8, ChunksEnterLeaveViewRes);
         List<Vector2Int> preloadChunks = Ultiities.GetSurroudingChunks(Vector2Int.zero);
         ChunksEnterLeaveViewReq(preloadChunks.ToArray());
     }
@@ -46,48 +46,51 @@ public class MultiplayerEntry : MonoBehaviour {
 
     void ChunksEnterLeaveViewReq(Vector2Int[] enterViewChunks, Vector2Int[] leaveViewChunks = null)
     {
-        CSChunksEnterLeaveViewReq req = new CSChunksEnterLeaveViewReq();
+        protocol.cs_theircraft.CSChunksEnterLeaveViewReq req = new protocol.cs_theircraft.CSChunksEnterLeaveViewReq();
 
-        List<CSVector2Int> enter = new List<CSVector2Int>();
+        List<protocol.cs_theircraft.CSVector2Int> enter = new List<protocol.cs_theircraft.CSVector2Int>();
         foreach (Vector2Int chunk in enterViewChunks)
         {
-            CSVector2Int c = new CSVector2Int();
-            c.x = chunk.x;
-            c.y = chunk.y;
+            protocol.cs_theircraft.CSVector2Int c = new protocol.cs_theircraft.CSVector2Int
+            {
+                x = chunk.x,
+                y = chunk.y
+            };
             enter.Add(c);
         }
-        req.EnterViewChunks = enter;
+        req.EnterViewChunks.AddRange(enter);
 
         if (leaveViewChunks != null)
         {
-            List<CSVector2Int> leave = new List<CSVector2Int>();
+            List<protocol.cs_theircraft.CSVector2Int> leave = new List<protocol.cs_theircraft.CSVector2Int>();
             foreach (Vector2Int chunk in leaveViewChunks)
             {
-                CSVector2Int c = new CSVector2Int();
-                c.x = chunk.x;
-                c.y = chunk.y;
+                protocol.cs_theircraft.CSVector2Int c = new protocol.cs_theircraft.CSVector2Int
+                {
+                    x = chunk.x,
+                    y = chunk.y
+                };
                 leave.Add(c);
             }
-            req.LeaveViewChunks = leave.ToArray();
+            req.LeaveViewChunks.AddRange(leave);
         }
 
-
-        NetworkManager.Enqueue(CSMessageType.CHUNKS_ENTER_LEAVE_VIEW_REQ, req);
+        NetworkManager.EnqueueExt(protocol.cs_enum.ENUM_CMD.CS_CHUNKS_ENTER_LEVAE_VIEW_REQ, req);
     }
     
     void ChunksEnterLeaveViewRes(byte[] data)
     {
         float time1 = Time.realtimeSinceStartup;
-        CSChunksEnterLeaveViewRes rsp = NetworkManager.Deserialzie<CSChunksEnterLeaveViewRes>(data);
+        protocol.cs_theircraft.CSChunksEnterLeaveViewRes rsp = NetworkManager.Deserialize<protocol.cs_theircraft.CSChunksEnterLeaveViewRes>(data);
         Debug.Log("deserialize time =" + (Time.realtimeSinceStartup - time1));
         Debug.Log("CSChunksEnterLeaveViewRes");
         if (rsp.RetCode == 0)
         {
             if (!PlayerController.isInitialized)
             {
-                foreach (CSChunk chunk in rsp.EnterViewChunks)
+                foreach (protocol.cs_theircraft.CSChunk chunk in rsp.EnterViewChunks)
                 {
-                    TerrainGenerator.GenerateChunkFromList(new Vector2Int(chunk.Position.x, chunk.Position.y), chunk.Blocks);
+                    TerrainGenerator.GenerateChunkFromList(new Vector2Int(chunk.Position.x, chunk.Position.y), chunk.Blocks.ToArray());
                 }
                 PlayerController.Init();
             }
