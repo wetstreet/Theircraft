@@ -264,12 +264,6 @@ public class PlayerController : MonoBehaviour {
         if (rsp.RetCode == 0)
         {
             TerrainGenerator.DestroyBlock(Ultiities.CSVector3Int_To_Vector3Int(rsp.position));
-
-            //CSVector3Int pos = rsp.position;
-            //string name = string.Format("block({0},{1},{2})", pos.x, pos.y, pos.z);
-            //GameObject obj = GameObject.Find(name);
-            //Destroy(obj);
-            //DestroySystem.AsyncDestroyBlock(pos);
         }
         else
         {
@@ -282,10 +276,5 @@ public class PlayerController : MonoBehaviour {
         //Debug.Log("OnDeleteBlockNotify");
         CSDeleteBlockNotify notify = NetworkManager.Deserialize<CSDeleteBlockNotify>(data);
         TerrainGenerator.DestroyBlock(Ultiities.CSVector3Int_To_Vector3Int(notify.position));
-        //CSVector3Int pos = notify.position;
-        //string name = string.Format("block({0},{1},{2})", pos.x, pos.y, pos.z);
-        //GameObject obj = GameObject.Find(name);
-        //Destroy(obj);
-        //DestroySystem.AsyncDestroyBlock(pos);
     }
 }

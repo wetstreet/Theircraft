@@ -43,10 +43,28 @@ public class TerrainGenerator : MonoBehaviour{
         }
     }
 
+    public static void RemoveChunksData(List<CSVector2Int> chunkPosList)
+    {
+        foreach (CSVector2Int csChunkPos in chunkPosList)
+        {
+            Vector2Int chunkPos = Ultiities.CSVector2Int_To_Vector2Int(csChunkPos);
+            foreach (Block block in chunk2BlocksDict[chunkPos])
+            {
+                chunk2BlocksDict[block.chunkPos].Remove(block);
+                pos2BlockDict.Remove(block.pos);
+                block.Destroy();
+            }
+            chunk2BlocksDict.Remove(chunkPos);
+        }
+    }
+
     public static void SetBlockData(CSBlock csblock)
     {
-        //Vector2Int chunkPos = Ultiities.GetChunk(csblock.position)
-        //Block block = new Block()
+        Vector3Int blockPos = Ultiities.CSVector3Int_To_Vector3Int(csblock.position);
+        Vector2Int chunkPos = Ultiities.GetChunk(blockPos);
+        Block block = new Block(chunkPos, blockPos, csblock.type);
+        chunk2BlocksDict[chunkPos].Add(block);
+        pos2BlockDict[blockPos] = block;
     }
 
     public static void DestroyBlock(Vector3Int pos)
@@ -62,27 +80,6 @@ public class TerrainGenerator : MonoBehaviour{
         RefreshAllChunks();
     }
 
-    public static void DestroyChunk(Vector2Int chunk)
-    {
-
-        foreach (Block block in chunk2BlocksDict[chunk])
-        {
-            chunk2BlocksDict[block.chunkPos].Remove(block);
-            pos2BlockDict.Remove(block.pos);
-            block.Destroy();
-        }
-        chunk2BlocksDict.Remove(chunk);
-
-        //Transform trans = GetChunkParent(chunk, false);
-        //if (trans != null)
-        //{
-        //    DestroySystem.AsyncDestroyChunk(chunk);
-
-        //    Destroy(trans.gameObject);
-        //    blockmap.Remove(chunk);
-        //}
-    }
-
     public static void RefreshAllChunks()
     {
         float time1 = Time.realtimeSinceStartup;
@@ -90,6 +87,8 @@ public class TerrainGenerator : MonoBehaviour{
         {
             if (IsBlockExposed(block.pos))
                 block.Generate();
+            else
+                block.Destroy();
         }
         Debug.Log("generate time =" + (Time.realtimeSinceStartup - time1));
     }

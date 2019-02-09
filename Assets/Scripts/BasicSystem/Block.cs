@@ -58,5 +58,7 @@ public class Block
 
         Object.Destroy(colliderTransform.gameObject);
         manager.DestroyEntity(entity);
+
+        IsGenerated = false;
     }
 }
