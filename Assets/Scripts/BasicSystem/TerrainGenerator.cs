@@ -8,122 +8,119 @@ using protocol.cs_theircraft;
 
 public class TerrainGenerator : MonoBehaviour{
 
-    static Dictionary<Vector2Int, GameObject> blockmap = new Dictionary<Vector2Int, GameObject>();
+    static Dictionary<Vector2Int, Transform> blockmap = new Dictionary<Vector2Int, Transform>();
 
-    static int scale = 35;
-    static int maxHeight = 15;
+    static Dictionary<Vector2Int, List<Block>> chunk2BlocksDict = new Dictionary<Vector2Int, List<Block>>();
+    static Dictionary<Vector3Int, Block> pos2BlockDict = new Dictionary<Vector3Int, Block>();
+
+    static readonly int scale = 35;
+    static readonly int maxHeight = 15;
 
     static TerrainGenerator instance;
-
-    struct ChunkBlocks
-    {
-        public Vector2Int chunk;
-        public CSBlock[] blocks;
-    }
-    static List<ChunkBlocks> waitForGenerateList = new List<ChunkBlocks>();
-    static GameObject boxColliderPrefab;
-    static EntityManager manager;
-    static EntityArchetype blockArchetype;
+    
+    static List<Vector2Int> waitForGenerateList = new List<Vector2Int>();
 
     public static void Init()
     {
+        Block.Init();
         instance = new GameObject("TerrainGenerator").AddComponent<TerrainGenerator>();
-        boxColliderPrefab = Resources.Load<GameObject>("Prefabs/boxcollider");
-        manager = World.Active.GetOrCreateManager<EntityManager>();
-        blockArchetype = manager.CreateArchetype(typeof(Position));
     }
 
-    private void Start()
+    public static void SetChunksData(List<CSChunk> chunkList)
     {
-        StartCoroutine(GenerateCoroutine());
-    }
-
-    public static void AddToGenerateList(Vector2Int chunk, CSBlock[] blockArray)
-    {
-        ChunkBlocks cb = new ChunkBlocks
+        foreach (CSChunk chunk in chunkList)
         {
-            chunk = chunk,
-            blocks = blockArray
-        };
-        waitForGenerateList.Add(cb);
-    }
-
-    IEnumerator GenerateCoroutine()
-    {
-        yield return null;
-        while (true)
-        {
-            if (waitForGenerateList.Count > 0)
+            Vector2Int chunkPos = Ultiities.CSVector2Int_To_Vector2Int(chunk.Position);
+            List<Block> list = new List<Block>();
+            foreach (CSBlock csblock in chunk.Blocks)
             {
-                ChunkBlocks cb = waitForGenerateList[0];
-                waitForGenerateList.RemoveAt(0);
-                Transform chunkParent = GenerateChunkParent(cb.chunk);
-                int count = 0;
-                foreach (CSBlock block in cb.blocks)
-                {
-                    GenerateBlock(new Vector3(block.position.x, block.position.y, block.position.z), block.type);
-                    count++;
-                    if (count > 1000)
-                    {
-                        yield return new WaitForEndOfFrame();
-                        count = 0;
-                    }
-                }
+                Vector3Int blockPos = Ultiities.CSVector3Int_To_Vector3Int(csblock.position);
+                Block block = new Block(chunkPos, blockPos, csblock.type);
+                list.Add(block);
+                pos2BlockDict[blockPos] = block;
             }
-            yield return new WaitForEndOfFrame();
+            chunk2BlocksDict[chunkPos] = list;
         }
     }
 
-    //根据服务器数据或者本地数据库的数据来生成方块
-    public static GameObject GenerateChunkFromList(Vector2Int chunk, CSBlock[] blockArray)
+    public static void SetBlockData(CSBlock csblock)
     {
-        Transform chunkParent = GenerateChunkParent(chunk);
-        float time1 = Time.realtimeSinceStartup;
-        foreach (CSBlock block in blockArray)
-        {
-            GenerateBlock(new Vector3(block.position.x, block.position.y, block.position.z), block.type);
-        }
-        Debug.Log("generate time =" + (Time.realtimeSinceStartup - time1));
-        return chunkParent.gameObject;
+        //Vector2Int chunkPos = Ultiities.GetChunk(csblock.position)
+        //Block block = new Block()
     }
 
-    public static void GenerateBlock(Vector3 pos, CSBlockType blockType = CSBlockType.Grass)
+    public static void DestroyBlock(Vector3Int pos)
     {
-        Vector2Int chunk = Ultiities.GetChunk(pos);
-        GameObject prefab = BlockGenerator.GetBlockPrefab(blockType);
-        var entity = manager.Instantiate(prefab);
-        manager.SetComponentData(entity, new Position { Value = new float3(pos.x, pos.y, pos.z) });
-        manager.AddComponentData(entity, new Chunk { x = chunk.x, z = chunk.y });
+        if (!pos2BlockDict.ContainsKey(pos))
+            return;
+        
+        Block block = pos2BlockDict[pos];
+        chunk2BlocksDict[block.chunkPos].Remove(block);
+        pos2BlockDict.Remove(block.pos);
+        block.Destroy();
 
-        GameObject obj = Instantiate(boxColliderPrefab);
-        if (!blockmap.ContainsKey(chunk))
-        {
-            GenerateChunkParent(chunk);
-        }
-        obj.transform.parent = blockmap[chunk].transform;
-        obj.transform.name = string.Format("block({0},{1},{2})", pos.x, pos.y, pos.z);
-        obj.transform.localPosition = pos;
-    }
-
-
-    public static Transform GenerateChunkParent(Vector2Int chunk)
-    {
-        Transform chunkParent = new GameObject(string.Format("chunk({0},{1})", chunk.x, chunk.y)).transform;
-        chunkParent.parent = instance.transform;
-        chunkParent.localPosition = Vector3.zero;
-        blockmap[chunk] = chunkParent.gameObject;
-        return chunkParent;
+        RefreshAllChunks();
     }
 
     public static void DestroyChunk(Vector2Int chunk)
     {
-        GameObject obj = GameObject.Find(string.Format("chunk({0},{1})", chunk.x, chunk.y));
-        if (obj != null)
-        {
-            DestroySystem.AsyncDestroyChunk(chunk);
 
-            Destroy(obj);
-            blockmap.Remove(chunk);
+        foreach (Block block in chunk2BlocksDict[chunk])
+        {
+            chunk2BlocksDict[block.chunkPos].Remove(block);
+            pos2BlockDict.Remove(block.pos);
+            block.Destroy();
         }
+        chunk2BlocksDict.Remove(chunk);
+
+        //Transform trans = GetChunkParent(chunk, false);
+        //if (trans != null)
+        //{
+        //    DestroySystem.AsyncDestroyChunk(chunk);
+
+        //    Destroy(trans.gameObject);
+        //    blockmap.Remove(chunk);
+        //}
+    }
+
+    public static void RefreshAllChunks()
+    {
+        float time1 = Time.realtimeSinceStartup;
+        foreach (Block block in pos2BlockDict.Values)
+        {
+            if (IsBlockExposed(block.pos))
+                block.Generate();
+        }
+        Debug.Log("generate time =" + (Time.realtimeSinceStartup - time1));
+    }
+
+    public static Transform GetChunkParent(Vector2Int chunk, bool createIfNotExist = true)
+    {
+        if (!blockmap.ContainsKey(chunk) && createIfNotExist)
+        {
+            Transform chunkParent = new GameObject(string.Format("chunk({0},{1})", chunk.x, chunk.y)).transform;
+            chunkParent.parent = instance.transform;
+            chunkParent.localPosition = Vector3.zero;
+            blockmap[chunk] = chunkParent;
+        }
+        return blockmap[chunk];
+    }
+
+    static Vector3Int posInstance = new Vector3Int();
+    static bool IsBlockExposed(Vector3Int pos)
+    {
+        posInstance.Set(pos.x - 1, pos.y, pos.z);
+        if (!pos2BlockDict.ContainsKey(posInstance)) return true;
+        posInstance.Set(pos.x + 1, pos.y, pos.z);
+        if (!pos2BlockDict.ContainsKey(posInstance)) return true;
+        posInstance.Set(pos.x, pos.y - 1, pos.z);
+        if (!pos2BlockDict.ContainsKey(posInstance)) return true;
+        posInstance.Set(pos.x, pos.y + 1, pos.z);
+        if (!pos2BlockDict.ContainsKey(posInstance)) return true;
+        posInstance.Set(pos.x, pos.y, pos.z - 1);
+        if (!pos2BlockDict.ContainsKey(posInstance)) return true;
+        posInstance.Set(pos.x, pos.y, pos.z + 1);
+        if (!pos2BlockDict.ContainsKey(posInstance)) return true;
+        return false;
     }
 }

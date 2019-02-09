@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
+using protocol.cs_theircraft;
 
 public static class Ultiities {
 
@@ -34,5 +34,20 @@ public static class Ultiities {
             Debug.Log(count + "," + t);
             count++;
         }
+    }
+
+    public static Vector2Int CSVector2Int_To_Vector2Int(CSVector2Int v)
+    {
+        return new Vector2Int { x = v.x, y = v.y };
+    }
+
+    public static Vector3Int CSVector3Int_To_Vector3Int(CSVector3Int v)
+    {
+        return new Vector3Int { x = v.x, y = v.y, z = v.z };
+    }
+
+    public static Vector3 CSVector3_To_Vector3(CSVector3 v)
+    {
+        return new Vector3 { x = v.x, y = v.y, z = v.z };
     }
 }

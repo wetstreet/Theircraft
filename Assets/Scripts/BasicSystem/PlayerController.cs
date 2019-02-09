@@ -8,8 +8,6 @@ public class PlayerController : MonoBehaviour {
     public float verticalScale;
 
     private Vector3 verticalSpeed;
-    
-    private bool isMoving;
     private new Camera camera;
     private CharacterController cc;
     
@@ -65,8 +63,7 @@ public class PlayerController : MonoBehaviour {
     bool GetPointingBlockInfo(out RaycastHit rh)
     {
         Vector3 center = new Vector3(Screen.width / 2, Screen.height / 2, 0);
-        RaycastHit hit;
-        bool b = Physics.Raycast(Camera.main.ScreenPointToRay(center), out hit, 5f);
+        bool b = Physics.Raycast(Camera.main.ScreenPointToRay(center), out RaycastHit hit, 5f);
         if (b && hit.transform.tag == "Block")
         {
             rh = hit;
@@ -81,8 +78,7 @@ public class PlayerController : MonoBehaviour {
 
     void OnLeftMouseClick()
     {
-        RaycastHit hit;
-        bool b = GetPointingBlockInfo(out hit);
+        bool b = GetPointingBlockInfo(out RaycastHit hit);
         if (b)
             DeleteBlockReq(hit.transform.localPosition);
     }
@@ -93,8 +89,7 @@ public class PlayerController : MonoBehaviour {
     {
         if (ItemSelectPanel.curBlockType != CSBlockType.None)
         {
-            RaycastHit hit;
-            bool b = GetPointingBlockInfo(out hit);
+            bool b = GetPointingBlockInfo(out RaycastHit hit);
             if (b)
             {
                 if (hit.normal == Vector3.right)
@@ -143,9 +138,8 @@ public class PlayerController : MonoBehaviour {
     
     void ShowWireFrame()
     {
-        RaycastHit hit;
         Vector3 center = new Vector3(Screen.width / 2, Screen.height / 2, 0);
-        bool b = Physics.Raycast(Camera.main.ScreenPointToRay(center), out hit, 5f);
+        bool b = Physics.Raycast(Camera.main.ScreenPointToRay(center), out RaycastHit hit, 5f);
         if (b && hit.transform.tag == "Block")
         {
             WireFrameHelper.render = true;
@@ -209,15 +203,18 @@ public class PlayerController : MonoBehaviour {
 
     void AddBlockReq(Vector3Int pos, CSBlockType type)
     {
-        CSBlock b = new CSBlock();
-        b.position = new CSVector3Int();
-        b.position.x = pos.x;
-        b.position.y = pos.y;
-        b.position.z = pos.z;
-        b.type = type;
         CSAddBlockReq addBlockReq = new CSAddBlockReq
         {
-            block = b
+            block = new CSBlock
+            {
+                position = new CSVector3Int
+                {
+                    x = pos.x,
+                    y = pos.y,
+                    z = pos.z
+                },
+                type = type
+            }
         };
         NetworkManager.Enqueue(ENUM_CMD.CS_ADD_BLOCK_REQ, addBlockReq);
     }
@@ -228,8 +225,8 @@ public class PlayerController : MonoBehaviour {
         //Debug.Log("AddBlockRes,retCode=" + rsp.RetCode);
         if (rsp.RetCode == 0)
         {
-            CSVector3Int p = rsp.block.position;
-            TerrainGenerator.GenerateBlock(new Vector3Int(p.x, p.y, p.z), rsp.block.type);
+            TerrainGenerator.SetBlockData(rsp.block);
+            TerrainGenerator.RefreshAllChunks();
             FastTips.Show("放置了一个方块");
         }
         else
@@ -242,18 +239,21 @@ public class PlayerController : MonoBehaviour {
     {
         //Debug.Log("OnAddBlockNotify");
         CSAddBlockNotify notify = NetworkManager.Deserialize<CSAddBlockNotify>(data);
-        CSVector3Int p = notify.block.position;
-        TerrainGenerator.GenerateBlock(new Vector3Int(p.x, p.y, p.z), notify.block.type);
+        TerrainGenerator.SetBlockData(notify.block);
+        TerrainGenerator.RefreshAllChunks();
     }
 
     void DeleteBlockReq(Vector3 pos)
     {
-        CSVector3Int position = new CSVector3Int();
-        position.x = Mathf.RoundToInt(pos.x);
-        position.y = Mathf.RoundToInt(pos.y);
-        position.z = Mathf.RoundToInt(pos.z);
-        CSDeleteBlockReq req = new CSDeleteBlockReq();
-        req.position = position;
+        CSDeleteBlockReq req = new CSDeleteBlockReq
+        {
+            position = new CSVector3Int
+            {
+                x = Mathf.RoundToInt(pos.x),
+                y = Mathf.RoundToInt(pos.y),
+                z = Mathf.RoundToInt(pos.z)
+            }
+        };
         NetworkManager.Enqueue(ENUM_CMD.CS_DELETE_BLOCK_REQ, req);
     }
 
@@ -263,11 +263,13 @@ public class PlayerController : MonoBehaviour {
         //Debug.Log("DeleteBlockRes,retCode=" + rsp.RetCode);
         if (rsp.RetCode == 0)
         {
-            CSVector3Int pos = rsp.position;
-            string name = string.Format("block({0},{1},{2})", pos.x, pos.y, pos.z);
-            GameObject obj = GameObject.Find(name);
-            Destroy(obj);
-            DestroySystem.AsyncDestroyBlock(pos);
+            TerrainGenerator.DestroyBlock(Ultiities.CSVector3Int_To_Vector3Int(rsp.position));
+
+            //CSVector3Int pos = rsp.position;
+            //string name = string.Format("block({0},{1},{2})", pos.x, pos.y, pos.z);
+            //GameObject obj = GameObject.Find(name);
+            //Destroy(obj);
+            //DestroySystem.AsyncDestroyBlock(pos);
         }
         else
         {
@@ -279,10 +281,11 @@ public class PlayerController : MonoBehaviour {
     {
         //Debug.Log("OnDeleteBlockNotify");
         CSDeleteBlockNotify notify = NetworkManager.Deserialize<CSDeleteBlockNotify>(data);
-        CSVector3Int pos = notify.position;
-        string name = string.Format("block({0},{1},{2})", pos.x, pos.y, pos.z);
-        GameObject obj = GameObject.Find(name);
-        Destroy(obj);
-        DestroySystem.AsyncDestroyBlock(pos);
+        TerrainGenerator.DestroyBlock(Ultiities.CSVector3Int_To_Vector3Int(notify.position));
+        //CSVector3Int pos = notify.position;
+        //string name = string.Format("block({0},{1},{2})", pos.x, pos.y, pos.z);
+        //GameObject obj = GameObject.Find(name);
+        //Destroy(obj);
+        //DestroySystem.AsyncDestroyBlock(pos);
     }
 }
