@@ -9,7 +9,7 @@ Unity版本: 跟着最新版走（2018的Official Releases）
 
 需求池：
 
-背包系统  roshan
+背包系统 
 
 合成系统
 
@@ -21,9 +21,9 @@ Unity版本: 跟着最新版走（2018的Official Releases）
 
 VR支持 ericchan
 
-移动端支持  roshan
+移动端支持  
 
-热更机制 roshan 
+热更机制 
 
 地图生成 ericchan
 
