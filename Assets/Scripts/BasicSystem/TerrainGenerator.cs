@@ -1,9 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using Unity.Entities;
-using Unity.Transforms;
-using Unity.Mathematics;
 using protocol.cs_theircraft;
 
 public class TerrainGenerator : MonoBehaviour{
@@ -50,7 +46,6 @@ public class TerrainGenerator : MonoBehaviour{
             Vector2Int chunkPos = Ultiities.CSVector2Int_To_Vector2Int(csChunkPos);
             foreach (Block block in chunk2BlocksDict[chunkPos])
             {
-                chunk2BlocksDict[block.chunkPos].Remove(block);
                 pos2BlockDict.Remove(block.pos);
                 block.Destroy();
             }

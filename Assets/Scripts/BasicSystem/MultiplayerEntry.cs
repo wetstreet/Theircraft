@@ -16,7 +16,7 @@ public class MultiplayerEntry : MonoBehaviour {
 
         NetworkManager.Register(ENUM_CMD.CS_CHUNKS_ENTER_LEAVE_VIEW_RES, ChunksEnterLeaveViewRes);
         List<Vector2Int> preloadChunks = Ultiities.GetSurroudingChunks(Vector2Int.zero);
-        ChunksEnterLeaveViewReq(preloadChunks.ToArray());
+        ChunksEnterLeaveViewReq(preloadChunks);
     }
 
     void OnDestroy()
@@ -38,14 +38,14 @@ public class MultiplayerEntry : MonoBehaviour {
                 List<Vector2Int> surroudingChunks = Ultiities.GetSurroudingChunks(chunk);
                 List<Vector2Int> loadChunks = surroudingChunks.Except(lastSurroudingChunks).ToList();
                 List<Vector2Int> unloadChunks = lastSurroudingChunks.Except(surroudingChunks).ToList();
-                ChunksEnterLeaveViewReq(loadChunks.ToArray(), unloadChunks.ToArray());
+                ChunksEnterLeaveViewReq(loadChunks, unloadChunks);
             }
 
             lastChunk = chunk;
         }
     }
 
-    void ChunksEnterLeaveViewReq(Vector2Int[] enterViewChunks, Vector2Int[] leaveViewChunks = null)
+    void ChunksEnterLeaveViewReq(List<Vector2Int> enterViewChunks, List<Vector2Int> leaveViewChunks = null)
     {
         CSChunksEnterLeaveViewReq req = new CSChunksEnterLeaveViewReq();
 
@@ -76,13 +76,14 @@ public class MultiplayerEntry : MonoBehaviour {
             req.LeaveViewChunks.AddRange(leave);
         }
 
+        Debug.Log("CS_CHUNKS_ENTER_LEVAE_VIEW_REQ," + req.EnterViewChunks.Count + "," + req.LeaveViewChunks.Count);
         NetworkManager.Enqueue(ENUM_CMD.CS_CHUNKS_ENTER_LEVAE_VIEW_REQ, req);
     }
     
     void ChunksEnterLeaveViewRes(byte[] data)
     {
         CSChunksEnterLeaveViewRes rsp = NetworkManager.Deserialize<CSChunksEnterLeaveViewRes>(data);
-        Debug.Log("CSChunksEnterLeaveViewRes");
+        Debug.Log("CSChunksEnterLeaveViewRes," + rsp.EnterViewChunks.Count + "," + rsp.LeaveViewChunks.Count);
         if (rsp.RetCode == 0)
         {
             if (!PlayerController.isInitialized)
