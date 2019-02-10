@@ -75,7 +75,7 @@ public class UnityEngine_LightWrap
 		{
 			ToLua.CheckArgsCount(L, 1);
 			UnityEngine.Light obj = (UnityEngine.Light)ToLua.CheckObject(L, 1, typeof(UnityEngine.Light));
-			obj.SetLightDirty();
+			//obj.SetLightDirty();
 			return 0;
 		}
 		catch (Exception e)

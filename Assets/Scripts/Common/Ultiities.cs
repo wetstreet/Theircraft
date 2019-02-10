@@ -4,7 +4,7 @@ using protocol.cs_theircraft;
 
 public static class Ultiities {
 
-    static int chunkRange = 1;
+    static int chunkRange = 2;
 
     public static Vector2Int GetChunk(Vector3 position)
     {
