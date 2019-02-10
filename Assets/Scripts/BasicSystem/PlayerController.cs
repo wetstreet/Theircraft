@@ -226,7 +226,7 @@ public class PlayerController : MonoBehaviour {
         if (rsp.RetCode == 0)
         {
             TerrainGenerator.SetBlockData(rsp.block);
-            TerrainGenerator.RefreshAllChunks();
+            TerrainGenerator.RefreshNearbyBlocks(Ultiities.CSVector3Int_To_Vector3Int(rsp.block.position));
             FastTips.Show("放置了一个方块");
         }
         else
@@ -240,7 +240,7 @@ public class PlayerController : MonoBehaviour {
         //Debug.Log("OnAddBlockNotify");
         CSAddBlockNotify notify = NetworkManager.Deserialize<CSAddBlockNotify>(data);
         TerrainGenerator.SetBlockData(notify.block);
-        TerrainGenerator.RefreshAllChunks();
+        TerrainGenerator.RefreshNearbyBlocks(Ultiities.CSVector3Int_To_Vector3Int(notify.block.position));
     }
 
     void DeleteBlockReq(Vector3 pos)
@@ -264,6 +264,7 @@ public class PlayerController : MonoBehaviour {
         if (rsp.RetCode == 0)
         {
             TerrainGenerator.DestroyBlock(Ultiities.CSVector3Int_To_Vector3Int(rsp.position));
+            TerrainGenerator.RefreshNearbyBlocks(Ultiities.CSVector3Int_To_Vector3Int(rsp.position));
         }
         else
         {
@@ -276,5 +277,6 @@ public class PlayerController : MonoBehaviour {
         //Debug.Log("OnDeleteBlockNotify");
         CSDeleteBlockNotify notify = NetworkManager.Deserialize<CSDeleteBlockNotify>(data);
         TerrainGenerator.DestroyBlock(Ultiities.CSVector3Int_To_Vector3Int(notify.position));
+        TerrainGenerator.RefreshNearbyBlocks(Ultiities.CSVector3Int_To_Vector3Int(notify.position));
     }
 }

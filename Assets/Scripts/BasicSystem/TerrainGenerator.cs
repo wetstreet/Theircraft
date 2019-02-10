@@ -71,21 +71,64 @@ public class TerrainGenerator : MonoBehaviour{
         chunk2BlocksDict[block.chunkPos].Remove(block);
         pos2BlockDict.Remove(block.pos);
         block.Destroy();
-
-        RefreshAllChunks();
     }
 
-    public static void RefreshAllChunks()
+    public static void RefreshNearbyBlocks(Vector3Int blockPos)
     {
-        float time1 = Time.realtimeSinceStartup;
-        foreach (Block block in pos2BlockDict.Values)
+        List<Block> nearByBlocks = new List<Block>();
+        if (pos2BlockDict.ContainsKey(blockPos))
+            nearByBlocks.Add(pos2BlockDict[blockPos]);
+        if (pos2BlockDict.ContainsKey(blockPos + Vector3Int.up))
+            nearByBlocks.Add(pos2BlockDict[blockPos + Vector3Int.up]);
+        if (pos2BlockDict.ContainsKey(blockPos + Vector3Int.down))
+            nearByBlocks.Add(pos2BlockDict[blockPos + Vector3Int.down]);
+        if (pos2BlockDict.ContainsKey(blockPos + Vector3Int.left))
+            nearByBlocks.Add(pos2BlockDict[blockPos + Vector3Int.left]);
+        if (pos2BlockDict.ContainsKey(blockPos + Vector3Int.right))
+            nearByBlocks.Add(pos2BlockDict[blockPos + Vector3Int.right]);
+        if (pos2BlockDict.ContainsKey(blockPos + new Vector3Int(0, 0, 1)))
+            nearByBlocks.Add(pos2BlockDict[blockPos + new Vector3Int(0, 0, 1)]);
+        if (pos2BlockDict.ContainsKey(blockPos + new Vector3Int(0, 0, -1)))
+            nearByBlocks.Add(pos2BlockDict[blockPos + new Vector3Int(0, 0, -1)]);
+        RefreshBlocks(nearByBlocks);
+    }
+
+    public static void RefreshBlocks(List<Block> blocks)
+    {
+        foreach (Block block in blocks)
         {
             if (IsBlockExposed(block.pos))
                 block.Generate();
             else
                 block.Destroy();
         }
-        Debug.Log("generate time =" + (Time.realtimeSinceStartup - time1));
+    }
+
+    public static void RefreshAllChunks()
+    {
+        float time1 = Time.realtimeSinceStartup;
+        float timeGenerate = 0;
+        float timeDestroy = 0;
+        int generateCount = 0;
+        int destroyCount = 0;
+        foreach (Block block in pos2BlockDict.Values)
+        {
+            if (IsBlockExposed(block.pos))
+            {
+                float time2 = Time.realtimeSinceStartup;
+                block.Generate();
+                generateCount++;
+                timeGenerate += Time.realtimeSinceStartup - time2;
+            }
+            else
+            {
+                float time2 = Time.realtimeSinceStartup;
+                block.Destroy();
+                destroyCount++;
+                timeDestroy += Time.realtimeSinceStartup - time2;
+            }
+        }
+        Debug.Log("refreshTime=" + (Time.realtimeSinceStartup - time1) + ",generateTime="+timeGenerate+",generateCount="+generateCount+",destroyTime="+timeDestroy+",destroyCount="+destroyCount);
     }
 
     public static Transform GetChunkParent(Vector2Int chunk, bool createIfNotExist = true)
