@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using protocol.cs_enum;
 using protocol.cs_theircraft;
+using System.Threading.Tasks;
 
 public class MultiplayerEntry : MonoBehaviour {
 
@@ -76,14 +77,19 @@ public class MultiplayerEntry : MonoBehaviour {
             req.LeaveViewChunks.AddRange(leave);
         }
 
-        Debug.Log("CS_CHUNKS_ENTER_LEVAE_VIEW_REQ," + req.EnterViewChunks.Count + "," + req.LeaveViewChunks.Count);
+        //Debug.Log("CS_CHUNKS_ENTER_LEVAE_VIEW_REQ," + req.EnterViewChunks.Count + "," + req.LeaveViewChunks.Count);
         NetworkManager.Enqueue(ENUM_CMD.CS_CHUNKS_ENTER_LEVAE_VIEW_REQ, req);
     }
     
-    void ChunksEnterLeaveViewRes(byte[] data)
+    async void ChunksEnterLeaveViewRes(byte[] data)
     {
-        CSChunksEnterLeaveViewRes rsp = NetworkManager.Deserialize<CSChunksEnterLeaveViewRes>(data);
-        Debug.Log("CSChunksEnterLeaveViewRes," + rsp.EnterViewChunks.Count + "," + rsp.LeaveViewChunks.Count);
+        //反序列化太卡了，放在别的线程处理
+        CSChunksEnterLeaveViewRes rsp = null;
+        await Task.Run(() => {
+            rsp = NetworkManager.Deserialize<CSChunksEnterLeaveViewRes>(data);
+        });
+
+        //Debug.Log("CSChunksEnterLeaveViewRes," + rsp.EnterViewChunks.Count + "," + rsp.LeaveViewChunks.Count);
         if (rsp.RetCode == 0)
         {
             if (!PlayerController.isInitialized)
@@ -95,8 +101,15 @@ public class MultiplayerEntry : MonoBehaviour {
             else
             {
                 TerrainGenerator.SetChunksData(rsp.EnterViewChunks);
-                TerrainGenerator.RemoveChunksData(rsp.LeaveViewChunks);
-                TerrainGenerator.RefreshAllChunks();
+                TerrainGenerator.DestroyChunks(rsp.LeaveViewChunks);
+
+                List<Vector2Int> needRefreshList = new List<Vector2Int>();
+                foreach(CSChunk cschunk in rsp.EnterViewChunks)
+                {
+
+                    needRefreshList.Add(Ultiities.CSVector2Int_To_Vector2Int(cschunk.Position));
+                }
+                TerrainGenerator.RefreshChunksAsync(needRefreshList);
             }
         }
         else

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using protocol.cs_theircraft;
+using System.Collections;
 
 public class TerrainGenerator : MonoBehaviour{
 
@@ -13,13 +14,59 @@ public class TerrainGenerator : MonoBehaviour{
     static readonly int maxHeight = 15;
 
     static TerrainGenerator instance;
-    
-    static List<Vector2Int> waitForGenerateList = new List<Vector2Int>();
 
     public static void Init()
     {
         Block.Init();
         instance = new GameObject("TerrainGenerator").AddComponent<TerrainGenerator>();
+    }
+
+    static List<Block> needDestroyBlockList = new List<Block>();
+    static List<Vector2Int> needRefreshChunkList = new List<Vector2Int>();
+    IEnumerator ChunkRefresher()
+    {
+        while (true)
+        {
+            if (needDestroyBlockList.Count > 0)
+            {
+                foreach (Block block in needDestroyBlockList)
+                {
+                    block.Destroy();
+                }
+                needDestroyBlockList.Clear();
+                yield return null;
+            }
+            if (needRefreshChunkList.Count > 0)
+            {
+                Vector2Int chunk = needRefreshChunkList[0];
+                needRefreshChunkList.RemoveAt(0);
+                if (chunk2BlocksDict.ContainsKey(chunk))
+                {
+                    int count = 0;
+                    //这里先留个坑，这个列表应该复制一份，否则遍历到一半列表被更改了就会报错。
+                    foreach (Block block in chunk2BlocksDict[chunk])
+                    {
+                        if (IsBlockExposed(block.pos))
+                        {
+                            block.Generate();
+                            count++;
+                        }
+                        if (count == 100)
+                        {
+                            count = 0;
+                            yield return new WaitForEndOfFrame();
+                        }
+                    }
+                    yield return new WaitForEndOfFrame();
+                }
+            }
+            yield return null;
+        }
+    }
+
+    private void Start()
+    {
+        StartCoroutine(ChunkRefresher());
     }
 
     public static void SetChunksData(List<CSChunk> chunkList)
@@ -39,7 +86,7 @@ public class TerrainGenerator : MonoBehaviour{
         }
     }
 
-    public static void RemoveChunksData(List<CSVector2Int> chunkPosList)
+    public static void DestroyChunks(List<CSVector2Int> chunkPosList)
     {
         foreach (CSVector2Int csChunkPos in chunkPosList)
         {
@@ -47,10 +94,17 @@ public class TerrainGenerator : MonoBehaviour{
             foreach (Block block in chunk2BlocksDict[chunkPos])
             {
                 pos2BlockDict.Remove(block.pos);
-                block.Destroy();
+                //太卡了，改成异步
+                //block.Destroy();
+                needDestroyBlockList.Add(block);
             }
             chunk2BlocksDict.Remove(chunkPos);
         }
+    }
+
+    public static void RefreshChunksAsync(List<Vector2Int> list)
+    {
+        needRefreshChunkList.AddRange(list);
     }
 
     public static void SetBlockData(CSBlock csblock)
