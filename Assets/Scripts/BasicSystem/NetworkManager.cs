@@ -138,6 +138,8 @@ public static class NetworkManager
                     bufdata = new byte[1024];
                 else
                     bufdata = new byte[length];
+
+                DateTime t1 = DateTime.Now;
                 do
                 {
                     if (stream.DataAvailable)
@@ -150,6 +152,7 @@ public static class NetworkManager
                         Thread.Sleep(1);
 
                 } while (totalBytesRead < length);
+                Debug.Log((DateTime.Now - t1).ToString());
                 Debug.Log("receive message, type=" + type + ",length=" + length + ",totalBytesRead=" + totalBytesRead);
 
                 Package package = new Package();
