@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using protocol.cs_enum;
+using protocol.cs_theircraft;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -34,6 +36,11 @@ public class mergetestPlayerController : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         camera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
         cc = GetComponent<CharacterController>();
+
+        NetworkManager.Register(ENUM_CMD.CS_ADD_BLOCK_RES, AddBlockRes);
+        NetworkManager.Register(ENUM_CMD.CS_ADD_BLOCK_NOTIFY, OnAddBlockNotify);
+        NetworkManager.Register(ENUM_CMD.CS_DELETE_BLOCK_RES, DeleteBlockRes);
+        NetworkManager.Register(ENUM_CMD.CS_DELETE_BLOCK_NOTIFY, OnDeleteBlockNotify);
     }
 
     // raycast的结果有精度问题，所以要加上精度补偿（每个轴的正负两个方向都试着取一下，最坏需要尝试2^3=8种情况）
@@ -87,7 +94,7 @@ public class mergetestPlayerController : MonoBehaviour
                 }
             }
         }
-        return Vector3Int.zero;
+        throw new System.Exception("what the fuck?");
     }
 
     // Update is called once per frame
@@ -100,14 +107,14 @@ public class mergetestPlayerController : MonoBehaviour
         {
             if (WireFrameHelper.render)
             {
-                test.RemoveBlock(WireFrameHelper.pos);
+                DeleteBlockReq(WireFrameHelper.pos);
             }
         }
         if (Input.GetMouseButtonDown(1))
         {
             if (WireFrameHelper.render)
             {
-                test.AddBlock(Vector3Int.RoundToInt(WireFrameHelper.pos + hit.normal));
+                AddBlockReq(Vector3Int.RoundToInt(WireFrameHelper.pos + hit.normal), ItemSelectPanel.curBlockType);
             }
         }
         if (Input.GetKeyDown(KeyCode.Space))
@@ -175,5 +182,84 @@ public class mergetestPlayerController : MonoBehaviour
     void FixedUpdate()
     {
         ProcessMovement();
+    }
+
+    void AddBlockReq(Vector3Int pos, CSBlockType type)
+    {
+        CSAddBlockReq addBlockReq = new CSAddBlockReq
+        {
+            block = new CSBlock
+            {
+                position = new CSVector3Int
+                {
+                    x = pos.x,
+                    y = pos.y,
+                    z = pos.z
+                },
+                type = type
+            }
+        };
+        NetworkManager.Enqueue(ENUM_CMD.CS_ADD_BLOCK_REQ, addBlockReq);
+    }
+
+    void AddBlockRes(byte[] data)
+    {
+        CSAddBlockRes rsp = NetworkManager.Deserialize<CSAddBlockRes>(data);
+        //Debug.Log("AddBlockRes,retCode=" + rsp.RetCode);
+        if (rsp.RetCode == 0)
+        {
+            Vector3Int blockPos = new Vector3Int(rsp.block.position.x, rsp.block.position.y, rsp.block.position.z);
+            test.AddBlock(blockPos, rsp.block.type);
+            FastTips.Show("放置了一个方块");
+        }
+        else
+        {
+            FastTips.Show(rsp.RetCode);
+        }
+    }
+
+    void OnAddBlockNotify(byte[] data)
+    {
+        //Debug.Log("OnAddBlockNotify");
+        CSAddBlockNotify notify = NetworkManager.Deserialize<CSAddBlockNotify>(data);
+        Vector3Int blockPos = new Vector3Int(notify.block.position.x, notify.block.position.y, notify.block.position.z);
+        test.AddBlock(blockPos, notify.block.type);
+    }
+
+    void DeleteBlockReq(Vector3 pos)
+    {
+        CSDeleteBlockReq req = new CSDeleteBlockReq
+        {
+            position = new CSVector3Int
+            {
+                x = Mathf.RoundToInt(pos.x),
+                y = Mathf.RoundToInt(pos.y),
+                z = Mathf.RoundToInt(pos.z)
+            }
+        };
+        NetworkManager.Enqueue(ENUM_CMD.CS_DELETE_BLOCK_REQ, req);
+    }
+
+    void DeleteBlockRes(byte[] data)
+    {
+        CSDeleteBlockRes rsp = NetworkManager.Deserialize<CSDeleteBlockRes>(data);
+        //Debug.Log("DeleteBlockRes,retCode=" + rsp.RetCode);
+        if (rsp.RetCode == 0)
+        {
+            Vector3Int blockPos = new Vector3Int(rsp.position.x, rsp.position.y, rsp.position.z);
+            test.RemoveBlock(blockPos);
+        }
+        else
+        {
+            FastTips.Show(rsp.RetCode);
+        }
+    }
+
+    void OnDeleteBlockNotify(byte[] data)
+    {
+        //Debug.Log("OnDeleteBlockNotify");
+        CSDeleteBlockNotify notify = NetworkManager.Deserialize<CSDeleteBlockNotify>(data);
+        Vector3Int blockPos = new Vector3Int(notify.position.x, notify.position.y, notify.position.z);
+        test.RemoveBlock(blockPos);
     }
 }

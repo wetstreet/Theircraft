@@ -10,6 +10,8 @@ public class MergeTestStart : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        GameKernel.Create();
+        ChatPanel.ShowChatPanel();
         ItemSelectPanel.Show();
         NetworkManager.Register(ENUM_CMD.CS_CHUNKS_ENTER_LEAVE_VIEW_RES, ChunksEnterLeaveViewRes);
 

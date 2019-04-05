@@ -148,11 +148,11 @@ public class test : MonoBehaviour
         return posBlockDict.ContainsKey(blockPos);
     }
 
-    public static void AddBlock(Vector3Int blockPos)
+    public static void AddBlock(Vector3Int blockPos, CSBlockType type)
     {
         Vector2Int chunkPos = new Vector2Int(Mathf.FloorToInt(blockPos.x / 16), Mathf.FloorToInt(blockPos.z / 16));
 
-        Block block = new Block { pos = blockPos, chunk = chunkPos, type = CSBlockType.Brick };
+        Block block = new Block { pos = blockPos, chunk = chunkPos, type = type };
         posBlockDict[blockPos] = block;
         chunkBlocksDict[chunkPos].Add(block.pos, block);
 
