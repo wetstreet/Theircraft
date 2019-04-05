@@ -138,6 +138,10 @@ public static class NetworkManager
                     bufdata = new byte[1024];
                 else
                     bufdata = new byte[length];
+
+                int tick1 = Environment.TickCount;
+
+
                 do
                 {
                     if (stream.DataAvailable)
@@ -150,6 +154,10 @@ public static class NetworkManager
                         Thread.Sleep(1);
 
                 } while (totalBytesRead < length);
+
+                float s = (Environment.TickCount - tick1) / 1000f;
+                Debug.Log("time = " + s);
+
                 Debug.Log("receive message, type=" + type + ",length=" + length + ",totalBytesRead=" + totalBytesRead);
 
                 Package package = new Package();
