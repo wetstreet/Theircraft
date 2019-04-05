@@ -34,13 +34,98 @@ public class mergetestPlayerController : MonoBehaviour
         cc = GetComponent<CharacterController>();
     }
 
+    // raycast的结果有精度问题，所以要加上精度补偿（每个轴的正负两个方向都试着取一下，最坏需要尝试2^3=8种情况）
+    Vector3Int GetBlockPosByRaycast(Vector3 point)
+    {
+        float precisionCompensation = 0.01f;
+        Vector3Int pos = new Vector3Int();
+
+        pos.Set(Mathf.RoundToInt(point.x - precisionCompensation), Mathf.RoundToInt(point.y - precisionCompensation), Mathf.RoundToInt(point.z - precisionCompensation));
+        if (test.ContainBlock(pos))
+            return pos;
+        else
+        {
+            pos.Set(Mathf.RoundToInt(point.x - precisionCompensation), Mathf.RoundToInt(point.y - precisionCompensation), Mathf.RoundToInt(point.z + precisionCompensation));
+            if (test.ContainBlock(pos))
+                return pos;
+            else
+            {
+                pos.Set(Mathf.RoundToInt(point.x - precisionCompensation), Mathf.RoundToInt(point.y + precisionCompensation), Mathf.RoundToInt(point.z - precisionCompensation));
+                if (test.ContainBlock(pos))
+                    return pos;
+                else
+                {
+                    pos.Set(Mathf.RoundToInt(point.x - precisionCompensation), Mathf.RoundToInt(point.y + precisionCompensation), Mathf.RoundToInt(point.z + precisionCompensation));
+                    if (test.ContainBlock(pos))
+                        return pos;
+                    else
+                    {
+                        pos.Set(Mathf.RoundToInt(point.x + precisionCompensation), Mathf.RoundToInt(point.y - precisionCompensation), Mathf.RoundToInt(point.z - precisionCompensation));
+                        if (test.ContainBlock(pos))
+                            return pos;
+                        else
+                        {
+                            pos.Set(Mathf.RoundToInt(point.x + precisionCompensation), Mathf.RoundToInt(point.y - precisionCompensation), Mathf.RoundToInt(point.z + precisionCompensation));
+                            if (test.ContainBlock(pos))
+                                return pos;
+                            else
+                            {
+                                pos.Set(Mathf.RoundToInt(point.x + precisionCompensation), Mathf.RoundToInt(point.y + precisionCompensation), Mathf.RoundToInt(point.z - precisionCompensation));
+                                if (test.ContainBlock(pos))
+                                    return pos;
+                                else
+                                {
+                                    pos.Set(Mathf.RoundToInt(point.x + precisionCompensation), Mathf.RoundToInt(point.y + precisionCompensation), Mathf.RoundToInt(point.z + precisionCompensation));
+                                    if (test.ContainBlock(pos))
+                                        return pos;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return Vector3Int.zero;
+    }
+
     // Update is called once per frame
     void Update()
     {
         RotateView();
+        DrawWireFrame();
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            if (WireFrameHelper.render)
+            {
+                test.RemoveBlock(WireFrameHelper.pos);
+            }
+        }
         if (Input.GetKeyDown(KeyCode.Space))
         {
             Jump();
+        }
+    }
+
+    void DrawWireFrame()
+    {
+        Vector3 center = new Vector3(Screen.width / 2, Screen.height / 2, 0);
+        int cubeLayerIndex = LayerMask.NameToLayer("Block");
+        if (cubeLayerIndex != -1)
+        {
+            int layerMask = (1 << cubeLayerIndex);
+            if (Physics.Raycast(Camera.main.ScreenPointToRay(center), out RaycastHit hit, 5f, layerMask))
+            {
+                Vector3Int pos = GetBlockPosByRaycast(hit.point);
+                //Debug.Log(hit.point + "," + pos);
+
+                WireFrameHelper.render = true;
+                WireFrameHelper.pos = pos;
+            }
+            else
+            {
+                WireFrameHelper.render = false;
+            }
         }
     }
 

@@ -149,7 +149,7 @@ public class PlayerController : MonoBehaviour {
         if (b && hit.transform.tag == "Block")
         {
             WireFrameHelper.render = true;
-            WireFrameHelper.pos = hit.transform.localPosition;
+            WireFrameHelper.pos = Vector3Int.RoundToInt(hit.transform.localPosition);
         }
         else
         {

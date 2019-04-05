@@ -27,7 +27,7 @@ public class WireFrameHelper : MonoBehaviour
     float unit = 0.502f;
 
     public static bool render = false;
-    public static Vector3 pos;
+    public static Vector3Int pos;
 
     // Will be called after all regular rendering is done
     public void OnRenderObject()

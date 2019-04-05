@@ -6,29 +6,29 @@ public class test : MonoBehaviour
 {
 
 
-    Vector3 nearBottomLeft = new Vector3(-0.5f, -0.5f, -0.5f);
-    Vector3 nearBottomRight = new Vector3(0.5f, -0.5f, -0.5f);
-    Vector3 nearTopLeft = new Vector3(-0.5f, 0.5f, -0.5f);
-    Vector3 nearTopRight = new Vector3(0.5f, 0.5f, -0.5f);
-    Vector3 farBottomLeft = new Vector3(-0.5f, -0.5f, 0.5f);
-    Vector3 farBottomRight = new Vector3(0.5f, -0.5f, 0.5f);
-    Vector3 farTopLeft = new Vector3(-0.5f, 0.5f, 0.5f);
-    Vector3 farTopRight = new Vector3(0.5f, 0.5f, 0.5f);
+    static Vector3 nearBottomLeft = new Vector3(-0.5f, -0.5f, -0.5f);
+    static Vector3 nearBottomRight = new Vector3(0.5f, -0.5f, -0.5f);
+    static Vector3 nearTopLeft = new Vector3(-0.5f, 0.5f, -0.5f);
+    static Vector3 nearTopRight = new Vector3(0.5f, 0.5f, -0.5f);
+    static Vector3 farBottomLeft = new Vector3(-0.5f, -0.5f, 0.5f);
+    static Vector3 farBottomRight = new Vector3(0.5f, -0.5f, 0.5f);
+    static Vector3 farTopLeft = new Vector3(-0.5f, 0.5f, 0.5f);
+    static Vector3 farTopRight = new Vector3(0.5f, 0.5f, 0.5f);
 
-    Vector2 uv0_0 = new Vector2(0, 0);
-    Vector2 uv1_0 = new Vector2(1 / 16f, 0);
-    Vector2 uv0_1 = new Vector2(0, 1 / 16f);
-    Vector2 uv1_1 = new Vector2(1 / 16f, 1 / 16f);
-    Vector2 uv0_2 = new Vector2(0, 2 / 16f);
-    Vector2 uv1_2 = new Vector2(1 / 16f, 2 / 16f);
-    Vector2 uv0_3 = new Vector2(0, 3 / 16f);
-    Vector2 uv1_3 = new Vector2(1 / 16f, 3 / 16f);
+    static Vector2 uv0_0 = new Vector2(0, 0);
+    static Vector2 uv1_0 = new Vector2(1 / 16f, 0);
+    static Vector2 uv0_1 = new Vector2(0, 1 / 16f);
+    static Vector2 uv1_1 = new Vector2(1 / 16f, 1 / 16f);
+    static Vector2 uv0_2 = new Vector2(0, 2 / 16f);
+    static Vector2 uv1_2 = new Vector2(1 / 16f, 2 / 16f);
+    static Vector2 uv0_3 = new Vector2(0, 3 / 16f);
+    static Vector2 uv1_3 = new Vector2(1 / 16f, 3 / 16f);
 
-    List<Vector3> vertices = new List<Vector3>();
-    List<Vector2> uv = new List<Vector2>();
-    List<int> triangles = new List<int>();
+    static List<Vector3> vertices = new List<Vector3>();
+    static List<Vector2> uv = new List<Vector2>();
+    static List<int> triangles = new List<int>();
 
-    void ClearData()
+    static void ClearData()
     {
         vertices.Clear();
         uv.Clear();
@@ -48,42 +48,42 @@ public class test : MonoBehaviour
     // vertex order
     // 1 3
     // 0 2 
-    void AddFrontFace(Vector3Int pos)
+    static void AddFrontFace(Vector3Int pos)
     {
         vertices.AddRange(new List<Vector3> { nearBottomLeft + pos, nearTopLeft + pos, nearBottomRight + pos, nearTopRight + pos });
         uv.AddRange(new List<Vector2> { uv0_1, uv0_2, uv1_1, uv1_2 });
         triangles.AddRange(new int[] { vertices.Count - 4, vertices.Count - 3, vertices.Count - 2, vertices.Count - 3, vertices.Count - 1, vertices.Count - 2 });
     }
 
-    void AddRightFace(Vector3Int pos)
+    static void AddRightFace(Vector3Int pos)
     {
         vertices.AddRange(new List<Vector3> { nearBottomRight + pos, nearTopRight + pos, farBottomRight + pos, farTopRight + pos });
         uv.AddRange(new List<Vector2> { uv0_1, uv0_2, uv1_1, uv1_2 });
         triangles.AddRange(new int[] { vertices.Count - 4, vertices.Count - 3, vertices.Count - 2, vertices.Count - 3, vertices.Count - 1, vertices.Count - 2 });
     }
 
-    void AddLeftFace(Vector3Int pos)
+    static void AddLeftFace(Vector3Int pos)
     {
         vertices.AddRange(new List<Vector3> { farBottomLeft + pos, farTopLeft + pos, nearBottomLeft + pos, nearTopLeft + pos });
         uv.AddRange(new List<Vector2> { uv0_1, uv0_2, uv1_1, uv1_2 });
         triangles.AddRange(new int[] { vertices.Count - 4, vertices.Count - 3, vertices.Count - 2, vertices.Count - 3, vertices.Count - 1, vertices.Count - 2 });
     }
 
-    void AddBackFace(Vector3Int pos)
+    static void AddBackFace(Vector3Int pos)
     {
         vertices.AddRange(new List<Vector3> { farBottomRight + pos, farTopRight + pos, farBottomLeft + pos, farTopLeft + pos });
         uv.AddRange(new List<Vector2> { uv0_1, uv0_2, uv1_1, uv1_2 });
         triangles.AddRange(new int[] { vertices.Count - 4, vertices.Count - 3, vertices.Count - 2, vertices.Count - 3, vertices.Count - 1, vertices.Count - 2 });
     }
 
-    void AddTopFace(Vector3Int pos)
+    static void AddTopFace(Vector3Int pos)
     {
         vertices.AddRange(new List<Vector3> { nearTopLeft + pos, farTopLeft + pos, nearTopRight + pos, farTopRight + pos });
         uv.AddRange(new List<Vector2> { uv0_2, uv0_3, uv1_2, uv1_3 });
         triangles.AddRange(new int[] { vertices.Count - 4, vertices.Count - 3, vertices.Count - 2, vertices.Count - 3, vertices.Count - 1, vertices.Count - 2 });
     }
 
-    void AddBottomFace(Vector3Int pos)
+    static void AddBottomFace(Vector3Int pos)
     {
         vertices.AddRange(new List<Vector3> { farBottomLeft + pos, nearBottomLeft + pos, farBottomRight + pos, nearBottomRight + pos });
         uv.AddRange(new List<Vector2> { uv0_0, uv0_1, uv1_0, uv1_1 });
@@ -94,7 +94,6 @@ public class test : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
         for (int i = 0; i < sight; i++)
         {
             for (int j = 0; j < sight; j++)
@@ -102,41 +101,65 @@ public class test : MonoBehaviour
                 GenerateChunk(new Vector2Int(i, j));
             }
         }
+        //GenerateChunk(Vector2Int.zero);
+        //GenerateChunk(Vector2Int.right);
         mergetestPlayerController.Init();
+    }
+
+    static HashSet<Vector3Int> allBlocks = new HashSet<Vector3Int>();
+    static Dictionary<Vector2Int, GameObject> chunk2object = new Dictionary<Vector2Int, GameObject>();
+    static Dictionary<Vector3Int, Vector2Int> block2chunk = new Dictionary<Vector3Int, Vector2Int>();
+    static Dictionary<Vector2Int, HashSet<Vector3Int>> chunk2blocks = new Dictionary<Vector2Int, HashSet<Vector3Int>>();
+
+    public static bool ContainBlock(Vector3Int blockPos)
+    {
+        return allBlocks.Contains(blockPos);
+    }
+
+    public static void RemoveBlock(Vector3Int blockPos)
+    {
+        if (allBlocks.Contains(blockPos))
+            allBlocks.Remove(blockPos);
+
+        Vector2Int chunkPos = block2chunk[blockPos];
+        chunk2blocks[chunkPos].Remove(blockPos);
+        RefreshChunk(chunkPos);
     }
 
     static int scale = 35;
     static int maxHeight = 15;
-    void GenerateChunk(Vector2Int pos)
+    void GenerateChunk(Vector2Int chunkPos)
     {
         HashSet<Vector3Int> blocks = new HashSet<Vector3Int>();
         for (int i = 0; i < 16; i++)
         {
             for (int j = 0; j < 16; j++)
             {
-                float x = (float)0.5 + i + pos.x * 16;
-                float z = (float)0.5 + j + pos.y * 16;
+                float x = (float)0.5 + i + chunkPos.x * 16;
+                float z = (float)0.5 + j + chunkPos.y * 16;
                 float noise = Mathf.PerlinNoise(x / scale, z / scale);
                 int height = Mathf.RoundToInt(maxHeight * noise);
                 for (int k = 0; k < height; k++)
                 {
-                    blocks.Add(new Vector3Int(i, k, j));
+                    Vector3Int blockPos = new Vector3Int(i + chunkPos.x * 16, k, j + chunkPos.y * 16);
+                    blocks.Add(blockPos);
+                    allBlocks.Add(blockPos);
+                    block2chunk[blockPos] = chunkPos;
                 }
             }
         }
-        GameObject chunkObj = GenerateChunk(blocks);
-        chunkObj.transform.localPosition = new Vector3(pos.x * 16, 0, pos.y * 16);
+        chunk2blocks[chunkPos] = blocks;
+
+        GameObject chunkObj = GenerateChunk(chunkPos, blocks);
+        chunk2object[chunkPos] = chunkObj;
     }
 
 
-    Vector3Int Vector3Int_forward = new Vector3Int(0, 0, 1);
-    Vector3Int Vector3Int_back = new Vector3Int(0, 0, -1);
+    static Vector3Int Vector3Int_forward = new Vector3Int(0, 0, 1);
+    static Vector3Int Vector3Int_back = new Vector3Int(0, 0, -1);
 
-    GameObject GenerateChunk(HashSet<Vector3Int> chunkBlocks)
+    static Mesh RebuildMesh(HashSet<Vector3Int> chunkBlocks)
     {
-        Texture tex = Resources.Load<Texture>("merge-test/texture");
-        GameObject chunk = new GameObject("chunk");
-        MeshFilter mf = chunk.AddComponent<MeshFilter>();
         Mesh mesh = new Mesh();
 
         ClearData();
@@ -144,19 +167,14 @@ public class test : MonoBehaviour
         {
             if (!chunkBlocks.Contains(pos + Vector3Int_back))
                 AddFrontFace(pos);
-
             if (!chunkBlocks.Contains(pos + Vector3Int.right))
                 AddRightFace(pos);
-
             if (!chunkBlocks.Contains(pos + Vector3Int.left))
                 AddLeftFace(pos);
-
             if (!chunkBlocks.Contains(pos + Vector3Int_forward))
                 AddBackFace(pos);
-
             if (!chunkBlocks.Contains(pos + Vector3Int.up))
                 AddTopFace(pos);
-
             if (!chunkBlocks.Contains(pos + Vector3Int.down))
                 AddBottomFace(pos);
         }
@@ -164,18 +182,29 @@ public class test : MonoBehaviour
         mesh.vertices = vertices.ToArray();
         mesh.uv = uv.ToArray();
         mesh.triangles = triangles.ToArray();
+        return mesh;
+    }
 
-        mf.mesh = mesh;
+    GameObject GenerateChunk(Vector2Int chunkPos, HashSet<Vector3Int> chunkBlocks)
+    {
+        GameObject chunk = new GameObject("chunk (" + chunkPos.x + "," + chunkPos.y + ")");
+        MeshFilter mf = chunk.AddComponent<MeshFilter>();
+
+        mf.mesh = RebuildMesh(chunkBlocks);
         MeshRenderer mr = chunk.AddComponent<MeshRenderer>();
         mr.material = Resources.Load<Material>("merge-test/mat");
 
         chunk.AddComponent<MeshCollider>();
+        chunk.layer = LayerMask.NameToLayer("Block");
         return chunk;
     }
 
-    // Update is called once per frame
-    void Update()
+    static void RefreshChunk(Vector2Int chunkPos)
     {
-        
+        GameObject chunkObj = chunk2object[chunkPos];
+        MeshFilter mf = chunkObj.GetComponent<MeshFilter>();
+        mf.mesh = RebuildMesh(chunk2blocks[chunkPos]);
+        MeshCollider mc = chunkObj.GetComponent<MeshCollider>();
+        mc.sharedMesh = mf.mesh;
     }
 }
