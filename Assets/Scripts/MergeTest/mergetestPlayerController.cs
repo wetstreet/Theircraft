@@ -24,6 +24,8 @@ public class mergetestPlayerController : MonoBehaviour
             instance = Instantiate(prefab) as GameObject;
             instance.transform.position = new Vector3(0, 10, 0);
         }
+        LoadingUI.Close();
+        CrossHair.Show();
     }
 
     // Use this for initialization

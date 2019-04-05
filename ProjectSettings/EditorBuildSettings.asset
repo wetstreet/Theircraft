@@ -11,4 +11,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/MultiplayerScene.unity
     guid: f33c2e686a547d644b68a9cd2a1f182d
+  - enabled: 1
+    path: Assets/Scenes/MergeTest.unity
+    guid: 205b8df341205c946826e4bbe1f023d6
   m_configObjects: {}
