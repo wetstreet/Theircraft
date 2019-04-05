@@ -10,7 +10,10 @@ public class PlayerController : MonoBehaviour {
     private Vector3 verticalSpeed;
     private new Camera camera;
     private CharacterController cc;
-    
+    private Transform head;
+    private Animator animator;
+
+    bool isMoving;
     static bool acceptInput = true;
     public static bool isInitialized = false;
     
@@ -53,6 +56,9 @@ public class PlayerController : MonoBehaviour {
         Cursor.visible = false;
         camera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
         cc = GetComponent<CharacterController>();
+        head = transform.Find("steve/Armature/Move/Body_Lower/Body_Upper/Head.001");
+        Transform steve = transform.Find("steve");
+        animator = steve.GetComponent<Animator>();
 
         NetworkManager.Register(ENUM_CMD.CS_ADD_BLOCK_RES, AddBlockRes);
         NetworkManager.Register(ENUM_CMD.CS_ADD_BLOCK_NOTIFY, OnAddBlockNotify);
@@ -166,6 +172,22 @@ public class PlayerController : MonoBehaviour {
         verticalSpeed += Physics.gravity * Time.fixedDeltaTime;
         Vector3 verticalMovement = verticalSpeed * Time.fixedDeltaTime;
         Vector3 horizontalMovement = transform.forward * v + transform.right * h;
+        if (horizontalMovement != Vector3.zero)
+        {
+            if (!isMoving)
+            {
+                isMoving = true;
+                animator.CrossFade("walk", 0);
+            }
+        }
+        else
+        {
+            if (isMoving)
+            {
+                isMoving = false;
+                animator.CrossFade("idle", 0);
+            }
+        }
         cc.Move(horizontalMovement * horizontalScale + verticalMovement * verticalScale);
         
         if (cc.isGrounded)
@@ -187,6 +209,7 @@ public class PlayerController : MonoBehaviour {
         float y = Input.GetAxis("Mouse Y");
         camera.transform.localRotation *= Quaternion.Euler(-y, 0, 0);
         transform.localRotation *= Quaternion.Euler(0, x, 0);
+        head.transform.localRotation *= Quaternion.Euler(0, 0, -y);
     }
 
     void FixedUpdate()
