@@ -101,12 +101,20 @@ public class mergetestPlayerController : MonoBehaviour
                 test.RemoveBlock(WireFrameHelper.pos);
             }
         }
+        if (Input.GetMouseButtonDown(1))
+        {
+            if (WireFrameHelper.render)
+            {
+                test.AddBlock(Vector3Int.RoundToInt(WireFrameHelper.pos + hit.normal));
+            }
+        }
         if (Input.GetKeyDown(KeyCode.Space))
         {
             Jump();
         }
     }
 
+    RaycastHit hit;
     void DrawWireFrame()
     {
         Vector3 center = new Vector3(Screen.width / 2, Screen.height / 2, 0);
@@ -114,7 +122,7 @@ public class mergetestPlayerController : MonoBehaviour
         if (cubeLayerIndex != -1)
         {
             int layerMask = (1 << cubeLayerIndex);
-            if (Physics.Raycast(Camera.main.ScreenPointToRay(center), out RaycastHit hit, 5f, layerMask))
+            if (Physics.Raycast(Camera.main.ScreenPointToRay(center), out hit, 5f, layerMask))
             {
                 Vector3Int pos = GetBlockPosByRaycast(hit.point);
                 //Debug.Log(hit.point + "," + pos);

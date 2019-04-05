@@ -116,11 +116,18 @@ public class test : MonoBehaviour
         return allBlocks.Contains(blockPos);
     }
 
+    public static void AddBlock(Vector3Int blockPos)
+    {
+        allBlocks.Add(blockPos);
+        Vector2Int chunkPos = new Vector2Int(Mathf.FloorToInt(blockPos.x / 16), Mathf.FloorToInt(blockPos.z / 16));
+        block2chunk[blockPos] = chunkPos;
+        chunk2blocks[chunkPos].Add(blockPos);
+        RefreshChunk(chunkPos);
+    }
+
     public static void RemoveBlock(Vector3Int blockPos)
     {
-        if (allBlocks.Contains(blockPos))
-            allBlocks.Remove(blockPos);
-
+        allBlocks.Remove(blockPos);
         Vector2Int chunkPos = block2chunk[blockPos];
         chunk2blocks[chunkPos].Remove(blockPos);
         RefreshChunk(chunkPos);
