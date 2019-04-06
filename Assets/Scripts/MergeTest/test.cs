@@ -107,35 +107,6 @@ public class test : MonoBehaviour
         vertices.AddRange(new List<Vector3> { farBottomLeft + pos, nearBottomLeft + pos, farBottomRight + pos, nearBottomRight + pos });
         AddUV(texPos);
     }
-
-    int sight = 12;
-    // Start is called before the first frame update
-    void Start()
-    {
-        int start;
-        int max;
-        if (sight % 2 == 0)
-        {
-            int half = sight / 2;
-            start = -half;
-            max = half - 1;
-        }
-        else
-        {
-            int half = Mathf.FloorToInt(sight / 2);
-            start = -half;
-            max = half;
-        }
-
-        for (int i = start; i < max; i++)
-        {
-            for (int j = start; j < max; j++)
-            {
-                GenerateChunk(new Vector2Int(i, j));
-            }
-        }
-        mergetestPlayerController.Init();
-    }
     
     static Dictionary<Vector2Int, GameObject> chunk2object = new Dictionary<Vector2Int, GameObject>();
 
@@ -175,17 +146,41 @@ public class test : MonoBehaviour
         foreach (CSChunk chunk in chunkList)
         {
             Dictionary<Vector3Int, Block> chunk_posBlockDict = new Dictionary<Vector3Int, Block>();
-
             Vector2Int chunkPos = new Vector2Int(chunk.Position.x, chunk.Position.y);
-            foreach (CSBlock csblock in chunk.Blocks)
-            {
-                Vector3Int blockPos = new Vector3Int(csblock.position.x, csblock.position.y, csblock.position.z);
-                Block block = new Block { pos = blockPos, chunk = chunkPos, type = csblock.type };
-                posBlockDict[blockPos] = block;
-                chunk_posBlockDict[blockPos] = block;
-            }
-            chunkBlocksDict[chunkPos] = chunk_posBlockDict;
 
+
+            //压缩后的数据结构
+            for (int k = 0; k < 256; k++)
+            {
+                for (int i = 0; i < 16; i++)
+                {
+                    for (int j = 0; j < 16; j++)
+                    {
+                        byte b = chunk.BlocksInBytes[256 * k + 16 * i + j];
+                        CSBlockType type = (CSBlockType)b;
+                        if (type != CSBlockType.None)
+                        {
+                            Vector3Int blockPos = new Vector3Int(chunkPos.x * 16 + i, k, chunkPos.y * 16 + j);
+                            Block block = new Block { pos = blockPos, chunk = chunkPos, type = type };
+                            posBlockDict[blockPos] = block;
+                            chunk_posBlockDict[blockPos] = block;
+                        }
+                    }
+                }
+            }
+
+
+            //压缩前的数据结构
+            //foreach (CSBlock csblock in chunk.Blocks)
+            //{
+            //    Vector3Int blockPos = new Vector3Int(csblock.position.x, csblock.position.y, csblock.position.z);
+            //    Block block = new Block { pos = blockPos, chunk = chunkPos, type = csblock.type };
+            //    posBlockDict[blockPos] = block;
+            //    chunk_posBlockDict[blockPos] = block;
+            //}
+
+
+            chunkBlocksDict[chunkPos] = chunk_posBlockDict;
             GameObject chunkObj = GenerateChunkObj(chunkPos);
             chunk2object[chunkPos] = chunkObj;
         }

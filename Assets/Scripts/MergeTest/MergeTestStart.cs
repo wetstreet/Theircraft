@@ -5,7 +5,7 @@ using protocol.cs_theircraft;
 
 public class MergeTestStart : MonoBehaviour
 {
-    int sight = 12;
+    int sight = 10;
 
     // Start is called before the first frame update
     void Start()
@@ -15,6 +15,7 @@ public class MergeTestStart : MonoBehaviour
         ItemSelectPanel.Show();
         NetworkManager.Register(ENUM_CMD.CS_CHUNKS_ENTER_LEAVE_VIEW_RES, ChunksEnterLeaveViewRes);
 
+        List<Vector2Int> preloadChunks = new List<Vector2Int>();
 
         int start;
         int max;
@@ -31,14 +32,14 @@ public class MergeTestStart : MonoBehaviour
             max = half;
         }
 
-        List<Vector2Int> preloadChunks = new List<Vector2Int>();
-        for (int i = start; i < max; i++)
+        for (int i = start; i <= max; i++)
         {
-            for (int j = start; j < max; j++)
+            for (int j = start; j <= max; j++)
             {
                 preloadChunks.Add(new Vector2Int(i, j));
             }
         }
+        //preloadChunks.Add(Vector2Int.zero);
 
         ChunksEnterLeaveViewReq(preloadChunks);
     }

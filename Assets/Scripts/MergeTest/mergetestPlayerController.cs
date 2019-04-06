@@ -24,7 +24,7 @@ public class mergetestPlayerController : MonoBehaviour
         {
             Object prefab = Resources.Load("merge-test/Character");
             instance = Instantiate(prefab) as GameObject;
-            instance.transform.position = new Vector3(0, 10, 0);
+            instance.transform.position = new Vector3(0, 30, 0);
         }
         LoadingUI.Close();
         CrossHair.Show();

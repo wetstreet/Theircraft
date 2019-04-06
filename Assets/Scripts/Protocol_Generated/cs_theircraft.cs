@@ -139,6 +139,14 @@ namespace protocol.cs_theircraft
       get { return _Blocks; }
     }
   
+    private byte[] _BlocksInBytes = null;
+    [global::ProtoBuf.ProtoMember(3, IsRequired = false, Name=@"BlocksInBytes", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue(null)]
+    public byte[] BlocksInBytes
+    {
+      get { return _BlocksInBytes; }
+      set { _BlocksInBytes = value; }
+    }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
