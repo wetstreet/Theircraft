@@ -120,6 +120,48 @@ namespace protocol.cs_theircraft
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
   }
   
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"CSPlayer")]
+  public partial class CSPlayer : global::ProtoBuf.IExtensible
+  {
+    public CSPlayer() {}
+    
+    private uint _PlayerID = default(uint);
+    [global::ProtoBuf.ProtoMember(2, IsRequired = false, Name=@"PlayerID", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    [global::System.ComponentModel.DefaultValue(default(uint))]
+    public uint PlayerID
+    {
+      get { return _PlayerID; }
+      set { _PlayerID = value; }
+    }
+    private string _Name = "";
+    [global::ProtoBuf.ProtoMember(3, IsRequired = false, Name=@"Name", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue("")]
+    public string Name
+    {
+      get { return _Name; }
+      set { _Name = value; }
+    }
+    private CSVector3 _Position = null;
+    [global::ProtoBuf.ProtoMember(4, IsRequired = false, Name=@"Position", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue(null)]
+    public CSVector3 Position
+    {
+      get { return _Position; }
+      set { _Position = value; }
+    }
+    private CSVector3 _Rotation = null;
+    [global::ProtoBuf.ProtoMember(5, IsRequired = false, Name=@"Rotation", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue(null)]
+    public CSVector3 Rotation
+    {
+      get { return _Rotation; }
+      set { _Rotation = value; }
+    }
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
   [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"CSChunk")]
   public partial class CSChunk : global::ProtoBuf.IExtensible
   {
@@ -147,6 +189,61 @@ namespace protocol.cs_theircraft
       get { return _BlocksInBytes; }
       set { _BlocksInBytes = value; }
     }
+    private readonly global::System.Collections.Generic.List<CSPlayer> _Players = new global::System.Collections.Generic.List<CSPlayer>();
+    [global::ProtoBuf.ProtoMember(4, Name=@"Players", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public global::System.Collections.Generic.List<CSPlayer> Players
+    {
+      get { return _Players; }
+    }
+  
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"CSRegisterReq")]
+  public partial class CSRegisterReq : global::ProtoBuf.IExtensible
+  {
+    public CSRegisterReq() {}
+    
+    private string _Account;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"Account", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public string Account
+    {
+      get { return _Account; }
+      set { _Account = value; }
+    }
+    private string _Name;
+    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"Name", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public string Name
+    {
+      get { return _Name; }
+      set { _Name = value; }
+    }
+    private string _Password;
+    [global::ProtoBuf.ProtoMember(3, IsRequired = true, Name=@"Password", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public string Password
+    {
+      get { return _Password; }
+      set { _Password = value; }
+    }
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"CSRegisterRes")]
+  public partial class CSRegisterRes : global::ProtoBuf.IExtensible
+  {
+    public CSRegisterRes() {}
+    
+    private int _RetCode;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"RetCode", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public int RetCode
+    {
+      get { return _RetCode; }
+      set { _RetCode = value; }
+    }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
@@ -157,12 +254,19 @@ namespace protocol.cs_theircraft
   {
     public CSLoginReq() {}
     
-    private string _Name;
-    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"Name", DataFormat = global::ProtoBuf.DataFormat.Default)]
-    public string Name
+    private string _Account;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"Account", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public string Account
     {
-      get { return _Name; }
-      set { _Name = value; }
+      get { return _Account; }
+      set { _Account = value; }
+    }
+    private string _Password;
+    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"Password", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public string Password
+    {
+      get { return _Password; }
+      set { _Password = value; }
     }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
@@ -181,13 +285,13 @@ namespace protocol.cs_theircraft
       get { return _RetCode; }
       set { _RetCode = value; }
     }
-    private CSVector3 _Position = null;
-    [global::ProtoBuf.ProtoMember(2, IsRequired = false, Name=@"Position", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    private CSPlayer _PlayerData = null;
+    [global::ProtoBuf.ProtoMember(2, IsRequired = false, Name=@"PlayerData", DataFormat = global::ProtoBuf.DataFormat.Default)]
     [global::System.ComponentModel.DefaultValue(null)]
-    public CSVector3 Position
+    public CSPlayer PlayerData
     {
-      get { return _Position; }
-      set { _Position = value; }
+      get { return _PlayerData; }
+      set { _PlayerData = value; }
     }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
@@ -417,6 +521,112 @@ namespace protocol.cs_theircraft
     {
       get { return _position; }
       set { _position = value; }
+    }
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"CSHeroMoveReq")]
+  public partial class CSHeroMoveReq : global::ProtoBuf.IExtensible
+  {
+    public CSHeroMoveReq() {}
+    
+    private CSVector3 _Position;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"Position", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public CSVector3 Position
+    {
+      get { return _Position; }
+      set { _Position = value; }
+    }
+    private CSVector3 _Rotation;
+    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"Rotation", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public CSVector3 Rotation
+    {
+      get { return _Rotation; }
+      set { _Rotation = value; }
+    }
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"CSHeroMoveRes")]
+  public partial class CSHeroMoveRes : global::ProtoBuf.IExtensible
+  {
+    public CSHeroMoveRes() {}
+    
+    private int _RetCode;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"RetCode", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public int RetCode
+    {
+      get { return _RetCode; }
+      set { _RetCode = value; }
+    }
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"CSPlayerMoveNotify")]
+  public partial class CSPlayerMoveNotify : global::ProtoBuf.IExtensible
+  {
+    public CSPlayerMoveNotify() {}
+    
+    private int _PlayerID;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"PlayerID", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public int PlayerID
+    {
+      get { return _PlayerID; }
+      set { _PlayerID = value; }
+    }
+    private CSVector3 _Position;
+    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"Position", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public CSVector3 Position
+    {
+      get { return _Position; }
+      set { _Position = value; }
+    }
+    private CSVector3 _Rotation;
+    [global::ProtoBuf.ProtoMember(3, IsRequired = true, Name=@"Rotation", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public CSVector3 Rotation
+    {
+      get { return _Rotation; }
+      set { _Rotation = value; }
+    }
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"CSPlayerEnterViewNotify")]
+  public partial class CSPlayerEnterViewNotify : global::ProtoBuf.IExtensible
+  {
+    public CSPlayerEnterViewNotify() {}
+    
+    private CSPlayer _PlayerData;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"PlayerData", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public CSPlayer PlayerData
+    {
+      get { return _PlayerData; }
+      set { _PlayerData = value; }
+    }
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"CSPlayerLeaveViewNotify")]
+  public partial class CSPlayerLeaveViewNotify : global::ProtoBuf.IExtensible
+  {
+    public CSPlayerLeaveViewNotify() {}
+    
+    private int _PlayerID;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"PlayerID", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public int PlayerID
+    {
+      get { return _PlayerID; }
+      set { _PlayerID = value; }
     }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)

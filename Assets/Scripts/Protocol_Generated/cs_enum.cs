@@ -51,7 +51,28 @@ namespace protocol.cs_enum
       CS_DELETE_BLOCK_RES = 13,
             
       [global::ProtoBuf.ProtoEnum(Name=@"CS_DELETE_BLOCK_NOTIFY", Value=14)]
-      CS_DELETE_BLOCK_NOTIFY = 14
+      CS_DELETE_BLOCK_NOTIFY = 14,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"CS_HERO_MOVE_REQ", Value=15)]
+      CS_HERO_MOVE_REQ = 15,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"CS_HERO_MOVE_RES", Value=16)]
+      CS_HERO_MOVE_RES = 16,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"CS_REGISTER_REQ", Value=17)]
+      CS_REGISTER_REQ = 17,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"CS_REGISTER_RES", Value=18)]
+      CS_REGISTER_RES = 18,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"CS_PLAYER_MOVE_NOTIFY", Value=19)]
+      CS_PLAYER_MOVE_NOTIFY = 19,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"CS_PLAYER_ENTER_VIEW_NOTIFY", Value=20)]
+      CS_PLAYER_ENTER_VIEW_NOTIFY = 20,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"CS_PLAYER_LEAVE_VIEW_NOTIFY", Value=21)]
+      CS_PLAYER_LEAVE_VIEW_NOTIFY = 21
     }
   
 }

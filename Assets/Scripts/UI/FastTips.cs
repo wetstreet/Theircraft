@@ -27,6 +27,15 @@ public class FastTips : MonoBehaviour {
             case 5:
                 content = "用户已登录";
                 break;
+            case 6:
+                content = "账号不存在";
+                break;
+            case 7:
+                content = "密码错误";
+                break;
+            case 8:
+                content = "账号已存在";
+                break;
             default:
                 content = "未知错误";
                 break;

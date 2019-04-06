@@ -5,7 +5,7 @@ using protocol.cs_theircraft;
 
 public class MergeTestStart : MonoBehaviour
 {
-    int sight = 10;
+    int sight = 2;
 
     // Start is called before the first frame update
     void Start()

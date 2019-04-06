@@ -6,17 +6,35 @@ using UnityEngine;
 
 public class mergetestPlayerController : MonoBehaviour
 {
-
     public float horizontalScale = 0.1f;
     public float verticalScale = 1;
 
     private Vector3 verticalSpeed;
-
-    private bool isMoving;
+    private Vector3 horizontalSpeed;
     private new Camera camera;
     private CharacterController cc;
+    private Transform head;
+    private Animator animator;
 
+    bool isMoving;
+    static bool acceptInput = true;
     private static GameObject instance;
+
+    public static void LockCursor(bool isLock)
+    {
+        if (isLock)
+        {
+            acceptInput = true;
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+        else
+        {
+            acceptInput = false;
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+    }
 
     public static void Init()
     {
@@ -24,7 +42,9 @@ public class mergetestPlayerController : MonoBehaviour
         {
             Object prefab = Resources.Load("merge-test/Character");
             instance = Instantiate(prefab) as GameObject;
-            instance.transform.position = new Vector3(0, 30, 0);
+            instance.transform.position = DataCenter.spawnPosition;
+            Debug.Log(DataCenter.spawnPosition);
+            //instance.transform.eulerAngles = DataCenter.spawnRotation;
         }
         LoadingUI.Close();
         CrossHair.Show();
@@ -36,6 +56,9 @@ public class mergetestPlayerController : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         camera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
         cc = GetComponent<CharacterController>();
+        head = transform.Find("steve/Armature/Move/Body_Lower/Body_Upper/Head.001");
+        Transform steve = transform.Find("steve");
+        animator = steve.GetComponent<Animator>();
 
         NetworkManager.Register(ENUM_CMD.CS_ADD_BLOCK_RES, AddBlockRes);
         NetworkManager.Register(ENUM_CMD.CS_ADD_BLOCK_NOTIFY, OnAddBlockNotify);
@@ -100,7 +123,10 @@ public class mergetestPlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        RotateView();
+        if (acceptInput)
+        {
+            RotateView();
+        }
         DrawWireFrame();
 
         if (Input.GetMouseButtonDown(0))
@@ -156,13 +182,27 @@ public class mergetestPlayerController : MonoBehaviour
         verticalSpeed = -Physics.gravity / 2;
     }
 
-    void ProcessMovement()
+    void ProcessMovement(float v, float h)
     {
         verticalSpeed += Physics.gravity * Time.fixedDeltaTime;
         Vector3 verticalMovement = verticalSpeed * Time.fixedDeltaTime;
-        float v = Input.GetAxisRaw("Vertical");
-        float h = Input.GetAxisRaw("Horizontal");
-        Vector3 horizontalMovement = transform.forward * v + transform.right * h;
+        Vector3 horizontalMovement = forward * v + right * h;
+        if (horizontalMovement != Vector3.zero)
+        {
+            if (!isMoving)
+            {
+                isMoving = true;
+                animator.CrossFade("walk", 0);
+            }
+        }
+        else
+        {
+            if (isMoving)
+            {
+                isMoving = false;
+                animator.CrossFade("idle", 0);
+            }
+        }
         cc.Move(horizontalMovement * horizontalScale + verticalMovement * verticalScale);
 
         if (cc.isGrounded)
@@ -177,11 +217,23 @@ public class mergetestPlayerController : MonoBehaviour
         float y = Input.GetAxis("Mouse Y");
         camera.transform.localRotation *= Quaternion.Euler(-y, 0, 0);
         transform.localRotation *= Quaternion.Euler(0, x, 0);
+        head.transform.localRotation *= Quaternion.Euler(0, 0, -y);
     }
 
+    float v;
+    float h;
+    Vector3 forward;
+    Vector3 right;
     void FixedUpdate()
     {
-        ProcessMovement();
+        if (acceptInput && cc.isGrounded)
+        {
+            v = Input.GetAxisRaw("Vertical");
+            h = Input.GetAxisRaw("Horizontal");
+            forward = transform.forward;
+            right = transform.right;
+        }
+        ProcessMovement(v, h);
     }
 
     void AddBlockReq(Vector3Int pos, CSBlockType type)

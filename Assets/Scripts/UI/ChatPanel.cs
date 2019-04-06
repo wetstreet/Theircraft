@@ -75,13 +75,13 @@ public class ChatPanel : MonoBehaviour
     {
         inputParent.SetActive(true);
         inputField.ActivateInputField();
-        PlayerController.LockCursor(false);
+        mergetestPlayerController.LockCursor(false);
     }
 
     void HideInput()
     {
         inputField.DeactivateInputField();
-        PlayerController.LockCursor(true);
+        mergetestPlayerController.LockCursor(true);
         inputParent.SetActive(false);
     }
     

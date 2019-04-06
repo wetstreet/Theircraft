@@ -12,12 +12,12 @@ public class SettingsPanel : MonoBehaviour {
         else
             Instance = UISystem.InstantiateUI("SettingsPanel").GetComponent<SettingsPanel>();
 
-        PlayerController.LockCursor(false);
+        mergetestPlayerController.LockCursor(false);
     }
 
     public static void Hide()
     {
-        PlayerController.LockCursor(true);
+        mergetestPlayerController.LockCursor(true);
         if (Instance != null)
             Instance.gameObject.SetActive(false);
 

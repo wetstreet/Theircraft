@@ -50,7 +50,7 @@ public class PlayerController : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        transform.localPosition = DataCenter.initialPosition;
+        transform.localPosition = DataCenter.spawnPosition;
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;

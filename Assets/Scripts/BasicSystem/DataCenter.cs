@@ -9,8 +9,10 @@ public enum ClientState
 
 public static class DataCenter
 {
-    public static Vector3 initialPosition;
+    public static uint playerID;
     public static string name;
+    public static Vector3 spawnPosition;
+    public static Vector3 spawnRotation;
 
     public static ClientState state;
 

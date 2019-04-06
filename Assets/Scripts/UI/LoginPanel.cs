@@ -6,7 +6,8 @@ using protocol.cs_theircraft;
 
 public class LoginPanel : MonoBehaviour {
 
-    InputField input;
+    InputField accountInput;
+    InputField passwordInput;
 
     static string AccountKey = "account";
 
@@ -20,37 +21,44 @@ public class LoginPanel : MonoBehaviour {
     {
         NetworkManager.Register(ENUM_CMD.CS_LOGIN_RES, OnLoginRes);
 
-        input = transform.Find("InputField").GetComponent<InputField>();
-        transform.Find("Button").GetComponent<Button>().onClick.AddListener(OnClickEnterRoom);
+        accountInput = transform.Find("Account/InputField").GetComponent<InputField>();
+        passwordInput = transform.Find("Password/InputField").GetComponent<InputField>();
+        transform.Find("ButtonLogin").GetComponent<Button>().onClick.AddListener(OnClickLogin);
+        transform.Find("ButtonRegister").GetComponent<Button>().onClick.AddListener(OnClickRegister);
 
         string account = PlayerPrefs.GetString(AccountKey);
         if (account != null)
-            input.text = account;
+            accountInput.text = account;
 	}
-	
-	// Update is called once per frame
-	void Update () {
 
-    }
-
-    void OnClickEnterRoom()
+    void OnClickLogin()
     {
-        if (input.text != "")
+        if (accountInput.text == "")
         {
-            LoginReq(input.text);
-            PlayerPrefs.SetString(AccountKey, input.text);
-        }
-        else
             FastTips.Show("用户名不能为空！");
+            return;
+        }
+        if (passwordInput.text == "")
+        {
+            FastTips.Show("密码不能为空！");
+            return;
+        }
+
+        LoginReq(accountInput.text, passwordInput.text);
+        PlayerPrefs.SetString(AccountKey, accountInput.text);
     }
 
-    string playername;
-    void LoginReq(string _name)
+    void OnClickRegister()
     {
-        playername = _name;
+        RegisterAccountUI.Show();
+    }
+    
+    void LoginReq(string account, string password)
+    {
         CSLoginReq req = new CSLoginReq
         {
-            Name = _name
+            Account = account,
+            Password = password,
         };
         NetworkManager.Enqueue(ENUM_CMD.CS_LOGIN_REQ, req);
     }
@@ -61,9 +69,10 @@ public class LoginPanel : MonoBehaviour {
         Debug.Log("OnLoginRes," + rsp.RetCode);
         if(rsp.RetCode == 0)
         {
-            DataCenter.name = playername;
-            DataCenter.initialPosition = new Vector3(0, 10, 0);
-            playername = null;
+            DataCenter.playerID = rsp.PlayerData.PlayerID;
+            DataCenter.name = rsp.PlayerData.Name;
+            DataCenter.spawnPosition = Ultiities.CSVector3_To_Vector3(rsp.PlayerData.Position);
+            DataCenter.spawnRotation = Ultiities.CSVector3_To_Vector3(rsp.PlayerData.Rotation);
             DataCenter.state = ClientState.InRoom;
             Destroy(gameObject);
             LoadingUI.Show();
