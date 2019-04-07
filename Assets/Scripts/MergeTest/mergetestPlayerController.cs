@@ -120,7 +120,9 @@ public class mergetestPlayerController : MonoBehaviour
         throw new System.Exception("what the fuck?");
     }
 
-    // Update is called once per frame
+    float timeInterval = 0.2f;
+    bool needUpdate;
+    float lastUpdateTime;
     void Update()
     {
         if (acceptInput)
@@ -146,6 +148,17 @@ public class mergetestPlayerController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             Jump();
+        }
+        if (needUpdate && Time.realtimeSinceStartup - lastUpdateTime > timeInterval)
+        {
+            needUpdate = false;
+            lastUpdateTime = Time.realtimeSinceStartup;
+            CSHeroMoveReq req = new CSHeroMoveReq
+            {
+                Position = new CSVector3 { x = transform.position.x, y = transform.position.y, z = transform.position.z },
+                Rotation = new CSVector3 { x = 0, y = transform.localEulerAngles.y, z = head.transform.localEulerAngles.z }
+            };
+            NetworkManager.Enqueue(ENUM_CMD.CS_HERO_MOVE_REQ, req);
         }
     }
 
@@ -187,6 +200,15 @@ public class mergetestPlayerController : MonoBehaviour
         verticalSpeed += Physics.gravity * Time.fixedDeltaTime;
         Vector3 verticalMovement = verticalSpeed * Time.fixedDeltaTime;
         Vector3 horizontalMovement = forward * v + right * h;
+
+        //有移动则告诉服务器
+        float precision = 1f;
+        //妈蛋，明明verticalMovement打印出来是(0,0,0)却!=Vector3.zero，有精度问题，这样搞下
+        bool b1 = Mathf.Abs(verticalMovement.x) > precision || Mathf.Abs(verticalMovement.y) > precision || Mathf.Abs(verticalMovement.z) > precision;
+        bool b2 = horizontalMovement != Vector3.zero;
+        if (b1 || b2)
+            needUpdate = true;
+
         if (horizontalMovement != Vector3.zero)
         {
             if (!isMoving)
@@ -215,9 +237,13 @@ public class mergetestPlayerController : MonoBehaviour
     {
         float x = Input.GetAxis("Mouse X");
         float y = Input.GetAxis("Mouse Y");
-        camera.transform.localRotation *= Quaternion.Euler(-y, 0, 0);
-        transform.localRotation *= Quaternion.Euler(0, x, 0);
-        head.transform.localRotation *= Quaternion.Euler(0, 0, -y);
+        if (x != 0 || y != 0)
+        {
+            camera.transform.localRotation *= Quaternion.Euler(-y, 0, 0);
+            transform.localRotation *= Quaternion.Euler(0, x, 0);
+            head.transform.localRotation *= Quaternion.Euler(0, 0, -y);
+            needUpdate = true;
+        }
     }
 
     float v;

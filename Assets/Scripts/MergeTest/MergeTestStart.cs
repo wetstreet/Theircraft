@@ -14,6 +14,7 @@ public class MergeTestStart : MonoBehaviour
         ChatPanel.ShowChatPanel();
         ItemSelectPanel.Show();
         NetworkManager.Register(ENUM_CMD.CS_CHUNKS_ENTER_LEAVE_VIEW_RES, ChunksEnterLeaveViewRes);
+        NetworkManager.Register(ENUM_CMD.CS_PLAYER_MOVE_NOTIFY, OnPlayerMoveNotify);
 
         List<Vector2Int> preloadChunks = new List<Vector2Int>();
 
@@ -99,5 +100,12 @@ public class MergeTestStart : MonoBehaviour
         {
             FastTips.Show(rsp.RetCode);
         }
+    }
+
+    void OnPlayerMoveNotify(byte[] data)
+    {
+        CSPlayerMoveNotify notify = NetworkManager.Deserialize<CSPlayerMoveNotify>(data);
+        Debug.Log("CSPlayerMoveNotify,id=" + notify.PlayerID + ",(" + notify.Position.x + "," + notify.Position.y + "," + notify.Position.z + ")");
+        OtherPlayerManager.MovePlayer(notify.PlayerID, notify.Position, notify.Rotation);
     }
 }

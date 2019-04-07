@@ -573,9 +573,9 @@ namespace protocol.cs_theircraft
   {
     public CSPlayerMoveNotify() {}
     
-    private int _PlayerID;
+    private uint _PlayerID;
     [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"PlayerID", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public int PlayerID
+    public uint PlayerID
     {
       get { return _PlayerID; }
       set { _PlayerID = value; }
@@ -621,13 +621,30 @@ namespace protocol.cs_theircraft
   {
     public CSPlayerLeaveViewNotify() {}
     
-    private int _PlayerID;
+    private uint _PlayerID;
     [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"PlayerID", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public int PlayerID
+    public uint PlayerID
     {
       get { return _PlayerID; }
       set { _PlayerID = value; }
     }
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"BlobChunkData")]
+  public partial class BlobChunkData : global::ProtoBuf.IExtensible
+  {
+    public BlobChunkData() {}
+    
+    private readonly global::System.Collections.Generic.List<CSBlock> _BlockList = new global::System.Collections.Generic.List<CSBlock>();
+    [global::ProtoBuf.ProtoMember(1, Name=@"BlockList", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public global::System.Collections.Generic.List<CSBlock> BlockList
+    {
+      get { return _BlockList; }
+    }
+  
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }

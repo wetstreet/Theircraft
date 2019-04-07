@@ -81,10 +81,10 @@ public static class NetworkManager
         public ENUM_CMD type;
         public byte[] data;
     }
-
+    
     static IEnumerator HandlePackage()
     {
-        while (true)
+        while (connected)
         {
             lock (packageQueue)
             {
@@ -100,6 +100,7 @@ public static class NetworkManager
             }
             yield return null;
         }
+        DisconnectedUI.Show();
     }
 
 
@@ -122,7 +123,7 @@ public static class NetworkManager
             }
             catch
             {
-                Disconnect(true);
+                Disconnect();
             }
             if (readNum > 0)
             {
@@ -156,7 +157,7 @@ public static class NetworkManager
                 } while (totalBytesRead < length);
 
                 float s = (Environment.TickCount - tick1) / 1000f;
-                Debug.Log("time = " + s);
+                //Debug.Log("time = " + s);
 
                 Debug.Log("receive message, type=" + type + ",length=" + length + ",totalBytesRead=" + totalBytesRead);
 
@@ -170,7 +171,7 @@ public static class NetworkManager
             }
             else
             {
-                Disconnect(true);
+                Disconnect();
             }
         }
     }
@@ -223,15 +224,11 @@ public static class NetworkManager
         return true;
     }
 
-    public static void Disconnect(bool showUI = false)
+    public static void Disconnect()
     {
         if (tcpClient != null)
             tcpClient.Close();
         connected = false;
         Debug.Log("disconnected!");
-        if (showUI)
-        {
-            DisconnectedUI.Show();
-        }
     }
 }

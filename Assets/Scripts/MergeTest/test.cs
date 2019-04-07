@@ -169,16 +169,19 @@ public class test : MonoBehaviour
                 }
             }
 
-
-            //压缩前的数据结构
-            //foreach (CSBlock csblock in chunk.Blocks)
-            //{
-            //    Vector3Int blockPos = new Vector3Int(csblock.position.x, csblock.position.y, csblock.position.z);
-            //    Block block = new Block { pos = blockPos, chunk = chunkPos, type = csblock.type };
-            //    posBlockDict[blockPos] = block;
-            //    chunk_posBlockDict[blockPos] = block;
-            //}
-
+            //Debug.Log("chunk=("+chunk.Position.x+","+chunk.Position.y+"),chunk player num=" + chunk.Players.Count);
+            foreach (CSPlayer p in chunk.Players)
+            {
+                OtherPlayerManager.AddPlayer(p);
+                //Debug.Log(p.Name + "," + p.Position.x + "," + p.Position.y + "," + p.Position.z);
+                //GameObject prefab =  Resources.Load<GameObject>("merge-test/OtherPlayer");
+                //GameObject obj = Instantiate(prefab);
+                //Transform head = obj.transform.Find("steve/Armature/Move/Body_Lower/Body_Upper/Head.001");
+                //obj.transform.position = new Vector3(p.Position.x, p.Position.y, p.Position.z);
+                //obj.transform.localEulerAngles = new Vector3(0, p.Rotation.y, 0);
+                //head.transform.localEulerAngles = new Vector3(0, 0, p.Rotation.z);
+                //obj.transform.localEulerAngles = new Vector3(p.Position.x, p.Position.y, p.Position.z);
+            }
 
             chunkBlocksDict[chunkPos] = chunk_posBlockDict;
             GameObject chunkObj = GenerateChunkObj(chunkPos);

@@ -53,6 +53,7 @@ public class RegisterAccountUI : MonoBehaviour
         CSRegisterReq req = new CSRegisterReq
         {
             Account = accountInput.text,
+            Name = nameInput.text,
             Password = passwordInput.text
         };
         NetworkManager.Enqueue(ENUM_CMD.CS_REGISTER_REQ, req);
