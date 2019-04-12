@@ -173,14 +173,6 @@ public class test : MonoBehaviour
             foreach (CSPlayer p in chunk.Players)
             {
                 OtherPlayerManager.AddPlayer(p);
-                //Debug.Log(p.Name + "," + p.Position.x + "," + p.Position.y + "," + p.Position.z);
-                //GameObject prefab =  Resources.Load<GameObject>("merge-test/OtherPlayer");
-                //GameObject obj = Instantiate(prefab);
-                //Transform head = obj.transform.Find("steve/Armature/Move/Body_Lower/Body_Upper/Head.001");
-                //obj.transform.position = new Vector3(p.Position.x, p.Position.y, p.Position.z);
-                //obj.transform.localEulerAngles = new Vector3(0, p.Rotation.y, 0);
-                //head.transform.localEulerAngles = new Vector3(0, 0, p.Rotation.z);
-                //obj.transform.localEulerAngles = new Vector3(p.Position.x, p.Position.y, p.Position.z);
             }
 
             chunkBlocksDict[chunkPos] = chunk_posBlockDict;

@@ -159,7 +159,8 @@ public static class NetworkManager
                 float s = (Environment.TickCount - tick1) / 1000f;
                 //Debug.Log("time = " + s);
 
-                Debug.Log("receive message, type=" + type + ",length=" + length + ",totalBytesRead=" + totalBytesRead);
+                if (type != ENUM_CMD.CS_PLAYER_MOVE_NOTIFY)
+                    Debug.Log("receive message, type=" + type + ",length=" + length + ",totalBytesRead=" + totalBytesRead);
 
                 Package package = new Package();
                 package.type = type;

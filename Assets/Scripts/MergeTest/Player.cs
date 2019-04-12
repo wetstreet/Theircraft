@@ -18,9 +18,8 @@ public class Player
         GameObject prefab = Resources.Load<GameObject>("merge-test/OtherPlayer");
         trans = Object.Instantiate(prefab).transform;
         head = trans.Find("steve/Armature/Move/Body_Lower/Body_Upper/Head.001");
-
-        position = new Vector3(p.Position.x, p.Position.y, p.Position.z);
-        rotation = new Vector3(p.Rotation.x, p.Rotation.y, p.Rotation.z);
+        
+        Move(p.Position, p.Rotation);
     }
 
     public void Move(CSVector3 pos, CSVector3 rot)

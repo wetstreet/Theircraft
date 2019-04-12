@@ -105,7 +105,7 @@ public class MergeTestStart : MonoBehaviour
     void OnPlayerMoveNotify(byte[] data)
     {
         CSPlayerMoveNotify notify = NetworkManager.Deserialize<CSPlayerMoveNotify>(data);
-        Debug.Log("CSPlayerMoveNotify,id=" + notify.PlayerID + ",(" + notify.Position.x + "," + notify.Position.y + "," + notify.Position.z + ")");
+        //Debug.Log("CSPlayerMoveNotify,id=" + notify.PlayerID + ",(" + notify.Position.x + "," + notify.Position.y + "," + notify.Position.z + ")");
         OtherPlayerManager.MovePlayer(notify.PlayerID, notify.Position, notify.Rotation);
     }
 }

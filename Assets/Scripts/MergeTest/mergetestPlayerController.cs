@@ -42,7 +42,6 @@ public class mergetestPlayerController : MonoBehaviour
         {
             Object prefab = Resources.Load("merge-test/Character");
             instance = Instantiate(prefab) as GameObject;
-            instance.transform.position = DataCenter.spawnPosition;
             Debug.Log(DataCenter.spawnPosition);
             //instance.transform.eulerAngles = DataCenter.spawnRotation;
         }
@@ -59,6 +58,10 @@ public class mergetestPlayerController : MonoBehaviour
         head = transform.Find("steve/Armature/Move/Body_Lower/Body_Upper/Head.001");
         Transform steve = transform.Find("steve");
         animator = steve.GetComponent<Animator>();
+
+        transform.position = DataCenter.spawnPosition;
+        transform.localEulerAngles = new Vector3(0, DataCenter.spawnRotation.y, 0);
+        head.transform.localEulerAngles = new Vector3(0, 0, DataCenter.spawnRotation.z);
 
         NetworkManager.Register(ENUM_CMD.CS_ADD_BLOCK_RES, AddBlockRes);
         NetworkManager.Register(ENUM_CMD.CS_ADD_BLOCK_NOTIFY, OnAddBlockNotify);
