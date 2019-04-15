@@ -55,13 +55,14 @@ public class mergetestPlayerController : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         camera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
         cc = GetComponent<CharacterController>();
-        head = transform.Find("steve/Armature/Move/Body_Lower/Body_Upper/Head.001");
-        Transform steve = transform.Find("steve");
-        animator = steve.GetComponent<Animator>();
+        //head = transform.Find("steve/Armature/Move/Body_Lower/Body_Upper/Head.001");
+        //Transform steve = transform.Find("steve");
+        //animator = steve.GetComponent<Animator>();
 
         transform.position = DataCenter.spawnPosition;
         transform.localEulerAngles = new Vector3(0, DataCenter.spawnRotation.y, 0);
-        head.transform.localEulerAngles = new Vector3(0, 0, DataCenter.spawnRotation.z);
+        camera.transform.localEulerAngles = new Vector3(DataCenter.spawnRotation.z, 0, 0);
+        //head.transform.localEulerAngles = new Vector3(0, 0, DataCenter.spawnRotation.z);
 
         NetworkManager.Register(ENUM_CMD.CS_ADD_BLOCK_RES, AddBlockRes);
         NetworkManager.Register(ENUM_CMD.CS_ADD_BLOCK_NOTIFY, OnAddBlockNotify);
@@ -128,30 +129,32 @@ public class mergetestPlayerController : MonoBehaviour
     float lastUpdateTime;
     void Update()
     {
+        DrawWireFrame();
+
         if (acceptInput)
         {
             RotateView();
-        }
-        DrawWireFrame();
 
-        if (Input.GetMouseButtonDown(0))
-        {
-            if (WireFrameHelper.render)
+            if (Input.GetMouseButtonDown(0))
             {
-                DeleteBlockReq(WireFrameHelper.pos);
+                if (WireFrameHelper.render)
+                {
+                    DeleteBlockReq(WireFrameHelper.pos);
+                }
+            }
+            if (Input.GetMouseButtonDown(1))
+            {
+                if (WireFrameHelper.render)
+                {
+                    AddBlockReq(Vector3Int.RoundToInt(WireFrameHelper.pos + hit.normal), ItemSelectPanel.curBlockType);
+                }
+            }
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                Jump();
             }
         }
-        if (Input.GetMouseButtonDown(1))
-        {
-            if (WireFrameHelper.render)
-            {
-                AddBlockReq(Vector3Int.RoundToInt(WireFrameHelper.pos + hit.normal), ItemSelectPanel.curBlockType);
-            }
-        }
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            Jump();
-        }
+
         if (needUpdate && Time.realtimeSinceStartup - lastUpdateTime > timeInterval)
         {
             needUpdate = false;
@@ -159,7 +162,7 @@ public class mergetestPlayerController : MonoBehaviour
             CSHeroMoveReq req = new CSHeroMoveReq
             {
                 Position = new CSVector3 { x = transform.position.x, y = transform.position.y, z = transform.position.z },
-                Rotation = new CSVector3 { x = 0, y = transform.localEulerAngles.y, z = head.transform.localEulerAngles.z }
+                Rotation = new CSVector3 { x = 0, y = transform.localEulerAngles.y, z = camera.transform.localEulerAngles.x }
             };
             NetworkManager.Enqueue(ENUM_CMD.CS_HERO_MOVE_REQ, req);
         }
@@ -212,22 +215,22 @@ public class mergetestPlayerController : MonoBehaviour
         if (b1 || b2)
             needUpdate = true;
 
-        if (horizontalMovement != Vector3.zero)
-        {
-            if (!isMoving)
-            {
-                isMoving = true;
-                animator.CrossFade("walk", 0);
-            }
-        }
-        else
-        {
-            if (isMoving)
-            {
-                isMoving = false;
-                animator.CrossFade("idle", 0);
-            }
-        }
+        //if (horizontalMovement != Vector3.zero)
+        //{
+        //    if (!isMoving)
+        //    {
+        //        isMoving = true;
+        //        animator.CrossFade("walk", 0);
+        //    }
+        //}
+        //else
+        //{
+        //    if (isMoving)
+        //    {
+        //        isMoving = false;
+        //        animator.CrossFade("idle", 0);
+        //    }
+        //}
         cc.Move(horizontalMovement * horizontalScale + verticalMovement * verticalScale);
 
         if (cc.isGrounded)
@@ -244,7 +247,7 @@ public class mergetestPlayerController : MonoBehaviour
         {
             camera.transform.localRotation *= Quaternion.Euler(-y, 0, 0);
             transform.localRotation *= Quaternion.Euler(0, x, 0);
-            head.transform.localRotation *= Quaternion.Euler(0, 0, -y);
+            //head.transform.localRotation *= Quaternion.Euler(0, 0, -y);
             needUpdate = true;
         }
     }
