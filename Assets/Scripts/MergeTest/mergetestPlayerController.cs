@@ -15,6 +15,7 @@ public class mergetestPlayerController : MonoBehaviour
     private CharacterController cc;
     private Transform head;
     private Animator animator;
+    static private Camera handCam;
 
     bool isMoving;
     static bool acceptInput = true;
@@ -36,6 +37,11 @@ public class mergetestPlayerController : MonoBehaviour
         }
     }
 
+    public static void SetHandRT(RenderTexture rt)
+    {
+        handCam.targetTexture = rt;
+    }
+
     public static void Init()
     {
         if (instance == null)
@@ -45,8 +51,6 @@ public class mergetestPlayerController : MonoBehaviour
             Debug.Log(DataCenter.spawnPosition);
             //instance.transform.eulerAngles = DataCenter.spawnRotation;
         }
-        LoadingUI.Close();
-        CrossHair.Show();
     }
 
     // Use this for initialization
@@ -55,6 +59,7 @@ public class mergetestPlayerController : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         camera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
         cc = GetComponent<CharacterController>();
+        handCam = camera.transform.Find("Camera").GetComponent<Camera>();
         //head = transform.Find("steve/Armature/Move/Body_Lower/Body_Upper/Head.001");
         //Transform steve = transform.Find("steve");
         //animator = steve.GetComponent<Animator>();
@@ -68,6 +73,10 @@ public class mergetestPlayerController : MonoBehaviour
         NetworkManager.Register(ENUM_CMD.CS_ADD_BLOCK_NOTIFY, OnAddBlockNotify);
         NetworkManager.Register(ENUM_CMD.CS_DELETE_BLOCK_RES, DeleteBlockRes);
         NetworkManager.Register(ENUM_CMD.CS_DELETE_BLOCK_NOTIFY, OnDeleteBlockNotify);
+
+        LoadingUI.Close();
+        CrossHair.Show();
+        Hand.Show();
     }
 
     // raycast的结果有精度问题，所以要加上精度补偿（每个轴的正负两个方向都试着取一下，最坏需要尝试2^3=8种情况）

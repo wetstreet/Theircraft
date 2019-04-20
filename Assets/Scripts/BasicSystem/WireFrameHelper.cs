@@ -32,8 +32,9 @@ public class WireFrameHelper : MonoBehaviour
     // Will be called after all regular rendering is done
     public void OnRenderObject()
     {
-        if (!render)
+        if (!render || Camera.current.tag == "HandCamera")
             return;
+
         CreateLineMaterial();
         // Apply the line material
         lineMaterial.SetPass(0);
