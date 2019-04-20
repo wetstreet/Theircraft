@@ -66,7 +66,7 @@ public class LoginPanel : MonoBehaviour {
     void OnLoginRes(byte[] data)
     {
         CSLoginRes rsp = NetworkManager.Deserialize<CSLoginRes>(data);
-        Debug.Log("OnLoginRes,retcode=" + rsp.RetCode + ",rot=(" + rsp.PlayerData.Rotation.x + "," + rsp.PlayerData.Rotation.y + "," + rsp.PlayerData.Rotation.z + ")");
+        Debug.Log("OnLoginRes,retcode=" + rsp.RetCode);
         if(rsp.RetCode == 0)
         {
             DataCenter.playerID = rsp.PlayerData.PlayerID;
