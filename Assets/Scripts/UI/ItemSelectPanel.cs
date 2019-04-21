@@ -25,7 +25,7 @@ public class ItemSelectPanel : MonoBehaviour
     {
         dataList[slotID] = blockType;
         string iconPath = BlockGenerator.type2icon[blockType];
-        itemList[slotID].icon.sprite = Resources.Load<Sprite>("GUI/" + iconPath);
+        itemList[slotID].icon.sprite = Resources.Load<Sprite>("GUI/CubeBlock/" + iconPath);
         itemList[slotID].icon.gameObject.SetActive(true);
     }
 

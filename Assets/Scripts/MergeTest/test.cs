@@ -3,6 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using protocol.cs_theircraft;
 
+public struct Block
+{
+    public Vector3Int pos;
+    public Vector2Int chunk;
+    public CSBlockType type;
+}
+
 public class test : MonoBehaviour
 {
     public struct TexCoords
@@ -23,16 +30,28 @@ public class test : MonoBehaviour
     static Vector2Int grass_bottom = new Vector2Int(2, 0);
     static Vector2Int grass_side = new Vector2Int(3, 0);
     static Vector2Int grass_top = new Vector2Int(0, 0);
+
     static Vector2Int brick = new Vector2Int(7, 0);
+
+    static Vector2Int tnt_side = new Vector2Int(8, 0);
+    static Vector2Int tnt_top = new Vector2Int(9, 0);
+    static Vector2Int tnt_bottom = new Vector2Int(10, 0);
+
+    static Vector2Int furnace_front = new Vector2Int(12, 2);
+    static Vector2Int furnace_side = new Vector2Int(13, 2);
+    static Vector2Int furnace_top = new Vector2Int(14, 3);
+
+    static Vector2Int hay_side = new Vector2Int(16, 13);
+    static Vector2Int hay_top = new Vector2Int(17, 13);
 
     public static Dictionary<CSBlockType, TexCoords> type2texcoords = new Dictionary<CSBlockType, TexCoords>
     {
         {CSBlockType.Grass, new TexCoords{ front = grass_side, right = grass_side, left = grass_side, back = grass_side, top = grass_top, bottom = grass_bottom } },
         {CSBlockType.Dirt, new TexCoords{ front = grass_bottom, right = grass_bottom, left = grass_bottom, back = grass_bottom, top = grass_bottom, bottom = grass_bottom } },
-        {CSBlockType.Tnt, new TexCoords{ front = grass_side, right = grass_side, left = grass_side, back = grass_side, top = grass_top, bottom = grass_bottom } },
+        {CSBlockType.Tnt, new TexCoords{ front = tnt_side, right = tnt_side, left = tnt_side, back = tnt_side, top = tnt_top, bottom = tnt_bottom } },
         {CSBlockType.Brick, new TexCoords{ front = brick, right = brick, left = brick, back = brick, top = brick, bottom = brick } },
-        {CSBlockType.Furnace, new TexCoords{ front = grass_side, right = grass_side, left = grass_side, back = grass_side, top = grass_top, bottom = grass_bottom } },
-        {CSBlockType.HayBlock, new TexCoords{ front = grass_side, right = grass_side, left = grass_side, back = grass_side, top = grass_top, bottom = grass_bottom } },
+        {CSBlockType.Furnace, new TexCoords{ front = furnace_front, right = furnace_side, left = furnace_side, back = furnace_side, top = furnace_top, bottom = furnace_top } },
+        {CSBlockType.HayBlock, new TexCoords{ front = hay_side, right = hay_side, left = hay_side, back = hay_side, top = hay_top, bottom = hay_top } },
     };
 
     static Vector3 nearBottomLeft = new Vector3(-0.5f, -0.5f, -0.5f);
@@ -128,6 +147,11 @@ public class test : MonoBehaviour
         RefreshChunk(chunkPos);
     }
 
+    public static Block GetBlockAtPos(Vector3Int pos)
+    {
+        return posBlockDict[pos];
+    }
+
     public static void RemoveBlock(Vector3Int blockPos)
     {
         Block block = posBlockDict[blockPos];
@@ -208,13 +232,6 @@ public class test : MonoBehaviour
 
         GameObject chunkObj = GenerateChunkObj(chunkPos);
         chunk2object[chunkPos] = chunkObj;
-    }
-
-    struct Block
-    {
-        public Vector3Int pos;
-        public Vector2Int chunk;
-        public CSBlockType type;
     }
 
 

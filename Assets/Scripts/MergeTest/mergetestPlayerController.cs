@@ -277,13 +277,10 @@ public class mergetestPlayerController : MonoBehaviour
         //Debug.Log("DeleteBlockRes,retCode=" + rsp.RetCode);
         if (rsp.RetCode == 0)
         {
-            Vector3Int blockPos = new Vector3Int(rsp.position.x, rsp.position.y, rsp.position.z);
-            test.RemoveBlock(blockPos);
-
-            GameObject prefab = Resources.Load("Prefabs/BreakBlockEffect") as GameObject;
-            GameObject effect = Instantiate(prefab);
-            effect.transform.localPosition = new Vector3(rsp.position.x, rsp.position.y, rsp.position.z);
-            Destroy(effect, 1);
+            Vector3Int pos = new Vector3Int(rsp.position.x, rsp.position.y, rsp.position.z);
+            CSBlockType type = test.GetBlockAtPos(pos).type;
+            test.RemoveBlock(pos);
+            BreakBlockEffect.Create(type, pos);
         }
         else
         {
