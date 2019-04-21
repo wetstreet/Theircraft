@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class mergetestPlayerController : MonoBehaviour
 {
-    public float horizontalScale = 0.1f;
+    public float horizontalScale = 1;
     public float verticalScale = 1;
 
     private Vector3 verticalSpeed;
@@ -150,12 +150,31 @@ public class mergetestPlayerController : MonoBehaviour
 
         verticalSpeed = -Physics.gravity / 2;
     }
-
+    
+    public float inAirSpeed = 0.1f;
+    public float attenuation = 0.75f;
     void ProcessMovement(float v, float h)
     {
+        if (cc.isGrounded)
+        {
+            if (v != 0 || h != 0)
+            {
+                horizontalSpeed = horizontalSpeed + (transform.forward * v + transform.right * h);
+            }
+            else
+            {
+                horizontalSpeed *= attenuation;
+            }
+        }
+        else
+        {
+            horizontalSpeed = horizontalSpeed + (transform.forward * v + transform.right * h) * inAirSpeed;
+        }
+        horizontalSpeed = Vector3.ClampMagnitude(horizontalSpeed, 1);
+        Vector3 horizontalMovement = horizontalSpeed * Time.fixedDeltaTime;
+
         verticalSpeed += Physics.gravity * Time.fixedDeltaTime;
         Vector3 verticalMovement = verticalSpeed * Time.fixedDeltaTime;
-        Vector3 horizontalMovement = forward * v + right * h;
 
         //有移动则告诉服务器
         float precision = 1f;
@@ -201,16 +220,23 @@ public class mergetestPlayerController : MonoBehaviour
 
     float v;
     float h;
-    Vector3 forward;
-    Vector3 right;
+    public float accumulation = 0.1f;
     void FixedUpdate()
     {
-        if (acceptInput && cc.isGrounded)
+        if (acceptInput)
         {
-            v = Input.GetAxisRaw("Vertical");
-            h = Input.GetAxisRaw("Horizontal");
-            forward = transform.forward;
-            right = transform.right;
+            float rawV = Input.GetAxisRaw("Vertical");
+            v = rawV != 0 ? v + rawV * accumulation : 0;
+            v = Mathf.Clamp(v, -1, 1);
+
+            float rawH = Input.GetAxisRaw("Horizontal");
+            h = rawH != 0 ? h + rawH * accumulation : 0;
+            h = Mathf.Clamp(h, -1, 1);
+        }
+        else
+        {
+            v = 0;
+            h = 0;
         }
         ProcessMovement(v, h);
     }

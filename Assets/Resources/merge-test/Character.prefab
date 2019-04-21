@@ -45,8 +45,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25d8f344b7c363a47a6def0a9bbc1541, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  horizontalScale: 0.1
+  horizontalScale: 4
   verticalScale: 1
+  inAirSpeed: 0.05
+  speedAttenuation: 0.75
+  accumulation: 0.025
 --- !u!143 &143223878412349064
 CharacterController:
   m_ObjectHideFlags: 0
