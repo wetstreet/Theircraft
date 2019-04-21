@@ -15,11 +15,15 @@ public class test : MonoBehaviour
         public Vector2Int bottom;
     }
 
+    //方块图集的行数和列数
+    static readonly int atlas_row = 58;
+    static readonly int atlas_column = 24;
 
-    static Vector2Int grass_bottom = new Vector2Int(0, 0);
-    static Vector2Int grass_side = new Vector2Int(0, 1);
-    static Vector2Int grass_top = new Vector2Int(0, 2);
-    static Vector2Int brick = new Vector2Int(3, 0);
+    //左上为0，0
+    static Vector2Int grass_bottom = new Vector2Int(2, 0);
+    static Vector2Int grass_side = new Vector2Int(3, 0);
+    static Vector2Int grass_top = new Vector2Int(0, 0);
+    static Vector2Int brick = new Vector2Int(7, 0);
 
     public static Dictionary<CSBlockType, TexCoords> type2texcoords = new Dictionary<CSBlockType, TexCoords>
     {
@@ -40,15 +44,6 @@ public class test : MonoBehaviour
     static Vector3 farTopLeft = new Vector3(-0.5f, 0.5f, 0.5f);
     static Vector3 farTopRight = new Vector3(0.5f, 0.5f, 0.5f);
 
-    static Vector2 uv0_0 = new Vector2(0, 0);
-    static Vector2 uv1_0 = new Vector2(1 / 16f, 0);
-    static Vector2 uv0_1 = new Vector2(0, 1 / 16f);
-    static Vector2 uv1_1 = new Vector2(1 / 16f, 1 / 16f);
-    static Vector2 uv0_2 = new Vector2(0, 2 / 16f);
-    static Vector2 uv1_2 = new Vector2(1 / 16f, 2 / 16f);
-    static Vector2 uv0_3 = new Vector2(0, 3 / 16f);
-    static Vector2 uv1_3 = new Vector2(1 / 16f, 3 / 16f);
-
     static List<Vector3> vertices = new List<Vector3>();
     static List<Vector2> uv = new List<Vector2>();
     static List<int> triangles = new List<int>();
@@ -62,10 +57,13 @@ public class test : MonoBehaviour
 
     static void AddUV(Vector2Int texPos)
     {
-        uv.Add(new Vector2(texPos.x / 16f, texPos.y / 16f));
-        uv.Add(new Vector2(texPos.x / 16f, (texPos.y + 1) / 16f));
-        uv.Add(new Vector2((texPos.x + 1) / 16f, texPos.y / 16f));
-        uv.Add(new Vector2((texPos.x + 1) / 16f, (texPos.y + 1) / 16f));
+        //上下翻转
+        texPos.y = (atlas_row - 1) - texPos.y;
+
+        uv.Add(new Vector2(texPos.x / (float)atlas_column, texPos.y / (float)atlas_row));
+        uv.Add(new Vector2(texPos.x / (float)atlas_column, (texPos.y + 1) / (float)atlas_row));
+        uv.Add(new Vector2((texPos.x + 1) / (float)atlas_column, texPos.y / (float)atlas_row));
+        uv.Add(new Vector2((texPos.x + 1) / (float)atlas_column, (texPos.y + 1) / (float)atlas_row));
         triangles.AddRange(new int[] { vertices.Count - 4, vertices.Count - 3, vertices.Count - 2, vertices.Count - 3, vertices.Count - 1, vertices.Count - 2 });
     }
 
@@ -287,7 +285,7 @@ public class test : MonoBehaviour
 
         mf.mesh = RebuildMesh(chunkBlocksDict[chunkPos]);
         MeshRenderer mr = chunk.AddComponent<MeshRenderer>();
-        mr.material = Resources.Load<Material>("merge-test/mat");
+        mr.material = Resources.Load<Material>("merge-test/block");
 
         chunk.AddComponent<MeshCollider>();
         chunk.layer = LayerMask.NameToLayer("Block");
