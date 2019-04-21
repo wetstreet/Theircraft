@@ -13,9 +13,8 @@ public class mergetestPlayerController : MonoBehaviour
     private Vector3 horizontalSpeed;
     private new Camera camera;
     private CharacterController cc;
-    private Transform head;
-    private Animator animator;
     static private Camera handCam;
+    Animator handAnimator;
 
     bool isMoving;
     static bool acceptInput = true;
@@ -48,8 +47,6 @@ public class mergetestPlayerController : MonoBehaviour
         {
             Object prefab = Resources.Load("merge-test/Character");
             instance = Instantiate(prefab) as GameObject;
-            Debug.Log(DataCenter.spawnPosition);
-            //instance.transform.eulerAngles = DataCenter.spawnRotation;
         }
     }
 
@@ -60,14 +57,11 @@ public class mergetestPlayerController : MonoBehaviour
         camera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
         cc = GetComponent<CharacterController>();
         handCam = camera.transform.Find("Camera").GetComponent<Camera>();
-        //head = transform.Find("steve/Armature/Move/Body_Lower/Body_Upper/Head.001");
-        //Transform steve = transform.Find("steve");
-        //animator = steve.GetComponent<Animator>();
+        handAnimator = camera.transform.Find("hand").GetComponent<Animator>();
 
         transform.position = DataCenter.spawnPosition;
         transform.localEulerAngles = new Vector3(0, DataCenter.spawnRotation.y, 0);
         camera.transform.localEulerAngles = new Vector3(DataCenter.spawnRotation.z, 0, 0);
-        //head.transform.localEulerAngles = new Vector3(0, 0, DataCenter.spawnRotation.z);
 
         NetworkManager.Register(ENUM_CMD.CS_ADD_BLOCK_RES, AddBlockRes);
         NetworkManager.Register(ENUM_CMD.CS_ADD_BLOCK_NOTIFY, OnAddBlockNotify);
@@ -146,6 +140,7 @@ public class mergetestPlayerController : MonoBehaviour
 
             if (Input.GetMouseButtonDown(0))
             {
+                handAnimator.SetTrigger("interactTrigger");
                 if (WireFrameHelper.render)
                 {
                     DeleteBlockReq(WireFrameHelper.pos);
@@ -224,22 +219,20 @@ public class mergetestPlayerController : MonoBehaviour
         if (b1 || b2)
             needUpdate = true;
 
-        //if (horizontalMovement != Vector3.zero)
-        //{
-        //    if (!isMoving)
-        //    {
-        //        isMoving = true;
-        //        animator.CrossFade("walk", 0);
-        //    }
-        //}
-        //else
-        //{
-        //    if (isMoving)
-        //    {
-        //        isMoving = false;
-        //        animator.CrossFade("idle", 0);
-        //    }
-        //}
+        if (horizontalMovement != Vector3.zero)
+        {
+            if (!isMoving)
+            {
+                isMoving = true;
+            }
+        }
+        else
+        {
+            if (isMoving)
+            {
+                isMoving = false;
+            }
+        }
         cc.Move(horizontalMovement * horizontalScale + verticalMovement * verticalScale);
 
         if (cc.isGrounded)
@@ -256,7 +249,6 @@ public class mergetestPlayerController : MonoBehaviour
         {
             camera.transform.localRotation *= Quaternion.Euler(-y, 0, 0);
             transform.localRotation *= Quaternion.Euler(0, x, 0);
-            //head.transform.localRotation *= Quaternion.Euler(0, 0, -y);
             needUpdate = true;
         }
     }

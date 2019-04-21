@@ -162,6 +162,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac79a780a0d4f4b4499b23739def9729, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!95 &8668043369872228987
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6856172387386715333}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 894c07908e50cb44e8c20b80ce0f6dcb, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &9189913911463129095
 GameObject:
   m_ObjectHideFlags: 0
@@ -226,7 +245,7 @@ Camera:
     serializedVersion: 2
     m_Bits: 32
   m_RenderingPath: -1
-  m_TargetTexture: {fileID: 8400000, guid: 615bd9dce9b37544eab1f3489dd9905e, type: 2}
+  m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 1
@@ -321,6 +340,12 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 84afe5550d7ea654080030a3a1d3a30e, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6ce3aaffb16cbd645af585f214ffe177, type: 3}
+--- !u!1 &6856172387386715333 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 100000, guid: 6ce3aaffb16cbd645af585f214ffe177,
+    type: 3}
+  m_PrefabInstance: {fileID: 6856172387386747493}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &6856172387386355941 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400000, guid: 6ce3aaffb16cbd645af585f214ffe177,
