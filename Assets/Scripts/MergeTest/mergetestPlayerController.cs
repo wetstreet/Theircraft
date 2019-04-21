@@ -279,6 +279,11 @@ public class mergetestPlayerController : MonoBehaviour
         {
             Vector3Int blockPos = new Vector3Int(rsp.position.x, rsp.position.y, rsp.position.z);
             test.RemoveBlock(blockPos);
+
+            GameObject prefab = Resources.Load("Prefabs/BreakBlockEffect") as GameObject;
+            GameObject effect = Instantiate(prefab);
+            effect.transform.localPosition = new Vector3(rsp.position.x, rsp.position.y, rsp.position.z);
+            Destroy(effect, 1);
         }
         else
         {
