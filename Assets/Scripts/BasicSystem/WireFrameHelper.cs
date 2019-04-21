@@ -24,7 +24,61 @@ public class WireFrameHelper : MonoBehaviour
         }
     }
 
-    float unit = 0.502f;
+    // raycast的结果有精度问题，所以要加上精度补偿（每个轴的正负两个方向都试着取一下，最坏需要尝试2^3=8种情况）
+    public static Vector3Int GetBlockPosByRaycast(Vector3 point)
+    {
+        float precisionCompensation = 0.01f;
+        Vector3Int pos = new Vector3Int();
+
+        pos.Set(Mathf.RoundToInt(point.x - precisionCompensation), Mathf.RoundToInt(point.y - precisionCompensation), Mathf.RoundToInt(point.z - precisionCompensation));
+        if (test.ContainBlock(pos))
+            return pos;
+        else
+        {
+            pos.Set(Mathf.RoundToInt(point.x - precisionCompensation), Mathf.RoundToInt(point.y - precisionCompensation), Mathf.RoundToInt(point.z + precisionCompensation));
+            if (test.ContainBlock(pos))
+                return pos;
+            else
+            {
+                pos.Set(Mathf.RoundToInt(point.x - precisionCompensation), Mathf.RoundToInt(point.y + precisionCompensation), Mathf.RoundToInt(point.z - precisionCompensation));
+                if (test.ContainBlock(pos))
+                    return pos;
+                else
+                {
+                    pos.Set(Mathf.RoundToInt(point.x - precisionCompensation), Mathf.RoundToInt(point.y + precisionCompensation), Mathf.RoundToInt(point.z + precisionCompensation));
+                    if (test.ContainBlock(pos))
+                        return pos;
+                    else
+                    {
+                        pos.Set(Mathf.RoundToInt(point.x + precisionCompensation), Mathf.RoundToInt(point.y - precisionCompensation), Mathf.RoundToInt(point.z - precisionCompensation));
+                        if (test.ContainBlock(pos))
+                            return pos;
+                        else
+                        {
+                            pos.Set(Mathf.RoundToInt(point.x + precisionCompensation), Mathf.RoundToInt(point.y - precisionCompensation), Mathf.RoundToInt(point.z + precisionCompensation));
+                            if (test.ContainBlock(pos))
+                                return pos;
+                            else
+                            {
+                                pos.Set(Mathf.RoundToInt(point.x + precisionCompensation), Mathf.RoundToInt(point.y + precisionCompensation), Mathf.RoundToInt(point.z - precisionCompensation));
+                                if (test.ContainBlock(pos))
+                                    return pos;
+                                else
+                                {
+                                    pos.Set(Mathf.RoundToInt(point.x + precisionCompensation), Mathf.RoundToInt(point.y + precisionCompensation), Mathf.RoundToInt(point.z + precisionCompensation));
+                                    if (test.ContainBlock(pos))
+                                        return pos;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        throw new System.Exception("what the fuck?");
+    }
+
+    float unit = 0.5f;
 
     public static bool render = false;
     public static Vector3Int pos;

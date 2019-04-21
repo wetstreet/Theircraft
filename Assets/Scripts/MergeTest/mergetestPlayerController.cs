@@ -73,60 +73,6 @@ public class mergetestPlayerController : MonoBehaviour
         Hand.Show();
     }
 
-    // raycast的结果有精度问题，所以要加上精度补偿（每个轴的正负两个方向都试着取一下，最坏需要尝试2^3=8种情况）
-    Vector3Int GetBlockPosByRaycast(Vector3 point)
-    {
-        float precisionCompensation = 0.01f;
-        Vector3Int pos = new Vector3Int();
-
-        pos.Set(Mathf.RoundToInt(point.x - precisionCompensation), Mathf.RoundToInt(point.y - precisionCompensation), Mathf.RoundToInt(point.z - precisionCompensation));
-        if (test.ContainBlock(pos))
-            return pos;
-        else
-        {
-            pos.Set(Mathf.RoundToInt(point.x - precisionCompensation), Mathf.RoundToInt(point.y - precisionCompensation), Mathf.RoundToInt(point.z + precisionCompensation));
-            if (test.ContainBlock(pos))
-                return pos;
-            else
-            {
-                pos.Set(Mathf.RoundToInt(point.x - precisionCompensation), Mathf.RoundToInt(point.y + precisionCompensation), Mathf.RoundToInt(point.z - precisionCompensation));
-                if (test.ContainBlock(pos))
-                    return pos;
-                else
-                {
-                    pos.Set(Mathf.RoundToInt(point.x - precisionCompensation), Mathf.RoundToInt(point.y + precisionCompensation), Mathf.RoundToInt(point.z + precisionCompensation));
-                    if (test.ContainBlock(pos))
-                        return pos;
-                    else
-                    {
-                        pos.Set(Mathf.RoundToInt(point.x + precisionCompensation), Mathf.RoundToInt(point.y - precisionCompensation), Mathf.RoundToInt(point.z - precisionCompensation));
-                        if (test.ContainBlock(pos))
-                            return pos;
-                        else
-                        {
-                            pos.Set(Mathf.RoundToInt(point.x + precisionCompensation), Mathf.RoundToInt(point.y - precisionCompensation), Mathf.RoundToInt(point.z + precisionCompensation));
-                            if (test.ContainBlock(pos))
-                                return pos;
-                            else
-                            {
-                                pos.Set(Mathf.RoundToInt(point.x + precisionCompensation), Mathf.RoundToInt(point.y + precisionCompensation), Mathf.RoundToInt(point.z - precisionCompensation));
-                                if (test.ContainBlock(pos))
-                                    return pos;
-                                else
-                                {
-                                    pos.Set(Mathf.RoundToInt(point.x + precisionCompensation), Mathf.RoundToInt(point.y + precisionCompensation), Mathf.RoundToInt(point.z + precisionCompensation));
-                                    if (test.ContainBlock(pos))
-                                        return pos;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        throw new System.Exception("what the fuck?");
-    }
-
     float timeInterval = 0.2f;
     bool needUpdate;
     float lastUpdateTime;
@@ -177,16 +123,16 @@ public class mergetestPlayerController : MonoBehaviour
     {
         Vector3 center = new Vector3(Screen.width / 2, Screen.height / 2, 0);
         int cubeLayerIndex = LayerMask.NameToLayer("Block");
-        if (cubeLayerIndex != -1)
+        int otherPlayerLayerIndex = LayerMask.NameToLayer("OtherPlayer");
+        if (cubeLayerIndex != -1 && otherPlayerLayerIndex != -1)
         {
-            int layerMask = (1 << cubeLayerIndex);
-            if (Physics.Raycast(Camera.main.ScreenPointToRay(center), out hit, 5f, layerMask))
+            int layerMask = 1 << cubeLayerIndex | 1 << otherPlayerLayerIndex;
+            if (Physics.Raycast(Camera.main.ScreenPointToRay(center), out hit, 5f, layerMask) && hit.transform.tag == "Block")
             {
-                Vector3Int pos = GetBlockPosByRaycast(hit.point);
+                Vector3Int actualPos = WireFrameHelper.GetBlockPosByRaycast(hit.point);
                 //Debug.Log(hit.point + "," + pos);
-
                 WireFrameHelper.render = true;
-                WireFrameHelper.pos = pos;
+                WireFrameHelper.pos = actualPos;
             }
             else
             {

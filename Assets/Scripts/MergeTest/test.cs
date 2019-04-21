@@ -288,6 +288,7 @@ public class test : MonoBehaviour
         mr.material = Resources.Load<Material>("merge-test/block");
 
         chunk.AddComponent<MeshCollider>();
+        chunk.tag = "Block";
         chunk.layer = LayerMask.NameToLayer("Block");
         return chunk;
     }
