@@ -63,18 +63,7 @@ public class test : MonoBehaviour
     static Vector3 farTopLeft = new Vector3(-0.5f, 0.5f, 0.5f);
     static Vector3 farTopRight = new Vector3(0.5f, 0.5f, 0.5f);
 
-    static List<Vector3> vertices = new List<Vector3>();
-    static List<Vector2> uv = new List<Vector2>();
-    static List<int> triangles = new List<int>();
-
-    static void ClearData()
-    {
-        vertices.Clear();
-        uv.Clear();
-        triangles.Clear();
-    }
-
-    static void AddUV(Vector2Int texPos)
+    static void AddUV(List<Vector3> vertices, List<Vector2> uv, List<int> triangles, Vector2Int texPos)
     {
         //上下翻转
         texPos.y = (atlas_row - 1) - texPos.y;
@@ -89,40 +78,40 @@ public class test : MonoBehaviour
     // vertex order
     // 1 3
     // 0 2 
-    static void AddFrontFace(Vector3Int pos, Vector2Int texPos)
+    static void AddFrontFace(List<Vector3> vertices, List<Vector2> uv, List<int> triangles, Vector3Int pos, Vector2Int texPos)
     {
         vertices.AddRange(new List<Vector3> { nearBottomLeft + pos, nearTopLeft + pos, nearBottomRight + pos, nearTopRight + pos });
-        AddUV(texPos);
+        AddUV(vertices, uv, triangles, texPos);
     }
 
-    static void AddRightFace(Vector3Int pos, Vector2Int texPos)
+    static void AddRightFace(List<Vector3> vertices, List<Vector2> uv, List<int> triangles, Vector3Int pos, Vector2Int texPos)
     {
         vertices.AddRange(new List<Vector3> { nearBottomRight + pos, nearTopRight + pos, farBottomRight + pos, farTopRight + pos });
-        AddUV(texPos);
+        AddUV(vertices, uv, triangles, texPos);
     }
 
-    static void AddLeftFace(Vector3Int pos, Vector2Int texPos)
+    static void AddLeftFace(List<Vector3> vertices, List<Vector2> uv, List<int> triangles, Vector3Int pos, Vector2Int texPos)
     {
         vertices.AddRange(new List<Vector3> { farBottomLeft + pos, farTopLeft + pos, nearBottomLeft + pos, nearTopLeft + pos });
-        AddUV(texPos);
+        AddUV(vertices, uv, triangles, texPos);
     }
 
-    static void AddBackFace(Vector3Int pos, Vector2Int texPos)
+    static void AddBackFace(List<Vector3> vertices, List<Vector2> uv, List<int> triangles, Vector3Int pos, Vector2Int texPos)
     {
         vertices.AddRange(new List<Vector3> { farBottomRight + pos, farTopRight + pos, farBottomLeft + pos, farTopLeft + pos });
-        AddUV(texPos);
+        AddUV(vertices, uv, triangles, texPos);
     }
 
-    static void AddTopFace(Vector3Int pos, Vector2Int texPos)
+    static void AddTopFace(List<Vector3> vertices, List<Vector2> uv, List<int> triangles, Vector3Int pos, Vector2Int texPos)
     {
         vertices.AddRange(new List<Vector3> { nearTopLeft + pos, farTopLeft + pos, nearTopRight + pos, farTopRight + pos });
-        AddUV(texPos);
+        AddUV(vertices, uv, triangles, texPos);
     }
 
-    static void AddBottomFace(Vector3Int pos, Vector2Int texPos)
+    static void AddBottomFace(List<Vector3> vertices, List<Vector2> uv, List<int> triangles, Vector3Int pos, Vector2Int texPos)
     {
         vertices.AddRange(new List<Vector3> { farBottomLeft + pos, nearBottomLeft + pos, farBottomRight + pos, nearBottomRight + pos });
-        AddUV(texPos);
+        AddUV(vertices, uv, triangles, texPos);
     }
     
     static Dictionary<Vector2Int, GameObject> chunk2object = new Dictionary<Vector2Int, GameObject>();
@@ -234,6 +223,29 @@ public class test : MonoBehaviour
         chunk2object[chunkPos] = chunkObj;
     }
 
+    public static Mesh GetCubeMesh(CSBlockType type)
+    {
+        Mesh mesh = new Mesh();
+
+        List<Vector3> vertices = new List<Vector3>();
+        List<Vector2> uv = new List<Vector2>();
+        List<int> triangles = new List<int>();
+
+        TexCoords texCoords = type2texcoords[type];
+        Vector3Int pos = Vector3Int.zero;
+        AddFrontFace(vertices, uv, triangles, pos, texCoords.front);
+        AddRightFace(vertices, uv, triangles, pos, texCoords.right);
+        AddLeftFace(vertices, uv, triangles, pos, texCoords.left);
+        AddBackFace(vertices, uv, triangles, pos, texCoords.back);
+        AddTopFace(vertices, uv, triangles, pos, texCoords.top);
+        AddBottomFace(vertices, uv, triangles, pos, texCoords.bottom);
+
+        mesh.vertices = vertices.ToArray();
+        mesh.uv = uv.ToArray();
+        mesh.triangles = triangles.ToArray();
+
+        return mesh;
+    }
 
     static Vector3Int Vector3Int_forward = new Vector3Int(0, 0, 1);
     static Vector3Int Vector3Int_back = new Vector3Int(0, 0, -1);
@@ -242,56 +254,33 @@ public class test : MonoBehaviour
     {
         Mesh mesh = new Mesh();
 
-        ClearData();
+        List<Vector3> vertices = new List<Vector3>();
+        List<Vector2> uv = new List<Vector2>();
+        List<int> triangles = new List<int>();
+
         foreach (Block block in chunkBlocks.Values)
         {
             Vector3Int pos = block.pos;
             TexCoords texCoords = type2texcoords[block.type];
 
             if (!chunkBlocks.ContainsKey(pos + Vector3Int_back))
-                AddFrontFace(pos, texCoords.front);
+                AddFrontFace(vertices, uv, triangles, pos, texCoords.front);
             if (!chunkBlocks.ContainsKey(pos + Vector3Int.right))
-                AddRightFace(pos, texCoords.right);
+                AddRightFace(vertices, uv, triangles, pos, texCoords.right);
             if (!chunkBlocks.ContainsKey(pos + Vector3Int.left))
-                AddLeftFace(pos, texCoords.left);
+                AddLeftFace(vertices, uv, triangles, pos, texCoords.left);
             if (!chunkBlocks.ContainsKey(pos + Vector3Int_forward))
-                AddBackFace(pos, texCoords.back);
+                AddBackFace(vertices, uv, triangles, pos, texCoords.back);
             if (!chunkBlocks.ContainsKey(pos + Vector3Int.up))
-                AddTopFace(pos, texCoords.top);
+                AddTopFace(vertices, uv, triangles, pos, texCoords.top);
             if (!chunkBlocks.ContainsKey(pos + Vector3Int.down))
-                AddBottomFace(pos, texCoords.bottom);
+                AddBottomFace(vertices, uv, triangles, pos, texCoords.bottom);
         }
 
         mesh.vertices = vertices.ToArray();
         mesh.uv = uv.ToArray();
         mesh.triangles = triangles.ToArray();
-        return mesh;
-    }
 
-    static Mesh RebuildMesh(HashSet<Vector3Int> chunkBlocks)
-    {
-        Mesh mesh = new Mesh();
-
-        ClearData();
-        foreach (Vector3Int pos in chunkBlocks)
-        {
-            if (!chunkBlocks.Contains(pos + Vector3Int_back))
-                AddFrontFace(pos, grass_side);
-            if (!chunkBlocks.Contains(pos + Vector3Int.right))
-                AddRightFace(pos, grass_side);
-            if (!chunkBlocks.Contains(pos + Vector3Int.left))
-                AddLeftFace(pos, grass_side);
-            if (!chunkBlocks.Contains(pos + Vector3Int_forward))
-                AddBackFace(pos, grass_side);
-            if (!chunkBlocks.Contains(pos + Vector3Int.up))
-                AddTopFace(pos, grass_top);
-            if (!chunkBlocks.Contains(pos + Vector3Int.down))
-                AddBottomFace(pos, grass_bottom);
-        }
-
-        mesh.vertices = vertices.ToArray();
-        mesh.uv = uv.ToArray();
-        mesh.triangles = triangles.ToArray();
         return mesh;
     }
 

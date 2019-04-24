@@ -15,10 +15,12 @@ public class mergetestPlayerController : MonoBehaviour
     private CharacterController cc;
     static private Camera handCam;
     Animator handAnimator;
+    MeshFilter blockMeshFilter;
+    MeshRenderer handMeshRenderer;
 
     bool isMoving;
     static bool acceptInput = true;
-    private static GameObject instance;
+    private static mergetestPlayerController instance;
 
     public static void LockCursor(bool isLock)
     {
@@ -46,7 +48,8 @@ public class mergetestPlayerController : MonoBehaviour
         if (instance == null)
         {
             Object prefab = Resources.Load("merge-test/Character");
-            instance = Instantiate(prefab) as GameObject;
+            GameObject obj = Instantiate(prefab) as GameObject;
+            instance = obj.GetComponent<mergetestPlayerController>();
         }
     }
 
@@ -71,6 +74,22 @@ public class mergetestPlayerController : MonoBehaviour
         LoadingUI.Close();
         CrossHair.Show();
         Hand.Show();
+
+        blockMeshFilter = camera.transform.Find("hand/block").GetComponent<MeshFilter>();
+        handMeshRenderer = camera.transform.Find("hand").GetComponent<MeshRenderer>();
+    }
+
+    public static void ShowHand()
+    {
+        instance.handMeshRenderer.enabled = true;
+        instance.blockMeshFilter.transform.gameObject.SetActive(false);
+    }
+
+    public static void ShowBlock(CSBlockType type)
+    {
+        instance.handMeshRenderer.enabled = false;
+        instance.blockMeshFilter.mesh = test.GetCubeMesh(type);
+        instance.blockMeshFilter.transform.gameObject.SetActive(true);
     }
 
     float timeInterval = 0.2f;
@@ -270,7 +289,6 @@ public class mergetestPlayerController : MonoBehaviour
         {
             Vector3Int blockPos = new Vector3Int(rsp.block.position.x, rsp.block.position.y, rsp.block.position.z);
             test.AddBlock(blockPos, rsp.block.type);
-            FastTips.Show("放置了一个方块");
         }
         else
         {

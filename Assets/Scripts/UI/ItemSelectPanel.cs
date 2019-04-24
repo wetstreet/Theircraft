@@ -46,11 +46,22 @@ public class ItemSelectPanel : MonoBehaviour
         curIndex = 0;
     }
 
+    int lastIndex = 0;
     void RefreshUI()
     {
         for (int i = 0; i < 9; i++)
         {
             itemList[i].select.SetActive(i == curIndex);
+        }
+        if (lastIndex != curIndex)
+        {
+            lastIndex = curIndex;
+            if (curBlockType != CSBlockType.None)
+            {
+                mergetestPlayerController.ShowBlock(curBlockType);
+            }
+            else
+                mergetestPlayerController.ShowHand();
         }
     }
 
