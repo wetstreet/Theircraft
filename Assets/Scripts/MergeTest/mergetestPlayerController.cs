@@ -94,7 +94,7 @@ public class mergetestPlayerController : MonoBehaviour
             }
             if (Input.GetMouseButtonDown(1))
             {
-                if (WireFrameHelper.render)
+                if (WireFrameHelper.render && ItemSelectPanel.curBlockType != CSBlockType.None)
                 {
                     AddBlockReq(Vector3Int.RoundToInt(WireFrameHelper.pos + hit.normal), ItemSelectPanel.curBlockType);
                 }
@@ -141,6 +141,9 @@ public class mergetestPlayerController : MonoBehaviour
         }
     }
 
+
+    public Vector3 jumpSpeed = new Vector3(0, 9f, 0);
+    public Vector3 fallSpeed = new Vector3(0, -28f, 0);
     void Jump()
     {
         if (!cc.isGrounded)
@@ -148,7 +151,7 @@ public class mergetestPlayerController : MonoBehaviour
             return;
         }
 
-        verticalSpeed = -Physics.gravity / 2;
+        verticalSpeed = jumpSpeed;
     }
     
     public float inAirSpeed = 0.1f;
@@ -173,7 +176,7 @@ public class mergetestPlayerController : MonoBehaviour
         horizontalSpeed = Vector3.ClampMagnitude(horizontalSpeed, 1);
         Vector3 horizontalMovement = horizontalSpeed * Time.fixedDeltaTime;
 
-        verticalSpeed += Physics.gravity * Time.fixedDeltaTime;
+        verticalSpeed += fallSpeed * Time.fixedDeltaTime;
         Vector3 verticalMovement = verticalSpeed * Time.fixedDeltaTime;
 
         //有移动则告诉服务器
