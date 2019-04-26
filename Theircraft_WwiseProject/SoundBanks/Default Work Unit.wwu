@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WwiseDocument Type="WorkUnit" ID="{6348BB6E-8B49-4F7B-9011-9187C813242B}" SchemaVersion="94">
+	<SoundBanks>
+		<WorkUnit Name="Default Work Unit" ID="{6348BB6E-8B49-4F7B-9011-9187C813242B}" PersistMode="Standalone">
+			<ChildrenList>
+				<SoundBank Name="Main" ID="{C325FD94-0B64-4644-A87B-C7DB7C99C861}">
+					<ObjectInclusionList>
+						<ObjectRef Name="Player_Dig" ID="{B33D558D-E782-4658-AB98-5E458BF61F64}" WorkUnitID="{848B0ABB-C491-4AB3-A832-E5E2C7B675EA}" Filter="7" Origin="Manual"/>
+						<ObjectRef Name="Player_Footstep" ID="{9AD64A4E-B25E-48A3-9B97-85D0B49FBC80}" WorkUnitID="{848B0ABB-C491-4AB3-A832-E5E2C7B675EA}" Filter="7" Origin="Manual"/>
+					</ObjectInclusionList>
+					<ObjectExclusionList/>
+					<GameSyncExclusionList/>
+				</SoundBank>
+			</ChildrenList>
+		</WorkUnit>
+	</SoundBanks>
+</WwiseDocument>

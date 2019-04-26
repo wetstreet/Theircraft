@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="11" SoundbankVersion="134">
+	<RootPaths>
+		<ProjectRoot>C:\Users\陈奕润\Documents\Theircraft\Theircraft_WwiseProject\</ProjectRoot>
+		<SourceFilesRoot>C:\Users\陈奕润\Documents\Theircraft\Theircraft_WwiseProject\.cache\Windows\</SourceFilesRoot>
+		<SoundBanksRoot>C:\Users\陈奕润\Documents\Theircraft\Theircraft_WwiseProject\GeneratedSoundBanks\Windows\</SoundBanksRoot>
+		<ExternalSourcesInputFile></ExternalSourcesInputFile>
+		<ExternalSourcesOutputRoot>C:\Users\陈奕润\Documents\Theircraft\Theircraft_WwiseProject\GeneratedSoundBanks\Windows</ExternalSourcesOutputRoot>
+	</RootPaths>
+	<DialogueEvents/>
+	<StreamedFiles/>
+	<MediaFilesNotInAnyBank/>
+	<SoundBanks>
+		<SoundBank Id="1355168291" Language="SFX">
+			<ObjectPath>Init</ObjectPath>
+			<ShortName>Init</ShortName>
+			<Path>Init.bnk</Path>
+		</SoundBank>
+		<SoundBank Id="3161908922" Language="SFX">
+			<ObjectPath>\SoundBanks\Default Work Unit\Main</ObjectPath>
+			<ShortName>Main</ShortName>
+			<Path>Main.bnk</Path>
+			<IncludedEvents>
+				<Event Id="1542330067" Name="Player_Dig" ObjectPath="\Events\Player\Player_Dig"/>
+				<Event Id="2453392179" Name="Player_Footstep" ObjectPath="\Events\Player\Player_Footstep"/>
+			</IncludedEvents>
+			<IncludedMemoryFiles>
+				<File Id="3325749" Language="SFX">
+					<ShortName>28_wav_files (online-audio-converter.com)\cloth1.wav</ShortName>
+					<Path>SFX\28_wav_files (online-audio-converter.com)\cloth1_10C4C929.wem</Path>
+				</File>
+				<File Id="17885464" Language="SFX">
+					<ShortName>6_wav_files (online-audio-converter.com)\grass2.wav</ShortName>
+					<Path>SFX\6_wav_files (online-audio-converter.com)\grass2_10C4C929.wem</Path>
+				</File>
+				<File Id="45979538" Language="SFX">
+					<ShortName>stone3.wav</ShortName>
+					<Path>SFX\stone3_10C4C929.wem</Path>
+				</File>
+				<File Id="68047471" Language="SFX">
+					<ShortName>28_wav_files (online-audio-converter.com)\gravel3.wav</ShortName>
+					<Path>SFX\28_wav_files (online-audio-converter.com)\gravel3_10C4C929.wem</Path>
+				</File>
+				<File Id="85187482" Language="SFX">
+					<ShortName>28_wav_files (online-audio-converter.com)\stone2.wav</ShortName>
+					<Path>SFX\28_wav_files (online-audio-converter.com)\stone2_10C4C929.wem</Path>
+				</File>
+				<File Id="99794793" Language="SFX">
+					<ShortName>stone4.wav</ShortName>
+					<Path>SFX\stone4_10C4C929.wem</Path>
+				</File>
+				<File Id="115485246" Language="SFX">
+					<ShortName>snow2.wav</ShortName>
+					<Path>SFX\snow2_10C4C929.wem</Path>
+				</File>
+				<File Id="123133856" Language="SFX">
+					<ShortName>sand3.wav</ShortName>
+					<Path>SFX\sand3_10C4C929.wem</Path>
+				</File>
+				<File Id="125431890" Language="SFX">
+					<ShortName>28_wav_files (online-audio-converter.com)\stone1.wav</ShortName>
+					<Path>SFX\28_wav_files (online-audio-converter.com)\stone1_10C4C929.wem</Path>
+				</File>
+				<File Id="127155158" Language="SFX">
+					<ShortName>28_wav_files (online-audio-converter.com)\stone3.wav</ShortName>
+					<Path>SFX\28_wav_files (online-audio-converter.com)\stone3_10C4C929.wem</Path>
+				</File>
+				<File Id="127155691" Language="SFX">
+					<ShortName>gravel2.wav</ShortName>
+					<Path>SFX\gravel2_10C4C929.wem</Path>
+				</File>
+				<File Id="132624353" Language="SFX">
+					<ShortName>28_wav_files (online-audio-converter.com)\snow3.wav</ShortName>
+					<Path>SFX\28_wav_files (online-audio-converter.com)\snow3_10C4C929.wem</Path>
+				</File>
+				<File Id="183760107" Language="SFX">
+					<ShortName>gravel3.wav</ShortName>
+					<Path>SFX\gravel3_10C4C929.wem</Path>
+				</File>
+				<File Id="225809685" Language="SFX">
+					<ShortName>sand5.wav</ShortName>
+					<Path>SFX\sand5_10C4C929.wem</Path>
+				</File>
+				<File Id="228278029" Language="SFX">
+					<ShortName>28_wav_files (online-audio-converter.com)\grass2.wav</ShortName>
+					<Path>SFX\28_wav_files (online-audio-converter.com)\grass2_10C4C929.wem</Path>
+				</File>
+				<File Id="229338788" Language="SFX">
+					<ShortName>cloth3.wav</ShortName>
+					<Path>SFX\cloth3_10C4C929.wem</Path>
+				</File>
+				<File Id="255125468" Language="SFX">
+					<ShortName>28_wav_files (online-audio-converter.com)\gravel2.wav</ShortName>
+					<Path>SFX\28_wav_files (online-audio-converter.com)\gravel2_10C4C929.wem</Path>
+				</File>
+				<File Id="267453344" Language="SFX">
+					<ShortName>28_wav_files (online-audio-converter.com)\wood3.wav</ShortName>
+					<Path>SFX\28_wav_files (online-audio-converter.com)\wood3_10C4C929.wem</Path>
+				</File>
+				<File Id="272095645" Language="SFX">
+					<ShortName>wood3.wav</ShortName>
+					<Path>SFX\wood3_10C4C929.wem</Path>
+				</File>
+				<File Id="285353348" Language="SFX">
+					<ShortName>stone1.wav</ShortName>
+					<Path>SFX\stone1_10C4C929.wem</Path>
+				</File>
+				<File Id="308283446" Language="SFX">
+					<ShortName>cloth1.wav</ShortName>
+					<Path>SFX\cloth1_10C4C929.wem</Path>
+				</File>
+				<File Id="310342182" Language="SFX">
+					<ShortName>ladder4.wav</ShortName>
+					<Path>SFX\ladder4_10C4C929.wem</Path>
+				</File>
+				<File Id="317384800" Language="SFX">
+					<ShortName>28_wav_files (online-audio-converter.com)\snow4.wav</ShortName>
+					<Path>SFX\28_wav_files (online-audio-converter.com)\snow4_10C4C929.wem</Path>
+				</File>
+				<File Id="329960212" Language="SFX">
+					<ShortName>28_wav_files (online-audio-converter.com)\sand1.wav</ShortName>
+					<Path>SFX\28_wav_files (online-audio-converter.com)\sand1_10C4C929.wem</Path>
+				</File>
+				<File Id="332374205" Language="SFX">
+					<ShortName>28_wav_files (online-audio-converter.com)\sand4.wav</ShortName>
+					<Path>SFX\28_wav_files (online-audio-converter.com)\sand4_10C4C929.wem</Path>
+				</File>
+				<File Id="336837948" Language="SFX">
+					<ShortName>28_wav_files (online-audio-converter.com)\cloth3.wav</ShortName>
+					<Path>SFX\28_wav_files (online-audio-converter.com)\cloth3_10C4C929.wem</Path>
+				</File>
+				<File Id="363288851" Language="SFX">
+					<ShortName>snow3.wav</ShortName>
+					<Path>SFX\snow3_10C4C929.wem</Path>
+				</File>
+				<File Id="367326721" Language="SFX">
+					<ShortName>6_wav_files (online-audio-converter.com)\grass6.wav</ShortName>
+					<Path>SFX\6_wav_files (online-audio-converter.com)\grass6_10C4C929.wem</Path>
+				</File>
+				<File Id="370321201" Language="SFX">
+					<ShortName>cloth4.wav</ShortName>
+					<Path>SFX\cloth4_10C4C929.wem</Path>
+				</File>
+				<File Id="454718198" Language="SFX">
+					<ShortName>28_wav_files (online-audio-converter.com)\snow2.wav</ShortName>
+					<Path>SFX\28_wav_files (online-audio-converter.com)\snow2_10C4C929.wem</Path>
+				</File>
+				<File Id="475920276" Language="SFX">
+					<ShortName>28_wav_files (online-audio-converter.com)\cloth2.wav</ShortName>
+					<Path>SFX\28_wav_files (online-audio-converter.com)\cloth2_10C4C929.wem</Path>
+				</File>
+				<File Id="493627876" Language="SFX">
+					<ShortName>wood1.wav</ShortName>
+					<Path>SFX\wood1_10C4C929.wem</Path>
+				</File>
+				<File Id="553251392" Language="SFX">
+					<ShortName>snow1.wav</ShortName>
+					<Path>SFX\snow1_10C4C929.wem</Path>
+				</File>
+				<File Id="562643107" Language="SFX">
+					<ShortName>ladder2.wav</ShortName>
+					<Path>SFX\ladder2_10C4C929.wem</Path>
+				</File>
+				<File Id="579238119" Language="SFX">
+					<ShortName>gravel1.wav</ShortName>
+					<Path>SFX\gravel1_10C4C929.wem</Path>
+				</File>
+				<File Id="589057368" Language="SFX">
+					<ShortName>sand4.wav</ShortName>
+					<Path>SFX\sand4_10C4C929.wem</Path>
+				</File>
+				<File Id="602040375" Language="SFX">
+					<ShortName>6_wav_files (online-audio-converter.com)\grass1.wav</ShortName>
+					<Path>SFX\6_wav_files (online-audio-converter.com)\grass1_10C4C929.wem</Path>
+				</File>
+				<File Id="607010901" Language="SFX">
+					<ShortName>28_wav_files (online-audio-converter.com)\wood1.wav</ShortName>
+					<Path>SFX\28_wav_files (online-audio-converter.com)\wood1_10C4C929.wem</Path>
+				</File>
+				<File Id="619662671" Language="SFX">
+					<ShortName>wood5.wav</ShortName>
+					<Path>SFX\wood5_10C4C929.wem</Path>
+				</File>
+				<File Id="622196385" Language="SFX">
+					<ShortName>stone2.wav</ShortName>
+					<Path>SFX\stone2_10C4C929.wem</Path>
+				</File>
+				<File Id="643799399" Language="SFX">
+					<ShortName>wood2.wav</ShortName>
+					<Path>SFX\wood2_10C4C929.wem</Path>
+				</File>
+				<File Id="666412158" Language="SFX">
+					<ShortName>28_wav_files (online-audio-converter.com)\wood2.wav</ShortName>
+					<Path>SFX\28_wav_files (online-audio-converter.com)\wood2_10C4C929.wem</Path>
+				</File>
+				<File Id="672415842" Language="SFX">
+					<ShortName>gravel4.wav</ShortName>
+					<Path>SFX\gravel4_10C4C929.wem</Path>
+				</File>
+				<File Id="686834933" Language="SFX">
+					<ShortName>28_wav_files (online-audio-converter.com)\grass1.wav</ShortName>
+					<Path>SFX\28_wav_files (online-audio-converter.com)\grass1_10C4C929.wem</Path>
+				</File>
+				<File Id="701843054" Language="SFX">
+					<ShortName>28_wav_files (online-audio-converter.com)\wood4.wav</ShortName>
+					<Path>SFX\28_wav_files (online-audio-converter.com)\wood4_10C4C929.wem</Path>
+				</File>
+				<File Id="724834478" Language="SFX">
+					<ShortName>sand1.wav</ShortName>
+					<Path>SFX\sand1_10C4C929.wem</Path>
+				</File>
+				<File Id="741673184" Language="SFX">
+					<ShortName>28_wav_files (online-audio-converter.com)\sand3.wav</ShortName>
+					<Path>SFX\28_wav_files (online-audio-converter.com)\sand3_10C4C929.wem</Path>
+				</File>
+				<File Id="761219274" Language="SFX">
+					<ShortName>6_wav_files (online-audio-converter.com)\grass5.wav</ShortName>
+					<Path>SFX\6_wav_files (online-audio-converter.com)\grass5_10C4C929.wem</Path>
+				</File>
+				<File Id="776537658" Language="SFX">
+					<ShortName>stone6.wav</ShortName>
+					<Path>SFX\stone6_10C4C929.wem</Path>
+				</File>
+				<File Id="778271378" Language="SFX">
+					<ShortName>6_wav_files (online-audio-converter.com)\grass4.wav</ShortName>
+					<Path>SFX\6_wav_files (online-audio-converter.com)\grass4_10C4C929.wem</Path>
+				</File>
+				<File Id="792206481" Language="SFX">
+					<ShortName>28_wav_files (online-audio-converter.com)\grass3.wav</ShortName>
+					<Path>SFX\28_wav_files (online-audio-converter.com)\grass3_10C4C929.wem</Path>
+				</File>
+				<File Id="796947459" Language="SFX">
+					<ShortName>snow4.wav</ShortName>
+					<Path>SFX\snow4_10C4C929.wem</Path>
+				</File>
+				<File Id="860276253" Language="SFX">
+					<ShortName>6_wav_files (online-audio-converter.com)\grass3.wav</ShortName>
+					<Path>SFX\6_wav_files (online-audio-converter.com)\grass3_10C4C929.wem</Path>
+				</File>
+				<File Id="887614360" Language="SFX">
+					<ShortName>stone5.wav</ShortName>
+					<Path>SFX\stone5_10C4C929.wem</Path>
+				</File>
+				<File Id="889385472" Language="SFX">
+					<ShortName>wood4.wav</ShortName>
+					<Path>SFX\wood4_10C4C929.wem</Path>
+				</File>
+				<File Id="900670054" Language="SFX">
+					<ShortName>28_wav_files (online-audio-converter.com)\gravel1.wav</ShortName>
+					<Path>SFX\28_wav_files (online-audio-converter.com)\gravel1_10C4C929.wem</Path>
+				</File>
+				<File Id="919361920" Language="SFX">
+					<ShortName>28_wav_files (online-audio-converter.com)\snow1.wav</ShortName>
+					<Path>SFX\28_wav_files (online-audio-converter.com)\snow1_10C4C929.wem</Path>
+				</File>
+				<File Id="933902631" Language="SFX">
+					<ShortName>28_wav_files (online-audio-converter.com)\sand2.wav</ShortName>
+					<Path>SFX\28_wav_files (online-audio-converter.com)\sand2_10C4C929.wem</Path>
+				</File>
+				<File Id="952819959" Language="SFX">
+					<ShortName>28_wav_files (online-audio-converter.com)\cloth4.wav</ShortName>
+					<Path>SFX\28_wav_files (online-audio-converter.com)\cloth4_10C4C929.wem</Path>
+				</File>
+				<File Id="972668387" Language="SFX">
+					<ShortName>28_wav_files (online-audio-converter.com)\stone4.wav</ShortName>
+					<Path>SFX\28_wav_files (online-audio-converter.com)\stone4_10C4C929.wem</Path>
+				</File>
+				<File Id="981117205" Language="SFX">
+					<ShortName>ladder5.wav</ShortName>
+					<Path>SFX\ladder5_10C4C929.wem</Path>
+				</File>
+				<File Id="981264872" Language="SFX">
+					<ShortName>28_wav_files (online-audio-converter.com)\gravel4.wav</ShortName>
+					<Path>SFX\28_wav_files (online-audio-converter.com)\gravel4_10C4C929.wem</Path>
+				</File>
+				<File Id="1007195515" Language="SFX">
+					<ShortName>wood6.wav</ShortName>
+					<Path>SFX\wood6_10C4C929.wem</Path>
+				</File>
+				<File Id="1010426216" Language="SFX">
+					<ShortName>28_wav_files (online-audio-converter.com)\grass4.wav</ShortName>
+					<Path>SFX\28_wav_files (online-audio-converter.com)\grass4_10C4C929.wem</Path>
+				</File>
+				<File Id="1035993006" Language="SFX">
+					<ShortName>sand2.wav</ShortName>
+					<Path>SFX\sand2_10C4C929.wem</Path>
+				</File>
+				<File Id="1042351094" Language="SFX">
+					<ShortName>cloth2.wav</ShortName>
+					<Path>SFX\cloth2_10C4C929.wem</Path>
+				</File>
+				<File Id="1045146731" Language="SFX">
+					<ShortName>ladder1.wav</ShortName>
+					<Path>SFX\ladder1_10C4C929.wem</Path>
+				</File>
+				<File Id="1069077107" Language="SFX">
+					<ShortName>ladder3.wav</ShortName>
+					<Path>SFX\ladder3_10C4C929.wem</Path>
+				</File>
+			</IncludedMemoryFiles>
+		</SoundBank>
+	</SoundBanks>
+</SoundBanksInfo>

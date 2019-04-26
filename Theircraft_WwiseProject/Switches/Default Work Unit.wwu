@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WwiseDocument Type="WorkUnit" ID="{B40B284E-3180-4429-8004-898159DDF4FC}" SchemaVersion="94">
+	<Switches>
+		<WorkUnit Name="Default Work Unit" ID="{B40B284E-3180-4429-8004-898159DDF4FC}" PersistMode="Standalone">
+			<ChildrenList>
+				<SwitchGroup Name="Materials" ID="{257C993A-215A-4B3C-87EA-952C97F816FF}">
+					<ChildrenList>
+						<Switch Name="Grass" ID="{6AEBF30F-BC36-4470-B2B7-CBB8A4BF1122}"/>
+						<Switch Name="Wood" ID="{29F3F4CF-070A-47D5-995C-2BF247F1A300}"/>
+						<Switch Name="Sand" ID="{4D3EA739-F1A2-4E46-82B1-5682EFC3A6D1}"/>
+						<Switch Name="Stone" ID="{51AF7247-0212-4A7B-A8F7-442AF4F3412C}"/>
+						<Switch Name="Gravel" ID="{2ECB65DA-0D05-4C96-B470-E8FD3436970D}"/>
+						<Switch Name="Snow" ID="{DA4695BF-DF98-45CB-AD3A-4C23DF7FBF14}"/>
+						<Switch Name="Ladder" ID="{067209E1-DD47-4325-B16E-C6945A131A29}"/>
+						<Switch Name="Cloth" ID="{022C7B66-7DCB-4BF5-9055-261B24A6F9B8}"/>
+					</ChildrenList>
+				</SwitchGroup>
+			</ChildrenList>
+		</WorkUnit>
+	</Switches>
+</WwiseDocument>

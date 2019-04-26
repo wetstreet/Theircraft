@@ -1,0 +1,19 @@
+Event	ID	Name			Wwise Object Path	Notes
+	1542330067	Player_Dig			\Player\Player_Dig	
+	2453392179	Player_Footstep			\Player\Player_Footstep	
+
+Switch Group	ID	Name			Wwise Object Path	Notes
+	4050929301	Materials			\Default Work Unit\Materials	
+
+Switch	ID	Name	Switch Group			Notes
+	787898836	Snow	Materials			
+	803837735	Sand	Materials			
+	1216965916	Stone	Materials			
+	1367384683	Cloth	Materials			
+	1407130077	Ladder	Materials			
+	2058049674	Wood	Materials			
+	2185786256	Gravel	Materials			
+	4248645337	Grass	Materials			
+
+In Memory Audio	ID	Name	Audio source file		Wwise Object Path	Notes	Data Size
+	3325749	cloth1	C:\Users\	17885464	grass2	C:\Users\	45979538	stone3	C:\Users\	68047471	gravel3	C:\Users\	85187482	stone2	C:\Users\	99794793	stone4	C:\Users\	115485246	snow2	C:\Users\	123133856	sand3	C:\Users\	125431890	stone1	C:\Users\	127155158	stone3	C:\Users\	127155691	gravel2	C:\Users\	132624353	snow3	C:\Users\	183760107	gravel3	C:\Users\	225809685	sand5	C:\Users\	228278029	grass2	C:\Users\	229338788	cloth3	C:\Users\	255125468	gravel2	C:\Users\	267453344	wood3	C:\Users\	272095645	wood3	C:\Users\	285353348	stone1	C:\Users\	308283446	cloth1	C:\Users\	310342182	ladder4	C:\Users\	317384800	snow4	C:\Users\	329960212	sand1	C:\Users\	332374205	sand4	C:\Users\	336837948	cloth3	C:\Users\	363288851	snow3	C:\Users\	367326721	grass6	C:\Users\	370321201	cloth4	C:\Users\	454718198	snow2	C:\Users\	475920276	cloth2	C:\Users\	493627876	wood1	C:\Users\	553251392	snow1	C:\Users\	562643107	ladder2	C:\Users\	579238119	gravel1	C:\Users\	589057368	sand4	C:\Users\	602040375	grass1	C:\Users\	607010901	wood1	C:\Users\	619662671	wood5	C:\Users\	622196385	stone2	C:\Users\	643799399	wood2	C:\Users\	666412158	wood2	C:\Users\	672415842	gravel4	C:\Users\	686834933	grass1	C:\Users\	701843054	wood4	C:\Users\	724834478	sand1	C:\Users\	741673184	sand3	C:\Users\	761219274	grass5	C:\Users\	776537658	stone6	C:\Users\	778271378	grass4	C:\Users\	792206481	grass3	C:\Users\	796947459	snow4	C:\Users\	860276253	grass3	C:\Users\	887614360	stone5	C:\Users\	889385472	wood4	C:\Users\	900670054	gravel1	C:\Users\	919361920	snow1	C:\Users\	933902631	sand2	C:\Users\	952819959	cloth4	C:\Users\	972668387	stone4	C:\Users\	981117205	ladder5	C:\Users\	981264872	gravel4	C:\Users\	1007195515	wood6	C:\Users\	1010426216	grass4	C:\Users\	1035993006	sand2	C:\Users\	1042351094	cloth2	C:\Users\	1045146731	ladder1	C:\Users\	1069077107	ladder3	C:\Users\

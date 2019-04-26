@@ -121,6 +121,7 @@ public class mergetestPlayerController : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 Jump();
+                AkSoundEngine.PostEvent("Player_Footstep", this.gameObject);
             }
         }
 
@@ -328,6 +329,7 @@ public class mergetestPlayerController : MonoBehaviour
             CSBlockType type = test.GetBlockAtPos(pos).type;
             test.RemoveBlock(pos);
             BreakBlockEffect.Create(type, pos);
+            AkSoundEngine.PostEvent("Player_Dig", this.gameObject);
         }
         else
         {

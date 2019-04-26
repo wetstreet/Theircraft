@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<WwiseSettings xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <CopySoundBanksAsPreBuildStep>true</CopySoundBanksAsPreBuildStep>
+  <CreatedPicker>true</CreatedPicker>
+  <CreateWwiseGlobal>true</CreateWwiseGlobal>
+  <CreateWwiseListener>true</CreateWwiseListener>
+  <GenerateSoundBanksAsPreBuildStep>false</GenerateSoundBanksAsPreBuildStep>
+  <ShowMissingRigidBodyWarning>true</ShowMissingRigidBodyWarning>
+  <SoundbankPath>Audio/GeneratedSoundBanks</SoundbankPath>
+  <WwiseInstallationPathMac />
+  <WwiseInstallationPathWindows>C:\Program Files (x86)\Audiokinetic\Wwise 2019.1.0.6947</WwiseInstallationPathWindows>
+  <WwiseProjectPath>../Theircraft_WwiseProject/Theircraft_WwiseProject.wproj</WwiseProjectPath>
+</WwiseSettings>

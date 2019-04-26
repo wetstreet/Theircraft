@@ -1,0 +1,73 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2bc90d25ba3ebf648bf8fac3084d4f80, type: 3}
+  m_Name: AkWwiseInitializationSettings
+  m_EditorClassIdentifier: 
+  PlatformSettingsNameList:
+  - Mac
+  - Windows
+  PlatformSettingsList:
+  - {fileID: 11400000, guid: 3d8ff7acdc803c844830464fe8dab22f, type: 2}
+  - {fileID: 11400000, guid: 8ac03b427ade2c54ca62d57c3c57b311, type: 2}
+  InvalidReferencePlatforms: []
+  UserSettings:
+    m_BasePath: Audio\GeneratedSoundBanks
+    m_StartupLanguage: English(US)
+    m_PreparePoolSize: 0
+    m_CallbackManagerBufferSize: 4096
+    m_EngineLogging: 1
+    m_MaximumNumberOfMemoryPools: 32
+    m_MaximumNumberOfPositioningPaths: 255
+    m_DefaultPoolSize: 16777216
+    m_MemoryCutoffThreshold: 1
+    m_CommandQueueSize: 262144
+    m_SamplesPerFrame: 1024
+    m_MainOutputSettings:
+      m_AudioDeviceShareset: 
+      m_DeviceID: 0
+      m_PanningRule: 0
+      m_ChannelConfig:
+        m_ChannelConfigType: 0
+        m_ChannelMask: 0
+        m_NumberOfChannels: 0
+    m_StreamingLookAheadRatio: 1
+    m_StreamManagerPoolSize: 65536
+    m_SampleRate: 48000
+    m_LowerEnginePoolSize: 16777216
+    m_LowerEngineMemoryCutoffThreshold: 1
+    m_NumberOfRefillsInVoice: 4
+    m_SpatialAudioSettings:
+      m_PoolSize: 4194304
+      m_MaxSoundPropagationDepth: 8
+      m_DiffractionFlags: -1
+      m_MovementThreshold: 1
+  AdvancedSettings:
+    m_IOMemorySize: 2097152
+    m_TargetAutoStreamBufferLengthMs: 380
+    m_UseStreamCache: 0
+    m_MaximumPinnedBytesInCache: 4294967295
+    m_PrepareEventMemoryPoolID: -1
+    m_EnableGameSyncPreparation: 0
+    m_ContinuousPlaybackLookAhead: 1
+    m_MonitorPoolSize: 262144
+    m_MonitorQueuePoolSize: 65536
+    m_MaximumHardwareTimeoutMs: 1000
+    m_SpatialAudioSettings:
+      m_DiffractionShadowAttenuationFactor: 2
+      m_DiffractionShadowDegrees: 30
+  CommsSettings:
+    m_PoolSize: 262144
+    m_DiscoveryBroadcastPort: 24024
+    m_CommandPort: 0
+    m_NotificationPort: 0
+    m_InitializeSystemComms: 1
+    m_NetworkName: 

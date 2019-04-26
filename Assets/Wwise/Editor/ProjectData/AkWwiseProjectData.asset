@@ -1,0 +1,138 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99223b43dc742934ab960e39c47f7702, type: 3}
+  m_Name: AkWwiseProjectData
+  m_EditorClassIdentifier: 
+  AcousticTextureWwu:
+  - PhysicalPath: Virtual Acoustics\Default Work Unit.wwu
+    ParentPhysicalPath: 
+    guid: fd6a2ae968917c47ad8030b9739acdcd
+    GuidInternal: 
+    m_lastTime: -8586453175797437679
+    List: []
+  AuxBusWwu:
+  - PhysicalPath: Master-Mixer Hierarchy\Default Work Unit.wwu
+    ParentPhysicalPath: 
+    guid: 4634eac59ee89d49b686418636aa991a
+    GuidInternal: 
+    m_lastTime: -8586453175797958127
+    List: []
+  BankWwu:
+  - PhysicalPath: SoundBanks\Default Work Unit.wwu
+    ParentPhysicalPath: 
+    guid: 6ebb4863498b7b4f90119187c813242b
+    GuidInternal: 
+    m_lastTime: -8586453167659272510
+    List:
+    - name: Main
+      guid: 94fd25c3640b4446a87bc7db7c99c861
+      id: 3161908922
+      PathAndIcons:
+      - ElementName: Default Work Unit
+        ObjectType: 12
+      - ElementName: Main
+        ObjectType: 7
+      Path: Default Work Unit\Main
+  EventWwu:
+  - PhysicalPath: Events\Default Work Unit.wwu
+    ParentPhysicalPath: 
+    guid: 6fb2fc64e7ee2f47bb490cea237e0901
+    GuidInternal: 
+    m_lastTime: -8586453167786476502
+    List:
+    - name: Footstep
+      guid: 4e4ad69a5eb2a3489b9785d0b49fbc80
+      id: 1866025847
+      PathAndIcons:
+      - ElementName: Default Work Unit
+        ObjectType: 12
+      - ElementName: Footstep
+        ObjectType: 3
+      Path: Default Work Unit\Footstep
+      maxAttenuation: 0
+      maxDuration: 0
+      minDuration: 0
+  RtpcWwu:
+  - PhysicalPath: Game Parameters\Default Work Unit.wwu
+    ParentPhysicalPath: 
+    guid: 6fd5403f4a5e074bbb470ef948690112
+    GuidInternal: 
+    m_lastTime: -8586453175798028177
+    List: []
+  StateWwu:
+  - PhysicalPath: States\Default Work Unit.wwu
+    ParentPhysicalPath: 
+    guid: 0c59cad13f3e4d40b36e05a337c2ba13
+    GuidInternal: 
+    m_lastTime: -8586453175797557783
+    List: []
+  SwitchWwu:
+  - PhysicalPath: Switches\Default Work Unit.wwu
+    ParentPhysicalPath: 
+    guid: 4e280bb4803129448004898159ddf4fc
+    GuidInternal: 
+    m_lastTime: -8586453167786416450
+    List:
+    - name: Materials
+      guid: 3a997c255a213c4b87ea952c97f816ff
+      id: 4050929301
+      PathAndIcons:
+      - ElementName: Default Work Unit
+        ObjectType: 12
+      - ElementName: Materials
+        ObjectType: 11
+      Path: Default Work Unit\Materials
+      values:
+      - name: Grass
+        guid: 0ff3eb6a36bc7044b2b7cbb8a4bf1122
+        id: 4248645337
+        PathAndIcons:
+        - ElementName: Grass
+          ObjectType: 10
+      - name: Sand
+        guid: 39a73e4da2f1464e82b15682efc3a6d1
+        id: 803837735
+        PathAndIcons:
+        - ElementName: Sand
+          ObjectType: 10
+      - name: Stone
+        guid: 4772af5112027b4aa8f7442af4f3412c
+        id: 1216965916
+        PathAndIcons:
+        - ElementName: Stone
+          ObjectType: 10
+      - name: Wood
+        guid: cff4f3290a07d547995c2bf247f1a300
+        id: 2058049674
+        PathAndIcons:
+        - ElementName: Wood
+          ObjectType: 10
+      ValueGuids: []
+      ValueIcons: []
+      valuesInternal: []
+  TriggerWwu:
+  - PhysicalPath: Triggers\Default Work Unit.wwu
+    ParentPhysicalPath: 
+    guid: 0a0ef3c072ecf34c9cc24aaf7763f2a3
+    GuidInternal: 
+    m_lastTime: -8586453175797457681
+    List: []
+  ExpandedItems:
+  - /Theircraft_WwiseProject
+  - /Theircraft_WwiseProject/Events
+  - /Theircraft_WwiseProject/Events/Default Work Unit
+  - /Theircraft_WwiseProject/SoundBanks
+  - /Theircraft_WwiseProject/SoundBanks/Default Work Unit
+  - /Theircraft_WwiseProject/Switches
+  - /Theircraft_WwiseProject/Switches/Default Work Unit
+  autoPopulateEnabled: 1
+  CurrentPluginConfig: 
