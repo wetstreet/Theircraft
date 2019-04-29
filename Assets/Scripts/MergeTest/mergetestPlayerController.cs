@@ -121,7 +121,6 @@ public class mergetestPlayerController : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 Jump();
-                AkSoundEngine.PostEvent("Player_Footstep", this.gameObject);
             }
         }
 
@@ -141,6 +140,8 @@ public class mergetestPlayerController : MonoBehaviour
     RaycastHit hit;
     void DrawWireFrame()
     {
+        WireFrameHelper.render = false;
+
         Vector3 center = new Vector3(Screen.width / 2, Screen.height / 2, 0);
         int cubeLayerIndex = LayerMask.NameToLayer("Block");
         int otherPlayerLayerIndex = LayerMask.NameToLayer("OtherPlayer");
@@ -149,14 +150,13 @@ public class mergetestPlayerController : MonoBehaviour
             int layerMask = 1 << cubeLayerIndex | 1 << otherPlayerLayerIndex;
             if (Physics.Raycast(Camera.main.ScreenPointToRay(center), out hit, 5f, layerMask) && hit.transform.tag == "Block")
             {
-                Vector3Int actualPos = WireFrameHelper.GetBlockPosByRaycast(hit.point);
-                //Debug.Log(hit.point + "," + pos);
-                WireFrameHelper.render = true;
-                WireFrameHelper.pos = actualPos;
-            }
-            else
-            {
-                WireFrameHelper.render = false;
+                bool hasBlock = WireFrameHelper.GetBlockPosByRaycast(hit.point, out Vector3Int actualPos);
+                if (hasBlock)
+                {
+                    //Debug.Log(hit.point + "," + pos);
+                    WireFrameHelper.render = true;
+                    WireFrameHelper.pos = actualPos;
+                }
             }
         }
     }
@@ -200,11 +200,8 @@ public class mergetestPlayerController : MonoBehaviour
         Vector3 verticalMovement = verticalSpeed * Time.fixedDeltaTime;
 
         //有移动则告诉服务器
-        float precision = 1f;
-        //妈蛋，明明verticalMovement打印出来是(0,0,0)却!=Vector3.zero，有精度问题，这样搞下
-        bool b1 = Mathf.Abs(verticalMovement.x) > precision || Mathf.Abs(verticalMovement.y) > precision || Mathf.Abs(verticalMovement.z) > precision;
-        bool b2 = horizontalMovement != Vector3.zero;
-        if (b1 || b2)
+        float precision = 0.001f;
+        if (verticalMovement.sqrMagnitude > precision || horizontalMovement != Vector3.zero)
             needUpdate = true;
 
         if (horizontalMovement != Vector3.zero)
@@ -222,12 +219,33 @@ public class mergetestPlayerController : MonoBehaviour
             }
         }
         cc.Move(horizontalMovement * horizontalScale + verticalMovement * verticalScale);
-
+        
         if (cc.isGrounded)
         {
             verticalSpeed = Vector3.zero;
+            if (verticalMovement.sqrMagnitude > precision)
+            {
+                AkSoundEngine.PostEvent("Player_Footstep", this.gameObject);
+            }
+            
+            if (isMoving && horizontalSpeed.sqrMagnitude > 0.2f)
+            {
+                bool hasBlock = WireFrameHelper.GetBlockPosByRaycast(transform.position, out Vector3Int pos);
+                if (hasBlock)
+                {
+                    Block b = test.GetBlockAtPos(pos);
+                    if (Time.realtimeSinceStartup - lastFootstepTime > footstepInterval)
+                    {
+                        AkSoundEngine.SetSwitch("Materials", BlockGenerator.type2material[b.type], gameObject);
+                        AkSoundEngine.PostEvent("Player_Footstep", gameObject);
+                        lastFootstepTime = Time.realtimeSinceStartup;
+                    }
+                }
+            }
         }
     }
+    float lastFootstepTime;
+    float footstepInterval = 0.3f;
 
     void RotateView()
     {
@@ -290,6 +308,8 @@ public class mergetestPlayerController : MonoBehaviour
         {
             Vector3Int blockPos = new Vector3Int(rsp.block.position.x, rsp.block.position.y, rsp.block.position.z);
             test.AddBlock(blockPos, rsp.block.type);
+            AkSoundEngine.SetSwitch("Materials", BlockGenerator.type2material[rsp.block.type], gameObject);
+            AkSoundEngine.PostEvent("Player_Dig", gameObject);
         }
         else
         {
@@ -329,7 +349,8 @@ public class mergetestPlayerController : MonoBehaviour
             CSBlockType type = test.GetBlockAtPos(pos).type;
             test.RemoveBlock(pos);
             BreakBlockEffect.Create(type, pos);
-            AkSoundEngine.PostEvent("Player_Dig", this.gameObject);
+            AkSoundEngine.SetSwitch("Materials", BlockGenerator.type2material[type], gameObject);
+            AkSoundEngine.PostEvent("Player_Dig", gameObject);
         }
         else
         {

@@ -24,6 +24,16 @@ public static class BlockGenerator
         {CSBlockType.HayBlock, "hay_block_side" },
     };
 
+    public static Dictionary<CSBlockType, string> type2material = new Dictionary<CSBlockType, string>
+    {
+        {CSBlockType.Grass, "Grass" },
+        {CSBlockType.Dirt, "Gravel" },
+        {CSBlockType.Tnt, "Grass" },
+        {CSBlockType.Brick, "Stone" },
+        {CSBlockType.Furnace, "Stone" },
+        {CSBlockType.HayBlock, "Grass" },
+    };
+
     static Dictionary<CSBlockType, GameObject> blockType2prefab = new Dictionary<CSBlockType, GameObject>();
 
     public static GameObject GetBlockPrefab(CSBlockType type)
