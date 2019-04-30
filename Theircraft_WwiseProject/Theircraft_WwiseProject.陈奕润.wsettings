@@ -4,6 +4,7 @@
 		<UserProjectSettings Name="" ID="{2BB2C903-B749-407D-81F6-56EA68550550}">
 			<PropertyList>
 				<Property Name="AudioFilesImporter\Path" Type="string" Value="C:\Users\陈奕润\Downloads\17_wav_files (online-audio-converter.com) (1)"/>
+				<Property Name="Event Action List\{528C67B4-D153-4409-9E26-3503085437BE}\x64_Expand States" Type="string" Value=""/>
 				<Property Name="Event Action List\{9AD64A4E-B25E-48A3-9B97-85D0B49FBC80}\x64_Expand States" Type="string" Value=""/>
 				<Property Name="Event Action List\{B33D558D-E782-4658-AB98-5E458BF61F64}\x64_Expand States" Type="string" Value=""/>
 				<Property Name="EventView\FilterMode1" Type="int32" Value="2"/>

@@ -15,6 +15,12 @@ public class SettingsPanel : MonoBehaviour {
         mergetestPlayerController.LockCursor(false);
     }
 
+    void OnClickClose()
+    {
+        AkSoundEngine.PostEvent("UI_Click", gameObject);
+        Hide();
+    }
+
     public static void Hide()
     {
         mergetestPlayerController.LockCursor(true);
@@ -43,7 +49,7 @@ public class SettingsPanel : MonoBehaviour {
 	void Start ()
     {
         transform.Find("btn_quit").GetComponent<Button>().onClick.AddListener(OnClickQuit);
-        transform.Find("btn_close").GetComponent<Button>().onClick.AddListener(Hide);
+        transform.Find("btn_close").GetComponent<Button>().onClick.AddListener(OnClickClose);
     }
 	
 	// Update is called once per frame

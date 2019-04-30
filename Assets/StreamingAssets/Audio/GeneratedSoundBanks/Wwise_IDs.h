@@ -15,6 +15,7 @@ namespace AK
     {
         static const AkUniqueID PLAYER_DIG = 1542330067U;
         static const AkUniqueID PLAYER_FOOTSTEP = 2453392179U;
+        static const AkUniqueID UI_CLICK = 2249769530U;
     } // namespace EVENTS
 
     namespace SWITCHES

@@ -245,7 +245,7 @@ public class mergetestPlayerController : MonoBehaviour
         }
     }
     float lastFootstepTime;
-    float footstepInterval = 0.3f;
+    public float footstepInterval = 0.4f;
 
     void RotateView()
     {

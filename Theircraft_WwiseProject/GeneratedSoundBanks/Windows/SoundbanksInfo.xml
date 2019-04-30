@@ -23,6 +23,7 @@
 			<IncludedEvents>
 				<Event Id="1542330067" Name="Player_Dig" ObjectPath="\Events\Player\Player_Dig"/>
 				<Event Id="2453392179" Name="Player_Footstep" ObjectPath="\Events\Player\Player_Footstep"/>
+				<Event Id="2249769530" Name="UI_Click" ObjectPath="\Events\UI\UI_Click"/>
 			</IncludedEvents>
 			<IncludedMemoryFiles>
 				<File Id="3325749" Language="SFX">
@@ -100,6 +101,10 @@
 				<File Id="272095645" Language="SFX">
 					<ShortName>wood3.wav</ShortName>
 					<Path>SFX\wood3_10C4C929.wem</Path>
+				</File>
+				<File Id="278027888" Language="SFX">
+					<ShortName>36_wav_files (online-audio-converter.com)\click.wav</ShortName>
+					<Path>SFX\36_wav_files (online-audio-converter.com)\click_10C4C929.wem</Path>
 				</File>
 				<File Id="285353348" Language="SFX">
 					<ShortName>stone1.wav</ShortName>

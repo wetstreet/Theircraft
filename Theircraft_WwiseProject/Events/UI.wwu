@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WwiseDocument Type="WorkUnit" ID="{1E75170E-0F7D-4854-B39C-6E2DA6476971}" SchemaVersion="94">
+	<Events>
+		<WorkUnit Name="UI" ID="{1E75170E-0F7D-4854-B39C-6E2DA6476971}" PersistMode="Standalone">
+			<ChildrenList>
+				<Event Name="UI_Click" ID="{528C67B4-D153-4409-9E26-3503085437BE}">
+					<ChildrenList>
+						<Action Name="" ID="{980EDC6A-BEE8-4118-A69E-BBF595A73E92}" ShortID="968357259">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="click" ID="{412F5690-4786-4BE7-BA47-3E466285BB18}" WorkUnitID="{46F87971-A1D3-4A91-B075-34A79D3FACDF}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+			</ChildrenList>
+		</WorkUnit>
+	</Events>
+</WwiseDocument>

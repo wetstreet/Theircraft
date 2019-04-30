@@ -8,7 +8,7 @@
 						<Action Name="" ID="{F5941B6F-F586-4B30-B5CF-3548D036F6E5}" ShortID="1051296837">
 							<ReferenceList>
 								<Reference Name="Target">
-									<ObjectRef Name="Footsteps" ID="{F28B6E82-DB6D-4132-9646-CE314541B9C8}" WorkUnitID="{46F87971-A1D3-4A91-B075-34A79D3FACDF}"/>
+									<ObjectRef Name="Footsteps" ID="{F28B6E82-DB6D-4132-9646-CE314541B9C8}" WorkUnitID="{85FFC83D-636B-4D75-AA57-E58140A12C83}"/>
 								</Reference>
 							</ReferenceList>
 						</Action>
@@ -19,7 +19,7 @@
 						<Action Name="" ID="{C9C31031-111F-4817-A84C-F28FB0C41421}" ShortID="58678031">
 							<ReferenceList>
 								<Reference Name="Target">
-									<ObjectRef Name="Dig" ID="{257B2CE7-4550-4A2B-9171-94C5E13F75ED}" WorkUnitID="{46F87971-A1D3-4A91-B075-34A79D3FACDF}"/>
+									<ObjectRef Name="Dig" ID="{257B2CE7-4550-4A2B-9171-94C5E13F75ED}" WorkUnitID="{85FFC83D-636B-4D75-AA57-E58140A12C83}"/>
 								</Reference>
 							</ReferenceList>
 						</Action>
