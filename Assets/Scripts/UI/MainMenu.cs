@@ -5,10 +5,17 @@ using UnityEngine.UI;
 
 public class MainMenu : MonoBehaviour
 {
+    static MainMenu instance;
 
     public static void Show()
     {
-        UISystem.InstantiateUI("MainMenu");
+        instance = UISystem.InstantiateUI("MainMenu").GetComponent<MainMenu>();
+    }
+
+    public static void Close()
+    {
+        if (instance != null)
+            Destroy(instance.gameObject);
     }
 
     // Start is called before the first frame update

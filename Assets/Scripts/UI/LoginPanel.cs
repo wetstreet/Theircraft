@@ -79,7 +79,9 @@ public class LoginPanel : MonoBehaviour {
             DataCenter.spawnPosition = Ultiities.CSVector3_To_Vector3(rsp.PlayerData.Position);
             DataCenter.spawnRotation = Ultiities.CSVector3_To_Vector3(rsp.PlayerData.Rotation);
             DataCenter.state = ClientState.InRoom;
-            Destroy(gameObject);
+            if (gameObject != null)
+                Destroy(gameObject);
+            MainMenu.Close();
             LoadingUI.Show();
             //SceneManager.LoadScene("MultiplayerScene");
             SceneManager.LoadScene("MergeTest");

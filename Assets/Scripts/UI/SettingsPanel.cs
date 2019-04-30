@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class SettingsPanel : MonoBehaviour {
@@ -42,13 +43,16 @@ public class SettingsPanel : MonoBehaviour {
 
     void OnClickQuit()
     {
-        Application.Quit();
+        SceneManager.LoadScene("LoginScene");
+        MainMenu.Show();
     }
 
 	// Use this for initialization
 	void Start ()
     {
-        transform.Find("btn_quit").GetComponent<Button>().onClick.AddListener(OnClickQuit);
+        //没做退出登陆，先屏蔽
+        transform.Find("btn_quit").GetComponent<Button>().interactable = false;
+        //transform.Find("btn_quit").GetComponent<Button>().onClick.AddListener(OnClickQuit);
         transform.Find("btn_close").GetComponent<Button>().onClick.AddListener(OnClickClose);
     }
 	
