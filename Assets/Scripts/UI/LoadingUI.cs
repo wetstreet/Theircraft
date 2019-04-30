@@ -22,6 +22,7 @@ public class LoadingUI : MonoBehaviour
     {
         if (instance != null) Destroy(instance.gameObject);
         isLoading = false;
+        InputManager.Init();
     }
 
     public static void SetOnTop()

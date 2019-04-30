@@ -3,11 +3,11 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using protocol.cs_enum;
 using protocol.cs_theircraft;
+using TMPro;
 
 public class LoginPanel : MonoBehaviour {
-
-    InputField accountInput;
-    InputField passwordInput;
+    TMP_InputField accountInput;
+    TMP_InputField passwordInput;
 
     static string AccountKey = "account";
 
@@ -21,17 +21,17 @@ public class LoginPanel : MonoBehaviour {
     {
         NetworkManager.Register(ENUM_CMD.CS_LOGIN_RES, OnLoginRes);
 
-        accountInput = transform.Find("Account/InputField").GetComponent<InputField>();
-        passwordInput = transform.Find("Password/InputField").GetComponent<InputField>();
-        transform.Find("ButtonLogin").GetComponent<Button>().onClick.AddListener(OnClickLogin);
-        transform.Find("ButtonRegister").GetComponent<Button>().onClick.AddListener(OnClickRegister);
+        accountInput = transform.Find("Account/InputField").GetComponent<TMP_InputField>();
+        passwordInput = transform.Find("Password/InputField").GetComponent<TMP_InputField>();
+        transform.Find("ButtonOk").GetComponent<Button>().onClick.AddListener(OnClickOk);
+        transform.Find("ButtonCancel").GetComponent<Button>().onClick.AddListener(OnClickCancel);
 
         string account = PlayerPrefs.GetString(AccountKey);
         if (account != null)
             accountInput.text = account;
 	}
 
-    void OnClickLogin()
+    void OnClickOk()
     {
         if (accountInput.text == "")
         {
@@ -46,6 +46,11 @@ public class LoginPanel : MonoBehaviour {
 
         LoginReq(accountInput.text, passwordInput.text);
         PlayerPrefs.SetString(AccountKey, accountInput.text);
+    }
+
+    void OnClickCancel()
+    {
+        Destroy(gameObject);
     }
 
     void OnClickRegister()
@@ -78,7 +83,7 @@ public class LoginPanel : MonoBehaviour {
             LoadingUI.Show();
             //SceneManager.LoadScene("MultiplayerScene");
             SceneManager.LoadScene("MergeTest");
-            ChatPanel.AddLine(DataCenter.name + ", 欢迎回来！");
+            ChatPanel.AddLine(DataCenter.name + ", welcome!");
         }
         else
         {

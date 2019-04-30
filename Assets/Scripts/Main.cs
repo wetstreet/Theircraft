@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-
+using UnityEngine.SceneManagement;
 
 public class Main : MonoBehaviour {
     public enum ServerMode
@@ -22,11 +22,10 @@ public class Main : MonoBehaviour {
     // Use this for initialization
     void Start ()
     {
-        InputManager.Init();
-
         if (NetworkManager.Connect())
         {
-            LoginPanel.ShowLoginPanel();
+            SceneManager.LoadScene("LoginScene");
+            MainMenu.Show();
         }
         else
         {
