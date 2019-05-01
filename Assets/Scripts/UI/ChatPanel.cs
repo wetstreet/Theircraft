@@ -3,14 +3,15 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using protocol.cs_enum;
 using protocol.cs_theircraft;
+using TMPro;
 
 public class ChatPanel : MonoBehaviour
 {
     List<Transform> ItemList = new List<Transform>();
     Transform itemUnit;
     GridLayoutGroup grid;
-    GameObject inputParent;
-    InputField inputField;
+    TMP_InputField inputField;
+    GameObject container;
 
     static Queue<string> _message = new Queue<string>();
 
@@ -18,19 +19,9 @@ public class ChatPanel : MonoBehaviour
 
     public static void ShowChatPanel()
     {
-        if (instance != null)
+        if (instance == null)
         {
-            instance.gameObject.SetActive(true);
-        }
-        else
             instance = UISystem.InstantiateUI("ChatPanel").GetComponent<ChatPanel>();
-    }
-
-    public static void Hide()
-    {
-        if (instance != null)
-        {
-            instance.gameObject.SetActive(false);
         }
     }
 
@@ -55,14 +46,13 @@ public class ChatPanel : MonoBehaviour
         NetworkManager.Register(ENUM_CMD.CS_SEND_MESSAGE_RES, OnSendMessageRes);
         NetworkManager.Register(ENUM_CMD.CS_MESSAGE_NOTIFY, OnMessageNotify);
 
+        container = transform.Find("container").gameObject;
         itemUnit = transform.Find("container/Scroll View/Viewport/Content/chat_item");
         itemUnit.gameObject.SetActive(false);
         grid = transform.Find("container/Scroll View/Viewport/Content").GetComponent<GridLayoutGroup>();
-
-        inputParent = transform.Find("container/InputParent").gameObject;
-        inputParent.SetActive(false);
-        transform.Find("container/InputParent/SendButton").GetComponent<Button>().onClick.AddListener(OnClickSendButton);
-        inputField = transform.Find("container/InputParent/InputField").GetComponent<InputField>();
+        
+        inputField = transform.Find("container/Scroll View/InputField").GetComponent<TMP_InputField>();
+        inputField.gameObject.SetActive(false);
 
         while (_message.Count > 0)
         {
@@ -73,7 +63,8 @@ public class ChatPanel : MonoBehaviour
 
     void ShowInput()
     {
-        inputParent.SetActive(true);
+        container.SetActive(true);
+        inputField.gameObject.SetActive(true);
         inputField.ActivateInputField();
         mergetestPlayerController.LockCursor(false);
     }
@@ -81,15 +72,16 @@ public class ChatPanel : MonoBehaviour
     void HideInput()
     {
         inputField.DeactivateInputField();
+        inputField.gameObject.SetActive(false);
         mergetestPlayerController.LockCursor(true);
-        inputParent.SetActive(false);
+        container.SetActive(false);
     }
     
     void ProcessInput()
     {
         if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
         {
-            if (inputParent.activeSelf)
+            if (container.activeSelf)
             {
                 if (inputField.text != "")
                 {
@@ -131,7 +123,7 @@ public class ChatPanel : MonoBehaviour
         item.gameObject.SetActive(true);
         item.SetParent(itemUnit.parent);
         item.localScale = Vector3.one;
-        Text text = item.GetComponent<Text>();
+        TextMeshProUGUI text = item.GetComponent<TextMeshProUGUI>();
         text.text = content;
 
         ItemList.Add(item);
@@ -191,6 +183,6 @@ public class ChatPanel : MonoBehaviour
     {
         CSMessageNotify notify = NetworkManager.Deserialize<CSMessageNotify>(data);
         //Debug.Log($"OnMessageNotify,name={notify.Name},content={notify.Content}");
-        AddLine("[" + notify.Name + "]" + notify.Content);
+        AddLine("<" + notify.Name + "> " + notify.Content);
     }
 }

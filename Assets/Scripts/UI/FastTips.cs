@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using TMPro;
 
 public class FastTips : MonoBehaviour {
 
@@ -10,34 +11,34 @@ public class FastTips : MonoBehaviour {
         switch(retCode)
         {
             case -1:
-                content = "未连接";
+                content = "Not Connected";
                 break;
             case 1:
-                content = "无法发送空数据";
+                content = "Cannot Send Empty Message";
                 break;
             case 2:
-                content = "方块已存在";
+                content = "Block Already Exists";
                 break;
             case 3:
-                content = "方块不存在";
+                content = "Block Does Not Exist";
                 break;
             case 4:
-                content = "区块进出视野错误";
+                content = "Enter/Leave Chunk View Error";
                 break;
             case 5:
-                content = "用户已登录";
+                content = "Account Already Logged In";
                 break;
             case 6:
-                content = "账号不存在";
+                content = "Account Does Not Exist";
                 break;
             case 7:
-                content = "密码错误";
+                content = "Password Does Not Match";
                 break;
             case 8:
-                content = "账号已存在";
+                content = "Account Already Exists";
                 break;
             default:
-                content = "未知错误";
+                content = "Unknkown Error";
                 break;
         }
         Show(content);
@@ -46,7 +47,7 @@ public class FastTips : MonoBehaviour {
     public static void Show(string content)
     {
         GameObject obj = UISystem.InstantiateUI("FastTips");
-        Text text = obj.transform.Find("Image/Text").GetComponent<Text>();
+        TextMeshProUGUI text = obj.transform.Find("Image/Text").GetComponent<TextMeshProUGUI>();
         text.text = content;
     }
 
