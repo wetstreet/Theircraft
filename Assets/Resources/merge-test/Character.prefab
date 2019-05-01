@@ -51,6 +51,7 @@ MonoBehaviour:
   fallSpeed: {x: 0, y: -28, z: 0}
   inAirSpeed: 0.05
   attenuation: 0.75
+  footstepInterval: 0.4
   accumulation: 0.025
 --- !u!143 &143223878412349064
 CharacterController:
@@ -64,7 +65,7 @@ CharacterController:
   m_Enabled: 1
   serializedVersion: 2
   m_Height: 1.7
-  m_Radius: 0.4
+  m_Radius: 0.3
   m_SlopeLimit: 45
   m_StepOffset: 0.3
   m_SkinWidth: 0.05
@@ -128,7 +129,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.3
+  near clip plane: 0.2
   far clip plane: 1000
   field of view: 60
   orthographic: 0
