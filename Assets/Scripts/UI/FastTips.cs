@@ -47,16 +47,14 @@ public class FastTips : MonoBehaviour {
     public static void Show(string content)
     {
         GameObject obj = UISystem.InstantiateUI("FastTips");
-        TextMeshProUGUI text = obj.transform.Find("Image/Text").GetComponent<TextMeshProUGUI>();
+        TextMeshProUGUI text = obj.transform.Find("RawImage/Image/Text").GetComponent<TextMeshProUGUI>();
         text.text = content;
     }
-
-    Transform image;
+    
     float createTime;
 
 	// Use this for initialization
 	void Start () {
-        image = transform.Find("Image");
         createTime = Time.time;
 	}
 	
@@ -70,8 +68,8 @@ public class FastTips : MonoBehaviour {
 
     void FixedUpdate()
     {
-        Vector3 pos = image.transform.localPosition;
+        Vector3 pos = transform.localPosition;
         pos.y = pos.y + 1;
-        image.transform.localPosition = pos;
+        transform.localPosition = pos;
     }
 }

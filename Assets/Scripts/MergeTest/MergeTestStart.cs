@@ -14,8 +14,8 @@ public class MergeTestStart : MonoBehaviour
     void Start()
     {
         GameKernel.Create();
-        ChatPanel.ShowChatPanel();
         ItemSelectPanel.Show();
+        ChatPanel.ShowChatPanel();
         NetworkManager.Register(ENUM_CMD.CS_CHUNKS_ENTER_LEAVE_VIEW_RES, ChunksEnterLeaveViewRes);
         NetworkManager.Register(ENUM_CMD.CS_PLAYER_MOVE_NOTIFY, OnPlayerMoveNotify);
 

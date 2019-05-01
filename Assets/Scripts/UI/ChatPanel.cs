@@ -10,8 +10,11 @@ public class ChatPanel : MonoBehaviour
     List<Transform> ItemList = new List<Transform>();
     Transform itemUnit;
     GridLayoutGroup grid;
+    GridLayoutGroup floatingGrid;
     TMP_InputField inputField;
     GameObject container;
+    RectTransform scrollview;
+    RectTransform floatingScrollview;
 
     static Queue<string> _message = new Queue<string>();
 
@@ -46,12 +49,15 @@ public class ChatPanel : MonoBehaviour
         NetworkManager.Register(ENUM_CMD.CS_SEND_MESSAGE_RES, OnSendMessageRes);
         NetworkManager.Register(ENUM_CMD.CS_MESSAGE_NOTIFY, OnMessageNotify);
 
+        scrollview = transform.Find("container/Scroll View").GetComponent<RectTransform>();
+        floatingScrollview = transform.Find("container/floatingScrollview").GetComponent<RectTransform>();
         container = transform.Find("container").gameObject;
-        itemUnit = transform.Find("container/Scroll View/Viewport/Content/chat_item");
+        itemUnit = transform.Find("container/Scroll View/Content/chat_item");
         itemUnit.gameObject.SetActive(false);
-        grid = transform.Find("container/Scroll View/Viewport/Content").GetComponent<GridLayoutGroup>();
-        
-        inputField = transform.Find("container/Scroll View/InputField").GetComponent<TMP_InputField>();
+        grid = transform.Find("container/Scroll View/Content").GetComponent<GridLayoutGroup>();
+        floatingGrid = transform.Find("container/floatingScrollview/Content").GetComponent<GridLayoutGroup>();
+
+        inputField = transform.Find("container/InputField").GetComponent<TMP_InputField>();
         inputField.gameObject.SetActive(false);
 
         while (_message.Count > 0)
@@ -59,11 +65,15 @@ public class ChatPanel : MonoBehaviour
             string content = _message.Dequeue();
             AddLineItem(content);
         }
+
+        scrollview.gameObject.SetActive(false);
+        floatingScrollview.gameObject.SetActive(true);
     }
 
     void ShowInput()
     {
-        container.SetActive(true);
+        scrollview.gameObject.SetActive(true);
+        floatingScrollview.gameObject.SetActive(false);
         inputField.gameObject.SetActive(true);
         inputField.ActivateInputField();
         mergetestPlayerController.LockCursor(false);
@@ -74,14 +84,15 @@ public class ChatPanel : MonoBehaviour
         inputField.DeactivateInputField();
         inputField.gameObject.SetActive(false);
         mergetestPlayerController.LockCursor(true);
-        container.SetActive(false);
+        scrollview.gameObject.SetActive(false);
+        floatingScrollview.gameObject.SetActive(true);
     }
     
     void ProcessInput()
     {
-        if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
+        if (scrollview.gameObject.activeSelf)
         {
-            if (container.activeSelf)
+            if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
             {
                 if (inputField.text != "")
                 {
@@ -92,21 +103,26 @@ public class ChatPanel : MonoBehaviour
                     HideInput();
                 }
             }
-            else
+            else if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                HideInput();
+            }
+        }
+        else
+        {
+            if (Input.GetKeyDown(KeyCode.T))
             {
                 ShowInput();
             }
         }
     }
-
-    static bool scrollToBottom;
+    
     void Update()
     {
         ProcessInput();
-        if (scrollToBottom)
+        if (floatingScrollview.sizeDelta.y != 30 * floatingGrid.transform.childCount)
         {
-            grid.transform.localPosition = new Vector3(0, 20 * (ItemList.Count - 10), 0);
-            scrollToBottom = false;
+            floatingScrollview.sizeDelta = new Vector2(1000, 30 * floatingGrid.transform.childCount);
         }
     }
 
@@ -126,11 +142,14 @@ public class ChatPanel : MonoBehaviour
         TextMeshProUGUI text = item.GetComponent<TextMeshProUGUI>();
         text.text = content;
 
+        Transform floatingItem = Instantiate(item);
+        floatingItem.SetParent(floatingGrid.transform);
+        floatingItem.localScale = Vector3.one;
+        floatingScrollview.sizeDelta = new Vector2(1000, 30 * floatingGrid.transform.childCount);
+        Destroy(floatingItem.gameObject, 10);
+
         ItemList.Add(item);
-        if (ItemList.Count > 10)
-        {
-            scrollToBottom = true;
-        }
+        scrollview.sizeDelta = new Vector2(1000, 30 * ItemList.Count);
     }
 
     void OnClickSendButton()
