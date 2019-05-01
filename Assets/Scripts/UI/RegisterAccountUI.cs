@@ -34,12 +34,12 @@ public class RegisterAccountUI : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        accountInput = transform.Find("Account/InputField").GetComponent<TMP_InputField>();
-        nameInput = transform.Find("Name/InputField").GetComponent<TMP_InputField>();
-        passwordInput = transform.Find("Password/InputField").GetComponent<TMP_InputField>();
-        passwordRepeatInput = transform.Find("RepeatPassword/InputField").GetComponent<TMP_InputField>();
-        Utilities.SetClickCallback(transform, "ButtonOk", OnClickOk);
-        Utilities.SetClickCallback(transform, "ButtonCancel", OnClickCancel);
+        accountInput = transform.Find("inputGrid/Account/RawImage/InputField").GetComponent<TMP_InputField>();
+        nameInput = transform.Find("inputGrid/Name/RawImage/InputField").GetComponent<TMP_InputField>();
+        passwordInput = transform.Find("inputGrid/Password/RawImage/InputField").GetComponent<TMP_InputField>();
+        passwordRepeatInput = transform.Find("inputGrid/RepeatPassword/RawImage/InputField").GetComponent<TMP_InputField>();
+        Utilities.SetClickCallback(transform, "btnGrid/ButtonOk", OnClickOk);
+        Utilities.SetClickCallback(transform, "btnGrid/ButtonCancel", OnClickCancel);
 
         NetworkManager.Register(ENUM_CMD.CS_REGISTER_RES, OnRegisterAccountRes);
     }

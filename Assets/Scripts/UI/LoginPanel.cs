@@ -21,10 +21,10 @@ public class LoginPanel : MonoBehaviour {
     {
         NetworkManager.Register(ENUM_CMD.CS_LOGIN_RES, OnLoginRes);
 
-        accountInput = transform.Find("Account/InputField").GetComponent<TMP_InputField>();
-        passwordInput = transform.Find("Password/InputField").GetComponent<TMP_InputField>();
-        Utilities.SetClickCallback(transform, "ButtonOk", OnClickOk);
-        Utilities.SetClickCallback(transform, "ButtonCancel", OnClickCancel);
+        accountInput = transform.Find("inputGrid/Account/RawImage/InputField").GetComponent<TMP_InputField>();
+        passwordInput = transform.Find("inputGrid/Password/RawImage/InputField").GetComponent<TMP_InputField>();
+        Utilities.SetClickCallback(transform, "btnGrid/ButtonOk", OnClickOk);
+        Utilities.SetClickCallback(transform, "btnGrid/ButtonCancel", OnClickCancel);
 
         string account = PlayerPrefs.GetString(AccountKey);
         if (account != null)
