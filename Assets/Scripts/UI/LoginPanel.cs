@@ -9,11 +9,13 @@ public class LoginPanel : MonoBehaviour {
     TMP_InputField accountInput;
     TMP_InputField passwordInput;
 
+    static LoginPanel instance;
+
     static string AccountKey = "account";
 
     public static void ShowLoginPanel()
     {
-        UISystem.InstantiateUI("LoginPanel");
+        instance = UISystem.InstantiateUI("LoginPanel").GetComponent<LoginPanel>();
     }
 
     // Use this for initialization
@@ -48,9 +50,18 @@ public class LoginPanel : MonoBehaviour {
         PlayerPrefs.SetString(AccountKey, accountInput.text);
     }
 
+    public static void Close()
+    {
+        if (instance != null)
+        {
+            Destroy(instance.gameObject);
+            instance = null;
+        }
+    }
+
     void OnClickCancel()
     {
-        Destroy(gameObject);
+        Close();
     }
 
     void OnClickRegister()
@@ -79,8 +90,7 @@ public class LoginPanel : MonoBehaviour {
             DataCenter.spawnPosition = Utilities.CSVector3_To_Vector3(rsp.PlayerData.Position);
             DataCenter.spawnRotation = Utilities.CSVector3_To_Vector3(rsp.PlayerData.Rotation);
             DataCenter.state = ClientState.InRoom;
-            if (gameObject != null)
-                Destroy(gameObject);
+            Close();
             MainMenu.Close();
             LoadingUI.Show();
             //SceneManager.LoadScene("MultiplayerScene");
