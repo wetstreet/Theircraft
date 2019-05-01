@@ -23,8 +23,8 @@ public class LoginPanel : MonoBehaviour {
 
         accountInput = transform.Find("Account/InputField").GetComponent<TMP_InputField>();
         passwordInput = transform.Find("Password/InputField").GetComponent<TMP_InputField>();
-        transform.Find("ButtonOk").GetComponent<Button>().onClick.AddListener(OnClickOk);
-        transform.Find("ButtonCancel").GetComponent<Button>().onClick.AddListener(OnClickCancel);
+        Utilities.SetClickCallback(transform, "ButtonOk", OnClickOk);
+        Utilities.SetClickCallback(transform, "ButtonCancel", OnClickCancel);
 
         string account = PlayerPrefs.GetString(AccountKey);
         if (account != null)
@@ -76,8 +76,8 @@ public class LoginPanel : MonoBehaviour {
         {
             DataCenter.playerID = rsp.PlayerData.PlayerID;
             DataCenter.name = rsp.PlayerData.Name;
-            DataCenter.spawnPosition = Ultiities.CSVector3_To_Vector3(rsp.PlayerData.Position);
-            DataCenter.spawnRotation = Ultiities.CSVector3_To_Vector3(rsp.PlayerData.Rotation);
+            DataCenter.spawnPosition = Utilities.CSVector3_To_Vector3(rsp.PlayerData.Position);
+            DataCenter.spawnRotation = Utilities.CSVector3_To_Vector3(rsp.PlayerData.Rotation);
             DataCenter.state = ClientState.InRoom;
             if (gameObject != null)
                 Destroy(gameObject);

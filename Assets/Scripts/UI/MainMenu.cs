@@ -21,9 +21,9 @@ public class MainMenu : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        transform.Find("ButtonLogin").GetComponent<Button>().onClick.AddListener(OnClickLogin);
-        transform.Find("ButtonRegister").GetComponent<Button>().onClick.AddListener(OnClickRegister);
-        transform.Find("ButtonQuit").GetComponent<Button>().onClick.AddListener(OnClickQuit);
+        Utilities.SetClickCallback(transform, "ButtonLogin", OnClickLogin);
+        Utilities.SetClickCallback(transform, "ButtonRegister", OnClickRegister);
+        Utilities.SetClickCallback(transform, "ButtonQuit", OnClickQuit);
     }
 
     void OnClickLogin()

@@ -2,15 +2,16 @@
 using protocol.cs_theircraft;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class RegisterAccountUI : MonoBehaviour
 {
-    InputField accountInput;
-    InputField nameInput;
-    InputField passwordInput;
-    InputField passwordRepeatInput;
+    TMP_InputField accountInput;
+    TMP_InputField nameInput;
+    TMP_InputField passwordInput;
+    TMP_InputField passwordRepeatInput;
 
     static RegisterAccountUI instance;
 
@@ -33,17 +34,17 @@ public class RegisterAccountUI : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        accountInput = transform.Find("Account/InputField").GetComponent<InputField>();
-        nameInput = transform.Find("Name/InputField").GetComponent<InputField>();
-        passwordInput = transform.Find("Password/InputField").GetComponent<InputField>();
-        passwordRepeatInput = transform.Find("RepeatPassword/InputField").GetComponent<InputField>();
-        transform.Find("ButtonSubmit").GetComponent<Button>().onClick.AddListener(OnClickSubmit);
-        transform.Find("ButtonCancel").GetComponent<Button>().onClick.AddListener(OnClickCancel);
+        accountInput = transform.Find("Account/InputField").GetComponent<TMP_InputField>();
+        nameInput = transform.Find("Name/InputField").GetComponent<TMP_InputField>();
+        passwordInput = transform.Find("Password/InputField").GetComponent<TMP_InputField>();
+        passwordRepeatInput = transform.Find("RepeatPassword/InputField").GetComponent<TMP_InputField>();
+        Utilities.SetClickCallback(transform, "ButtonOk", OnClickOk);
+        Utilities.SetClickCallback(transform, "ButtonCancel", OnClickCancel);
 
         NetworkManager.Register(ENUM_CMD.CS_REGISTER_RES, OnRegisterAccountRes);
     }
 
-    void OnClickSubmit()
+    void OnClickOk()
     {
         if (passwordInput.text != passwordRepeatInput.text)
         {

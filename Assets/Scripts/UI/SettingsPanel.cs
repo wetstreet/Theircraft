@@ -18,7 +18,6 @@ public class SettingsPanel : MonoBehaviour {
 
     void OnClickClose()
     {
-        AkSoundEngine.PostEvent("UI_Click", gameObject);
         Hide();
     }
 
@@ -53,7 +52,8 @@ public class SettingsPanel : MonoBehaviour {
         //没做退出登陆，先屏蔽
         transform.Find("btn_quit").GetComponent<Button>().interactable = false;
         //transform.Find("btn_quit").GetComponent<Button>().onClick.AddListener(OnClickQuit);
-        transform.Find("btn_close").GetComponent<Button>().onClick.AddListener(OnClickClose);
+        //transform.Find("btn_close").GetComponent<Button>().onClick.AddListener(OnClickClose);
+        Utilities.SetClickCallback(transform, "btn_close", OnClickClose);
     }
 	
 	// Update is called once per frame

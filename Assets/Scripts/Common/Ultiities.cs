@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using protocol.cs_theircraft;
+using UnityEngine.UI;
 
-public static class Ultiities {
+public static class Utilities {
 
     static int chunkRange = 2;
 
@@ -49,5 +50,16 @@ public static class Ultiities {
     public static Vector3 CSVector3_To_Vector3(CSVector3 v)
     {
         return new Vector3 { x = v.x, y = v.y, z = v.z };
+    }
+
+    public static void SetClickCallback(Transform trans, string path, UnityEngine.Events.UnityAction call)
+    {
+        Button button = trans.Find(path).GetComponent<Button>();
+        button.onClick.RemoveAllListeners();
+        button.onClick.AddListener(() =>
+        {
+            SoundManager.PlayClickSound();
+            call();
+        });
     }
 }
