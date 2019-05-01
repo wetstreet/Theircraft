@@ -226,6 +226,7 @@ public class test : MonoBehaviour
     public static Mesh GetCubeMesh(CSBlockType type)
     {
         Mesh mesh = new Mesh();
+        mesh.name = "CubeMesh";
 
         List<Vector3> vertices = new List<Vector3>();
         List<Vector2> uv = new List<Vector2>();
@@ -253,6 +254,7 @@ public class test : MonoBehaviour
     static Mesh RebuildMesh(Dictionary<Vector3Int, Block> chunkBlocks)
     {
         Mesh mesh = new Mesh();
+        mesh.name = "ChunkMesh";
 
         List<Vector3> vertices = new List<Vector3>();
         List<Vector2> uv = new List<Vector2>();
@@ -306,5 +308,16 @@ public class test : MonoBehaviour
         mf.mesh = RebuildMesh(chunkBlocksDict[chunkPos]);
         MeshCollider mc = chunkObj.GetComponent<MeshCollider>();
         mc.sharedMesh = mf.mesh;
+    }
+
+    public static void RemoveChunk(Vector2Int chunk)
+    {
+        if (chunk2object.ContainsKey(chunk))
+        {
+            GameObject obj = chunk2object[chunk];
+            chunk2object.Remove(chunk);
+            chunkBlocksDict.Remove(chunk);
+            Destroy(obj);
+        }
     }
 }

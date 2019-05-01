@@ -2,6 +2,7 @@
 using UnityEngine;
 using protocol.cs_enum;
 using protocol.cs_theircraft;
+using System.Linq;
 
 public class MergeTestStart : MonoBehaviour
 {
@@ -16,39 +17,43 @@ public class MergeTestStart : MonoBehaviour
         NetworkManager.Register(ENUM_CMD.CS_CHUNKS_ENTER_LEAVE_VIEW_RES, ChunksEnterLeaveViewRes);
         NetworkManager.Register(ENUM_CMD.CS_PLAYER_MOVE_NOTIFY, OnPlayerMoveNotify);
 
-        List<Vector2Int> preloadChunks = new List<Vector2Int>();
-
-        int start;
-        int max;
-        if (sight % 2 == 0)
-        {
-            int half = sight / 2;
-            start = -half;
-            max = half - 1;
-        }
-        else
-        {
-            int half = Mathf.FloorToInt(sight / 2);
-            start = -half;
-            max = half;
-        }
-
-        for (int i = start; i <= max; i++)
-        {
-            for (int j = start; j <= max; j++)
-            {
-                preloadChunks.Add(new Vector2Int(i, j));
-            }
-        }
-        //preloadChunks.Add(Vector2Int.zero);
-
+        Vector2Int curChunk = Utilities.GetChunk(DataCenter.spawnPosition);
+        Debug.Log(curChunk);
+        List<Vector2Int> preloadChunks = Utilities.GetNearbyChunks(curChunk, sight);
         ChunksEnterLeaveViewReq(preloadChunks);
     }
 
-    // Update is called once per frame
+    //没回包之前不要请求chunk数据
+    bool lastChunkInitialized;
+    Vector2Int lastChunk;
+    bool readyToRefreshChunks = true;
+    Vector2Int tempChunk;
     void Update()
     {
+        if (mergetestPlayerController.isInitialized && readyToRefreshChunks)
+        {
+            Vector2Int curChunk = mergetestPlayerController.GetCurrentChunk();
 
+            if (!lastChunkInitialized)
+            {
+                lastChunk = curChunk;
+                lastChunkInitialized = true;
+                return;
+            }
+
+            if (lastChunk != curChunk)
+            {
+                List<Vector2Int> beforeChunks = Utilities.GetNearbyChunks(lastChunk, sight);
+                List<Vector2Int> afterChunks = Utilities.GetNearbyChunks(curChunk, sight);
+                List<Vector2Int> toLoadChunks = afterChunks.Except(beforeChunks).ToList();
+                List<Vector2Int> toUnloadChunks = beforeChunks.Except(afterChunks).ToList();
+                Debug.Log(curChunk + "," + toLoadChunks.Count + "," + toUnloadChunks.Count);
+
+                ChunksEnterLeaveViewReq(toLoadChunks, toUnloadChunks);
+                readyToRefreshChunks = false;
+                tempChunk = curChunk;
+            }
+        }
     }
 
     void ChunksEnterLeaveViewReq(List<Vector2Int> enterViewChunks, List<Vector2Int> leaveViewChunks = null)
@@ -94,12 +99,26 @@ public class MergeTestStart : MonoBehaviour
         if (rsp.RetCode == 0)
         {
             test.GenerateChunk(rsp.EnterViewChunks);
-            mergetestPlayerController.Init();
+
+            if (!mergetestPlayerController.isInitialized)
+                mergetestPlayerController.Init();
+
+            if (rsp.LeaveViewChunks != null)
+            {
+                foreach(CSVector2Int csv in rsp.LeaveViewChunks)
+                {
+                    Vector2Int chunk = Utilities.CSVector2Int_To_Vector2Int(csv);
+                    test.RemoveChunk(chunk);
+                }
+            }
         }
         else
         {
             FastTips.Show(rsp.RetCode);
         }
+
+        readyToRefreshChunks = true;
+        lastChunk = tempChunk;
     }
 
     void OnPlayerMoveNotify(byte[] data)

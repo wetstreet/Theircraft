@@ -22,6 +22,8 @@ public class mergetestPlayerController : MonoBehaviour
     static bool acceptInput = true;
     private static mergetestPlayerController instance;
 
+    public static bool isInitialized { get { return instance != null; } }
+
     public static void LockCursor(bool isLock)
     {
         if (isLock)
@@ -77,6 +79,11 @@ public class mergetestPlayerController : MonoBehaviour
 
         blockMeshFilter = camera.transform.Find("hand/block").GetComponent<MeshFilter>();
         handMeshRenderer = camera.transform.Find("hand").GetComponent<MeshRenderer>();
+    }
+
+    public static Vector2Int GetCurrentChunk()
+    {
+        return Utilities.GetChunk(instance.transform.localPosition);
     }
 
     public static void ShowHand()
