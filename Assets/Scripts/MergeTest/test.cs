@@ -152,43 +152,48 @@ public class test : MonoBehaviour
         RefreshChunk(chunkPos);
     }
 
-    public static void GenerateChunk(List<CSChunk> chunkList)
+    public static void GenerateChunk(CSChunk chunk)
     {
-        foreach (CSChunk chunk in chunkList)
+        Dictionary<Vector3Int, Block> chunk_posBlockDict = new Dictionary<Vector3Int, Block>();
+        Vector2Int chunkPos = new Vector2Int(chunk.Position.x, chunk.Position.y);
+
+
+        //压缩后的数据结构
+        for (int k = 0; k < 256; k++)
         {
-            Dictionary<Vector3Int, Block> chunk_posBlockDict = new Dictionary<Vector3Int, Block>();
-            Vector2Int chunkPos = new Vector2Int(chunk.Position.x, chunk.Position.y);
-
-
-            //压缩后的数据结构
-            for (int k = 0; k < 256; k++)
+            for (int i = 0; i < 16; i++)
             {
-                for (int i = 0; i < 16; i++)
+                for (int j = 0; j < 16; j++)
                 {
-                    for (int j = 0; j < 16; j++)
+                    byte b = chunk.BlocksInBytes[256 * k + 16 * i + j];
+                    CSBlockType type = (CSBlockType)b;
+                    if (type != CSBlockType.None)
                     {
-                        byte b = chunk.BlocksInBytes[256 * k + 16 * i + j];
-                        CSBlockType type = (CSBlockType)b;
-                        if (type != CSBlockType.None)
-                        {
-                            Vector3Int blockPos = new Vector3Int(chunkPos.x * 16 + i, k, chunkPos.y * 16 + j);
-                            Block block = new Block { pos = blockPos, chunk = chunkPos, type = type };
-                            posBlockDict[blockPos] = block;
-                            chunk_posBlockDict[blockPos] = block;
-                        }
+                        Vector3Int blockPos = new Vector3Int(chunkPos.x * 16 + i, k, chunkPos.y * 16 + j);
+                        Block block = new Block { pos = blockPos, chunk = chunkPos, type = type };
+                        posBlockDict[blockPos] = block;
+                        chunk_posBlockDict[blockPos] = block;
                     }
                 }
             }
+        }
 
-            //Debug.Log("chunk=("+chunk.Position.x+","+chunk.Position.y+"),chunk player num=" + chunk.Players.Count);
-            foreach (CSPlayer p in chunk.Players)
-            {
-                OtherPlayerManager.AddPlayer(p);
-            }
+        //Debug.Log("chunk=("+chunk.Position.x+","+chunk.Position.y+"),chunk player num=" + chunk.Players.Count);
+        foreach (CSPlayer p in chunk.Players)
+        {
+            OtherPlayerManager.AddPlayer(p);
+        }
 
-            chunkBlocksDict[chunkPos] = chunk_posBlockDict;
-            GameObject chunkObj = GenerateChunkObj(chunkPos);
-            chunk2object[chunkPos] = chunkObj;
+        chunkBlocksDict[chunkPos] = chunk_posBlockDict;
+        GameObject chunkObj = GenerateChunkObj(chunkPos);
+        chunk2object[chunkPos] = chunkObj;
+    }
+
+    public static void GenerateChunks(List<CSChunk> chunkList)
+    {
+        foreach (CSChunk chunk in chunkList)
+        {
+            GenerateChunk(chunk);
         }
     }
 

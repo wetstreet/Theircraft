@@ -3,11 +3,13 @@ using UnityEngine;
 using protocol.cs_enum;
 using protocol.cs_theircraft;
 using System.Linq;
+using System.Collections;
 
 public class MergeTestStart : MonoBehaviour
 {
     int sight = 3;
 
+    Coroutine refreshChunkCoroutine;
     // Start is called before the first frame update
     void Start()
     {
@@ -21,6 +23,43 @@ public class MergeTestStart : MonoBehaviour
         Debug.Log(curChunk);
         List<Vector2Int> preloadChunks = Utilities.GetNearbyChunks(curChunk, sight);
         ChunksEnterLeaveViewReq(preloadChunks);
+
+        refreshChunkCoroutine = StartCoroutine(RefreshChunkCoroutine());
+    }
+
+    private void OnDestroy()
+    {
+        StopCoroutine(refreshChunkCoroutine);
+    }
+
+    Queue<CSChunk> loadQueue = new Queue<CSChunk>();
+    Queue<Vector2Int> unloadQueue = new Queue<Vector2Int>();
+    IEnumerator RefreshChunkCoroutine()
+    {
+        yield return null;
+        while (true)
+        {
+            bool changed = false;
+            while (unloadQueue.Count > 0)
+            {
+                test.RemoveChunk(unloadQueue.Dequeue());
+                changed = true;
+                yield return new WaitForEndOfFrame();
+            }
+            while (loadQueue.Count > 0)
+            {
+                test.GenerateChunk(loadQueue.Dequeue());
+                changed = true;
+                yield return new WaitForEndOfFrame();
+            }
+            if (changed)
+            {
+                readyToRefreshChunks = true;
+                lastChunk = tempChunk;
+                yield return null;
+            }
+            yield return new WaitForSeconds(1);
+        }
     }
 
     //没回包之前不要请求chunk数据
@@ -47,7 +86,7 @@ public class MergeTestStart : MonoBehaviour
                 List<Vector2Int> afterChunks = Utilities.GetNearbyChunks(curChunk, sight);
                 List<Vector2Int> toLoadChunks = afterChunks.Except(beforeChunks).ToList();
                 List<Vector2Int> toUnloadChunks = beforeChunks.Except(afterChunks).ToList();
-                Debug.Log(curChunk + "," + toLoadChunks.Count + "," + toUnloadChunks.Count);
+                Debug.Log(curChunk + "," + lastChunk + "," + toLoadChunks.Count + "," + toUnloadChunks.Count);
 
                 ChunksEnterLeaveViewReq(toLoadChunks, toUnloadChunks);
                 readyToRefreshChunks = false;
@@ -98,17 +137,24 @@ public class MergeTestStart : MonoBehaviour
         //Debug.Log("CSChunksEnterLeaveViewRes," + rsp.EnterViewChunks.Count + "," + rsp.LeaveViewChunks.Count);
         if (rsp.RetCode == 0)
         {
-            test.GenerateChunk(rsp.EnterViewChunks);
-
             if (!mergetestPlayerController.isInitialized)
+            {
+                test.GenerateChunks(rsp.EnterViewChunks);
                 mergetestPlayerController.Init();
 
-            if (rsp.LeaveViewChunks != null)
+                readyToRefreshChunks = true;
+                lastChunk = tempChunk;
+            }
+            else
             {
-                foreach(CSVector2Int csv in rsp.LeaveViewChunks)
+                foreach (CSVector2Int csv in rsp.LeaveViewChunks)
                 {
                     Vector2Int chunk = Utilities.CSVector2Int_To_Vector2Int(csv);
-                    test.RemoveChunk(chunk);
+                    unloadQueue.Enqueue(chunk);
+                }
+                foreach (CSChunk chunk in rsp.EnterViewChunks)
+                {
+                    loadQueue.Enqueue(chunk);
                 }
             }
         }
@@ -116,9 +162,6 @@ public class MergeTestStart : MonoBehaviour
         {
             FastTips.Show(rsp.RetCode);
         }
-
-        readyToRefreshChunks = true;
-        lastChunk = tempChunk;
     }
 
     void OnPlayerMoveNotify(byte[] data)
