@@ -9,8 +9,8 @@ public static class Utilities {
 
     public static Vector2Int GetChunk(Vector3 position)
     {
-        int chunkX = Mathf.FloorToInt(position.x / 16);
-        int chunkZ = Mathf.FloorToInt(position.z / 16);
+        int chunkX = Mathf.FloorToInt(position.x / 16f);
+        int chunkZ = Mathf.FloorToInt(position.z / 16f);
         return new Vector2Int(chunkX, chunkZ);
     }
 
@@ -41,7 +41,7 @@ public static class Utilities {
         }
         else
         {
-            int half = Mathf.FloorToInt(sight / 2);
+            int half = Mathf.FloorToInt(sight / 2f);
             start = -half;
             max = half;
         }

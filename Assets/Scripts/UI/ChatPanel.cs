@@ -142,14 +142,14 @@ public class ChatPanel : MonoBehaviour
         TextMeshProUGUI text = item.GetComponent<TextMeshProUGUI>();
         text.text = content;
 
+        ItemList.Add(item);
+        scrollview.sizeDelta = new Vector2(1000, 30 * ItemList.Count);
+
         Transform floatingItem = Instantiate(item);
         floatingItem.SetParent(floatingGrid.transform);
         floatingItem.localScale = Vector3.one;
         floatingScrollview.sizeDelta = new Vector2(1000, 30 * floatingGrid.transform.childCount);
         Destroy(floatingItem.gameObject, 10);
-
-        ItemList.Add(item);
-        scrollview.sizeDelta = new Vector2(1000, 30 * ItemList.Count);
     }
 
     void OnClickSendButton()

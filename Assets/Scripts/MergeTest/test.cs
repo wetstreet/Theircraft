@@ -127,8 +127,7 @@ public class test : MonoBehaviour
 
     public static void AddBlock(Vector3Int blockPos, CSBlockType type)
     {
-        Vector2Int chunkPos = new Vector2Int(Mathf.FloorToInt(blockPos.x / 16), Mathf.FloorToInt(blockPos.z / 16));
-
+        Vector2Int chunkPos = new Vector2Int(Mathf.FloorToInt(blockPos.x / 16f), Mathf.FloorToInt(blockPos.z / 16f));
         Block block = new Block { pos = blockPos, chunk = chunkPos, type = type };
         posBlockDict[blockPos] = block;
         chunkBlocksDict[chunkPos].Add(block.pos, block);
@@ -183,7 +182,7 @@ public class test : MonoBehaviour
         {
             OtherPlayerManager.AddPlayer(p);
         }
-
+        
         chunkBlocksDict[chunkPos] = chunk_posBlockDict;
         GameObject chunkObj = GenerateChunkObj(chunkPos);
         chunk2object[chunkPos] = chunkObj;
