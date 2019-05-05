@@ -13,6 +13,7 @@ public static class DataCenter
     public static string name;
     public static Vector3 spawnPosition;
     public static Vector3 spawnRotation;
+    public static int renderDistance = 3;
 
     public static ClientState state;
 

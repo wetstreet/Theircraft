@@ -22,6 +22,8 @@ public class Main : MonoBehaviour {
     // Use this for initialization
     void Start ()
     {
+        SettingsPanel.SetMasterVolume();
+
         if (NetworkManager.Connect())
         {
             SceneManager.LoadScene("LoginScene");
