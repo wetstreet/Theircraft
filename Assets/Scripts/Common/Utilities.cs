@@ -5,8 +5,6 @@ using UnityEngine.UI;
 
 public static class Utilities {
 
-    static int chunkRange = 2;
-
     public static Vector2Int GetChunk(Vector3 position)
     {
         int chunkX = Mathf.FloorToInt(position.x / 16f);
@@ -16,6 +14,8 @@ public static class Utilities {
 
     public static List<Vector2Int> GetSurroudingChunks(Vector2Int chunk)
     {
+        int chunkRange = SettingsPanel.RenderDistance;
+
         List<Vector2Int> list = new List<Vector2Int>();
         for (int i = chunk.x - chunkRange; i <= chunk.x + chunkRange; i++)
         {
@@ -25,36 +25,6 @@ public static class Utilities {
             }
         }
         return list;
-    }
-
-    public static List<Vector2Int> GetNearbyChunks(Vector2Int chunk, int sight)
-    {
-        List<Vector2Int> ret = new List<Vector2Int>();
-
-        int start;
-        int max;
-        if (sight % 2 == 0)
-        {
-            int half = sight / 2;
-            start = -half;
-            max = half - 1;
-        }
-        else
-        {
-            int half = Mathf.FloorToInt(sight / 2f);
-            start = -half;
-            max = half;
-        }
-
-        for (int i = chunk.x + start; i <= chunk.x + max; i++)
-        {
-            for (int j = chunk.y + start; j <= chunk.y + max; j++)
-            {
-                ret.Add(new Vector2Int(i, j));
-            }
-        }
-
-        return ret;
     }
 
     public static void PrintList<T>(List<T> list)

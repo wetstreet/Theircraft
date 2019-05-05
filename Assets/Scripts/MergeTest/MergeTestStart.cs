@@ -7,13 +7,13 @@ using System.Collections;
 
 public class MergeTestStart : MonoBehaviour
 {
-    int sight = 3;
 
     Coroutine refreshChunkCoroutine;
     // Start is called before the first frame update
     void Start()
     {
         GameKernel.Create();
+        //OtherPlayerManager.Init();
         ItemSelectPanel.Show();
         ChatPanel.ShowChatPanel();
         NetworkManager.Register(ENUM_CMD.CS_CHUNKS_ENTER_LEAVE_VIEW_RES, ChunksEnterLeaveViewRes);
@@ -21,7 +21,7 @@ public class MergeTestStart : MonoBehaviour
 
         Vector2Int curChunk = Utilities.GetChunk(DataCenter.spawnPosition);
         Debug.Log(curChunk);
-        List<Vector2Int> preloadChunks = Utilities.GetNearbyChunks(curChunk, sight);
+        List<Vector2Int> preloadChunks = Utilities.GetSurroudingChunks(curChunk);
         ChunksEnterLeaveViewReq(preloadChunks);
 
         refreshChunkCoroutine = StartCoroutine(RefreshChunkCoroutine());
@@ -44,13 +44,13 @@ public class MergeTestStart : MonoBehaviour
             {
                 test.RemoveChunk(unloadQueue.Dequeue());
                 changed = true;
-                yield return new WaitForEndOfFrame();
+                yield return new WaitForSecondsRealtime(0.1f);
             }
             while (loadQueue.Count > 0)
             {
                 test.GenerateChunk(loadQueue.Dequeue());
                 changed = true;
-                yield return new WaitForEndOfFrame();
+                yield return new WaitForSecondsRealtime(0.1f);
             }
             if (changed)
             {
@@ -58,7 +58,7 @@ public class MergeTestStart : MonoBehaviour
                 lastChunk = tempChunk;
                 yield return null;
             }
-            yield return new WaitForSeconds(1);
+            yield return new WaitForSecondsRealtime(1);
         }
     }
 
@@ -82,8 +82,8 @@ public class MergeTestStart : MonoBehaviour
 
             if (lastChunk != curChunk)
             {
-                List<Vector2Int> beforeChunks = Utilities.GetNearbyChunks(lastChunk, sight);
-                List<Vector2Int> afterChunks = Utilities.GetNearbyChunks(curChunk, sight);
+                List<Vector2Int> beforeChunks = Utilities.GetSurroudingChunks(lastChunk);
+                List<Vector2Int> afterChunks = Utilities.GetSurroudingChunks(curChunk);
                 List<Vector2Int> toLoadChunks = afterChunks.Except(beforeChunks).ToList();
                 List<Vector2Int> toUnloadChunks = beforeChunks.Except(afterChunks).ToList();
                 Debug.Log(curChunk + "," + lastChunk + "," + toLoadChunks.Count + "," + toUnloadChunks.Count);

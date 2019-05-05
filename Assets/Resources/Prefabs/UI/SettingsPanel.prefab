@@ -875,10 +875,10 @@ MonoBehaviour:
   m_FillRect: {fileID: 0}
   m_HandleRect: {fileID: 1570547624855415728}
   m_Direction: 0
-  m_MinValue: 3
+  m_MinValue: 2
   m_MaxValue: 32
   m_WholeNumbers: 1
-  m_Value: 3
+  m_Value: 8
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -1419,7 +1419,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_text: 'Render Distance: 3 chunks'
+  m_text: 'Render Distance: 8 chunks'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ccb709741b436bc44a80c37edd8ec3d3, type: 2}
   m_sharedMaterial: {fileID: 21241521419624374, guid: ccb709741b436bc44a80c37edd8ec3d3,
