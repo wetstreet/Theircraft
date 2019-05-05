@@ -14,6 +14,18 @@ public class SettingsPanel : MonoBehaviour {
     static readonly string MASTER_VOLUME_KEY = "MASTER_VOLUME_KEY";
     static readonly string RENDER_DISTANCE_KEY = "RENDER_DISTANCE_KEY";
 
+    public static int MasterVolume
+    {
+        get { return PlayerPrefs.GetInt(MASTER_VOLUME_KEY, 100); }
+        set { PlayerPrefs.SetInt(MASTER_VOLUME_KEY, value); }
+    }
+
+    public static int RenderDistance
+    {
+        get { return PlayerPrefs.GetInt(RENDER_DISTANCE_KEY, 8); }
+        set { PlayerPrefs.SetInt(RENDER_DISTANCE_KEY, value); }
+    }
+
     public static void Show()
     {
         if (Instance != null)
@@ -69,42 +81,35 @@ public class SettingsPanel : MonoBehaviour {
         masterVolumeLabel = transform.Find("label_master_volume").GetComponent<TextMeshProUGUI>();
 
         RefreshRenderDistanceLabel();
-        RefreshMasterVolumeLabel();
+        renderDistanceSlider.value = RenderDistance;
 
-        int volume = PlayerPrefs.GetInt("MASTER_VOLUME_KEY");
-        masterVolumeSlider.value = volume;
+        RefreshMasterVolumeLabel();
+        masterVolumeSlider.value = MasterVolume;
     }
 
     void RefreshRenderDistanceLabel()
     {
-        sliderLabel.text = $"Render Distance: {DataCenter.renderDistance} chunks";
+        sliderLabel.text = $"Render Distance: {RenderDistance} chunks";
     }
 
     void OnRenderDistanceChange(float value)
     {
-        DataCenter.renderDistance = (int)value;
+        RenderDistance = (int)value;
         RefreshRenderDistanceLabel();
     }
 
     void OnMasterVolumeChange(float value)
     {
-        PlayerPrefs.SetInt("MASTER_VOLUME_KEY", (int)value);
-        SetMasterVolume();
+        MasterVolume = (int)value;
+        SoundManager.SetMasterVolume();
         RefreshMasterVolumeLabel();
-    }
-
-    public static void SetMasterVolume()
-    {
-        int volume = PlayerPrefs.GetInt("MASTER_VOLUME_KEY");
-        AkSoundEngine.SetRTPCValue("MainVolume", volume);
     }
 
     void RefreshMasterVolumeLabel()
     {
-        int volume = PlayerPrefs.GetInt("MASTER_VOLUME_KEY");
-        if (volume == 0)
+        if (MasterVolume == 0)
             masterVolumeLabel.text = $"Master Volume: OFF";
         else
-            masterVolumeLabel.text = $"Master Volume: {volume}%";
+            masterVolumeLabel.text = $"Master Volume: {MasterVolume}%";
     }
 }

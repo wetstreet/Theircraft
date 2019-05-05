@@ -22,7 +22,7 @@ public class Main : MonoBehaviour {
     // Use this for initialization
     void Start ()
     {
-        SettingsPanel.SetMasterVolume();
+        SoundManager.Init();
 
         if (NetworkManager.Connect())
         {
