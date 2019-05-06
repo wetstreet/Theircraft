@@ -64,6 +64,7 @@ public class MergeTestStart : MonoBehaviour
 
     //没回包之前不要请求chunk数据
     bool lastChunkInitialized;
+    int lastRenderDistance;
     Vector2Int lastChunk;
     bool readyToRefreshChunks = true;
     Vector2Int tempChunk;
@@ -75,20 +76,24 @@ public class MergeTestStart : MonoBehaviour
 
             if (!lastChunkInitialized)
             {
+                lastRenderDistance = SettingsPanel.RenderDistance;
                 lastChunk = curChunk;
                 lastChunkInitialized = true;
                 return;
             }
 
-            if (lastChunk != curChunk)
+            if (lastChunk != curChunk || lastRenderDistance != SettingsPanel.RenderDistance)
             {
-                List<Vector2Int> beforeChunks = Utilities.GetSurroudingChunks(lastChunk);
-                List<Vector2Int> afterChunks = Utilities.GetSurroudingChunks(curChunk);
-                List<Vector2Int> toLoadChunks = afterChunks.Except(beforeChunks).ToList();
-                List<Vector2Int> toUnloadChunks = beforeChunks.Except(afterChunks).ToList();
+                // only load chunks in render distance (if render distance is greater than 6, then load chunks in 6)
+                // and unload chunks out of render distance
+                List<Vector2Int> haveChunks = test.GetChunkList();
+                List<Vector2Int> shouldLoadChunks = Utilities.GetSurroudingChunks(curChunk);
+                List<Vector2Int> toLoadChunks = shouldLoadChunks.Except(haveChunks).ToList();
+                List<Vector2Int> toUnloadChunks = haveChunks.Where(c => Mathf.Abs(c.x - curChunk.x) > SettingsPanel.RenderDistance || Mathf.Abs(c.y - curChunk.y) > SettingsPanel.RenderDistance).ToList();
                 Debug.Log(curChunk + "," + lastChunk + "," + toLoadChunks.Count + "," + toUnloadChunks.Count);
 
                 ChunksEnterLeaveViewReq(toLoadChunks, toUnloadChunks);
+                lastRenderDistance = SettingsPanel.RenderDistance;
                 readyToRefreshChunks = false;
                 tempChunk = curChunk;
             }
