@@ -25,9 +25,9 @@ public class UnityEngine_AssetBundleWrap
 		L.RegFunction("Unload", Unload);
 		L.RegFunction("GetAllAssetNames", GetAllAssetNames);
 		L.RegFunction("GetAllScenePaths", GetAllScenePaths);
+		L.RegFunction("RecompressAssetBundleAsync", RecompressAssetBundleAsync);
 		L.RegFunction("__eq", op_Equality);
 		L.RegFunction("__tostring", ToLua.op_ToString);
-		L.RegVar("mainAsset", get_mainAsset, null);
 		L.RegVar("isStreamedSceneAssetBundle", get_isStreamedSceneAssetBundle, null);
 		L.EndClass();
 	}
@@ -574,6 +574,54 @@ public class UnityEngine_AssetBundleWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int RecompressAssetBundleAsync(IntPtr L)
+	{
+		try
+		{
+			int count = LuaDLL.lua_gettop(L);
+
+			if (count == 3)
+			{
+				string arg0 = ToLua.CheckString(L, 1);
+				string arg1 = ToLua.CheckString(L, 2);
+				UnityEngine.BuildCompression arg2 = StackTraits<UnityEngine.BuildCompression>.Check(L, 3);
+				UnityEngine.AssetBundleRecompressOperation o = UnityEngine.AssetBundle.RecompressAssetBundleAsync(arg0, arg1, arg2);
+				ToLua.PushObject(L, o);
+				return 1;
+			}
+			else if (count == 4)
+			{
+				string arg0 = ToLua.CheckString(L, 1);
+				string arg1 = ToLua.CheckString(L, 2);
+				UnityEngine.BuildCompression arg2 = StackTraits<UnityEngine.BuildCompression>.Check(L, 3);
+				uint arg3 = (uint)LuaDLL.luaL_checknumber(L, 4);
+				UnityEngine.AssetBundleRecompressOperation o = UnityEngine.AssetBundle.RecompressAssetBundleAsync(arg0, arg1, arg2, arg3);
+				ToLua.PushObject(L, o);
+				return 1;
+			}
+			else if (count == 5)
+			{
+				string arg0 = ToLua.CheckString(L, 1);
+				string arg1 = ToLua.CheckString(L, 2);
+				UnityEngine.BuildCompression arg2 = StackTraits<UnityEngine.BuildCompression>.Check(L, 3);
+				uint arg3 = (uint)LuaDLL.luaL_checknumber(L, 4);
+				UnityEngine.ThreadPriority arg4 = (UnityEngine.ThreadPriority)ToLua.CheckObject(L, 5, typeof(UnityEngine.ThreadPriority));
+				UnityEngine.AssetBundleRecompressOperation o = UnityEngine.AssetBundle.RecompressAssetBundleAsync(arg0, arg1, arg2, arg3, arg4);
+				ToLua.PushObject(L, o);
+				return 1;
+			}
+			else
+			{
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: UnityEngine.AssetBundle.RecompressAssetBundleAsync");
+			}
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int op_Equality(IntPtr L)
 	{
 		try
@@ -588,25 +636,6 @@ public class UnityEngine_AssetBundleWrap
 		catch (Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e);
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int get_mainAsset(IntPtr L)
-	{
-		object o = null;
-
-		try
-		{
-			o = ToLua.ToObject(L, 1);
-			UnityEngine.AssetBundle obj = (UnityEngine.AssetBundle)o;
-			UnityEngine.Object ret = obj.mainAsset;
-			ToLua.Push(L, ret);
-			return 1;
-		}
-		catch(Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e, o, "attempt to index mainAsset on a nil value");
 		}
 	}
 

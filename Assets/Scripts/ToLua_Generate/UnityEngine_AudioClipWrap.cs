@@ -21,8 +21,8 @@ public class UnityEngine_AudioClipWrap
 		L.RegVar("loadType", get_loadType, null);
 		L.RegVar("preloadAudioData", get_preloadAudioData, null);
 		L.RegVar("ambisonic", get_ambisonic, null);
-		L.RegVar("loadState", get_loadState, null);
 		L.RegVar("loadInBackground", get_loadInBackground, null);
+		L.RegVar("loadState", get_loadState, null);
 		L.RegFunction("PCMReaderCallback", UnityEngine_AudioClip_PCMReaderCallback);
 		L.RegFunction("PCMSetPositionCallback", UnityEngine_AudioClip_PCMSetPositionCallback);
 		L.EndClass();
@@ -306,25 +306,6 @@ public class UnityEngine_AudioClipWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int get_loadState(IntPtr L)
-	{
-		object o = null;
-
-		try
-		{
-			o = ToLua.ToObject(L, 1);
-			UnityEngine.AudioClip obj = (UnityEngine.AudioClip)o;
-			UnityEngine.AudioDataLoadState ret = obj.loadState;
-			ToLua.Push(L, ret);
-			return 1;
-		}
-		catch(Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e, o, "attempt to index loadState on a nil value");
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int get_loadInBackground(IntPtr L)
 	{
 		object o = null;
@@ -340,6 +321,25 @@ public class UnityEngine_AudioClipWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e, o, "attempt to index loadInBackground on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_loadState(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			UnityEngine.AudioClip obj = (UnityEngine.AudioClip)o;
+			UnityEngine.AudioDataLoadState ret = obj.loadState;
+			ToLua.Push(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index loadState on a nil value");
 		}
 	}
 

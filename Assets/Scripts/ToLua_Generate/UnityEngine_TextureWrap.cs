@@ -13,11 +13,15 @@ public class UnityEngine_TextureWrap
 		L.RegFunction("SetStreamingTextureMaterialDebugProperties", SetStreamingTextureMaterialDebugProperties);
 		L.RegFunction("__eq", op_Equality);
 		L.RegFunction("__tostring", ToLua.op_ToString);
+		L.RegVar("GenerateAllMips", get_GenerateAllMips, null);
 		L.RegVar("masterTextureLimit", get_masterTextureLimit, set_masterTextureLimit);
+		L.RegVar("mipmapCount", get_mipmapCount, null);
 		L.RegVar("anisotropicFiltering", get_anisotropicFiltering, set_anisotropicFiltering);
+		L.RegVar("graphicsFormat", get_graphicsFormat, null);
 		L.RegVar("width", get_width, set_width);
 		L.RegVar("height", get_height, set_height);
 		L.RegVar("dimension", get_dimension, set_dimension);
+		L.RegVar("isReadable", get_isReadable, null);
 		L.RegVar("wrapMode", get_wrapMode, set_wrapMode);
 		L.RegVar("wrapModeU", get_wrapModeU, set_wrapModeU);
 		L.RegVar("wrapModeV", get_wrapModeV, set_wrapModeV);
@@ -40,6 +44,7 @@ public class UnityEngine_TextureWrap
 		L.RegVar("streamingTextureLoadingCount", get_streamingTextureLoadingCount, null);
 		L.RegVar("streamingTextureForceLoadAll", get_streamingTextureForceLoadAll, set_streamingTextureForceLoadAll);
 		L.RegVar("streamingTextureDiscardUnusedMips", get_streamingTextureDiscardUnusedMips, set_streamingTextureDiscardUnusedMips);
+		L.RegVar("allowThreadedTextureCreation", get_allowThreadedTextureCreation, set_allowThreadedTextureCreation);
 		L.EndClass();
 	}
 
@@ -127,6 +132,20 @@ public class UnityEngine_TextureWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_GenerateAllMips(IntPtr L)
+	{
+		try
+		{
+			LuaDLL.lua_pushinteger(L, UnityEngine.Texture.GenerateAllMips);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int get_masterTextureLimit(IntPtr L)
 	{
 		try
@@ -141,6 +160,25 @@ public class UnityEngine_TextureWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_mipmapCount(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			UnityEngine.Texture obj = (UnityEngine.Texture)o;
+			int ret = obj.mipmapCount;
+			LuaDLL.lua_pushinteger(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index mipmapCount on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int get_anisotropicFiltering(IntPtr L)
 	{
 		try
@@ -151,6 +189,25 @@ public class UnityEngine_TextureWrap
 		catch (Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_graphicsFormat(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			UnityEngine.Texture obj = (UnityEngine.Texture)o;
+			UnityEngine.Experimental.Rendering.GraphicsFormat ret = obj.graphicsFormat;
+			ToLua.Push(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index graphicsFormat on a nil value");
 		}
 	}
 
@@ -208,6 +265,25 @@ public class UnityEngine_TextureWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e, o, "attempt to index dimension on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_isReadable(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			UnityEngine.Texture obj = (UnityEngine.Texture)o;
+			bool ret = obj.isReadable;
+			LuaDLL.lua_pushboolean(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index isReadable on a nil value");
 		}
 	}
 
@@ -565,6 +641,20 @@ public class UnityEngine_TextureWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_allowThreadedTextureCreation(IntPtr L)
+	{
+		try
+		{
+			LuaDLL.lua_pushboolean(L, UnityEngine.Texture.allowThreadedTextureCreation);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int set_masterTextureLimit(IntPtr L)
 	{
 		try
@@ -806,6 +896,21 @@ public class UnityEngine_TextureWrap
 		{
 			bool arg0 = LuaDLL.luaL_checkboolean(L, 2);
 			UnityEngine.Texture.streamingTextureDiscardUnusedMips = arg0;
+			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_allowThreadedTextureCreation(IntPtr L)
+	{
+		try
+		{
+			bool arg0 = LuaDLL.luaL_checkboolean(L, 2);
+			UnityEngine.Texture.allowThreadedTextureCreation = arg0;
 			return 0;
 		}
 		catch (Exception e)

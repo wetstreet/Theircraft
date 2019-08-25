@@ -11,6 +11,8 @@ public class UnityEngine_LightTypeWrap
 		L.RegVar("Directional", get_Directional, null);
 		L.RegVar("Point", get_Point, null);
 		L.RegVar("Area", get_Area, null);
+		L.RegVar("Rectangle", get_Rectangle, null);
+		L.RegVar("Disc", get_Disc, null);
 		L.RegFunction("IntToEnum", IntToEnum);
 		L.EndEnum();
 		TypeTraits<UnityEngine.LightType>.Check = CheckType;
@@ -52,6 +54,20 @@ public class UnityEngine_LightTypeWrap
 	static int get_Area(IntPtr L)
 	{
 		ToLua.Push(L, UnityEngine.LightType.Area);
+		return 1;
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_Rectangle(IntPtr L)
+	{
+		ToLua.Push(L, UnityEngine.LightType.Rectangle);
+		return 1;
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_Disc(IntPtr L)
+	{
+		ToLua.Push(L, UnityEngine.LightType.Disc);
 		return 1;
 	}
 

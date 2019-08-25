@@ -12,42 +12,42 @@ public class UnityEngine_InputWrap
 		L.RegFunction("GetButton", GetButton);
 		L.RegFunction("GetButtonDown", GetButtonDown);
 		L.RegFunction("GetButtonUp", GetButtonUp);
-		L.RegFunction("GetKey", GetKey);
-		L.RegFunction("GetKeyDown", GetKeyDown);
-		L.RegFunction("GetKeyUp", GetKeyUp);
-		L.RegFunction("GetJoystickNames", GetJoystickNames);
 		L.RegFunction("GetMouseButton", GetMouseButton);
 		L.RegFunction("GetMouseButtonDown", GetMouseButtonDown);
 		L.RegFunction("GetMouseButtonUp", GetMouseButtonUp);
 		L.RegFunction("ResetInputAxes", ResetInputAxes);
+		L.RegFunction("GetJoystickNames", GetJoystickNames);
 		L.RegFunction("GetAccelerationEvent", GetAccelerationEvent);
+		L.RegFunction("GetKey", GetKey);
+		L.RegFunction("GetKeyUp", GetKeyUp);
+		L.RegFunction("GetKeyDown", GetKeyDown);
 		L.RegFunction("GetTouch", GetTouch);
-		L.RegVar("compensateSensors", get_compensateSensors, set_compensateSensors);
-		L.RegVar("gyro", get_gyro, null);
-		L.RegVar("mousePosition", get_mousePosition, null);
-		L.RegVar("mouseScrollDelta", get_mouseScrollDelta, null);
-		L.RegVar("mousePresent", get_mousePresent, null);
 		L.RegVar("simulateMouseWithTouches", get_simulateMouseWithTouches, set_simulateMouseWithTouches);
 		L.RegVar("anyKey", get_anyKey, null);
 		L.RegVar("anyKeyDown", get_anyKeyDown, null);
 		L.RegVar("inputString", get_inputString, null);
-		L.RegVar("acceleration", get_acceleration, null);
-		L.RegVar("accelerationEvents", get_accelerationEvents, null);
-		L.RegVar("accelerationEventCount", get_accelerationEventCount, null);
-		L.RegVar("touches", get_touches, null);
+		L.RegVar("mousePosition", get_mousePosition, null);
+		L.RegVar("mouseScrollDelta", get_mouseScrollDelta, null);
+		L.RegVar("imeCompositionMode", get_imeCompositionMode, set_imeCompositionMode);
+		L.RegVar("compositionString", get_compositionString, null);
+		L.RegVar("imeIsSelected", get_imeIsSelected, null);
+		L.RegVar("compositionCursorPos", get_compositionCursorPos, set_compositionCursorPos);
+		L.RegVar("mousePresent", get_mousePresent, null);
 		L.RegVar("touchCount", get_touchCount, null);
 		L.RegVar("touchPressureSupported", get_touchPressureSupported, null);
 		L.RegVar("stylusTouchSupported", get_stylusTouchSupported, null);
 		L.RegVar("touchSupported", get_touchSupported, null);
 		L.RegVar("multiTouchEnabled", get_multiTouchEnabled, set_multiTouchEnabled);
+		L.RegVar("deviceOrientation", get_deviceOrientation, null);
+		L.RegVar("acceleration", get_acceleration, null);
+		L.RegVar("compensateSensors", get_compensateSensors, set_compensateSensors);
+		L.RegVar("accelerationEventCount", get_accelerationEventCount, null);
+		L.RegVar("backButtonLeavesApp", get_backButtonLeavesApp, set_backButtonLeavesApp);
 		L.RegVar("location", get_location, null);
 		L.RegVar("compass", get_compass, null);
-		L.RegVar("deviceOrientation", get_deviceOrientation, null);
-		L.RegVar("imeCompositionMode", get_imeCompositionMode, set_imeCompositionMode);
-		L.RegVar("compositionString", get_compositionString, null);
-		L.RegVar("imeIsSelected", get_imeIsSelected, null);
-		L.RegVar("compositionCursorPos", get_compositionCursorPos, set_compositionCursorPos);
-		L.RegVar("backButtonLeavesApp", get_backButtonLeavesApp, set_backButtonLeavesApp);
+		L.RegVar("gyro", get_gyro, null);
+		L.RegVar("touches", get_touches, null);
+		L.RegVar("accelerationEvents", get_accelerationEvents, null);
 		L.EndStaticLibs();
 	}
 
@@ -137,118 +137,6 @@ public class UnityEngine_InputWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int GetKey(IntPtr L)
-	{
-		try
-		{
-			int count = LuaDLL.lua_gettop(L);
-
-			if (count == 1 && TypeChecker.CheckTypes<UnityEngine.KeyCode>(L, 1))
-			{
-				UnityEngine.KeyCode arg0 = (UnityEngine.KeyCode)ToLua.ToObject(L, 1);
-				bool o = UnityEngine.Input.GetKey(arg0);
-				LuaDLL.lua_pushboolean(L, o);
-				return 1;
-			}
-			else if (count == 1 && TypeChecker.CheckTypes<string>(L, 1))
-			{
-				string arg0 = ToLua.ToString(L, 1);
-				bool o = UnityEngine.Input.GetKey(arg0);
-				LuaDLL.lua_pushboolean(L, o);
-				return 1;
-			}
-			else
-			{
-				return LuaDLL.luaL_throw(L, "invalid arguments to method: UnityEngine.Input.GetKey");
-			}
-		}
-		catch (Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e);
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int GetKeyDown(IntPtr L)
-	{
-		try
-		{
-			int count = LuaDLL.lua_gettop(L);
-
-			if (count == 1 && TypeChecker.CheckTypes<UnityEngine.KeyCode>(L, 1))
-			{
-				UnityEngine.KeyCode arg0 = (UnityEngine.KeyCode)ToLua.ToObject(L, 1);
-				bool o = UnityEngine.Input.GetKeyDown(arg0);
-				LuaDLL.lua_pushboolean(L, o);
-				return 1;
-			}
-			else if (count == 1 && TypeChecker.CheckTypes<string>(L, 1))
-			{
-				string arg0 = ToLua.ToString(L, 1);
-				bool o = UnityEngine.Input.GetKeyDown(arg0);
-				LuaDLL.lua_pushboolean(L, o);
-				return 1;
-			}
-			else
-			{
-				return LuaDLL.luaL_throw(L, "invalid arguments to method: UnityEngine.Input.GetKeyDown");
-			}
-		}
-		catch (Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e);
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int GetKeyUp(IntPtr L)
-	{
-		try
-		{
-			int count = LuaDLL.lua_gettop(L);
-
-			if (count == 1 && TypeChecker.CheckTypes<UnityEngine.KeyCode>(L, 1))
-			{
-				UnityEngine.KeyCode arg0 = (UnityEngine.KeyCode)ToLua.ToObject(L, 1);
-				bool o = UnityEngine.Input.GetKeyUp(arg0);
-				LuaDLL.lua_pushboolean(L, o);
-				return 1;
-			}
-			else if (count == 1 && TypeChecker.CheckTypes<string>(L, 1))
-			{
-				string arg0 = ToLua.ToString(L, 1);
-				bool o = UnityEngine.Input.GetKeyUp(arg0);
-				LuaDLL.lua_pushboolean(L, o);
-				return 1;
-			}
-			else
-			{
-				return LuaDLL.luaL_throw(L, "invalid arguments to method: UnityEngine.Input.GetKeyUp");
-			}
-		}
-		catch (Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e);
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int GetJoystickNames(IntPtr L)
-	{
-		try
-		{
-			ToLua.CheckArgsCount(L, 0);
-			string[] o = UnityEngine.Input.GetJoystickNames();
-			ToLua.Push(L, o);
-			return 1;
-		}
-		catch (Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e);
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int GetMouseButton(IntPtr L)
 	{
 		try
@@ -315,6 +203,22 @@ public class UnityEngine_InputWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int GetJoystickNames(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 0);
+			string[] o = UnityEngine.Input.GetJoystickNames();
+			ToLua.Push(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int GetAccelerationEvent(IntPtr L)
 	{
 		try
@@ -324,6 +228,102 @@ public class UnityEngine_InputWrap
 			UnityEngine.AccelerationEvent o = UnityEngine.Input.GetAccelerationEvent(arg0);
 			ToLua.PushValue(L, o);
 			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int GetKey(IntPtr L)
+	{
+		try
+		{
+			int count = LuaDLL.lua_gettop(L);
+
+			if (count == 1 && TypeChecker.CheckTypes<UnityEngine.KeyCode>(L, 1))
+			{
+				UnityEngine.KeyCode arg0 = (UnityEngine.KeyCode)ToLua.ToObject(L, 1);
+				bool o = UnityEngine.Input.GetKey(arg0);
+				LuaDLL.lua_pushboolean(L, o);
+				return 1;
+			}
+			else if (count == 1 && TypeChecker.CheckTypes<string>(L, 1))
+			{
+				string arg0 = ToLua.ToString(L, 1);
+				bool o = UnityEngine.Input.GetKey(arg0);
+				LuaDLL.lua_pushboolean(L, o);
+				return 1;
+			}
+			else
+			{
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: UnityEngine.Input.GetKey");
+			}
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int GetKeyUp(IntPtr L)
+	{
+		try
+		{
+			int count = LuaDLL.lua_gettop(L);
+
+			if (count == 1 && TypeChecker.CheckTypes<UnityEngine.KeyCode>(L, 1))
+			{
+				UnityEngine.KeyCode arg0 = (UnityEngine.KeyCode)ToLua.ToObject(L, 1);
+				bool o = UnityEngine.Input.GetKeyUp(arg0);
+				LuaDLL.lua_pushboolean(L, o);
+				return 1;
+			}
+			else if (count == 1 && TypeChecker.CheckTypes<string>(L, 1))
+			{
+				string arg0 = ToLua.ToString(L, 1);
+				bool o = UnityEngine.Input.GetKeyUp(arg0);
+				LuaDLL.lua_pushboolean(L, o);
+				return 1;
+			}
+			else
+			{
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: UnityEngine.Input.GetKeyUp");
+			}
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int GetKeyDown(IntPtr L)
+	{
+		try
+		{
+			int count = LuaDLL.lua_gettop(L);
+
+			if (count == 1 && TypeChecker.CheckTypes<UnityEngine.KeyCode>(L, 1))
+			{
+				UnityEngine.KeyCode arg0 = (UnityEngine.KeyCode)ToLua.ToObject(L, 1);
+				bool o = UnityEngine.Input.GetKeyDown(arg0);
+				LuaDLL.lua_pushboolean(L, o);
+				return 1;
+			}
+			else if (count == 1 && TypeChecker.CheckTypes<string>(L, 1))
+			{
+				string arg0 = ToLua.ToString(L, 1);
+				bool o = UnityEngine.Input.GetKeyDown(arg0);
+				LuaDLL.lua_pushboolean(L, o);
+				return 1;
+			}
+			else
+			{
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: UnityEngine.Input.GetKeyDown");
+			}
 		}
 		catch (Exception e)
 		{
@@ -345,76 +345,6 @@ public class UnityEngine_InputWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e);			
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int get_compensateSensors(IntPtr L)
-	{
-		try
-		{
-			LuaDLL.lua_pushboolean(L, UnityEngine.Input.compensateSensors);
-			return 1;
-		}
-		catch (Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e);
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int get_gyro(IntPtr L)
-	{
-		try
-		{
-			ToLua.PushSealed(L, UnityEngine.Input.gyro);
-			return 1;
-		}
-		catch (Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e);
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int get_mousePosition(IntPtr L)
-	{
-		try
-		{
-			ToLua.Push(L, UnityEngine.Input.mousePosition);
-			return 1;
-		}
-		catch (Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e);
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int get_mouseScrollDelta(IntPtr L)
-	{
-		try
-		{
-			ToLua.Push(L, UnityEngine.Input.mouseScrollDelta);
-			return 1;
-		}
-		catch (Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e);
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int get_mousePresent(IntPtr L)
-	{
-		try
-		{
-			LuaDLL.lua_pushboolean(L, UnityEngine.Input.mousePresent);
-			return 1;
-		}
-		catch (Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e);
 		}
 	}
 
@@ -475,11 +405,11 @@ public class UnityEngine_InputWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int get_acceleration(IntPtr L)
+	static int get_mousePosition(IntPtr L)
 	{
 		try
 		{
-			ToLua.Push(L, UnityEngine.Input.acceleration);
+			ToLua.Push(L, UnityEngine.Input.mousePosition);
 			return 1;
 		}
 		catch (Exception e)
@@ -489,11 +419,11 @@ public class UnityEngine_InputWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int get_accelerationEvents(IntPtr L)
+	static int get_mouseScrollDelta(IntPtr L)
 	{
 		try
 		{
-			ToLua.Push(L, UnityEngine.Input.accelerationEvents);
+			ToLua.Push(L, UnityEngine.Input.mouseScrollDelta);
 			return 1;
 		}
 		catch (Exception e)
@@ -503,11 +433,11 @@ public class UnityEngine_InputWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int get_accelerationEventCount(IntPtr L)
+	static int get_imeCompositionMode(IntPtr L)
 	{
 		try
 		{
-			LuaDLL.lua_pushinteger(L, UnityEngine.Input.accelerationEventCount);
+			ToLua.Push(L, UnityEngine.Input.imeCompositionMode);
 			return 1;
 		}
 		catch (Exception e)
@@ -517,11 +447,53 @@ public class UnityEngine_InputWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int get_touches(IntPtr L)
+	static int get_compositionString(IntPtr L)
 	{
 		try
 		{
-			ToLua.Push(L, UnityEngine.Input.touches);
+			LuaDLL.lua_pushstring(L, UnityEngine.Input.compositionString);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_imeIsSelected(IntPtr L)
+	{
+		try
+		{
+			LuaDLL.lua_pushboolean(L, UnityEngine.Input.imeIsSelected);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_compositionCursorPos(IntPtr L)
+	{
+		try
+		{
+			ToLua.Push(L, UnityEngine.Input.compositionCursorPos);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_mousePresent(IntPtr L)
+	{
+		try
+		{
+			LuaDLL.lua_pushboolean(L, UnityEngine.Input.mousePresent);
 			return 1;
 		}
 		catch (Exception e)
@@ -601,34 +573,6 @@ public class UnityEngine_InputWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int get_location(IntPtr L)
-	{
-		try
-		{
-			ToLua.PushSealed(L, UnityEngine.Input.location);
-			return 1;
-		}
-		catch (Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e);
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int get_compass(IntPtr L)
-	{
-		try
-		{
-			ToLua.PushSealed(L, UnityEngine.Input.compass);
-			return 1;
-		}
-		catch (Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e);
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int get_deviceOrientation(IntPtr L)
 	{
 		try
@@ -643,11 +587,11 @@ public class UnityEngine_InputWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int get_imeCompositionMode(IntPtr L)
+	static int get_acceleration(IntPtr L)
 	{
 		try
 		{
-			ToLua.Push(L, UnityEngine.Input.imeCompositionMode);
+			ToLua.Push(L, UnityEngine.Input.acceleration);
 			return 1;
 		}
 		catch (Exception e)
@@ -657,11 +601,11 @@ public class UnityEngine_InputWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int get_compositionString(IntPtr L)
+	static int get_compensateSensors(IntPtr L)
 	{
 		try
 		{
-			LuaDLL.lua_pushstring(L, UnityEngine.Input.compositionString);
+			LuaDLL.lua_pushboolean(L, UnityEngine.Input.compensateSensors);
 			return 1;
 		}
 		catch (Exception e)
@@ -671,25 +615,11 @@ public class UnityEngine_InputWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int get_imeIsSelected(IntPtr L)
+	static int get_accelerationEventCount(IntPtr L)
 	{
 		try
 		{
-			LuaDLL.lua_pushboolean(L, UnityEngine.Input.imeIsSelected);
-			return 1;
-		}
-		catch (Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e);
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int get_compositionCursorPos(IntPtr L)
-	{
-		try
-		{
-			ToLua.Push(L, UnityEngine.Input.compositionCursorPos);
+			LuaDLL.lua_pushinteger(L, UnityEngine.Input.accelerationEventCount);
 			return 1;
 		}
 		catch (Exception e)
@@ -713,13 +643,68 @@ public class UnityEngine_InputWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int set_compensateSensors(IntPtr L)
+	static int get_location(IntPtr L)
 	{
 		try
 		{
-			bool arg0 = LuaDLL.luaL_checkboolean(L, 2);
-			UnityEngine.Input.compensateSensors = arg0;
-			return 0;
+			ToLua.PushObject(L, UnityEngine.Input.location);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_compass(IntPtr L)
+	{
+		try
+		{
+			ToLua.PushObject(L, UnityEngine.Input.compass);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_gyro(IntPtr L)
+	{
+		try
+		{
+			ToLua.PushObject(L, UnityEngine.Input.gyro);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_touches(IntPtr L)
+	{
+		try
+		{
+			ToLua.Push(L, UnityEngine.Input.touches);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_accelerationEvents(IntPtr L)
+	{
+		try
+		{
+			ToLua.Push(L, UnityEngine.Input.accelerationEvents);
+			return 1;
 		}
 		catch (Exception e)
 		{
@@ -734,21 +719,6 @@ public class UnityEngine_InputWrap
 		{
 			bool arg0 = LuaDLL.luaL_checkboolean(L, 2);
 			UnityEngine.Input.simulateMouseWithTouches = arg0;
-			return 0;
-		}
-		catch (Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e);
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int set_multiTouchEnabled(IntPtr L)
-	{
-		try
-		{
-			bool arg0 = LuaDLL.luaL_checkboolean(L, 2);
-			UnityEngine.Input.multiTouchEnabled = arg0;
 			return 0;
 		}
 		catch (Exception e)
@@ -779,6 +749,36 @@ public class UnityEngine_InputWrap
 		{
 			UnityEngine.Vector2 arg0 = ToLua.ToVector2(L, 2);
 			UnityEngine.Input.compositionCursorPos = arg0;
+			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_multiTouchEnabled(IntPtr L)
+	{
+		try
+		{
+			bool arg0 = LuaDLL.luaL_checkboolean(L, 2);
+			UnityEngine.Input.multiTouchEnabled = arg0;
+			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_compensateSensors(IntPtr L)
+	{
+		try
+		{
+			bool arg0 = LuaDLL.luaL_checkboolean(L, 2);
+			UnityEngine.Input.compensateSensors = arg0;
 			return 0;
 		}
 		catch (Exception e)

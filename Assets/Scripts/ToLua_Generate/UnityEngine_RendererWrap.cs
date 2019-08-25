@@ -25,6 +25,7 @@ public class UnityEngine_RendererWrap
 		L.RegVar("lightProbeUsage", get_lightProbeUsage, set_lightProbeUsage);
 		L.RegVar("reflectionProbeUsage", get_reflectionProbeUsage, set_reflectionProbeUsage);
 		L.RegVar("renderingLayerMask", get_renderingLayerMask, set_renderingLayerMask);
+		L.RegVar("rendererPriority", get_rendererPriority, set_rendererPriority);
 		L.RegVar("sortingLayerName", get_sortingLayerName, set_sortingLayerName);
 		L.RegVar("sortingLayerID", get_sortingLayerID, set_sortingLayerID);
 		L.RegVar("sortingOrder", get_sortingOrder, set_sortingOrder);
@@ -389,6 +390,25 @@ public class UnityEngine_RendererWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e, o, "attempt to index renderingLayerMask on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_rendererPriority(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			UnityEngine.Renderer obj = (UnityEngine.Renderer)o;
+			int ret = obj.rendererPriority;
+			LuaDLL.lua_pushinteger(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index rendererPriority on a nil value");
 		}
 	}
 
@@ -845,6 +865,25 @@ public class UnityEngine_RendererWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e, o, "attempt to index renderingLayerMask on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_rendererPriority(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			UnityEngine.Renderer obj = (UnityEngine.Renderer)o;
+			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+			obj.rendererPriority = arg0;
+			return 0;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index rendererPriority on a nil value");
 		}
 	}
 

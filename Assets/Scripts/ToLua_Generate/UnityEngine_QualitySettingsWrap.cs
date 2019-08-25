@@ -33,10 +33,11 @@ public class UnityEngine_QualitySettingsWrap
 		L.RegVar("antiAliasing", get_antiAliasing, set_antiAliasing);
 		L.RegVar("asyncUploadTimeSlice", get_asyncUploadTimeSlice, set_asyncUploadTimeSlice);
 		L.RegVar("asyncUploadBufferSize", get_asyncUploadBufferSize, set_asyncUploadBufferSize);
+		L.RegVar("asyncUploadPersistentBuffer", get_asyncUploadPersistentBuffer, set_asyncUploadPersistentBuffer);
 		L.RegVar("realtimeReflectionProbes", get_realtimeReflectionProbes, set_realtimeReflectionProbes);
 		L.RegVar("billboardsFaceCameraPosition", get_billboardsFaceCameraPosition, set_billboardsFaceCameraPosition);
 		L.RegVar("resolutionScalingFixedDPIFactor", get_resolutionScalingFixedDPIFactor, set_resolutionScalingFixedDPIFactor);
-		L.RegVar("blendWeights", get_blendWeights, set_blendWeights);
+		L.RegVar("skinWeights", get_skinWeights, set_skinWeights);
 		L.RegVar("streamingMipmapsActive", get_streamingMipmapsActive, set_streamingMipmapsActive);
 		L.RegVar("streamingMipmapsMemoryBudget", get_streamingMipmapsMemoryBudget, set_streamingMipmapsMemoryBudget);
 		L.RegVar("streamingMipmapsAddAllCameras", get_streamingMipmapsAddAllCameras, set_streamingMipmapsAddAllCameras);
@@ -466,6 +467,20 @@ public class UnityEngine_QualitySettingsWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_asyncUploadPersistentBuffer(IntPtr L)
+	{
+		try
+		{
+			LuaDLL.lua_pushboolean(L, UnityEngine.QualitySettings.asyncUploadPersistentBuffer);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int get_realtimeReflectionProbes(IntPtr L)
 	{
 		try
@@ -508,11 +523,11 @@ public class UnityEngine_QualitySettingsWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int get_blendWeights(IntPtr L)
+	static int get_skinWeights(IntPtr L)
 	{
 		try
 		{
-			ToLua.Push(L, UnityEngine.QualitySettings.blendWeights);
+			ToLua.Push(L, UnityEngine.QualitySettings.skinWeights);
 			return 1;
 		}
 		catch (Exception e)
@@ -949,6 +964,21 @@ public class UnityEngine_QualitySettingsWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_asyncUploadPersistentBuffer(IntPtr L)
+	{
+		try
+		{
+			bool arg0 = LuaDLL.luaL_checkboolean(L, 2);
+			UnityEngine.QualitySettings.asyncUploadPersistentBuffer = arg0;
+			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int set_realtimeReflectionProbes(IntPtr L)
 	{
 		try
@@ -994,12 +1024,12 @@ public class UnityEngine_QualitySettingsWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int set_blendWeights(IntPtr L)
+	static int set_skinWeights(IntPtr L)
 	{
 		try
 		{
-			UnityEngine.BlendWeights arg0 = (UnityEngine.BlendWeights)ToLua.CheckObject(L, 2, typeof(UnityEngine.BlendWeights));
-			UnityEngine.QualitySettings.blendWeights = arg0;
+			UnityEngine.SkinWeights arg0 = (UnityEngine.SkinWeights)ToLua.CheckObject(L, 2, typeof(UnityEngine.SkinWeights));
+			UnityEngine.QualitySettings.skinWeights = arg0;
 			return 0;
 		}
 		catch (Exception e)

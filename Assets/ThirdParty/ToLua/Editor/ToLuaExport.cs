@@ -160,7 +160,10 @@ public static class ToLuaExport
         "UIWidget.showHandlesWithMoveTool",
         "UIWidget.showHandles",
         "Input.IsJoystickPreconfigured",
-        "UIDrawCall.isActive"
+        "UIDrawCall.isActive",
+        "Camera.FocalLengthToFOV",
+        "Camera.FOVToFocalLength",
+        "ParticleSystem.SetJob",
     };
 
     class _MethodBase

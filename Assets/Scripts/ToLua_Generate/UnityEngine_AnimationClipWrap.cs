@@ -7,15 +7,14 @@ public class UnityEngine_AnimationClipWrap
 	public static void Register(LuaState L)
 	{
 		L.BeginClass(typeof(UnityEngine.AnimationClip), typeof(UnityEngine.Object));
-		L.RegFunction("AddEvent", AddEvent);
 		L.RegFunction("SampleAnimation", SampleAnimation);
 		L.RegFunction("SetCurve", SetCurve);
 		L.RegFunction("EnsureQuaternionContinuity", EnsureQuaternionContinuity);
 		L.RegFunction("ClearCurves", ClearCurves);
+		L.RegFunction("AddEvent", AddEvent);
 		L.RegFunction("New", _CreateUnityEngine_AnimationClip);
 		L.RegFunction("__eq", op_Equality);
 		L.RegFunction("__tostring", ToLua.op_ToString);
-		L.RegVar("events", get_events, set_events);
 		L.RegVar("length", get_length, null);
 		L.RegVar("frameRate", get_frameRate, set_frameRate);
 		L.RegVar("wrapMode", get_wrapMode, set_wrapMode);
@@ -23,6 +22,11 @@ public class UnityEngine_AnimationClipWrap
 		L.RegVar("legacy", get_legacy, set_legacy);
 		L.RegVar("humanMotion", get_humanMotion, null);
 		L.RegVar("empty", get_empty, null);
+		L.RegVar("hasGenericRootTransform", get_hasGenericRootTransform, null);
+		L.RegVar("hasMotionFloatCurves", get_hasMotionFloatCurves, null);
+		L.RegVar("hasMotionCurves", get_hasMotionCurves, null);
+		L.RegVar("hasRootCurves", get_hasRootCurves, null);
+		L.RegVar("events", get_events, set_events);
 		L.EndClass();
 	}
 
@@ -43,23 +47,6 @@ public class UnityEngine_AnimationClipWrap
 			{
 				return LuaDLL.luaL_throw(L, "invalid arguments to ctor method: UnityEngine.AnimationClip.New");
 			}
-		}
-		catch (Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e);
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int AddEvent(IntPtr L)
-	{
-		try
-		{
-			ToLua.CheckArgsCount(L, 2);
-			UnityEngine.AnimationClip obj = (UnityEngine.AnimationClip)ToLua.CheckObject(L, 1, typeof(UnityEngine.AnimationClip));
-			UnityEngine.AnimationEvent arg0 = (UnityEngine.AnimationEvent)ToLua.CheckObject(L, 2, typeof(UnityEngine.AnimationEvent));
-			obj.AddEvent(arg0);
-			return 0;
 		}
 		catch (Exception e)
 		{
@@ -138,6 +125,23 @@ public class UnityEngine_AnimationClipWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int AddEvent(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			UnityEngine.AnimationClip obj = (UnityEngine.AnimationClip)ToLua.CheckObject(L, 1, typeof(UnityEngine.AnimationClip));
+			UnityEngine.AnimationEvent arg0 = (UnityEngine.AnimationEvent)ToLua.CheckObject(L, 2, typeof(UnityEngine.AnimationEvent));
+			obj.AddEvent(arg0);
+			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int op_Equality(IntPtr L)
 	{
 		try
@@ -152,25 +156,6 @@ public class UnityEngine_AnimationClipWrap
 		catch (Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e);
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int get_events(IntPtr L)
-	{
-		object o = null;
-
-		try
-		{
-			o = ToLua.ToObject(L, 1);
-			UnityEngine.AnimationClip obj = (UnityEngine.AnimationClip)o;
-			UnityEngine.AnimationEvent[] ret = obj.events;
-			ToLua.Push(L, ret);
-			return 1;
-		}
-		catch(Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e, o, "attempt to index events on a nil value");
 		}
 	}
 
@@ -308,7 +293,7 @@ public class UnityEngine_AnimationClipWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int set_events(IntPtr L)
+	static int get_hasGenericRootTransform(IntPtr L)
 	{
 		object o = null;
 
@@ -316,9 +301,85 @@ public class UnityEngine_AnimationClipWrap
 		{
 			o = ToLua.ToObject(L, 1);
 			UnityEngine.AnimationClip obj = (UnityEngine.AnimationClip)o;
-			UnityEngine.AnimationEvent[] arg0 = ToLua.CheckObjectArray<UnityEngine.AnimationEvent>(L, 2);
-			obj.events = arg0;
-			return 0;
+			bool ret = obj.hasGenericRootTransform;
+			LuaDLL.lua_pushboolean(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index hasGenericRootTransform on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_hasMotionFloatCurves(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			UnityEngine.AnimationClip obj = (UnityEngine.AnimationClip)o;
+			bool ret = obj.hasMotionFloatCurves;
+			LuaDLL.lua_pushboolean(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index hasMotionFloatCurves on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_hasMotionCurves(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			UnityEngine.AnimationClip obj = (UnityEngine.AnimationClip)o;
+			bool ret = obj.hasMotionCurves;
+			LuaDLL.lua_pushboolean(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index hasMotionCurves on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_hasRootCurves(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			UnityEngine.AnimationClip obj = (UnityEngine.AnimationClip)o;
+			bool ret = obj.hasRootCurves;
+			LuaDLL.lua_pushboolean(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index hasRootCurves on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_events(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			UnityEngine.AnimationClip obj = (UnityEngine.AnimationClip)o;
+			UnityEngine.AnimationEvent[] ret = obj.events;
+			ToLua.Push(L, ret);
+			return 1;
 		}
 		catch(Exception e)
 		{
@@ -399,6 +460,25 @@ public class UnityEngine_AnimationClipWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e, o, "attempt to index legacy on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_events(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			UnityEngine.AnimationClip obj = (UnityEngine.AnimationClip)o;
+			UnityEngine.AnimationEvent[] arg0 = ToLua.CheckObjectArray<UnityEngine.AnimationEvent>(L, 2);
+			obj.events = arg0;
+			return 0;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index events on a nil value");
 		}
 	}
 }
