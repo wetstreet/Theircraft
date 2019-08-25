@@ -24,14 +24,15 @@ public class Main : MonoBehaviour {
     {
         SoundManager.Init();
 
-        if (NetworkManager.Connect())
-        {
-            SceneManager.LoadScene("LoginScene");
-            MainMenu.Show();
-        }
-        else
-        {
-            DisconnectedUI.Show();
-        }
+        SceneManager.LoadScene("LoginScene");
+        MainMenu.Show();
+
+        //if (NetworkManager.Connect())
+        //{
+        //}
+        //else
+        //{
+        //    DisconnectedUI.Show();
+        //}
     }
 }

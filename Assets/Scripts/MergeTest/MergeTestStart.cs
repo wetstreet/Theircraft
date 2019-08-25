@@ -92,10 +92,17 @@ public class MergeTestStart : MonoBehaviour
                 List<Vector2Int> toUnloadChunks = haveChunks.Where(c => Mathf.Abs(c.x - curChunk.x) > SettingsPanel.RenderDistance || Mathf.Abs(c.y - curChunk.y) > SettingsPanel.RenderDistance).ToList();
                 Debug.Log(curChunk + "," + lastChunk + "," + toLoadChunks.Count + "," + toUnloadChunks.Count);
 
-                ChunksEnterLeaveViewReq(toLoadChunks, toUnloadChunks);
+                if (toLoadChunks.Count > 0 || toUnloadChunks.Count > 0)
+                {
+                    ChunksEnterLeaveViewReq(toLoadChunks, toUnloadChunks);
+                    readyToRefreshChunks = false;
+                    tempChunk = curChunk;
+                }
+                else
+                {
+                    lastChunk = curChunk;
+                }
                 lastRenderDistance = SettingsPanel.RenderDistance;
-                readyToRefreshChunks = false;
-                tempChunk = curChunk;
             }
         }
     }

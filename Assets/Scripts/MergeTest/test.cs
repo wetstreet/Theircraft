@@ -117,6 +117,11 @@ public class test : MonoBehaviour
     static Dictionary<Vector2Int, GameObject> chunk2object = new Dictionary<Vector2Int, GameObject>();
 
 
+    public static List<Vector2Int> GetChunkList()
+    {
+        return new List<Vector2Int>(chunk2object.Keys);
+    }
+
     static Dictionary<Vector3Int, Block> posBlockDict = new Dictionary<Vector3Int, Block>();
     static Dictionary<Vector2Int, Dictionary<Vector3Int, Block>> chunkBlocksDict = new Dictionary<Vector2Int, Dictionary<Vector3Int, Block>>();
 
