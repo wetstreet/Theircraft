@@ -10,10 +10,16 @@ using System.Threading;
 using ProtoBuf;
 using protocol.cs_enum;
 
-public delegate void CallbackFunction(byte[] data);
-
 public static class NetworkManager
 {
+    public static bool IsSingle;
+
+    struct NetworkCallback
+    {
+        public Action<byte[]> func;
+        public bool isDelete;
+    }
+
     class NetworkCoroutine : MonoBehaviour
     {
         public static NetworkCoroutine _instance;
@@ -48,16 +54,17 @@ public static class NetworkManager
     static TcpClient tcpClient;
 
     static Queue<byte[]> _message;
-    static Dictionary<ENUM_CMD, CallbackFunction> _callback = new Dictionary<ENUM_CMD, CallbackFunction>();
+    static Dictionary<ENUM_CMD, List<NetworkCallback>> callbackDict = new Dictionary<ENUM_CMD, List<NetworkCallback>>();
 
     static BinaryFormatter formatter = new BinaryFormatter();
 
-    public static void Register(ENUM_CMD type, CallbackFunction func)
+    public static void Register(ENUM_CMD type, Action<byte[]> _func)
     {
-        if (!_callback.ContainsKey(type))
+        if (!callbackDict.ContainsKey(type))
         {
-            _callback[type] = func;
+            callbackDict[type] = new List<NetworkCallback>();
         }
+        callbackDict[type].Add(new NetworkCallback { func = _func, isDelete = false });
     }
 
     static void Send()
@@ -91,10 +98,19 @@ public static class NetworkManager
                 if (packageQueue.Count > 0)
                 {
                     Package package = packageQueue.Dequeue();
-                    if (_callback.ContainsKey(package.type))
+                    if (callbackDict.ContainsKey(package.type))
                     {
-                        CallbackFunction func = _callback[package.type];
-                        func(package.data);
+                        List<NetworkCallback> callbackList = callbackDict[package.type];
+
+                        for (int i = callbackList.Count - 1; i >= 0; i--)
+                        {
+                            NetworkCallback callback = callbackList[i];
+                            callback.func(package.data);
+                            if (callback.isDelete)
+                            {
+                                callbackList.RemoveAt(i);
+                            }
+                        }
                     }
                 }
             }
@@ -183,18 +199,36 @@ public static class NetworkManager
         return Serializer.Deserialize<T>(stream);
     }
 
-    public static void Enqueue<T>(ENUM_CMD cmdID, T obj)
+    public static byte[] Serialize<T>(T obj)
     {
-        using (MemoryStream ms = new MemoryStream())
+        MemoryStream stream = new MemoryStream();
+        Serializer.Serialize(stream, obj);
+        return stream.ToArray();
+    }
+
+    public static void SendPkgToServer<T>(ENUM_CMD cmdID, T obj, Action<byte[]> callback = null)
+    {
+        Debug.Log("SendPkgToServer,cmd=" + cmdID);
+        if (IsSingle && LocalServer.ProcessRequest(cmdID, obj, callback))
         {
-            Serializer.Serialize(ms, obj);
-            byte[] data = ms.ToArray();
-            int length = data.Length;
-            List<byte> bytes = new List<byte>();
-            bytes.AddRange(BitConverter.GetBytes((ushort)cmdID));
-            bytes.AddRange(BitConverter.GetBytes((uint)length));
-            bytes.AddRange(data);
-            _message.Enqueue(bytes.ToArray());
+            return;
+        }
+
+        byte[] data = Serialize(obj);
+        int length = data.Length;
+        List<byte> bytes = new List<byte>();
+        bytes.AddRange(BitConverter.GetBytes((ushort)cmdID));
+        bytes.AddRange(BitConverter.GetBytes((uint)length));
+        bytes.AddRange(data);
+        _message.Enqueue(bytes.ToArray());
+
+        if (callback != null)
+        {
+            if (!callbackDict.ContainsKey(cmdID))
+            {
+                callbackDict[cmdID] = new List<NetworkCallback>();
+            }
+            callbackDict[cmdID].Add(new NetworkCallback { func = callback, isDelete = true });
         }
     }
 

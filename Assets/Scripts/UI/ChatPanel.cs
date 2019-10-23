@@ -46,7 +46,6 @@ public class ChatPanel : MonoBehaviour
     void Start ()
     {
         initialized = true;
-        NetworkManager.Register(ENUM_CMD.CS_SEND_MESSAGE_RES, OnSendMessageRes);
         NetworkManager.Register(ENUM_CMD.CS_MESSAGE_NOTIFY, OnMessageNotify);
 
         scrollview = transform.Find("container/Scroll View").GetComponent<RectTransform>();
@@ -174,13 +173,13 @@ public class ChatPanel : MonoBehaviour
         }
     }
 
-    static void SendMessageReq(string content)
+    void SendMessageReq(string content)
     {
         CSSendMessageReq req = new CSSendMessageReq
         {
             Content = content
         };
-        NetworkManager.Enqueue(ENUM_CMD.CS_SEND_MESSAGE_REQ, req);
+        NetworkManager.SendPkgToServer(ENUM_CMD.CS_SEND_MESSAGE_REQ, req, OnSendMessageRes);
     }
 
     void OnSendMessageRes(byte[] data)

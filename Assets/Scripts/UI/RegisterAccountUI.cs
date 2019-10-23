@@ -40,8 +40,6 @@ public class RegisterAccountUI : MonoBehaviour
         passwordRepeatInput = transform.Find("inputGrid/RepeatPassword/RawImage/InputField").GetComponent<TMP_InputField>();
         Utilities.SetClickCallback(transform, "btnGrid/ButtonOk", OnClickOk);
         Utilities.SetClickCallback(transform, "btnGrid/ButtonCancel", OnClickCancel);
-
-        NetworkManager.Register(ENUM_CMD.CS_REGISTER_RES, OnRegisterAccountRes);
     }
 
     void OnClickOk()
@@ -57,7 +55,7 @@ public class RegisterAccountUI : MonoBehaviour
             Name = nameInput.text,
             Password = passwordInput.text
         };
-        NetworkManager.Enqueue(ENUM_CMD.CS_REGISTER_REQ, req);
+        NetworkManager.SendPkgToServer(ENUM_CMD.CS_REGISTER_REQ, req, OnRegisterAccountRes);
     }
 
     void OnClickCancel()

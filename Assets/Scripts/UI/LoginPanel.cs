@@ -1,8 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using protocol.cs_enum;
-using protocol.cs_theircraft;
 using TMPro;
 
 public class LoginPanel : MonoBehaviour {
@@ -21,7 +19,6 @@ public class LoginPanel : MonoBehaviour {
     // Use this for initialization
     void Start ()
     {
-        NetworkManager.Register(ENUM_CMD.CS_LOGIN_RES, OnLoginRes);
 
         accountInput = transform.Find("inputGrid/Account/RawImage/InputField").GetComponent<TMP_InputField>();
         passwordInput = transform.Find("inputGrid/Password/RawImage/InputField").GetComponent<TMP_InputField>();
@@ -46,7 +43,7 @@ public class LoginPanel : MonoBehaviour {
             return;
         }
 
-        LoginReq(accountInput.text, passwordInput.text);
+        LoginSystem.LoginReq(accountInput.text, passwordInput.text);
         PlayerPrefs.SetString(AccountKey, accountInput.text);
     }
 
@@ -67,39 +64,5 @@ public class LoginPanel : MonoBehaviour {
     void OnClickRegister()
     {
         RegisterAccountUI.Show();
-    }
-    
-    void LoginReq(string account, string password)
-    {
-        CSLoginReq req = new CSLoginReq
-        {
-            Account = account,
-            Password = password,
-        };
-        NetworkManager.Enqueue(ENUM_CMD.CS_LOGIN_REQ, req);
-    }
-
-    void OnLoginRes(byte[] data)
-    {
-        CSLoginRes rsp = NetworkManager.Deserialize<CSLoginRes>(data);
-        Debug.Log("OnLoginRes,retcode=" + rsp.RetCode);
-        if(rsp.RetCode == 0)
-        {
-            DataCenter.playerID = rsp.PlayerData.PlayerID;
-            DataCenter.name = rsp.PlayerData.Name;
-            DataCenter.spawnPosition = Utilities.CSVector3_To_Vector3(rsp.PlayerData.Position);
-            DataCenter.spawnRotation = Utilities.CSVector3_To_Vector3(rsp.PlayerData.Rotation);
-            DataCenter.state = ClientState.InRoom;
-            Close();
-            MainMenu.Close();
-            LoadingUI.Show();
-            //SceneManager.LoadScene("MultiplayerScene");
-            SceneManager.LoadScene("MergeTest");
-            ChatPanel.AddLine(DataCenter.name + ", welcome!");
-        }
-        else
-        {
-            FastTips.Show(rsp.RetCode);
-        }
     }
 }

@@ -21,9 +21,15 @@ public class MainMenu : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Utilities.SetClickCallback(transform, "ButtonLogin", OnClickLogin);
-        Utilities.SetClickCallback(transform, "ButtonRegister", OnClickRegister);
+        Utilities.SetClickCallback(transform, "ButtonSingle", OnClickSingle);
+        //Utilities.SetClickCallback(transform, "ButtonLogin", OnClickLogin);
+        //Utilities.SetClickCallback(transform, "ButtonRegister", OnClickRegister);
         Utilities.SetClickCallback(transform, "ButtonQuit", OnClickQuit);
+    }
+
+    void OnClickSingle()
+    {
+        LoginSystem.LoginSingle();
     }
 
     void OnClickLogin()

@@ -67,10 +67,8 @@ public class mergetestPlayerController : MonoBehaviour
         transform.position = DataCenter.spawnPosition;
         transform.localEulerAngles = new Vector3(0, DataCenter.spawnRotation.y, 0);
         camera.transform.localEulerAngles = new Vector3(DataCenter.spawnRotation.z, 0, 0);
-
-        NetworkManager.Register(ENUM_CMD.CS_ADD_BLOCK_RES, AddBlockRes);
+        
         NetworkManager.Register(ENUM_CMD.CS_ADD_BLOCK_NOTIFY, OnAddBlockNotify);
-        NetworkManager.Register(ENUM_CMD.CS_DELETE_BLOCK_RES, DeleteBlockRes);
         NetworkManager.Register(ENUM_CMD.CS_DELETE_BLOCK_NOTIFY, OnDeleteBlockNotify);
 
         LoadingUI.Close();
@@ -140,7 +138,7 @@ public class mergetestPlayerController : MonoBehaviour
                 Position = new CSVector3 { x = transform.position.x, y = transform.position.y, z = transform.position.z },
                 Rotation = new CSVector3 { x = 0, y = transform.localEulerAngles.y, z = camera.transform.localEulerAngles.x }
             };
-            NetworkManager.Enqueue(ENUM_CMD.CS_HERO_MOVE_REQ, req);
+            NetworkManager.SendPkgToServer(ENUM_CMD.CS_HERO_MOVE_REQ, req);
         }
     }
 
@@ -304,7 +302,7 @@ public class mergetestPlayerController : MonoBehaviour
                 type = type
             }
         };
-        NetworkManager.Enqueue(ENUM_CMD.CS_ADD_BLOCK_REQ, addBlockReq);
+        NetworkManager.SendPkgToServer(ENUM_CMD.CS_ADD_BLOCK_REQ, addBlockReq, AddBlockRes);
     }
 
     void AddBlockRes(byte[] data)
@@ -343,7 +341,7 @@ public class mergetestPlayerController : MonoBehaviour
                 z = Mathf.RoundToInt(pos.z)
             }
         };
-        NetworkManager.Enqueue(ENUM_CMD.CS_DELETE_BLOCK_REQ, req);
+        NetworkManager.SendPkgToServer(ENUM_CMD.CS_DELETE_BLOCK_REQ, req, DeleteBlockRes);
     }
 
     void DeleteBlockRes(byte[] data)
