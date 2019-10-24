@@ -5,11 +5,10 @@ using UnityEngine.UI;
 
 public static class Utilities {
 
-    public static Vector2Int GetChunk(Vector3 position)
+    public static void GetChunk(ref Vector2Int chunkPos, Vector3 position)
     {
-        int chunkX = Mathf.FloorToInt(position.x / 16f);
-        int chunkZ = Mathf.FloorToInt(position.z / 16f);
-        return new Vector2Int(chunkX, chunkZ);
+        chunkPos.x = Mathf.FloorToInt(position.x / 16f);
+        chunkPos.y = Mathf.FloorToInt(position.z / 16f);
     }
 
     public static List<Vector2Int> GetSurroudingChunks(Vector2Int chunk)

@@ -79,9 +79,12 @@ public class mergetestPlayerController : MonoBehaviour
         handMeshRenderer = camera.transform.Find("hand").GetComponent<MeshRenderer>();
     }
 
+    static Vector2Int chunkPos = new Vector2Int();
+
     public static Vector2Int GetCurrentChunk()
     {
-        return Utilities.GetChunk(instance.transform.localPosition);
+        Utilities.GetChunk(ref chunkPos, instance.transform.localPosition);
+        return chunkPos;
     }
 
     public static void ShowHand()
@@ -93,7 +96,7 @@ public class mergetestPlayerController : MonoBehaviour
     public static void ShowBlock(CSBlockType type)
     {
         instance.handMeshRenderer.enabled = false;
-        instance.blockMeshFilter.mesh = test.GetCubeMesh(type);
+        instance.blockMeshFilter.mesh = ChunkMeshGenerator.GetCubeMesh(type);
         instance.blockMeshFilter.transform.gameObject.SetActive(true);
     }
 

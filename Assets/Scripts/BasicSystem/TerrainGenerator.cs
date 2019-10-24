@@ -8,15 +8,8 @@ public class TerrainGenerator : MonoBehaviour
     //chunk对应的方块列表
     static Dictionary<CSVector2Int, List<CSBlock>> chunkMap = new Dictionary<CSVector2Int, List<CSBlock>>();
     
-    static readonly float scale = 10;
+    static readonly float scale = 35;
     static readonly int maxHeight = 15;
-    public static int GetHeight(int x, int z)
-    {
-        float noise = Mathf.PerlinNoise(x / scale, z / scale);
-        int height = (int)Mathf.Round(maxHeight * noise);
-        //Debug.Log("getheight,x=" + x + ",z=" + z + ",height=" + height);
-        return height;
-    }
 
     public static List<CSBlock> GetChunkBlocks(CSVector2Int chunk)
     {
@@ -27,20 +20,21 @@ public class TerrainGenerator : MonoBehaviour
             {
                 for (int j = 0; j < 16; j++)
                 {
-                    int x = i + chunk.x * 16;
-                    int z = j + chunk.y * 16;
-                    int maxHeight = GetHeight(i + chunk.x * 16, j + chunk.y * 16) + 20;
-                    for (int k = maxHeight; k >= 0; k--)
+                    float x = 0.5f + i + chunk.x * 16;
+                    float z = 0.5f + j + chunk.y * 16;
+                    float noise = Mathf.PerlinNoise(x / scale, z / scale);
+                    int height = Mathf.RoundToInt(maxHeight * noise);
+                    for (int k = height; k >= 0; k--)
                     {
                         CSBlock item = new CSBlock
                         {
                             position = new CSVector3Int()
                         };
-                        item.position.x = x;
+                        item.position.x = i + chunk.x * 16;
                         item.position.y = k;
-                        item.position.z = z;
+                        item.position.z = j + chunk.y * 16;
                         //Ultilities.Print($"i={i},j={j},height{item.position.y}");
-                        if (k == maxHeight)
+                        if (k == height)
                             item.type = CSBlockType.Grass;
                         else
                             item.type = CSBlockType.Dirt;

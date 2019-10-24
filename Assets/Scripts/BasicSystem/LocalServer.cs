@@ -39,7 +39,7 @@ public class LocalServer : MonoBehaviour
             {
                 PlayerID = 0,
                 Name = "Local Player",
-                Position = new CSVector3 { x = 0, y = 50, z = 0 },
+                Position = new CSVector3 { x = 0, y = 20, z = 0 },
                 Rotation = new CSVector3 { x = 0, y = 0, z = 0 },
             }
         };

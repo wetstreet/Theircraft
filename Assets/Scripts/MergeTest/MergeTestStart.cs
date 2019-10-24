@@ -18,7 +18,8 @@ public class MergeTestStart : MonoBehaviour
         ChatPanel.ShowChatPanel();
         NetworkManager.Register(ENUM_CMD.CS_PLAYER_MOVE_NOTIFY, OnPlayerMoveNotify);
 
-        Vector2Int curChunk = Utilities.GetChunk(DataCenter.spawnPosition);
+        Vector2Int curChunk = new Vector2Int();
+        Utilities.GetChunk(ref curChunk, DataCenter.spawnPosition);
         Debug.Log(curChunk);
         List<Vector2Int> preloadChunks = Utilities.GetSurroudingChunks(curChunk);
         ChunksEnterLeaveViewReq(preloadChunks);
