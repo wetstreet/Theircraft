@@ -208,7 +208,7 @@ public static class NetworkManager
 
     public static void SendPkgToServer<T>(ENUM_CMD cmdID, T obj, Action<byte[]> callback = null)
     {
-        Debug.Log("SendPkgToServer,cmd=" + cmdID);
+        //Debug.Log("SendPkgToServer,cmd=" + cmdID);
         if (IsSingle && LocalServer.ProcessRequest(cmdID, obj, callback))
         {
             return;
