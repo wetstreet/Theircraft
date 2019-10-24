@@ -144,55 +144,48 @@ public class ChunkMeshGenerator : MonoBehaviour
         List<Vector2> uv = new List<Vector2>();
         List<int> triangles = new List<int>();
 
-        ////压缩后的数据结构
-        //for (int k = 0; k < 256; k++)
-        //{
-        //    for (int i = 0; i < 16; i++)
-        //    {
-        //        for (int j = 0; j < 16; j++)
-        //        {
-        //            byte b = chunk.blocksInByte[256 * k + 16 * i + j];
-        //            CSBlockType type = (CSBlockType)b;
-        //            if (type != CSBlockType.None)
-        //            {
-        //                Vector3Int pos = block.pos;
-        //                TexCoords texCoords = type2texcoords[block.type];
+        //压缩后的数据结构
+        for (int k = 0; k < 256; k++)
+        {
+            for (int i = 0; i < 16; i++)
+            {
+                for (int j = 0; j < 16; j++)
+                {
+                    byte b = chunk.blocksInByte[256 * k + 16 * i + j];
+                    CSBlockType type = (CSBlockType)b;
+                    if (type != CSBlockType.None)
+                    {
+                        Vector3Int pos = new Vector3Int(chunk.x * 16 + i, k, chunk.z * 16 + j);
+                        TexCoords texCoords = type2texcoords[type];
 
-        //                if (!chunkBlocks.ContainsKey(pos + Vector3Int_back))
-        //                    AddFrontFace(vertices, uv, triangles, pos, texCoords.front);
-        //                if (!chunkBlocks.ContainsKey(pos + Vector3Int.right))
-        //                    AddRightFace(vertices, uv, triangles, pos, texCoords.right);
-        //                if (!chunkBlocks.ContainsKey(pos + Vector3Int.left))
-        //                    AddLeftFace(vertices, uv, triangles, pos, texCoords.left);
-        //                if (!chunkBlocks.ContainsKey(pos + Vector3Int_forward))
-        //                    AddBackFace(vertices, uv, triangles, pos, texCoords.back);
-        //                if (!chunkBlocks.ContainsKey(pos + Vector3Int.up))
-        //                    AddTopFace(vertices, uv, triangles, pos, texCoords.top);
-        //                if (!chunkBlocks.ContainsKey(pos + Vector3Int.down))
-        //                    AddBottomFace(vertices, uv, triangles, pos, texCoords.bottom);
-        //            }
-        //        }
-        //    }
-        //}
-
-        //foreach (Block block in chunkBlocks.Values)
-        //{
-        //    Vector3Int pos = block.pos;
-        //    TexCoords texCoords = type2texcoords[block.type];
-
-        //    if (!chunkBlocks.ContainsKey(pos + Vector3Int_back))
-        //        AddFrontFace(vertices, uv, triangles, pos, texCoords.front);
-        //    if (!chunkBlocks.ContainsKey(pos + Vector3Int.right))
-        //        AddRightFace(vertices, uv, triangles, pos, texCoords.right);
-        //    if (!chunkBlocks.ContainsKey(pos + Vector3Int.left))
-        //        AddLeftFace(vertices, uv, triangles, pos, texCoords.left);
-        //    if (!chunkBlocks.ContainsKey(pos + Vector3Int_forward))
-        //        AddBackFace(vertices, uv, triangles, pos, texCoords.back);
-        //    if (!chunkBlocks.ContainsKey(pos + Vector3Int.up))
-        //        AddTopFace(vertices, uv, triangles, pos, texCoords.top);
-        //    if (!chunkBlocks.ContainsKey(pos + Vector3Int.down))
-        //        AddBottomFace(vertices, uv, triangles, pos, texCoords.bottom);
-        //}
+                        if (!chunk.HasBlock(i, k, j - 1))
+                        {
+                            AddFrontFace(vertices, uv, triangles, pos, texCoords.front);
+                        }
+                        if (!chunk.HasBlock(i + 1, k, j))
+                        {
+                            AddRightFace(vertices, uv, triangles, pos, texCoords.right);
+                        }
+                        if (!chunk.HasBlock(i - 1, k, j))
+                        {
+                            AddLeftFace(vertices, uv, triangles, pos, texCoords.left);
+                        }
+                        if (!chunk.HasBlock(i, k, j + 1))
+                        {
+                            AddBackFace(vertices, uv, triangles, pos, texCoords.back);
+                        }
+                        if (!chunk.HasBlock(i, k + 1, j))
+                        {
+                            AddTopFace(vertices, uv, triangles, pos, texCoords.top);
+                        }
+                        if (!chunk.HasBlock(i, k - 1, j))
+                        {
+                            AddBottomFace(vertices, uv, triangles, pos, texCoords.bottom);
+                        }
+                    }
+                }
+            }
+        }
 
         mesh.vertices = vertices.ToArray();
         mesh.uv = uv.ToArray();

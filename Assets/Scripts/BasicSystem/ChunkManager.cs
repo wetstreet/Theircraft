@@ -5,10 +5,26 @@ using protocol.cs_theircraft;
 
 public class Chunk
 {
-    int x;
-    int z;
-    GameObject obj;
+    public int x;
+    public int z;
+    public Transform transform;
+    public GameObject gameObject;
     public byte[] blocksInByte = new byte[65536];
+
+    MeshFilter meshFilter;
+    MeshCollider meshCollider;
+
+    public Chunk()
+    {
+        GenerateGameObject();
+    }
+
+    public void SetData(int _x, int _z, byte[] _blocksInByte)
+    {
+        x = _x;
+        z = _z;
+        blocksInByte = _blocksInByte;
+    }
 
     public CSBlockType GetBlockType(int x, int y, int z)
     {
@@ -20,37 +36,73 @@ public class Chunk
         blocksInByte[256 * y + 16 * x + z] = (byte)type;
     }
 
+    public bool HasBlock(int x, int y, int z)
+    {
+        if (x < 0 || x > 15 || z < 0 || z > 15 || y < 0 || y > 255)
+        {
+            return false;
+        }
+        return GetBlockType(x, y, z) != CSBlockType.None;
+    }
+
+    public void RebuildMesh()
+    {
+        Mesh mesh = ChunkMeshGenerator.GenerateMesh(this);
+        meshFilter.sharedMesh = mesh;
+        meshCollider.sharedMesh = mesh;
+    }
+
     public void GenerateGameObject()
     {
-        if (obj != null)
+        if (gameObject != null)
         {
             return;
         }
 
-        GameObject chunk = new GameObject("chunk (" + x + "," + z + ")");
-        MeshFilter mf = chunk.AddComponent<MeshFilter>();
+        gameObject = new GameObject("chunk (" + x + "," + z + ")");
+        transform = gameObject.transform;
+        meshFilter = gameObject.AddComponent<MeshFilter>();
 
-        mf.mesh = ChunkMeshGenerator.GenerateMesh(this);
-        MeshRenderer mr = chunk.AddComponent<MeshRenderer>();
+        MeshRenderer mr = gameObject.AddComponent<MeshRenderer>();
         mr.material = Resources.Load<Material>("merge-test/block");
 
-        chunk.AddComponent<MeshCollider>();
-        chunk.tag = "Chunk";
-        chunk.layer = LayerMask.NameToLayer("Chunk");
+        meshCollider = gameObject.AddComponent<MeshCollider>();
+        gameObject.tag = "Chunk";
+        gameObject.layer = LayerMask.NameToLayer("Chunk");
     }
 }
 
-class ChunkPool
+public class ChunkPool
 {
     static Queue<Chunk> chunks = new Queue<Chunk>(100);
+    static GameObject instance;
+    static GameObject chunkParent;
+
+    public static void Init()
+    {
+        instance = new GameObject("ChunkPool");
+        chunkParent = new GameObject("Chunks");
+        instance.transform.localPosition = new Vector3(0, -100, 0);
+        for (int i = 0; i < 100; i++)
+        {
+            Chunk chunk = new Chunk();
+            chunk.transform.parent = instance.transform;
+            chunks.Enqueue(chunk);
+        }
+    }
 
     public static Chunk GetChunk()
     {
-        return chunks.Dequeue();
+        Chunk chunk = chunks.Dequeue();
+        chunk.transform.parent = chunkParent.transform;
+        chunk.transform.localPosition = Vector3.zero;
+        return chunk;
     }
 
     public static void Recover(Chunk chunk)
     {
+        chunk.transform.parent = instance.transform;
+        chunk.transform.localPosition = Vector3.zero;
         chunks.Enqueue(chunk);
     }
 }

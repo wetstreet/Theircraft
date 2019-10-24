@@ -12,6 +12,7 @@ public class MergeTestStart : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        ChunkPool.Init();
         GameKernel.Create();
         //OtherPlayerManager.Init();
         ItemSelectPanel.Show();
@@ -151,7 +152,15 @@ public class MergeTestStart : MonoBehaviour
         {
             if (!mergetestPlayerController.isInitialized)
             {
-                test.GenerateChunks(rsp.EnterViewChunks);
+                //test.GenerateChunks(rsp.EnterViewChunks);
+                foreach (CSChunk cschunk in rsp.EnterViewChunks)
+                {
+                    Chunk chunk = ChunkPool.GetChunk();
+                    chunk.x = cschunk.Position.x;
+                    chunk.z = cschunk.Position.y;
+                    chunk.blocksInByte = cschunk.BlocksInBytes;
+                    chunk.RebuildMesh();
+                }
                 mergetestPlayerController.Init();
 
                 readyToRefreshChunks = true;
