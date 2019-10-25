@@ -193,39 +193,4 @@ public class ChunkMeshGenerator : MonoBehaviour
 
         return mesh;
     }
-
-    public static Mesh GenerateMesh(Dictionary<Vector3Int, Block> chunkBlocks)
-    {
-        Mesh mesh = new Mesh();
-        mesh.name = "ChunkMesh";
-
-        List<Vector3> vertices = new List<Vector3>();
-        List<Vector2> uv = new List<Vector2>();
-        List<int> triangles = new List<int>();
-
-        foreach (Block block in chunkBlocks.Values)
-        {
-            Vector3Int pos = block.pos;
-            TexCoords texCoords = type2texcoords[block.type];
-
-            if (!chunkBlocks.ContainsKey(pos + Vector3Int_back))
-                AddFrontFace(vertices, uv, triangles, pos, texCoords.front);
-            if (!chunkBlocks.ContainsKey(pos + Vector3Int.right))
-                AddRightFace(vertices, uv, triangles, pos, texCoords.right);
-            if (!chunkBlocks.ContainsKey(pos + Vector3Int.left))
-                AddLeftFace(vertices, uv, triangles, pos, texCoords.left);
-            if (!chunkBlocks.ContainsKey(pos + Vector3Int_forward))
-                AddBackFace(vertices, uv, triangles, pos, texCoords.back);
-            if (!chunkBlocks.ContainsKey(pos + Vector3Int.up))
-                AddTopFace(vertices, uv, triangles, pos, texCoords.top);
-            if (!chunkBlocks.ContainsKey(pos + Vector3Int.down))
-                AddBottomFace(vertices, uv, triangles, pos, texCoords.bottom);
-        }
-
-        mesh.vertices = vertices.ToArray();
-        mesh.uv = uv.ToArray();
-        mesh.triangles = triangles.ToArray();
-
-        return mesh;
-    }
 }

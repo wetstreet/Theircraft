@@ -33,7 +33,7 @@ public class SettingsPanel : MonoBehaviour {
         else
             Instance = UISystem.InstantiateUI("SettingsPanel").GetComponent<SettingsPanel>();
 
-        mergetestPlayerController.LockCursor(false);
+        PlayerController.LockCursor(false);
     }
 
     void OnClickClose()
@@ -43,7 +43,7 @@ public class SettingsPanel : MonoBehaviour {
 
     public static void Hide()
     {
-        mergetestPlayerController.LockCursor(true);
+        PlayerController.LockCursor(true);
         if (Instance != null)
             Instance.gameObject.SetActive(false);
 

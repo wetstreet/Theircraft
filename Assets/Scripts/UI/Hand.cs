@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-//这个是ui的手，要控制模型的手的话去mergetestPlayerController
+//这个是ui的手，要控制模型的手的话去PlayerController
 public class Hand : MonoBehaviour
 {
     static Hand instance;
@@ -26,7 +26,7 @@ public class Hand : MonoBehaviour
         rawImage = transform.GetComponent<RawImage>();
 
         rt = new RenderTexture(Screen.width, Screen.height, 0);
-        mergetestPlayerController.SetHandRT(rt);
+        PlayerController.SetHandRT(rt);
         rawImage.texture = rt;
     }
 }

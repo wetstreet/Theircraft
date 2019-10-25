@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class mergetestPlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
     public float horizontalScale = 1;
     public float verticalScale = 1;
@@ -20,7 +20,7 @@ public class mergetestPlayerController : MonoBehaviour
 
     bool isMoving;
     static bool acceptInput = true;
-    private static mergetestPlayerController instance;
+    private static PlayerController instance;
 
     public static bool isInitialized { get { return instance != null; } }
 
@@ -51,7 +51,7 @@ public class mergetestPlayerController : MonoBehaviour
         {
             Object prefab = Resources.Load("merge-test/Character");
             GameObject obj = Instantiate(prefab) as GameObject;
-            instance = obj.GetComponent<mergetestPlayerController>();
+            instance = obj.GetComponent<PlayerController>();
         }
     }
 
@@ -151,12 +151,12 @@ public class mergetestPlayerController : MonoBehaviour
         WireFrameHelper.render = false;
 
         Vector3 center = new Vector3(Screen.width / 2, Screen.height / 2, 0);
-        int cubeLayerIndex = LayerMask.NameToLayer("Block");
+        int cubeLayerIndex = LayerMask.NameToLayer("Chunk");
         int otherPlayerLayerIndex = LayerMask.NameToLayer("OtherPlayer");
         if (cubeLayerIndex != -1 && otherPlayerLayerIndex != -1)
         {
             int layerMask = 1 << cubeLayerIndex | 1 << otherPlayerLayerIndex;
-            if (Physics.Raycast(Camera.main.ScreenPointToRay(center), out hit, 5f, layerMask) && hit.transform.tag == "Block")
+            if (Physics.Raycast(Camera.main.ScreenPointToRay(center), out hit, 5f, layerMask) && hit.transform.tag == "Chunk")
             {
                 bool hasBlock = WireFrameHelper.GetBlockPosByRaycast(hit.point, out Vector3Int actualPos);
                 if (hasBlock)
@@ -241,10 +241,10 @@ public class mergetestPlayerController : MonoBehaviour
                 bool hasBlock = WireFrameHelper.GetBlockPosByRaycast(transform.position, out Vector3Int pos);
                 if (hasBlock)
                 {
-                    Block b = test.GetBlockAtPos(pos);
+                    CSBlockType type = ChunkManager.GetBlockType(pos.x, pos.y, pos.z);
                     if (Time.realtimeSinceStartup - lastFootstepTime > footstepInterval)
                     {
-                        AkSoundEngine.SetSwitch("Materials", BlockGenerator.type2material[b.type], gameObject);
+                        AkSoundEngine.SetSwitch("Materials", BlockGenerator.type2material[type], gameObject);
                         AkSoundEngine.PostEvent("Player_Footstep", gameObject);
                         lastFootstepTime = Time.realtimeSinceStartup;
                     }
@@ -314,8 +314,7 @@ public class mergetestPlayerController : MonoBehaviour
         //Debug.Log("AddBlockRes,retCode=" + rsp.RetCode);
         if (rsp.RetCode == 0)
         {
-            Vector3Int blockPos = new Vector3Int(rsp.block.position.x, rsp.block.position.y, rsp.block.position.z);
-            test.AddBlock(blockPos, rsp.block.type);
+            ChunkManager.AddBlock(rsp.block.position.x, rsp.block.position.y, rsp.block.position.z, rsp.block.type);
             AkSoundEngine.SetSwitch("Materials", BlockGenerator.type2material[rsp.block.type], gameObject);
             AkSoundEngine.PostEvent("Player_Dig", gameObject);
         }
@@ -329,8 +328,7 @@ public class mergetestPlayerController : MonoBehaviour
     {
         //Debug.Log("OnAddBlockNotify");
         CSAddBlockNotify notify = NetworkManager.Deserialize<CSAddBlockNotify>(data);
-        Vector3Int blockPos = new Vector3Int(notify.block.position.x, notify.block.position.y, notify.block.position.z);
-        test.AddBlock(blockPos, notify.block.type);
+        ChunkManager.AddBlock(notify.block.position.x, notify.block.position.y, notify.block.position.z, notify.block.type);
     }
 
     void DeleteBlockReq(Vector3 pos)
@@ -354,8 +352,8 @@ public class mergetestPlayerController : MonoBehaviour
         if (rsp.RetCode == 0)
         {
             Vector3Int pos = new Vector3Int(rsp.position.x, rsp.position.y, rsp.position.z);
-            CSBlockType type = test.GetBlockAtPos(pos).type;
-            test.RemoveBlock(pos);
+            CSBlockType type = ChunkManager.GetBlockType(rsp.position.x, rsp.position.y, rsp.position.z);
+            ChunkManager.RemoveBlock(rsp.position.x, rsp.position.y, rsp.position.z);
             BreakBlockEffect.Create(type, pos);
             AkSoundEngine.SetSwitch("Materials", BlockGenerator.type2material[type], gameObject);
             AkSoundEngine.PostEvent("Player_Dig", gameObject);
@@ -370,7 +368,6 @@ public class mergetestPlayerController : MonoBehaviour
     {
         //Debug.Log("OnDeleteBlockNotify");
         CSDeleteBlockNotify notify = NetworkManager.Deserialize<CSDeleteBlockNotify>(data);
-        Vector3Int blockPos = new Vector3Int(notify.position.x, notify.position.y, notify.position.z);
-        test.RemoveBlock(blockPos);
+        ChunkManager.RemoveBlock(notify.position.x, notify.position.y, notify.position.z);
     }
 }

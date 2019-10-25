@@ -75,14 +75,14 @@ public class ChatPanel : MonoBehaviour
         floatingScrollview.gameObject.SetActive(false);
         inputField.gameObject.SetActive(true);
         inputField.ActivateInputField();
-        mergetestPlayerController.LockCursor(false);
+        PlayerController.LockCursor(false);
     }
 
     void HideInput()
     {
         inputField.DeactivateInputField();
         inputField.gameObject.SetActive(false);
-        mergetestPlayerController.LockCursor(true);
+        PlayerController.LockCursor(true);
         scrollview.gameObject.SetActive(false);
         floatingScrollview.gameObject.SetActive(true);
     }

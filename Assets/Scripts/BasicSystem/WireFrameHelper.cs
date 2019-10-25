@@ -25,79 +25,58 @@ public class WireFrameHelper : MonoBehaviour
     }
 
     // raycast的结果有精度问题，所以要加上精度补偿（每个轴的正负两个方向都试着取一下，最坏需要尝试2^3=8种情况）
+    static float precisionCompensation = 0.01f;
     public static bool GetBlockPosByRaycast(Vector3 point, out Vector3Int result)
     {
-        float precisionCompensation = 0.01f;
         Vector3Int pos = new Vector3Int();
 
         pos.Set(Mathf.RoundToInt(point.x - precisionCompensation), Mathf.RoundToInt(point.y - precisionCompensation), Mathf.RoundToInt(point.z - precisionCompensation));
-        if (test.ContainBlock(pos))
+        if (ChunkManager.HasBlock(pos.x, pos.y, pos.z)) 
         {
             result = pos;
             return true;
         }
-        else
+        pos.Set(Mathf.RoundToInt(point.x - precisionCompensation), Mathf.RoundToInt(point.y - precisionCompensation), Mathf.RoundToInt(point.z + precisionCompensation));
+        if (ChunkManager.HasBlock(pos.x, pos.y, pos.z))
         {
-            pos.Set(Mathf.RoundToInt(point.x - precisionCompensation), Mathf.RoundToInt(point.y - precisionCompensation), Mathf.RoundToInt(point.z + precisionCompensation));
-            if (test.ContainBlock(pos))
-            {
-                result = pos;
-                return true;
-            }
-            else
-            {
-                pos.Set(Mathf.RoundToInt(point.x - precisionCompensation), Mathf.RoundToInt(point.y + precisionCompensation), Mathf.RoundToInt(point.z - precisionCompensation));
-                if (test.ContainBlock(pos))
-                {
-                    result = pos;
-                    return true;
-                }
-                else
-                {
-                    pos.Set(Mathf.RoundToInt(point.x - precisionCompensation), Mathf.RoundToInt(point.y + precisionCompensation), Mathf.RoundToInt(point.z + precisionCompensation));
-                    if (test.ContainBlock(pos))
-                    {
-                        result = pos;
-                        return true;
-                    }
-                    else
-                    {
-                        pos.Set(Mathf.RoundToInt(point.x + precisionCompensation), Mathf.RoundToInt(point.y - precisionCompensation), Mathf.RoundToInt(point.z - precisionCompensation));
-                        if (test.ContainBlock(pos))
-                        {
-                            result = pos;
-                            return true;
-                        }
-                        else
-                        {
-                            pos.Set(Mathf.RoundToInt(point.x + precisionCompensation), Mathf.RoundToInt(point.y - precisionCompensation), Mathf.RoundToInt(point.z + precisionCompensation));
-                            if (test.ContainBlock(pos))
-                            {
-                                result = pos;
-                                return true;
-                            }
-                            else
-                            {
-                                pos.Set(Mathf.RoundToInt(point.x + precisionCompensation), Mathf.RoundToInt(point.y + precisionCompensation), Mathf.RoundToInt(point.z - precisionCompensation));
-                                if (test.ContainBlock(pos))
-                                {
-                                    result = pos;
-                                    return true;
-                                }
-                                else
-                                {
-                                    pos.Set(Mathf.RoundToInt(point.x + precisionCompensation), Mathf.RoundToInt(point.y + precisionCompensation), Mathf.RoundToInt(point.z + precisionCompensation));
-                                    if (test.ContainBlock(pos))
-                                    {
-                                        result = pos;
-                                        return true;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+            result = pos;
+            return true;
+        }
+        pos.Set(Mathf.RoundToInt(point.x - precisionCompensation), Mathf.RoundToInt(point.y + precisionCompensation), Mathf.RoundToInt(point.z - precisionCompensation));
+        if (ChunkManager.HasBlock(pos.x, pos.y, pos.z))
+        {
+            result = pos;
+            return true;
+        }
+        pos.Set(Mathf.RoundToInt(point.x - precisionCompensation), Mathf.RoundToInt(point.y + precisionCompensation), Mathf.RoundToInt(point.z + precisionCompensation));
+        if (ChunkManager.HasBlock(pos.x, pos.y, pos.z))
+        {
+            result = pos;
+            return true;
+        }
+        pos.Set(Mathf.RoundToInt(point.x + precisionCompensation), Mathf.RoundToInt(point.y - precisionCompensation), Mathf.RoundToInt(point.z - precisionCompensation));
+        if (ChunkManager.HasBlock(pos.x, pos.y, pos.z))
+        {
+            result = pos;
+            return true;
+        }
+        pos.Set(Mathf.RoundToInt(point.x + precisionCompensation), Mathf.RoundToInt(point.y - precisionCompensation), Mathf.RoundToInt(point.z + precisionCompensation));
+        if (ChunkManager.HasBlock(pos.x, pos.y, pos.z))
+        {
+            result = pos;
+            return true;
+        }
+        pos.Set(Mathf.RoundToInt(point.x + precisionCompensation), Mathf.RoundToInt(point.y + precisionCompensation), Mathf.RoundToInt(point.z - precisionCompensation));
+        if (ChunkManager.HasBlock(pos.x, pos.y, pos.z))
+        {
+            result = pos;
+            return true;
+        }
+        pos.Set(Mathf.RoundToInt(point.x + precisionCompensation), Mathf.RoundToInt(point.y + precisionCompensation), Mathf.RoundToInt(point.z + precisionCompensation));
+        if (ChunkManager.HasBlock(pos.x, pos.y, pos.z))
+        {
+            result = pos;
+            return true;
         }
         result = Vector3Int.zero;
         return false;

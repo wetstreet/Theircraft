@@ -34,7 +34,7 @@ public class MergeTestStart : MonoBehaviour
     }
 
     Queue<CSChunk> loadQueue = new Queue<CSChunk>();
-    Queue<Vector2Int> unloadQueue = new Queue<Vector2Int>();
+    Queue<CSVector2Int> unloadQueue = new Queue<CSVector2Int>();
     IEnumerator RefreshChunkCoroutine()
     {
         yield return null;
@@ -43,15 +43,15 @@ public class MergeTestStart : MonoBehaviour
             bool changed = false;
             while (unloadQueue.Count > 0)
             {
-                test.RemoveChunk(unloadQueue.Dequeue());
+                ChunkManager.UnloadChunk(unloadQueue.Dequeue());
                 changed = true;
-                yield return new WaitForSecondsRealtime(0.1f);
+                yield return new WaitForEndOfFrame();
             }
             while (loadQueue.Count > 0)
             {
-                test.GenerateChunk(loadQueue.Dequeue());
+                ChunkManager.LoadChunk(loadQueue.Dequeue());
                 changed = true;
-                yield return new WaitForSecondsRealtime(0.1f);
+                yield return new WaitForEndOfFrame();
             }
             if (changed)
             {
@@ -71,9 +71,9 @@ public class MergeTestStart : MonoBehaviour
     Vector2Int tempChunk;
     void Update()
     {
-        if (mergetestPlayerController.isInitialized && readyToRefreshChunks)
+        if (PlayerController.isInitialized && readyToRefreshChunks)
         {
-            Vector2Int curChunk = mergetestPlayerController.GetCurrentChunk();
+            Vector2Int curChunk = PlayerController.GetCurrentChunk();
 
             if (!lastChunkInitialized)
             {
@@ -87,7 +87,7 @@ public class MergeTestStart : MonoBehaviour
             {
                 // only load chunks in render distance (if render distance is greater than 6, then load chunks in 6)
                 // and unload chunks out of render distance
-                List<Vector2Int> haveChunks = test.GetChunkList();
+                var haveChunks = ChunkManager.GetChunkDictKeys();
                 List<Vector2Int> shouldLoadChunks = Utilities.GetSurroudingChunks(curChunk);
                 List<Vector2Int> toLoadChunks = shouldLoadChunks.Except(haveChunks).ToList();
                 List<Vector2Int> toUnloadChunks = haveChunks.Where(c => Mathf.Abs(c.x - curChunk.x) > SettingsPanel.RenderDistance || Mathf.Abs(c.y - curChunk.y) > SettingsPanel.RenderDistance).ToList();
@@ -150,18 +150,13 @@ public class MergeTestStart : MonoBehaviour
         //Debug.Log("CSChunksEnterLeaveViewRes," + rsp.EnterViewChunks.Count + "," + rsp.LeaveViewChunks.Count);
         if (rsp.RetCode == 0)
         {
-            if (!mergetestPlayerController.isInitialized)
+            if (!PlayerController.isInitialized)
             {
-                //test.GenerateChunks(rsp.EnterViewChunks);
                 foreach (CSChunk cschunk in rsp.EnterViewChunks)
                 {
-                    Chunk chunk = ChunkPool.GetChunk();
-                    chunk.x = cschunk.Position.x;
-                    chunk.z = cschunk.Position.y;
-                    chunk.blocksInByte = cschunk.BlocksInBytes;
-                    chunk.RebuildMesh();
+                    ChunkManager.LoadChunk(cschunk);
                 }
-                mergetestPlayerController.Init();
+                PlayerController.Init();
 
                 readyToRefreshChunks = true;
                 lastChunk = tempChunk;
@@ -170,8 +165,7 @@ public class MergeTestStart : MonoBehaviour
             {
                 foreach (CSVector2Int csv in rsp.LeaveViewChunks)
                 {
-                    Vector2Int chunk = Utilities.CSVector2Int_To_Vector2Int(csv);
-                    unloadQueue.Enqueue(chunk);
+                    unloadQueue.Enqueue(csv);
                 }
                 foreach (CSChunk chunk in rsp.EnterViewChunks)
                 {

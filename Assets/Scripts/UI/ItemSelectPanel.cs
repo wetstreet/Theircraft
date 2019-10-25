@@ -58,10 +58,10 @@ public class ItemSelectPanel : MonoBehaviour
             lastIndex = curIndex;
             if (curBlockType != CSBlockType.None)
             {
-                mergetestPlayerController.ShowBlock(curBlockType);
+                PlayerController.ShowBlock(curBlockType);
             }
             else
-                mergetestPlayerController.ShowHand();
+                PlayerController.ShowHand();
         }
     }
 
