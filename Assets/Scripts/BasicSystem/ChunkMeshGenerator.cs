@@ -37,14 +37,23 @@ public class ChunkMeshGenerator : MonoBehaviour
     static Vector2Int hay_side = new Vector2Int(16, 13);
     static Vector2Int hay_top = new Vector2Int(17, 13);
 
-    public static Dictionary<CSBlockType, TexCoords> type2texcoords = new Dictionary<CSBlockType, TexCoords>
+    static TexCoords Coords_None = new TexCoords();
+    static TexCoords Coords_Dirt = new TexCoords { front = grass_bottom, right = grass_bottom, left = grass_bottom, back = grass_bottom, top = grass_bottom, bottom = grass_bottom };
+    static TexCoords Coords_Grass = new TexCoords { front = grass_side, right = grass_side, left = grass_side, back = grass_side, top = grass_top, bottom = grass_bottom };
+    static TexCoords Coords_Tnt = new TexCoords { front = tnt_side, right = tnt_side, left = tnt_side, back = tnt_side, top = tnt_top, bottom = tnt_bottom };
+    static TexCoords Coords_Brick = new TexCoords { front = brick, right = brick, left = brick, back = brick, top = brick, bottom = brick };
+    static TexCoords Coords_Furnace = new TexCoords { front = furnace_front, right = furnace_side, left = furnace_side, back = furnace_side, top = furnace_top, bottom = furnace_top };
+    static TexCoords Coords_HayBlock = new TexCoords { front = hay_side, right = hay_side, left = hay_side, back = hay_side, top = hay_top, bottom = hay_top };
+
+    public static TexCoords[] type2texcoords = new TexCoords[7]
     {
-        {CSBlockType.Grass, new TexCoords{ front = grass_side, right = grass_side, left = grass_side, back = grass_side, top = grass_top, bottom = grass_bottom } },
-        {CSBlockType.Dirt, new TexCoords{ front = grass_bottom, right = grass_bottom, left = grass_bottom, back = grass_bottom, top = grass_bottom, bottom = grass_bottom } },
-        {CSBlockType.Tnt, new TexCoords{ front = tnt_side, right = tnt_side, left = tnt_side, back = tnt_side, top = tnt_top, bottom = tnt_bottom } },
-        {CSBlockType.Brick, new TexCoords{ front = brick, right = brick, left = brick, back = brick, top = brick, bottom = brick } },
-        {CSBlockType.Furnace, new TexCoords{ front = furnace_front, right = furnace_side, left = furnace_side, back = furnace_side, top = furnace_top, bottom = furnace_top } },
-        {CSBlockType.HayBlock, new TexCoords{ front = hay_side, right = hay_side, left = hay_side, back = hay_side, top = hay_top, bottom = hay_top } },
+        Coords_None,
+        Coords_Dirt,
+        Coords_Grass,
+        Coords_Tnt,
+        Coords_Brick,
+        Coords_Furnace,
+        Coords_HayBlock
     };
 
     static Vector3 nearBottomLeft = new Vector3(-0.5f, -0.5f, -0.5f);
@@ -139,7 +148,7 @@ public class ChunkMeshGenerator : MonoBehaviour
         List<Vector2> uv = new List<Vector2>();
         List<int> triangles = new List<int>();
 
-        TexCoords texCoords = type2texcoords[type];
+        TexCoords texCoords = type2texcoords[(byte)type];
         Vector3Int pos = Vector3Int.zero;
         AddFrontFace(vertices, uv, triangles, pos, texCoords.front);
         AddRightFace(vertices, uv, triangles, pos, texCoords.right);
@@ -180,7 +189,7 @@ public class ChunkMeshGenerator : MonoBehaviour
                     if (type != CSBlockType.None)
                     {
                         pos.Set(chunk.x * 16 + i, k, chunk.z * 16 + j);
-                        TexCoords texCoords = type2texcoords[type];
+                        TexCoords texCoords = type2texcoords[(byte)type];
 
                         if (!chunk.HasBlock(i, k, j - 1))
                         {
