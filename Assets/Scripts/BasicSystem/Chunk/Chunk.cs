@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using protocol.cs_theircraft;
+using System.Collections.Generic;
 
 public class Chunk
 {
@@ -9,6 +10,12 @@ public class Chunk
     public Transform transform;
     public GameObject gameObject;
     public byte[] blocksInByte;
+
+    static int capacity = 8192;
+
+    public List<Vector3> vertices = new List<Vector3>(capacity);
+    public List<Vector2> uv = new List<Vector2>(capacity);
+    public List<int> triangles = new List<int>(capacity);
 
     MeshFilter meshFilter;
     MeshCollider meshCollider;
@@ -62,7 +69,7 @@ public class Chunk
         {
             return false;
         }
-        return GetBlockType(x, y, z) != CSBlockType.None;
+        return blocksInByte[256 * y + 16 * x + z] > 0;
     }
 
     public void RebuildMesh()

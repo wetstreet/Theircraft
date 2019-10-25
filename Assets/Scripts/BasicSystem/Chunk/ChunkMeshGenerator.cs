@@ -7,12 +7,12 @@ public class ChunkMeshGenerator : MonoBehaviour
 {
     public struct TexCoords
     {
-        public Vector2Int front;
-        public Vector2Int right;
-        public Vector2Int left;
-        public Vector2Int back;
-        public Vector2Int top;
-        public Vector2Int bottom;
+        public Vector2 front;
+        public Vector2 right;
+        public Vector2 left;
+        public Vector2 back;
+        public Vector2 top;
+        public Vector2 bottom;
     }
 
     //方块图集的行数和列数
@@ -20,22 +20,22 @@ public class ChunkMeshGenerator : MonoBehaviour
     static readonly int atlas_column = 24;
 
     //左上为0，0
-    static Vector2Int grass_bottom = new Vector2Int(2, 0);
-    static Vector2Int grass_side = new Vector2Int(3, 0);
-    static Vector2Int grass_top = new Vector2Int(0, 0);
+    static Vector2 grass_bottom = new Vector2Int(2, 0);
+    static Vector2 grass_side = new Vector2Int(3, 0);
+    static Vector2 grass_top = new Vector2Int(0, 0);
 
-    static Vector2Int brick = new Vector2Int(7, 0);
+    static Vector2 brick = new Vector2Int(7, 0);
 
-    static Vector2Int tnt_side = new Vector2Int(8, 0);
-    static Vector2Int tnt_top = new Vector2Int(9, 0);
-    static Vector2Int tnt_bottom = new Vector2Int(10, 0);
+    static Vector2 tnt_side = new Vector2Int(8, 0);
+    static Vector2 tnt_top = new Vector2Int(9, 0);
+    static Vector2 tnt_bottom = new Vector2Int(10, 0);
 
-    static Vector2Int furnace_front = new Vector2Int(12, 2);
-    static Vector2Int furnace_side = new Vector2Int(13, 2);
-    static Vector2Int furnace_top = new Vector2Int(14, 3);
+    static Vector2 furnace_front = new Vector2Int(12, 2);
+    static Vector2 furnace_side = new Vector2Int(13, 2);
+    static Vector2 furnace_top = new Vector2Int(14, 3);
 
-    static Vector2Int hay_side = new Vector2Int(16, 13);
-    static Vector2Int hay_top = new Vector2Int(17, 13);
+    static Vector2 hay_side = new Vector2Int(16, 13);
+    static Vector2 hay_top = new Vector2Int(17, 13);
 
     static TexCoords Coords_None = new TexCoords();
     static TexCoords Coords_Dirt = new TexCoords { front = grass_bottom, right = grass_bottom, left = grass_bottom, back = grass_bottom, top = grass_bottom, bottom = grass_bottom };
@@ -65,27 +65,29 @@ public class ChunkMeshGenerator : MonoBehaviour
     static Vector3 farTopLeft = new Vector3(-0.5f, 0.5f, 0.5f);
     static Vector3 farTopRight = new Vector3(0.5f, 0.5f, 0.5f);
 
-    static void AddUV(List<Vector3> vertices, List<Vector2> uv, List<int> triangles, Vector2Int texPos)
+    static void AddUV(List<Vector3> vertices, List<Vector2> uv, List<int> triangles, Vector2 texPos)
     {
         //上下翻转
         texPos.y = (atlas_row - 1) - texPos.y;
 
-        uv.Add(new Vector2(texPos.x / (float)atlas_column, texPos.y / (float)atlas_row));
-        uv.Add(new Vector2(texPos.x / (float)atlas_column, (texPos.y + 1) / (float)atlas_row));
-        uv.Add(new Vector2((texPos.x + 1) / (float)atlas_column, texPos.y / (float)atlas_row));
-        uv.Add(new Vector2((texPos.x + 1) / (float)atlas_column, (texPos.y + 1) / (float)atlas_row));
-        triangles.Add(vertices.Count - 4);
-        triangles.Add(vertices.Count - 3);
-        triangles.Add(vertices.Count - 2);
-        triangles.Add(vertices.Count - 3);
-        triangles.Add(vertices.Count - 1);
-        triangles.Add(vertices.Count - 2);
+        uv.Add(new Vector2(texPos.x / atlas_column, texPos.y / atlas_row));
+        uv.Add(new Vector2(texPos.x / atlas_column, (texPos.y + 1) / atlas_row));
+        uv.Add(new Vector2((texPos.x + 1) / atlas_column, texPos.y / atlas_row));
+        uv.Add(new Vector2((texPos.x + 1) / atlas_column, (texPos.y + 1) / atlas_row));
+
+        int verticesCount = vertices.Count;
+        triangles.Add(verticesCount - 4);
+        triangles.Add(verticesCount - 3);
+        triangles.Add(verticesCount - 2);
+        triangles.Add(verticesCount - 3);
+        triangles.Add(verticesCount - 1);
+        triangles.Add(verticesCount - 2);
     }
 
     // vertex order
     // 1 3
     // 0 2 
-    static void AddFrontFace(List<Vector3> vertices, List<Vector2> uv, List<int> triangles, Vector3Int pos, Vector2Int texPos)
+    static void AddFrontFace(List<Vector3> vertices, List<Vector2> uv, List<int> triangles, Vector3 pos, Vector2 texPos)
     {
         vertices.Add(nearBottomLeft + pos);
         vertices.Add(nearTopLeft + pos);
@@ -94,7 +96,7 @@ public class ChunkMeshGenerator : MonoBehaviour
         AddUV(vertices, uv, triangles, texPos);
     }
 
-    static void AddRightFace(List<Vector3> vertices, List<Vector2> uv, List<int> triangles, Vector3Int pos, Vector2Int texPos)
+    static void AddRightFace(List<Vector3> vertices, List<Vector2> uv, List<int> triangles, Vector3 pos, Vector2 texPos)
     {
         vertices.Add(nearBottomRight + pos);
         vertices.Add(nearTopRight + pos);
@@ -103,7 +105,7 @@ public class ChunkMeshGenerator : MonoBehaviour
         AddUV(vertices, uv, triangles, texPos);
     }
 
-    static void AddLeftFace(List<Vector3> vertices, List<Vector2> uv, List<int> triangles, Vector3Int pos, Vector2Int texPos)
+    static void AddLeftFace(List<Vector3> vertices, List<Vector2> uv, List<int> triangles, Vector3 pos, Vector2 texPos)
     {
         vertices.Add(farBottomLeft + pos);
         vertices.Add(farTopLeft + pos);
@@ -112,7 +114,7 @@ public class ChunkMeshGenerator : MonoBehaviour
         AddUV(vertices, uv, triangles, texPos);
     }
 
-    static void AddBackFace(List<Vector3> vertices, List<Vector2> uv, List<int> triangles, Vector3Int pos, Vector2Int texPos)
+    static void AddBackFace(List<Vector3> vertices, List<Vector2> uv, List<int> triangles, Vector3 pos, Vector2 texPos)
     {
         vertices.Add(farBottomRight + pos);
         vertices.Add(farTopRight + pos);
@@ -121,7 +123,7 @@ public class ChunkMeshGenerator : MonoBehaviour
         AddUV(vertices, uv, triangles, texPos);
     }
 
-    static void AddTopFace(List<Vector3> vertices, List<Vector2> uv, List<int> triangles, Vector3Int pos, Vector2Int texPos)
+    static void AddTopFace(List<Vector3> vertices, List<Vector2> uv, List<int> triangles, Vector3 pos, Vector2 texPos)
     {
         vertices.Add(nearTopLeft + pos);
         vertices.Add(farTopLeft + pos);
@@ -130,7 +132,7 @@ public class ChunkMeshGenerator : MonoBehaviour
         AddUV(vertices, uv, triangles, texPos);
     }
 
-    static void AddBottomFace(List<Vector3> vertices, List<Vector2> uv, List<int> triangles, Vector3Int pos, Vector2Int texPos)
+    static void AddBottomFace(List<Vector3> vertices, List<Vector2> uv, List<int> triangles, Vector3 pos, Vector2 texPos)
     {
         vertices.Add(farBottomLeft + pos);
         vertices.Add(nearBottomLeft + pos);
@@ -149,7 +151,7 @@ public class ChunkMeshGenerator : MonoBehaviour
         List<int> triangles = new List<int>();
 
         TexCoords texCoords = type2texcoords[(byte)type];
-        Vector3Int pos = Vector3Int.zero;
+        Vector3 pos = Vector3.zero;
         AddFrontFace(vertices, uv, triangles, pos, texCoords.front);
         AddRightFace(vertices, uv, triangles, pos, texCoords.right);
         AddLeftFace(vertices, uv, triangles, pos, texCoords.left);
@@ -172,11 +174,15 @@ public class ChunkMeshGenerator : MonoBehaviour
         Mesh mesh = new Mesh();
         mesh.name = "ChunkMesh";
 
-        List<Vector3> vertices = new List<Vector3>();
-        List<Vector2> uv = new List<Vector2>();
-        List<int> triangles = new List<int>();
+        List<Vector3> vertices = chunk.vertices;
+        List<Vector2> uv = chunk.uv;
+        List<int> triangles = chunk.triangles;
 
-        Vector3Int pos = new Vector3Int();
+        vertices.Clear();
+        uv.Clear();
+        triangles.Clear();
+
+        Vector3 pos = new Vector3();
         //压缩后的数据结构
         for (int k = 0; k < 256; k++)
         {
@@ -220,6 +226,7 @@ public class ChunkMeshGenerator : MonoBehaviour
             }
         }
 
+        //Debug.Log("vertices Capacity=" + vertices.Capacity+ ",uv Capacity=" + uv.Capacity + ",triangles Capacity=" + triangles.Capacity);
         mesh.vertices = vertices.ToArray();
         mesh.uv = uv.ToArray();
         mesh.triangles = triangles.ToArray();

@@ -14,7 +14,6 @@ public static class Utilities {
     public static List<Vector2Int> GetSurroudingChunks(Vector2Int chunk)
     {
         int chunkRange = SettingsPanel.RenderDistance;
-        chunkRange = chunkRange > 6 ? 6 : chunkRange;
 
         List<Vector2Int> list = new List<Vector2Int>();
         for (int i = chunk.x - chunkRange; i <= chunk.x + chunkRange; i++)
