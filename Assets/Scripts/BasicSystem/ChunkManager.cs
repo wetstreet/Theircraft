@@ -10,7 +10,7 @@ public class Chunk
     public Vector2Int pos;      //used for index in dictionary
     public Transform transform;
     public GameObject gameObject;
-    public byte[] blocksInByte = new byte[65536];
+    public byte[] blocksInByte;
 
     MeshFilter meshFilter;
     MeshCollider meshCollider;

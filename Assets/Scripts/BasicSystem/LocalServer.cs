@@ -47,34 +47,6 @@ public class LocalServer : MonoBehaviour
         callback(NetworkManager.Serialize(rsp));
     }
 
-    static byte[] CompressChunkBlocksData(CSVector2Int chunk, List<CSBlock> blocks)
-    {
-        List<byte> blocksInBytes = new List<byte>();
-        //需要用Vector3Int来做值比较（辣鸡）
-        Dictionary<Vector3Int, CSBlockType> pos2type = new Dictionary<Vector3Int, CSBlockType>();
-        foreach (CSBlock block in blocks)
-        {
-            Vector3Int pos = Utilities.CSVector3Int_To_Vector3Int(block.position);
-            pos2type[pos] = block.type;
-        }
-        Vector3Int tempPos = new Vector3Int();
-        for (int k = 0; k < 256; k++)
-        {
-            for (int i = 0; i < 16; i++)
-            {
-                for (int j = 0; j < 16; j++)
-                {
-                    tempPos.x = chunk.x * 16 + i;
-                    tempPos.y = k;
-                    tempPos.z = chunk.y * 16 + j;
-                    CSBlockType type = pos2type.ContainsKey(tempPos) ? pos2type[tempPos] : CSBlockType.None;
-                    blocksInBytes.Add((byte)type);
-                }
-            }
-        }
-        return blocksInBytes.ToArray();
-    }
-
     static void Single_OnChunksEnterLeaveViewReq(object obj, Action<byte[]> callback)
     {
         CSChunksEnterLeaveViewReq req = obj as CSChunksEnterLeaveViewReq;
@@ -82,10 +54,10 @@ public class LocalServer : MonoBehaviour
         res.RetCode = 0;
         foreach (CSVector2Int chunk in req.EnterViewChunks)
         {
-            List<CSBlock> blocks = TerrainGenerator.GetChunkBlocks(chunk);
+            byte[] blocks = TerrainGenerator.GenerateChunkData(chunk);
             CSChunk c = new CSChunk();
             c.Position = chunk;
-            c.BlocksInBytes = CompressChunkBlocksData(chunk, blocks);
+            c.BlocksInBytes = blocks;
             res.EnterViewChunks.Add(c);
         }
         foreach (CSVector2Int chunk in req.LeaveViewChunks)
