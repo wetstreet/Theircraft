@@ -65,7 +65,12 @@ public class ChunkMeshGenerator : MonoBehaviour
         uv.Add(new Vector2(texPos.x / (float)atlas_column, (texPos.y + 1) / (float)atlas_row));
         uv.Add(new Vector2((texPos.x + 1) / (float)atlas_column, texPos.y / (float)atlas_row));
         uv.Add(new Vector2((texPos.x + 1) / (float)atlas_column, (texPos.y + 1) / (float)atlas_row));
-        triangles.AddRange(new int[] { vertices.Count - 4, vertices.Count - 3, vertices.Count - 2, vertices.Count - 3, vertices.Count - 1, vertices.Count - 2 });
+        triangles.Add(vertices.Count - 4);
+        triangles.Add(vertices.Count - 3);
+        triangles.Add(vertices.Count - 2);
+        triangles.Add(vertices.Count - 3);
+        triangles.Add(vertices.Count - 1);
+        triangles.Add(vertices.Count - 2);
     }
 
     // vertex order
@@ -73,37 +78,55 @@ public class ChunkMeshGenerator : MonoBehaviour
     // 0 2 
     static void AddFrontFace(List<Vector3> vertices, List<Vector2> uv, List<int> triangles, Vector3Int pos, Vector2Int texPos)
     {
-        vertices.AddRange(new List<Vector3> { nearBottomLeft + pos, nearTopLeft + pos, nearBottomRight + pos, nearTopRight + pos });
+        vertices.Add(nearBottomLeft + pos);
+        vertices.Add(nearTopLeft + pos);
+        vertices.Add(nearBottomRight + pos);
+        vertices.Add(nearTopRight + pos);
         AddUV(vertices, uv, triangles, texPos);
     }
 
     static void AddRightFace(List<Vector3> vertices, List<Vector2> uv, List<int> triangles, Vector3Int pos, Vector2Int texPos)
     {
-        vertices.AddRange(new List<Vector3> { nearBottomRight + pos, nearTopRight + pos, farBottomRight + pos, farTopRight + pos });
+        vertices.Add(nearBottomRight + pos);
+        vertices.Add(nearTopRight + pos);
+        vertices.Add(farBottomRight + pos);
+        vertices.Add(farTopRight + pos);
         AddUV(vertices, uv, triangles, texPos);
     }
 
     static void AddLeftFace(List<Vector3> vertices, List<Vector2> uv, List<int> triangles, Vector3Int pos, Vector2Int texPos)
     {
-        vertices.AddRange(new List<Vector3> { farBottomLeft + pos, farTopLeft + pos, nearBottomLeft + pos, nearTopLeft + pos });
+        vertices.Add(farBottomLeft + pos);
+        vertices.Add(farTopLeft + pos);
+        vertices.Add(nearBottomLeft + pos);
+        vertices.Add(nearTopLeft + pos);
         AddUV(vertices, uv, triangles, texPos);
     }
 
     static void AddBackFace(List<Vector3> vertices, List<Vector2> uv, List<int> triangles, Vector3Int pos, Vector2Int texPos)
     {
-        vertices.AddRange(new List<Vector3> { farBottomRight + pos, farTopRight + pos, farBottomLeft + pos, farTopLeft + pos });
+        vertices.Add(farBottomRight + pos);
+        vertices.Add(farTopRight + pos);
+        vertices.Add(farBottomLeft + pos);
+        vertices.Add(farTopLeft + pos);
         AddUV(vertices, uv, triangles, texPos);
     }
 
     static void AddTopFace(List<Vector3> vertices, List<Vector2> uv, List<int> triangles, Vector3Int pos, Vector2Int texPos)
     {
-        vertices.AddRange(new List<Vector3> { nearTopLeft + pos, farTopLeft + pos, nearTopRight + pos, farTopRight + pos });
+        vertices.Add(nearTopLeft + pos);
+        vertices.Add(farTopLeft + pos);
+        vertices.Add(nearTopRight + pos);
+        vertices.Add(farTopRight + pos);
         AddUV(vertices, uv, triangles, texPos);
     }
 
     static void AddBottomFace(List<Vector3> vertices, List<Vector2> uv, List<int> triangles, Vector3Int pos, Vector2Int texPos)
     {
-        vertices.AddRange(new List<Vector3> { farBottomLeft + pos, nearBottomLeft + pos, farBottomRight + pos, nearBottomRight + pos });
+        vertices.Add(farBottomLeft + pos);
+        vertices.Add(nearBottomLeft + pos);
+        vertices.Add(farBottomRight + pos);
+        vertices.Add(nearBottomRight + pos);
         AddUV(vertices, uv, triangles, texPos);
     }
 
@@ -144,6 +167,7 @@ public class ChunkMeshGenerator : MonoBehaviour
         List<Vector2> uv = new List<Vector2>();
         List<int> triangles = new List<int>();
 
+        Vector3Int pos = new Vector3Int();
         //压缩后的数据结构
         for (int k = 0; k < 256; k++)
         {
@@ -155,7 +179,7 @@ public class ChunkMeshGenerator : MonoBehaviour
                     CSBlockType type = (CSBlockType)b;
                     if (type != CSBlockType.None)
                     {
-                        Vector3Int pos = new Vector3Int(chunk.x * 16 + i, k, chunk.z * 16 + j);
+                        pos.Set(chunk.x * 16 + i, k, chunk.z * 16 + j);
                         TexCoords texCoords = type2texcoords[type];
 
                         if (!chunk.HasBlock(i, k, j - 1))
