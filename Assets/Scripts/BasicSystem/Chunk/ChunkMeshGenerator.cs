@@ -7,6 +7,7 @@ public class ChunkMeshGenerator : MonoBehaviour
 {
     public struct TexCoords
     {
+        public bool isPlant;
         public Vector2 front;
         public Vector2 right;
         public Vector2 left;
@@ -37,23 +38,31 @@ public class ChunkMeshGenerator : MonoBehaviour
     static Vector2 hay_side = new Vector2Int(16, 13);
     static Vector2 hay_top = new Vector2Int(17, 13);
 
+    static Vector2 leaves_side = new Vector2Int(4, 12);
+
+    static Vector2 uv_grass = new Vector2Int(8, 2);
+
     static TexCoords Coords_None = new TexCoords();
     static TexCoords Coords_Dirt = new TexCoords { front = grass_bottom, right = grass_bottom, left = grass_bottom, back = grass_bottom, top = grass_bottom, bottom = grass_bottom };
-    static TexCoords Coords_Grass = new TexCoords { front = grass_side, right = grass_side, left = grass_side, back = grass_side, top = grass_top, bottom = grass_bottom };
+    static TexCoords Coords_GrassBlock = new TexCoords { front = grass_side, right = grass_side, left = grass_side, back = grass_side, top = grass_top, bottom = grass_bottom };
     static TexCoords Coords_Tnt = new TexCoords { front = tnt_side, right = tnt_side, left = tnt_side, back = tnt_side, top = tnt_top, bottom = tnt_bottom };
     static TexCoords Coords_Brick = new TexCoords { front = brick, right = brick, left = brick, back = brick, top = brick, bottom = brick };
     static TexCoords Coords_Furnace = new TexCoords { front = furnace_front, right = furnace_side, left = furnace_side, back = furnace_side, top = furnace_top, bottom = furnace_top };
     static TexCoords Coords_HayBlock = new TexCoords { front = hay_side, right = hay_side, left = hay_side, back = hay_side, top = hay_top, bottom = hay_top };
+    static TexCoords Coords_Leaves = new TexCoords { front = leaves_side, right = leaves_side, left = leaves_side, back = leaves_side, top = leaves_side, bottom = leaves_side };
+    static TexCoords Coords_Grass = new TexCoords { isPlant = true, front = uv_grass };
 
-    public static TexCoords[] type2texcoords = new TexCoords[7]
+    public static TexCoords[] type2texcoords = new TexCoords[9]
     {
         Coords_None,
         Coords_Dirt,
-        Coords_Grass,
+        Coords_GrassBlock,
         Coords_Tnt,
         Coords_Brick,
         Coords_Furnace,
-        Coords_HayBlock
+        Coords_HayBlock,
+        Coords_Leaves,
+        Coords_Grass,
     };
 
     static Vector3 nearBottomLeft = new Vector3(-0.5f, -0.5f, -0.5f);
@@ -87,6 +96,24 @@ public class ChunkMeshGenerator : MonoBehaviour
     // vertex order
     // 1 3
     // 0 2 
+    static void AddDiagonalFace(List<Vector3> vertices, List<Vector2> uv, List<int> triangles, Vector3 pos, Vector2 texPos)
+    {
+        vertices.Add(farBottomLeft + pos);
+        vertices.Add(farTopLeft + pos);
+        vertices.Add(nearBottomRight + pos);
+        vertices.Add(nearTopRight + pos);
+        AddUV(vertices, uv, triangles, texPos);
+    }
+
+    static void AddAntiDiagonalFace(List<Vector3> vertices, List<Vector2> uv, List<int> triangles, Vector3 pos, Vector2 texPos)
+    {
+        vertices.Add(nearBottomLeft + pos);
+        vertices.Add(nearTopLeft + pos);
+        vertices.Add(farBottomRight + pos);
+        vertices.Add(farTopRight + pos);
+        AddUV(vertices, uv, triangles, texPos);
+    }
+
     static void AddFrontFace(List<Vector3> vertices, List<Vector2> uv, List<int> triangles, Vector3 pos, Vector2 texPos)
     {
         vertices.Add(nearBottomLeft + pos);
@@ -152,12 +179,20 @@ public class ChunkMeshGenerator : MonoBehaviour
 
         TexCoords texCoords = type2texcoords[(byte)type];
         Vector3 pos = Vector3.zero;
-        AddFrontFace(vertices, uv, triangles, pos, texCoords.front);
-        AddRightFace(vertices, uv, triangles, pos, texCoords.right);
-        AddLeftFace(vertices, uv, triangles, pos, texCoords.left);
-        AddBackFace(vertices, uv, triangles, pos, texCoords.back);
-        AddTopFace(vertices, uv, triangles, pos, texCoords.top);
-        AddBottomFace(vertices, uv, triangles, pos, texCoords.bottom);
+        if (texCoords.isPlant)
+        {
+            AddDiagonalFace(vertices, uv, triangles, pos, texCoords.front);
+            AddAntiDiagonalFace(vertices, uv, triangles, pos, texCoords.front);
+        }
+        else
+        {
+            AddFrontFace(vertices, uv, triangles, pos, texCoords.front);
+            AddRightFace(vertices, uv, triangles, pos, texCoords.right);
+            AddLeftFace(vertices, uv, triangles, pos, texCoords.left);
+            AddBackFace(vertices, uv, triangles, pos, texCoords.back);
+            AddTopFace(vertices, uv, triangles, pos, texCoords.top);
+            AddBottomFace(vertices, uv, triangles, pos, texCoords.bottom);
+        }
 
         mesh.vertices = vertices.ToArray();
         mesh.uv = uv.ToArray();
@@ -197,29 +232,37 @@ public class ChunkMeshGenerator : MonoBehaviour
                         pos.Set(chunk.x * 16 + i, k, chunk.z * 16 + j);
                         TexCoords texCoords = type2texcoords[(byte)type];
 
-                        if (!chunk.HasBlock(i, k, j - 1))
+                        if (texCoords.isPlant)
                         {
-                            AddFrontFace(vertices, uv, triangles, pos, texCoords.front);
+                            AddDiagonalFace(vertices, uv, triangles, pos, texCoords.front);
+                            AddAntiDiagonalFace(vertices, uv, triangles, pos, texCoords.front);
                         }
-                        if (!chunk.HasBlock(i + 1, k, j))
+                        else
                         {
-                            AddRightFace(vertices, uv, triangles, pos, texCoords.right);
-                        }
-                        if (!chunk.HasBlock(i - 1, k, j))
-                        {
-                            AddLeftFace(vertices, uv, triangles, pos, texCoords.left);
-                        }
-                        if (!chunk.HasBlock(i, k, j + 1))
-                        {
-                            AddBackFace(vertices, uv, triangles, pos, texCoords.back);
-                        }
-                        if (!chunk.HasBlock(i, k + 1, j))
-                        {
-                            AddTopFace(vertices, uv, triangles, pos, texCoords.top);
-                        }
-                        if (!chunk.HasBlock(i, k - 1, j))
-                        {
-                            AddBottomFace(vertices, uv, triangles, pos, texCoords.bottom);
+                            if (!chunk.HasBlock(i, k, j - 1))
+                            {
+                                AddFrontFace(vertices, uv, triangles, pos, texCoords.front);
+                            }
+                            if (!chunk.HasBlock(i + 1, k, j))
+                            {
+                                AddRightFace(vertices, uv, triangles, pos, texCoords.right);
+                            }
+                            if (!chunk.HasBlock(i - 1, k, j))
+                            {
+                                AddLeftFace(vertices, uv, triangles, pos, texCoords.left);
+                            }
+                            if (!chunk.HasBlock(i, k, j + 1))
+                            {
+                                AddBackFace(vertices, uv, triangles, pos, texCoords.back);
+                            }
+                            if (!chunk.HasBlock(i, k + 1, j))
+                            {
+                                AddTopFace(vertices, uv, triangles, pos, texCoords.top);
+                            }
+                            if (!chunk.HasBlock(i, k - 1, j))
+                            {
+                                AddBottomFace(vertices, uv, triangles, pos, texCoords.bottom);
+                            }
                         }
                     }
                 }

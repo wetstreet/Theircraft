@@ -92,10 +92,21 @@ public class ItemSelectPanel : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.Alpha9)) { curIndex = 8; }
 
         if (Input.GetAxis("Mouse ScrollWheel") < 0)
+        {
             curIndex++;
+        }
         else if (Input.GetAxis("Mouse ScrollWheel") > 0)
+        {
             curIndex--;
-        curIndex = Mathf.Clamp(curIndex, 0, 8);
+        }
+        if (curIndex == 9)
+        {
+            curIndex = 0;
+        }
+        if (curIndex == -1)
+        {
+            curIndex = 8;
+        }
 
         RefreshUI();
     }

@@ -25,7 +25,7 @@ public class TerrainGenerator : MonoBehaviour
                     CSBlockType type;
                     if (k == height)
                     {
-                        type = CSBlockType.Grass;
+                        type = CSBlockType.GrassBlock;
                     }
                     else
                     {
