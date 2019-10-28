@@ -69,7 +69,8 @@ public class Chunk
         {
             return false;
         }
-        return blocksInByte[256 * y + 16 * x + z] > 0;
+        byte type = blocksInByte[256 * y + 16 * x + z];
+        return type > 0 && type != (byte)CSBlockType.Grass;
     }
 
     public void RebuildMesh()

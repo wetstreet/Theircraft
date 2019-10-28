@@ -244,9 +244,12 @@ public class PlayerController : MonoBehaviour
                     CSBlockType type = ChunkManager.GetBlockType(pos.x, pos.y, pos.z);
                     if (Time.realtimeSinceStartup - lastFootstepTime > footstepInterval)
                     {
-                        AkSoundEngine.SetSwitch("Materials", BlockGenerator.type2material[type], gameObject);
-                        AkSoundEngine.PostEvent("Player_Footstep", gameObject);
-                        lastFootstepTime = Time.realtimeSinceStartup;
+                        if (BlockGenerator.type2material.ContainsKey(type))
+                        {
+                            AkSoundEngine.SetSwitch("Materials", BlockGenerator.type2material[type], gameObject);
+                            AkSoundEngine.PostEvent("Player_Footstep", gameObject);
+                            lastFootstepTime = Time.realtimeSinceStartup;
+                        }
                     }
                 }
             }

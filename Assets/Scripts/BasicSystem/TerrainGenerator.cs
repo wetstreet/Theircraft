@@ -21,15 +21,31 @@ public class TerrainGenerator : MonoBehaviour
                 int height = Mathf.RoundToInt(maxHeight * noise);
                 for (int k = height; k >= 0; k--)
                 {
+                    CSBlockType type = CSBlockType.None;
+                    int distanceFromHighestBlock = height - k;
                     //Ultilities.Print($"i={i},j={j},height{item.position.y}");
-                    CSBlockType type;
-                    if (k == height)
+                    switch (distanceFromHighestBlock)
                     {
-                        type = CSBlockType.GrassBlock;
-                    }
-                    else
-                    {
-                        type = CSBlockType.Dirt;
+                        case 0:
+                            //random surface block
+                            int dice = Random.Range(1, 200);
+                            if (dice <= 20)
+                            {
+                                type = CSBlockType.Grass;
+                            }
+                            break;
+                        case 1:
+                            type = CSBlockType.GrassBlock;
+                            break;
+                        case 2:
+                        case 3:
+                        case 4:
+                        case 5:
+                            type = CSBlockType.Dirt;
+                            break;
+                        default:
+                            type = CSBlockType.Brick;
+                            break;
                     }
                     blocks[256 * k + 16 * i + j] = (byte)type;
                 }
