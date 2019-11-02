@@ -15,7 +15,7 @@ public class Player
 
     public Player(CSPlayer p)
     {
-        GameObject prefab = Resources.Load<GameObject>("merge-test/OtherPlayer");
+        GameObject prefab = Resources.Load<GameObject>("Prefabs/OtherPlayer");
         trans = Object.Instantiate(prefab).transform;
         head = trans.Find("steve/Armature/Move/Body_Lower/Body_Upper/Head.001");
 

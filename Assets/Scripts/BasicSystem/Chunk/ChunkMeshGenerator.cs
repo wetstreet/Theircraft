@@ -200,14 +200,11 @@ public class ChunkMeshGenerator : MonoBehaviour
 
         return mesh;
     }
-
-    static Vector3Int Vector3Int_forward = new Vector3Int(0, 0, 1);
-    static Vector3Int Vector3Int_back = new Vector3Int(0, 0, -1);
-
-    public static Mesh GenerateMesh(Chunk chunk)
+    
+    public static void GenerateMeshData(Chunk chunk)
     {
-        Mesh mesh = new Mesh();
-        mesh.name = "ChunkMesh";
+        //Mesh mesh = new Mesh();
+        //mesh.name = "ChunkMesh";
 
         List<Vector3> vertices = chunk.vertices;
         List<Vector2> uv = chunk.uv;
@@ -216,6 +213,14 @@ public class ChunkMeshGenerator : MonoBehaviour
         vertices.Clear();
         uv.Clear();
         triangles.Clear();
+        
+        List<Vector3> plantVertices = chunk.plantVertices;
+        List<Vector2> plantUV = chunk.plantUV;
+        List<int> plantTriangles = chunk.plantTriangles;
+
+        plantVertices.Clear();
+        plantUV.Clear();
+        plantTriangles.Clear();
 
         Vector3 pos = new Vector3();
         //压缩后的数据结构
@@ -234,8 +239,8 @@ public class ChunkMeshGenerator : MonoBehaviour
 
                         if (texCoords.isPlant)
                         {
-                            AddDiagonalFace(vertices, uv, triangles, pos, texCoords.front);
-                            AddAntiDiagonalFace(vertices, uv, triangles, pos, texCoords.front);
+                            AddDiagonalFace(plantVertices, plantUV, plantTriangles, pos, texCoords.front);
+                            AddAntiDiagonalFace(plantVertices, plantUV, plantTriangles, pos, texCoords.front);
                         }
                         else
                         {
@@ -270,10 +275,10 @@ public class ChunkMeshGenerator : MonoBehaviour
         }
 
         //Debug.Log("vertices Capacity=" + vertices.Capacity+ ",uv Capacity=" + uv.Capacity + ",triangles Capacity=" + triangles.Capacity);
-        mesh.vertices = vertices.ToArray();
-        mesh.uv = uv.ToArray();
-        mesh.triangles = triangles.ToArray();
+        //mesh.vertices = vertices.ToArray();
+        //mesh.uv = uv.ToArray();
+        //mesh.triangles = triangles.ToArray();
 
-        return mesh;
+        //return mesh;
     }
 }

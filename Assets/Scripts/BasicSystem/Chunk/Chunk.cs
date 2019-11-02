@@ -10,6 +10,7 @@ public class Chunk
     public Transform transform;
     public GameObject gameObject;
     public byte[] blocksInByte;
+    GameObject plantGameObject;
 
     static int capacity = 8192;
 
@@ -17,8 +18,15 @@ public class Chunk
     public List<Vector2> uv = new List<Vector2>(capacity);
     public List<int> triangles = new List<int>(capacity);
 
+    public List<Vector3> plantVertices = new List<Vector3>(1024);
+    public List<Vector2> plantUV = new List<Vector2>(1024);
+    public List<int> plantTriangles = new List<int>(1024);
+
     MeshFilter meshFilter;
     MeshCollider meshCollider;
+
+    MeshFilter plantMeshFilter;
+    MeshCollider plantMeshCollider;
 
     public Chunk()
     {
@@ -75,9 +83,22 @@ public class Chunk
 
     public void RebuildMesh()
     {
-        Mesh mesh = ChunkMeshGenerator.GenerateMesh(this);
+        ChunkMeshGenerator.GenerateMeshData(this);
+        Mesh mesh = new Mesh();
+        mesh.name = "ChunkMesh";
+        mesh.vertices = vertices.ToArray();
+        mesh.uv = uv.ToArray();
+        mesh.triangles = triangles.ToArray();
         meshFilter.sharedMesh = mesh;
         meshCollider.sharedMesh = mesh;
+
+        Mesh plantMesh = new Mesh();
+        plantMesh.name = "PlantMesh";
+        plantMesh.vertices = plantVertices.ToArray();
+        plantMesh.uv = plantUV.ToArray();
+        plantMesh.triangles = plantTriangles.ToArray();
+        plantMeshFilter.sharedMesh = plantMesh;
+        plantMeshCollider.sharedMesh = plantMesh;
     }
 
     public void ClearData()
@@ -96,12 +117,17 @@ public class Chunk
         gameObject = new GameObject("chunk (" + x + "," + z + ")");
         transform = gameObject.transform;
         meshFilter = gameObject.AddComponent<MeshFilter>();
-
         MeshRenderer mr = gameObject.AddComponent<MeshRenderer>();
-        mr.material = Resources.Load<Material>("merge-test/block");
-
+        mr.material = Resources.Load<Material>("Materials/block");
         meshCollider = gameObject.AddComponent<MeshCollider>();
-        gameObject.tag = "Chunk";
         gameObject.layer = LayerMask.NameToLayer("Chunk");
+
+        plantGameObject = new GameObject("plant");
+        plantGameObject.transform.parent = transform;
+        plantMeshFilter = plantGameObject.AddComponent<MeshFilter>();
+        plantMeshCollider = plantGameObject.AddComponent<MeshCollider>();
+        MeshRenderer plantRenderer = plantGameObject.AddComponent<MeshRenderer>();
+        plantRenderer.sharedMaterial = Resources.Load<Material>("Materials/Plant");
+        plantGameObject.layer = LayerMask.NameToLayer("Plant");
     }
 }

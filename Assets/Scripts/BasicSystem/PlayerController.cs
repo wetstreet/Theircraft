@@ -49,7 +49,7 @@ public class PlayerController : MonoBehaviour
     {
         if (instance == null)
         {
-            Object prefab = Resources.Load("merge-test/Character");
+            Object prefab = Resources.Load("Prefabs/Character");
             GameObject obj = Instantiate(prefab) as GameObject;
             instance = obj.GetComponent<PlayerController>();
         }
@@ -153,17 +153,21 @@ public class PlayerController : MonoBehaviour
         Vector3 center = new Vector3(Screen.width / 2, Screen.height / 2, 0);
         int cubeLayerIndex = LayerMask.NameToLayer("Chunk");
         int otherPlayerLayerIndex = LayerMask.NameToLayer("OtherPlayer");
-        if (cubeLayerIndex != -1 && otherPlayerLayerIndex != -1)
+        int plantLayerIndex = LayerMask.NameToLayer("Plant");
+        if (cubeLayerIndex != -1 && otherPlayerLayerIndex != -1 && plantLayerIndex != -1)
         {
-            int layerMask = 1 << cubeLayerIndex | 1 << otherPlayerLayerIndex;
-            if (Physics.Raycast(Camera.main.ScreenPointToRay(center), out hit, 5f, layerMask) && hit.transform.tag == "Chunk")
+            int layerMask = 1 << cubeLayerIndex | 1 << otherPlayerLayerIndex | 1 << plantLayerIndex;
+            if (Physics.Raycast(Camera.main.ScreenPointToRay(center), out hit, 5f, layerMask))
             {
-                bool hasBlock = WireFrameHelper.GetBlockPosByRaycast(hit.point, out Vector3Int actualPos);
-                if (hasBlock)
+                if (hit.transform.gameObject.layer == cubeLayerIndex || hit.transform.gameObject.layer == plantLayerIndex)
                 {
-                    //Debug.Log(hit.point + "," + pos);
-                    WireFrameHelper.render = true;
-                    WireFrameHelper.pos = actualPos;
+                    bool hasBlock = WireFrameHelper.GetBlockPosByRaycast(hit.point, out Vector3Int actualPos);
+                    if (hasBlock)
+                    {
+                        //Debug.Log(hit.point + "," + pos);
+                        WireFrameHelper.render = true;
+                        WireFrameHelper.pos = actualPos;
+                    }
                 }
             }
         }
