@@ -244,12 +244,8 @@ public class PlayerController : MonoBehaviour
                     CSBlockType type = ChunkManager.GetBlockType(pos.x, pos.y, pos.z);
                     if (Time.realtimeSinceStartup - lastFootstepTime > footstepInterval)
                     {
-                        if (BlockGenerator.type2material.ContainsKey(type))
-                        {
-                            AkSoundEngine.SetSwitch("Materials", BlockGenerator.type2material[type], gameObject);
-                            AkSoundEngine.PostEvent("Player_Footstep", gameObject);
-                            lastFootstepTime = Time.realtimeSinceStartup;
-                        }
+                        SoundManager.PlayFootstepSound(type, gameObject);
+                        lastFootstepTime = Time.realtimeSinceStartup;
                     }
                 }
             }
@@ -318,8 +314,7 @@ public class PlayerController : MonoBehaviour
         if (rsp.RetCode == 0)
         {
             ChunkManager.AddBlock(rsp.block.position.x, rsp.block.position.y, rsp.block.position.z, rsp.block.type);
-            AkSoundEngine.SetSwitch("Materials", BlockGenerator.type2material[rsp.block.type], gameObject);
-            AkSoundEngine.PostEvent("Player_Dig", gameObject);
+            SoundManager.PlayDigSound(rsp.block.type, gameObject);
         }
         else
         {
@@ -358,8 +353,7 @@ public class PlayerController : MonoBehaviour
             CSBlockType type = ChunkManager.GetBlockType(rsp.position.x, rsp.position.y, rsp.position.z);
             ChunkManager.RemoveBlock(rsp.position.x, rsp.position.y, rsp.position.z);
             BreakBlockEffect.Create(type, pos);
-            AkSoundEngine.SetSwitch("Materials", BlockGenerator.type2material[type], gameObject);
-            AkSoundEngine.PostEvent("Player_Dig", gameObject);
+            SoundManager.PlayDigSound(type, gameObject);
         }
         else
         {

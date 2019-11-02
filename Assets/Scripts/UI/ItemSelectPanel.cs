@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using protocol.cs_theircraft;
+using System.Collections.Generic;
 
 public class ItemSelectPanel : MonoBehaviour
 {
@@ -21,10 +22,20 @@ public class ItemSelectPanel : MonoBehaviour
         UISystem.InstantiateUI("ItemSelectPanel");
     }
 
+    static Dictionary<CSBlockType, string> type2icon = new Dictionary<CSBlockType, string>
+    {
+        {CSBlockType.Grass, "grass" },
+        {CSBlockType.Dirt, "dirt" },
+        {CSBlockType.Tnt, "tnt" },
+        {CSBlockType.Brick, "brick" },
+        {CSBlockType.Furnace, "furnace" },
+        {CSBlockType.HayBlock, "hayblock" },
+    };
+
     public static void SetSlotItem(int slotID, CSBlockType blockType)
     {
         dataList[slotID] = blockType;
-        string iconPath = BlockGenerator.type2icon[blockType];
+        string iconPath = type2icon[blockType];
         itemList[slotID].icon.sprite = Resources.Load<Sprite>("GUI/CubeBlock/" + iconPath);
         itemList[slotID].icon.gameObject.SetActive(true);
     }
