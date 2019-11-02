@@ -24,7 +24,7 @@ public class ItemSelectPanel : MonoBehaviour
 
     static Dictionary<CSBlockType, string> type2icon = new Dictionary<CSBlockType, string>
     {
-        {CSBlockType.Grass, "grass" },
+        {CSBlockType.GrassBlock, "grass" },
         {CSBlockType.Dirt, "dirt" },
         {CSBlockType.Tnt, "tnt" },
         {CSBlockType.Brick, "brick" },
@@ -80,7 +80,7 @@ public class ItemSelectPanel : MonoBehaviour
     void Start () {
         Init();
 
-        SetSlotItem(0, CSBlockType.Grass);
+        SetSlotItem(0, CSBlockType.GrassBlock);
         SetSlotItem(1, CSBlockType.Tnt);
         SetSlotItem(2, CSBlockType.Brick);
         SetSlotItem(3, CSBlockType.Furnace);

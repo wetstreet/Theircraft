@@ -54,7 +54,7 @@ public class SoundManager : MonoBehaviour
         {
             material = type2material[type];
         }
-        AkSoundEngine.SetSwitch("Materials", type2material[type], gameObject);
+        AkSoundEngine.SetSwitch("Materials", material, gameObject);
         AkSoundEngine.PostEvent("Player_Footstep", gameObject);
     }
 }
