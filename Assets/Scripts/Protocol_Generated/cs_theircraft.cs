@@ -679,7 +679,10 @@ namespace protocol.cs_theircraft
       Leaves = 7,
             
       [global::ProtoBuf.ProtoEnum(Name=@"Grass", Value=8)]
-      Grass = 8
+      Grass = 8,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"Stone", Value=9)]
+      Stone = 9
     }
   
 }

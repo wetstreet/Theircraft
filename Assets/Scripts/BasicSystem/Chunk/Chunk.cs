@@ -59,15 +59,20 @@ public class Chunk
     }
 
     //input is local position
-    public CSBlockType GetBlockType(int x, int y, int z)
+    public CSBlockType GetBlockType(int xInChunk, int _y, int zInChunk)
     {
-        return (CSBlockType)blocksInByte[256 * y + 16 * x + z];
+        return (CSBlockType)blocksInByte[256 * _y + 16 * xInChunk + zInChunk];
+    }
+
+    public bool IsPlant(int xInChunk, int _y, int zInChunk)
+    {
+        return GetBlockType(xInChunk, _y, zInChunk) == CSBlockType.Grass;
     }
 
     //input is local position
-    public void SetBlockType(int x, int y, int z, CSBlockType type)
+    public void SetBlockType(int xInChunk, int _y, int zInChunk, CSBlockType type)
     {
-        blocksInByte[256 * y + 16 * x + z] = (byte)type;
+        blocksInByte[256 * _y + 16 * xInChunk + zInChunk] = (byte)type;
     }
 
     //input is local position

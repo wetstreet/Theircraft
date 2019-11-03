@@ -25,6 +25,8 @@ public class ChunkMeshGenerator : MonoBehaviour
     static Vector2 grass_side = new Vector2Int(3, 0);
     static Vector2 grass_top = new Vector2Int(0, 0);
 
+    static Vector2 uv_stone = new Vector2Int(1, 0);
+
     static Vector2 brick = new Vector2Int(7, 0);
 
     static Vector2 tnt_side = new Vector2Int(8, 0);
@@ -51,8 +53,9 @@ public class ChunkMeshGenerator : MonoBehaviour
     static TexCoords Coords_HayBlock = new TexCoords { front = hay_side, right = hay_side, left = hay_side, back = hay_side, top = hay_top, bottom = hay_top };
     static TexCoords Coords_Leaves = new TexCoords { front = leaves_side, right = leaves_side, left = leaves_side, back = leaves_side, top = leaves_side, bottom = leaves_side };
     static TexCoords Coords_Grass = new TexCoords { isPlant = true, front = uv_grass };
+    static TexCoords Coords_Stone = new TexCoords { front = uv_stone, right = uv_stone, left = uv_stone, back = uv_stone, top = uv_stone, bottom = uv_stone };
 
-    public static TexCoords[] type2texcoords = new TexCoords[9]
+    public static TexCoords[] type2texcoords = new TexCoords[10]
     {
         Coords_None,
         Coords_Dirt,
@@ -63,6 +66,7 @@ public class ChunkMeshGenerator : MonoBehaviour
         Coords_HayBlock,
         Coords_Leaves,
         Coords_Grass,
+        Coords_Stone,
     };
 
     static Vector3 nearBottomLeft = new Vector3(-0.5f, -0.5f, -0.5f);
@@ -93,9 +97,30 @@ public class ChunkMeshGenerator : MonoBehaviour
         triangles.Add(verticesCount - 2);
     }
 
+    static void AddUV_BackFace(List<Vector3> vertices, List<Vector2> uv, List<int> triangles, Vector2 texPos)
+    {
+        //上下翻转
+        texPos.y = (atlas_row - 1) - texPos.y;
+
+        uv.Add(new Vector2(texPos.x / atlas_column, texPos.y / atlas_row));
+        uv.Add(new Vector2(texPos.x / atlas_column, (texPos.y + 1) / atlas_row));
+        uv.Add(new Vector2((texPos.x + 1) / atlas_column, texPos.y / atlas_row));
+        uv.Add(new Vector2((texPos.x + 1) / atlas_column, (texPos.y + 1) / atlas_row));
+
+        int verticesCount = vertices.Count;
+        triangles.Add(verticesCount - 4);
+        triangles.Add(verticesCount - 2);
+        triangles.Add(verticesCount - 3);
+        triangles.Add(verticesCount - 3);
+        triangles.Add(verticesCount - 2);
+        triangles.Add(verticesCount - 1);
+    }
+
     // vertex order
     // 1 3
     // 0 2 
+    // 1st tri:0 1 2
+    // 2nd tri:1 3 2
     static void AddDiagonalFace(List<Vector3> vertices, List<Vector2> uv, List<int> triangles, Vector3 pos, Vector2 texPos)
     {
         vertices.Add(farBottomLeft + pos);
@@ -103,6 +128,11 @@ public class ChunkMeshGenerator : MonoBehaviour
         vertices.Add(nearBottomRight + pos);
         vertices.Add(nearTopRight + pos);
         AddUV(vertices, uv, triangles, texPos);
+        vertices.Add(farBottomLeft + pos);
+        vertices.Add(farTopLeft + pos);
+        vertices.Add(nearBottomRight + pos);
+        vertices.Add(nearTopRight + pos);
+        AddUV_BackFace(vertices, uv, triangles, texPos);
     }
 
     static void AddAntiDiagonalFace(List<Vector3> vertices, List<Vector2> uv, List<int> triangles, Vector3 pos, Vector2 texPos)
@@ -112,6 +142,11 @@ public class ChunkMeshGenerator : MonoBehaviour
         vertices.Add(farBottomRight + pos);
         vertices.Add(farTopRight + pos);
         AddUV(vertices, uv, triangles, texPos);
+        vertices.Add(nearBottomLeft + pos);
+        vertices.Add(nearTopLeft + pos);
+        vertices.Add(farBottomRight + pos);
+        vertices.Add(farTopRight + pos);
+        AddUV_BackFace(vertices, uv, triangles, texPos);
     }
 
     static void AddFrontFace(List<Vector3> vertices, List<Vector2> uv, List<int> triangles, Vector3 pos, Vector2 texPos)

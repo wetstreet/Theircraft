@@ -79,6 +79,10 @@ public class ChunkManager : MonoBehaviour
             int xInChunk = chunk.GetXInChunkByGlobalX(x);
             int zInChunk = chunk.GetZInChunkByGlobalZ(z);
             chunk.SetBlockType(xInChunk, y, zInChunk, CSBlockType.None);
+            if (chunk.IsPlant(xInChunk, y + 1, zInChunk))
+            {
+                chunk.SetBlockType(xInChunk, y + 1, zInChunk, CSBlockType.None);
+            }
             chunk.RebuildMesh();
         }
     }

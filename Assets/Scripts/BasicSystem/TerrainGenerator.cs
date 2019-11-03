@@ -44,7 +44,7 @@ public class TerrainGenerator : MonoBehaviour
                             type = CSBlockType.Dirt;
                             break;
                         default:
-                            type = CSBlockType.Brick;
+                            type = CSBlockType.Stone;
                             break;
                     }
                     blocks[256 * k + 16 * i + j] = (byte)type;
