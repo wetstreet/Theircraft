@@ -682,7 +682,22 @@ namespace protocol.cs_theircraft
       Grass = 8,
             
       [global::ProtoBuf.ProtoEnum(Name=@"Stone", Value=9)]
-      Stone = 9
+      Stone = 9,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"BedRock", Value=10)]
+      BedRock = 10,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"Poppy", Value=11)]
+      Poppy = 11,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"Dandelion", Value=12)]
+      Dandelion = 12,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"OakWood", Value=13)]
+      OakWood = 13,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"OakLeaves", Value=14)]
+      OakLeaves = 14
     }
   
 }

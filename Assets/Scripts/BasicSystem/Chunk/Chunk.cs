@@ -75,6 +75,18 @@ public class Chunk
         blocksInByte[256 * _y + 16 * xInChunk + zInChunk] = (byte)type;
     }
 
+    public static bool IsPlant(byte _type)
+    {
+        CSBlockType type = (CSBlockType)_type;
+        if (type == CSBlockType.Grass ||
+            type == CSBlockType.Poppy ||
+            type == CSBlockType.Dandelion)
+        {
+            return true;
+        }
+        return false;
+    }
+
     //input is local position
     public bool HasBlock(int x, int y, int z)
     {
@@ -83,7 +95,7 @@ public class Chunk
             return false;
         }
         byte type = blocksInByte[256 * y + 16 * x + z];
-        return type > 0 && type != (byte)CSBlockType.Grass;
+        return type > 0 && !IsPlant(type);
     }
 
     public void RebuildMesh()
@@ -110,6 +122,8 @@ public class Chunk
     {
         meshFilter.sharedMesh = null;
         meshCollider.sharedMesh = null;
+        plantMeshFilter.sharedMesh = null;
+        plantMeshCollider.sharedMesh = null;
     }
 
     public void GenerateGameObject()
