@@ -18,6 +18,9 @@ public class PlayerController : MonoBehaviour
     MeshFilter blockMeshFilter;
     MeshRenderer handMeshRenderer;
 
+    [SerializeField] [Range(0f, 1f)] private float m_RunstepLenghten = 0.7f;
+    [SerializeField] private CurveControlledBob m_HeadBob = new CurveControlledBob();
+
     bool isMoving;
     static bool acceptInput = true;
     private static PlayerController instance;
@@ -63,6 +66,8 @@ public class PlayerController : MonoBehaviour
         cc = GetComponent<CharacterController>();
         handCam = camera.transform.Find("Camera").GetComponent<Camera>();
         handAnimator = camera.transform.Find("hand").GetComponent<Animator>();
+
+        m_HeadBob.Setup(camera, 5);
 
         transform.position = DataCenter.spawnPosition;
         transform.localEulerAngles = new Vector3(0, DataCenter.spawnRotation.y, 0);
@@ -189,7 +194,26 @@ public class PlayerController : MonoBehaviour
 
         verticalSpeed = jumpSpeed;
     }
-    
+
+    [SerializeField] private float bobSpeed = 5f;
+
+    private void UpdateCameraPosition()
+    {
+        Vector3 newCameraPosition;
+        if (cc.velocity.magnitude > 0 && cc.isGrounded)
+        {
+            camera.transform.localPosition = m_HeadBob.DoHeadBob(cc.velocity.magnitude + (bobSpeed * m_RunstepLenghten));
+            newCameraPosition = camera.transform.localPosition;
+            //newCameraPosition.y = camera.transform.localPosition.y - m_JumpBob.Offset();
+        }
+        else
+        {
+            newCameraPosition = camera.transform.localPosition;
+            //newCameraPosition.y = m_OriginalCameraPosition.y - m_JumpBob.Offset();
+        }
+        camera.transform.localPosition = newCameraPosition;
+    }
+
     public float inAirSpeed = 0.1f;
     public float attenuation = 0.75f;
     void ProcessMovement(float v, float h)
@@ -262,6 +286,22 @@ public class PlayerController : MonoBehaviour
     float lastFootstepTime;
     public float footstepInterval = 0.4f;
 
+    Quaternion ClampRotationAroundXAxis(Quaternion q)
+    {
+        q.x /= q.w;
+        q.y /= q.w;
+        q.z /= q.w;
+        q.w = 1.0f;
+
+        float angleX = 2.0f * Mathf.Rad2Deg * Mathf.Atan(q.x);
+
+        angleX = Mathf.Clamp(angleX, -90, 90);
+
+        q.x = Mathf.Tan(0.5f * Mathf.Deg2Rad * angleX);
+
+        return q;
+    }
+
     void RotateView()
     {
         float x = Input.GetAxis("Mouse X");
@@ -269,6 +309,7 @@ public class PlayerController : MonoBehaviour
         if (x != 0 || y != 0)
         {
             camera.transform.localRotation *= Quaternion.Euler(-y, 0, 0);
+            camera.transform.localRotation = ClampRotationAroundXAxis(camera.transform.localRotation);
             transform.localRotation *= Quaternion.Euler(0, x, 0);
             needUpdate = true;
         }
@@ -295,6 +336,7 @@ public class PlayerController : MonoBehaviour
             h = 0;
         }
         ProcessMovement(v, h);
+        UpdateCameraPosition();
     }
 
     void AddBlockReq(Vector3Int pos, CSBlockType type)
