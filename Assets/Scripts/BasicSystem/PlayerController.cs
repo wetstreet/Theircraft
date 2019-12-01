@@ -1,7 +1,5 @@
 ﻿using protocol.cs_enum;
 using protocol.cs_theircraft;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -320,13 +318,14 @@ public class PlayerController : MonoBehaviour
     public float accumulation = 0.1f;
     void FixedUpdate()
     {
+        float rawV = Input.GetAxisRaw("Vertical");
+        float rawH = Input.GetAxisRaw("Horizontal");
+        bool hasInput = rawH != 0 || rawV != 0;
         if (acceptInput)
         {
-            float rawV = Input.GetAxisRaw("Vertical");
             v = rawV != 0 ? v + rawV * accumulation : 0;
             v = Mathf.Clamp(v, -1, 1);
 
-            float rawH = Input.GetAxisRaw("Horizontal");
             h = rawH != 0 ? h + rawH * accumulation : 0;
             h = Mathf.Clamp(h, -1, 1);
         }
@@ -336,7 +335,10 @@ public class PlayerController : MonoBehaviour
             h = 0;
         }
         ProcessMovement(v, h);
-        UpdateCameraPosition();
+        if (hasInput)
+        {
+            UpdateCameraPosition();
+        }
     }
 
     void AddBlockReq(Vector3Int pos, CSBlockType type)
