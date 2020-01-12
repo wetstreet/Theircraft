@@ -12,6 +12,6 @@ EditorBuildSettings:
     path: Assets/Scenes/LoginScene.unity
     guid: 53e55107c7a322040b15c9e5ba034244
   - enabled: 1
-    path: Assets/Scenes/MergeTest.unity
+    path: Assets/Scenes/GameScene.unity
     guid: 205b8df341205c946826e4bbe1f023d6
   m_configObjects: {}
