@@ -38,7 +38,7 @@ public class LoginSystem
             MainMenu.Close();
             LoadingUI.Show();
             //SceneManager.LoadScene("MultiplayerScene");
-            SceneManager.LoadScene("MergeTest");
+            SceneManager.LoadScene("GameScene");
             ChatPanel.AddLine(DataCenter.name + ", welcome!");
         }
         else

@@ -3,17 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class OtherPlayerManager : MonoBehaviour
+public static class OtherPlayerManager
 {
     static Dictionary<uint, Player> playerDict = new Dictionary<uint, Player>();
-
-    static OtherPlayerManager instance;
-    public static void Init()
-    {
-        GameObject obj = new GameObject("OtherPlayerManager");
-        obj.transform.localPosition = Vector3.zero;
-        instance = obj.AddComponent<OtherPlayerManager>();
-    }
 
     public static void AddPlayer(CSPlayer player)
     {
@@ -25,16 +17,7 @@ public class OtherPlayerManager : MonoBehaviour
         if (playerDict.ContainsKey(id))
         {
             Player p = playerDict[id];
-            //p.SetPosAndRot(pos, rot);
             p.Move(pos, rot);
-        }
-    }
-
-    void Update()
-    {
-        foreach (Player p in playerDict.Values)
-        {
-            p.MoveLerp();
         }
     }
 }

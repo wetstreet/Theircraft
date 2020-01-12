@@ -22,7 +22,10 @@ public class SettingsPanel : MonoBehaviour {
 
     public static int RenderDistance
     {
-        get { return PlayerPrefs.GetInt(RENDER_DISTANCE_KEY, 3); }
+        get {
+            //return PlayerPrefs.GetInt(RENDER_DISTANCE_KEY, 3);
+            return 6;
+        }
         set { PlayerPrefs.SetInt(RENDER_DISTANCE_KEY, value); }
     }
 

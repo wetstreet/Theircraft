@@ -5,7 +5,7 @@ using protocol.cs_theircraft;
 using System.Linq;
 using System.Collections;
 
-public class MergeTestStart : MonoBehaviour
+public class GameStart : MonoBehaviour
 {
 
     Coroutine refreshChunkCoroutine;

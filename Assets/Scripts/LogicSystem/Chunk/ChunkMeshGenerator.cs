@@ -7,7 +7,8 @@ public class ChunkMeshGenerator : MonoBehaviour
 {
     public struct TexCoords
     {
-        public bool isPlant;
+        public bool isTransparent;
+        public bool isCollidable;
         public Vector2 front;
         public Vector2 right;
         public Vector2 left;
@@ -52,20 +53,20 @@ public class ChunkMeshGenerator : MonoBehaviour
     static Vector2 uv_oakleaves = new Vector2Int(4, 3);
 
     static TexCoords Coords_None = new TexCoords();
-    static TexCoords Coords_Dirt = new TexCoords { front = grass_bottom, right = grass_bottom, left = grass_bottom, back = grass_bottom, top = grass_bottom, bottom = grass_bottom };
-    static TexCoords Coords_GrassBlock = new TexCoords { front = grass_side, right = grass_side, left = grass_side, back = grass_side, top = grass_top, bottom = grass_bottom };
-    static TexCoords Coords_Tnt = new TexCoords { front = tnt_side, right = tnt_side, left = tnt_side, back = tnt_side, top = tnt_top, bottom = tnt_bottom };
-    static TexCoords Coords_Brick = new TexCoords { front = brick, right = brick, left = brick, back = brick, top = brick, bottom = brick };
-    static TexCoords Coords_Furnace = new TexCoords { front = furnace_front, right = furnace_side, left = furnace_side, back = furnace_side, top = furnace_top, bottom = furnace_top };
-    static TexCoords Coords_HayBlock = new TexCoords { front = hay_side, right = hay_side, left = hay_side, back = hay_side, top = hay_top, bottom = hay_top };
-    static TexCoords Coords_Leaves = new TexCoords { front = leaves_side, right = leaves_side, left = leaves_side, back = leaves_side, top = leaves_side, bottom = leaves_side };
-    static TexCoords Coords_Grass = new TexCoords { isPlant = true, front = uv_grass };
-    static TexCoords Coords_Stone = new TexCoords { front = uv_stone, right = uv_stone, left = uv_stone, back = uv_stone, top = uv_stone, bottom = uv_stone };
-    static TexCoords Coords_BedRock = new TexCoords { front = uv_bedrock, right = uv_bedrock, left = uv_bedrock, back = uv_bedrock, top = uv_bedrock, bottom = uv_bedrock };
-    static TexCoords Coords_Poppy = new TexCoords { isPlant = true, front = uv_poppy };
-    static TexCoords Coords_Dandelion = new TexCoords { isPlant = true, front = uv_dandelion };
-    static TexCoords Coords_OakWood = new TexCoords { front = uv_oakwood_side, right = uv_oakwood_side, left = uv_oakwood_side, back = uv_oakwood_side, top = uv_oakwood_top, bottom = uv_oakwood_top };
-    static TexCoords Coords_OakLeaves = new TexCoords { front = uv_oakleaves, right = uv_oakleaves, left = uv_oakleaves, back = uv_oakleaves, top = uv_oakleaves, bottom = uv_oakleaves };
+    static TexCoords Coords_Dirt = new TexCoords { isTransparent = false, isCollidable = true, front = grass_bottom, right = grass_bottom, left = grass_bottom, back = grass_bottom, top = grass_bottom, bottom = grass_bottom };
+    static TexCoords Coords_GrassBlock = new TexCoords { isTransparent = false, isCollidable = true, front = grass_side, right = grass_side, left = grass_side, back = grass_side, top = grass_top, bottom = grass_bottom };
+    static TexCoords Coords_Tnt = new TexCoords { isTransparent = false, isCollidable = true, front = tnt_side, right = tnt_side, left = tnt_side, back = tnt_side, top = tnt_top, bottom = tnt_bottom };
+    static TexCoords Coords_Brick = new TexCoords { isTransparent = false, isCollidable = true, front = brick, right = brick, left = brick, back = brick, top = brick, bottom = brick };
+    static TexCoords Coords_Furnace = new TexCoords { isTransparent = false, isCollidable = true, front = furnace_front, right = furnace_side, left = furnace_side, back = furnace_side, top = furnace_top, bottom = furnace_top };
+    static TexCoords Coords_HayBlock = new TexCoords { isTransparent = false, isCollidable = true, front = hay_side, right = hay_side, left = hay_side, back = hay_side, top = hay_top, bottom = hay_top };
+    static TexCoords Coords_Leaves = new TexCoords { isTransparent = false, isCollidable = true, front = leaves_side, right = leaves_side, left = leaves_side, back = leaves_side, top = leaves_side, bottom = leaves_side };
+    static TexCoords Coords_Grass = new TexCoords { isTransparent = true, isCollidable = false, front = uv_grass };
+    static TexCoords Coords_Stone = new TexCoords { isTransparent = false, isCollidable = true, front = uv_stone, right = uv_stone, left = uv_stone, back = uv_stone, top = uv_stone, bottom = uv_stone };
+    static TexCoords Coords_BedRock = new TexCoords { isTransparent = false, isCollidable = true, front = uv_bedrock, right = uv_bedrock, left = uv_bedrock, back = uv_bedrock, top = uv_bedrock, bottom = uv_bedrock };
+    static TexCoords Coords_Poppy = new TexCoords { isTransparent = true, isCollidable = false, front = uv_poppy };
+    static TexCoords Coords_Dandelion = new TexCoords { isTransparent = true, isCollidable = false, front = uv_dandelion };
+    static TexCoords Coords_OakWood = new TexCoords { isTransparent = false, isCollidable = true, front = uv_oakwood_side, right = uv_oakwood_side, left = uv_oakwood_side, back = uv_oakwood_side, top = uv_oakwood_top, bottom = uv_oakwood_top };
+    static TexCoords Coords_OakLeaves = new TexCoords { isTransparent = true, isCollidable = true, front = uv_oakleaves, right = uv_oakleaves, left = uv_oakleaves, back = uv_oakleaves, top = uv_oakleaves, bottom = uv_oakleaves };
 
     public static TexCoords[] type2texcoords = new TexCoords[15]
     {
@@ -231,7 +232,7 @@ public class ChunkMeshGenerator : MonoBehaviour
 
         TexCoords texCoords = type2texcoords[(byte)type];
         Vector3 pos = Vector3.zero;
-        if (texCoords.isPlant)
+        if (!texCoords.isCollidable)
         {
             AddDiagonalFace(vertices, uv, triangles, pos, texCoords.front);
             AddAntiDiagonalFace(vertices, uv, triangles, pos, texCoords.front);
@@ -253,26 +254,26 @@ public class ChunkMeshGenerator : MonoBehaviour
         return mesh;
     }
     
-    public static void GenerateMeshData(Chunk chunk)
+    public static void GenerateMesh(Chunk chunk)
     {
-        //Mesh mesh = new Mesh();
-        //mesh.name = "ChunkMesh";
+        Mesh opaqueCollidable = new Mesh();
+        opaqueCollidable.name = "OpaqueCollidableMesh";
 
-        List<Vector3> vertices = chunk.vertices;
-        List<Vector2> uv = chunk.uv;
-        List<int> triangles = chunk.triangles;
+        int capacity1 = 8192;
+        List<Vector3> vertices1 = new List<Vector3>(capacity1);
+        List<Vector2> uv1 = new List<Vector2>(capacity1);
+        List<int> triangles1 = new List<int>(capacity1);
 
-        vertices.Clear();
-        uv.Clear();
-        triangles.Clear();
-        
-        List<Vector3> plantVertices = chunk.plantVertices;
-        List<Vector2> plantUV = chunk.plantUV;
-        List<int> plantTriangles = chunk.plantTriangles;
 
-        plantVertices.Clear();
-        plantUV.Clear();
-        plantTriangles.Clear();
+        Mesh transparentNonCollidable = new Mesh();
+        transparentNonCollidable.name = "TransparentNonCollidableMesh";
+
+        int capacity2 = 1024;
+        List<Vector3> vertices2 = new List<Vector3>(capacity2);
+        List<Vector2> uv2 = new List<Vector2>(capacity2);
+        List<int> triangles2 = new List<int>(capacity2);
+
+        chunk.transform.localPosition = new Vector3(chunk.x * 16, 0, chunk.z * 16);
 
         Vector3 pos = new Vector3();
         //压缩后的数据结构
@@ -286,39 +287,39 @@ public class ChunkMeshGenerator : MonoBehaviour
                     CSBlockType type = (CSBlockType)b;
                     if (type != CSBlockType.None)
                     {
-                        pos.Set(chunk.x * 16 + i, k, chunk.z * 16 + j);
+                        pos.Set(i, k, j);
                         TexCoords texCoords = type2texcoords[(byte)type];
 
-                        if (texCoords.isPlant)
+                        if (!texCoords.isCollidable)
                         {
-                            AddDiagonalFace(plantVertices, plantUV, plantTriangles, pos, texCoords.front);
-                            AddAntiDiagonalFace(plantVertices, plantUV, plantTriangles, pos, texCoords.front);
+                            AddDiagonalFace(vertices2, uv2, triangles2, pos, texCoords.front);
+                            AddAntiDiagonalFace(vertices2, uv2, triangles2, pos, texCoords.front);
                         }
                         else
                         {
-                            if (!chunk.HasBlock(i, k, j - 1))
+                            if (texCoords.isTransparent || !chunk.HasOpaqueBlock(i, k, j - 1))
                             {
-                                AddFrontFace(vertices, uv, triangles, pos, texCoords.front);
+                                AddFrontFace(vertices1, uv1, triangles1, pos, texCoords.front);
                             }
-                            if (!chunk.HasBlock(i + 1, k, j))
+                            if (texCoords.isTransparent || !chunk.HasOpaqueBlock(i + 1, k, j))
                             {
-                                AddRightFace(vertices, uv, triangles, pos, texCoords.right);
+                                AddRightFace(vertices1, uv1, triangles1, pos, texCoords.right);
                             }
-                            if (!chunk.HasBlock(i - 1, k, j))
+                            if (texCoords.isTransparent || !chunk.HasOpaqueBlock(i - 1, k, j))
                             {
-                                AddLeftFace(vertices, uv, triangles, pos, texCoords.left);
+                                AddLeftFace(vertices1, uv1, triangles1, pos, texCoords.left);
                             }
-                            if (!chunk.HasBlock(i, k, j + 1))
+                            if (texCoords.isTransparent || !chunk.HasOpaqueBlock(i, k, j + 1))
                             {
-                                AddBackFace(vertices, uv, triangles, pos, texCoords.back);
+                                AddBackFace(vertices1, uv1, triangles1, pos, texCoords.back);
                             }
-                            if (!chunk.HasBlock(i, k + 1, j))
+                            if (texCoords.isTransparent || !chunk.HasOpaqueBlock(i, k + 1, j))
                             {
-                                AddTopFace(vertices, uv, triangles, pos, texCoords.top);
+                                AddTopFace(vertices1, uv1, triangles1, pos, texCoords.top);
                             }
-                            if (!chunk.HasBlock(i, k - 1, j))
+                            if (texCoords.isTransparent || !chunk.HasOpaqueBlock(i, k - 1, j))
                             {
-                                AddBottomFace(vertices, uv, triangles, pos, texCoords.bottom);
+                                AddBottomFace(vertices1, uv1, triangles1, pos, texCoords.bottom);
                             }
                         }
                     }
@@ -326,11 +327,43 @@ public class ChunkMeshGenerator : MonoBehaviour
             }
         }
 
+        opaqueCollidable.vertices = vertices1.ToArray();
+        opaqueCollidable.uv = uv1.ToArray();
+        opaqueCollidable.triangles = triangles1.ToArray();
+        chunk.collidableGO.GetComponent<MeshFilter>().sharedMesh = opaqueCollidable;
+        chunk.collidableGO.GetComponent<MeshCollider>().sharedMesh = opaqueCollidable;
+
+        transparentNonCollidable.vertices = vertices2.ToArray();
+        transparentNonCollidable.uv = uv2.ToArray();
+        transparentNonCollidable.triangles = triangles2.ToArray();
+        chunk.nonCollidableGO.GetComponent<MeshFilter>().sharedMesh = transparentNonCollidable;
+        chunk.nonCollidableGO.GetComponent<MeshCollider>().sharedMesh = transparentNonCollidable;
+
+        //CombineMesh(grass);
+
         //Debug.Log("vertices Capacity=" + vertices.Capacity+ ",uv Capacity=" + uv.Capacity + ",triangles Capacity=" + triangles.Capacity);
         //mesh.vertices = vertices.ToArray();
         //mesh.uv = uv.ToArray();
         //mesh.triangles = triangles.ToArray();
 
         //return mesh;
+    }
+
+    static void CombineMesh(GameObject grass)
+    {
+        MeshFilter[] meshFilters = grass.GetComponentsInChildren<MeshFilter>();
+        CombineInstance[] combine = new CombineInstance[meshFilters.Length];
+
+        int i = 0;
+        while (i < meshFilters.Length)
+        {
+            combine[i].mesh = meshFilters[i].sharedMesh;
+            combine[i].transform = meshFilters[i].transform.localToWorldMatrix;
+            meshFilters[i].gameObject.SetActive(false);
+
+            i++;
+        }
+        grass.gameObject.AddComponent<MeshFilter>().mesh = new Mesh();
+        grass.transform.GetComponent<MeshFilter>().mesh.CombineMeshes(combine);
     }
 }

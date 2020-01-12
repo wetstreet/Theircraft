@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using protocol.cs_theircraft;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -100,6 +101,8 @@ public class WireFrameHelper : MonoBehaviour
         // Draw lines
         GL.Begin(GL.LINES);
         GL.Color(Color.black);
+
+        CSBlockType type = ChunkManager.GetBlockType(pos.x, pos.y, pos.z);
 
         GL.Vertex3(pos.x - unit, pos.y - unit, pos.z - unit);
         GL.Vertex3(pos.x + unit, pos.y - unit, pos.z - unit);
