@@ -53,6 +53,8 @@ public class Chunk
         pos.y = z;
         blocksInByte = _blocksInByte;
         gameObject.name = "chunk (" + x + "," + z + ")";
+        transform.localPosition = new Vector3(x * 16, 0, z * 16);
+        ClearData();
     }
 
     public static int GetChunkPosByGlobalPos(int _x)

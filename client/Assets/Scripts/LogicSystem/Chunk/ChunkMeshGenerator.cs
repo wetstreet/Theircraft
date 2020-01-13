@@ -277,7 +277,6 @@ public class ChunkMeshGenerator : MonoBehaviour
         List<Vector2> uv1 = new List<Vector2>(capacity1);
         List<int> triangles1 = new List<int>(capacity1);
 
-
         Mesh transparentNonCollidable = new Mesh();
         transparentNonCollidable.name = "TransparentNonCollidableMesh";
 
@@ -285,8 +284,6 @@ public class ChunkMeshGenerator : MonoBehaviour
         List<Vector3> vertices2 = new List<Vector3>(capacity2);
         List<Vector2> uv2 = new List<Vector2>(capacity2);
         List<int> triangles2 = new List<int>(capacity2);
-
-        chunk.transform.localPosition = new Vector3(chunk.x * 16, 0, chunk.z * 16);
 
         Vector3 pos = new Vector3();
         //压缩后的数据结构

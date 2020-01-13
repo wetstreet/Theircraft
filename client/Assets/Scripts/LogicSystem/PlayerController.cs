@@ -97,6 +97,15 @@ public class PlayerController : MonoBehaviour
         return chunkPos;
     }
 
+    // get the dot product between the player front vector and chunk to player vector.
+    public static float GetChunkToFrontDot(Chunk chunk)
+    {
+        Vector3 pos = chunk.transform.position;
+        pos.y = instance.transform.position.y;
+        Vector3 chunk2player = pos - instance.transform.position;
+        return Vector3.Dot(instance.transform.forward, chunk2player.normalized);
+    }
+
     public static void ShowHand()
     {
         instance.handMeshRenderer.enabled = true;

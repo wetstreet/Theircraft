@@ -20,6 +20,7 @@ public class GameStart : MonoBehaviour
         if (PlayerController.isInitialized)
         {
             ChunkChecker.Update();
+            ChunkRefresher.Update();
         }
     }
 }

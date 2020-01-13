@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-// refresh chunks if neccessary.
+// check if player has moved to another chunk, if so, then ask for new chunk data
 public static class ChunkChecker
 {
     static int lastRenderDistance;

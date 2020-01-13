@@ -19,10 +19,24 @@ public class ChunkManager : MonoBehaviour
         chunkDict.Remove(chunk.pos);
     }
 
-    // intput is global position
-    public static bool HasBlock(int x, int y, int z)
+    static Vector2Int keyVec = new Vector2Int();
+    public static Chunk GetChunk(int x, int z)
     {
-        return GetBlockType(x, y, z) != CSBlockType.None;
+        keyVec.x = x;
+        keyVec.y = z;
+        if (chunkDict.ContainsKey(keyVec))
+        {
+            return chunkDict[keyVec];
+        }
+        return null;
+    }
+
+    // intput is global position
+    public static Chunk GetChunk(int x, int y, int z)
+    {
+        int chunkX = Chunk.GetChunkPosByGlobalPos(x);
+        int chunkZ = Chunk.GetChunkPosByGlobalPos(z);
+        return GetChunk(chunkX, chunkZ);
     }
 
     // intput is global position
@@ -42,23 +56,9 @@ public class ChunkManager : MonoBehaviour
     }
 
     // intput is global position
-    public static Chunk GetChunk(int x, int y, int z)
+    public static bool HasBlock(int x, int y, int z)
     {
-        int chunkX = Chunk.GetChunkPosByGlobalPos(x);
-        int chunkZ = Chunk.GetChunkPosByGlobalPos(z);
-        return GetChunk(chunkX, chunkZ);
-    }
-
-    static Vector2Int keyVec = new Vector2Int();
-    public static Chunk GetChunk(int x, int z)
-    {
-        keyVec.x = x;
-        keyVec.y = z;
-        if (chunkDict.ContainsKey(keyVec))
-        {
-            return chunkDict[keyVec];
-        }
-        return null;
+        return GetBlockType(x, y, z) != CSBlockType.None;
     }
 
     public static void AddBlock(int x, int y, int z, CSBlockType type)
@@ -89,11 +89,6 @@ public class ChunkManager : MonoBehaviour
         }
     }
 
-    public static Dictionary<Vector2Int,Chunk>.KeyCollection GetChunkDictKeys()
-    {
-        return chunkDict.Keys;
-    }
-
     // get the chunks to be load (chunks should be loaded - chunks already loaded)
     public static List<Vector2Int> GetLoadChunks(Vector2Int centerChunkPos)
     {
@@ -114,13 +109,8 @@ public class ChunkManager : MonoBehaviour
         //Debug.Log("loadChunk,x=" + csChunk.Position.x + ",z=" + csChunk.Position.y);
         Chunk chunk = ChunkPool.GetChunk();
         chunk.SetData(csChunk.Position.x, csChunk.Position.y, csChunk.BlocksInBytes);
-        chunk.RebuildMesh();
         AddToChunkDict(chunk);
-    }
-
-    public static void UnloadChunk(CSVector2Int chunkPos)
-    {
-        UnloadChunk(chunkPos.x, chunkPos.y);
+        ChunkRefresher.AddRefreshList(chunk);
     }
 
     public static void UnloadChunk(int x, int z)
@@ -180,7 +170,7 @@ public class ChunkManager : MonoBehaviour
         {
             foreach (CSVector2Int csv in rsp.LeaveViewChunks)
             {
-                UnloadChunk(csv);
+                UnloadChunk(csv.x, csv.y);
             }
             foreach (CSChunk cschunk in rsp.EnterViewChunks)
             {
@@ -189,6 +179,7 @@ public class ChunkManager : MonoBehaviour
             if (!PlayerController.isInitialized)
             {
                 PlayerController.Init();
+                ChunkRefresher.ForceRefreshAll();
             }
             ChunkChecker.FinishRefresh();
         }
