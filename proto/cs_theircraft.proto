@@ -1,0 +1,199 @@
+syntax = "proto2";
+
+enum CSBlockType
+{
+	None = 0;
+	Dirt = 1;
+	GrassBlock = 2;
+	Tnt = 3;
+	Brick = 4;
+	Furnace = 5;
+	HayBlock = 6;
+	Leaves = 7;
+	Grass = 8;
+	Stone = 9;
+	BedRock = 10;
+	Poppy = 11;
+	Dandelion = 12;
+	OakWood = 13;
+	OakLeaves = 14;
+}
+
+message CSVector2Int
+{
+	required int32 x = 1;
+	required int32 y = 2;
+}
+
+message CSVector3
+{
+	required float x = 1;
+	required float y = 2;
+	required float z = 3;
+}
+message CSVector3Int
+{
+	required int32 x = 1;
+	required int32 y = 2;
+	required int32 z = 3;
+}
+
+message CSBlock
+{
+	required CSVector3Int position = 1;
+	required CSBlockType type = 2;
+}
+
+message CSPlayer
+{
+	optional uint32 PlayerID = 2;
+	optional string Name = 3;
+	optional CSVector3 Position = 4;
+	optional CSVector3 Rotation = 5;
+}
+
+message CSChunk
+{
+	required CSVector2Int Position = 1;
+	repeated CSBlock Blocks = 2;
+	optional bytes BlocksInBytes = 3;
+	repeated CSPlayer Players = 4;
+}
+
+//CS_REGISTER_REQ
+message CSRegisterReq
+{
+	required string Account = 1;
+	required string Name = 2;
+	required string Password = 3;
+}
+
+//CS_REGISTER_RES
+message CSRegisterRes
+{
+	required int32 RetCode = 1;
+}
+
+//CS_LOGIN_REQ
+message CSLoginReq
+{
+	required string Account = 1;
+	required string Password = 2;
+}
+
+//CS_LOGIN_RES
+message CSLoginRes
+{
+	required int32 RetCode = 1;
+	optional CSPlayer PlayerData = 2;
+}
+
+//CS_SEND_MESSAGE_REQ
+message CSSendMessageReq
+{
+	required string Content = 1;
+}
+
+//CS_SEND_MESSAGE_RES
+message CSSendMessageRes
+{
+	required int32 RetCode = 1;
+}
+
+//CS_MESSAGE_NOTIFY
+message CSMessageNotify
+{
+	required string Name = 1;
+	required string Content = 2;
+}
+
+//CS_CHUNKS_ENTER_LEVAE_VIEW_REQ
+message CSChunksEnterLeaveViewReq
+{
+	repeated CSVector2Int EnterViewChunks = 1;
+	repeated CSVector2Int LeaveViewChunks = 2;
+}
+
+//CS_CHUNKS_ENTER_LEVAE_VIEW_RES
+message CSChunksEnterLeaveViewRes
+{
+	required int32 RetCode = 1;
+	repeated CSChunk EnterViewChunks = 2;
+	repeated CSVector2Int LeaveViewChunks = 3;
+}
+
+//CS_ADD_BLOCK_REQ
+message CSAddBlockReq
+{
+	required CSBlock block = 1;
+}
+
+//CS_ADD_BLOCK_RES
+message CSAddBlockRes
+{
+	required int32 RetCode = 1;
+	required CSBlock block = 2;
+}
+
+//CS_ADD_BLOCK_NOTIFY
+message CSAddBlockNotify
+{
+	required CSBlock block = 1;
+}
+
+//CS_DELETE_BLOCK_REQ
+message CSDeleteBlockReq
+{
+	required CSVector3Int position = 1;
+}
+
+//CS_DELETE_BLOCK_RES
+message CSDeleteBlockRes
+{
+	required int32 RetCode = 1;
+	required CSVector3Int position = 2;
+}
+
+//CS_DELETE_BLOCK_NOTIFY
+message CSDeleteBlockNotify
+{
+	required CSVector3Int position = 1;
+}
+
+//CS_HERO_MOVE_REQ
+message CSHeroMoveReq
+{
+	required CSVector3 Position = 1;
+	required CSVector3 Rotation = 2;
+}
+
+//CS_HERO_MOVE_RES
+message CSHeroMoveRes
+{
+	required int32 RetCode = 1;
+}
+
+//CS_PLAYER_MOVE_NOTIFY
+message CSPlayerMoveNotify
+{
+	required uint32 PlayerID = 1;
+	required CSVector3 Position = 2;
+	required CSVector3 Rotation = 3;
+}
+
+//CS_PLAYER_ENTER_VIEW_NOTIFY
+message CSPlayerEnterViewNotify
+{
+	required CSPlayer PlayerData = 1;
+}
+
+//CS_PLAYER_LEAVE_VIEW_NOTIFY
+message CSPlayerLeaveViewNotify
+{
+	required uint32 PlayerID = 1;
+}
+
+message BlobChunkData
+{
+	repeated CSBlock BlockList = 1;
+}
