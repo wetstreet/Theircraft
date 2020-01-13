@@ -96,15 +96,24 @@ public class ChunkMeshGenerator : MonoBehaviour
     static Vector3 farTopLeft = new Vector3(-0.5f, 0.5f, 0.5f);
     static Vector3 farTopRight = new Vector3(0.5f, 0.5f, 0.5f);
 
+    // because we pack textures so tightly, we need to manipulate uv coords slightly when sampling the texture.
+    static readonly float compensation = 0.01f;
+    static readonly float compensation_x = compensation / atlas_column;
+    static readonly float compensation_y = compensation / atlas_row;
+
     static void AddUV(List<Vector3> vertices, List<Vector2> uv, List<int> triangles, Vector2 texPos)
     {
         //上下翻转
         texPos.y = (atlas_row - 1) - texPos.y;
 
-        uv.Add(new Vector2(texPos.x / atlas_column, texPos.y / atlas_row));
-        uv.Add(new Vector2(texPos.x / atlas_column, (texPos.y + 1) / atlas_row));
-        uv.Add(new Vector2((texPos.x + 1) / atlas_column, texPos.y / atlas_row));
-        uv.Add(new Vector2((texPos.x + 1) / atlas_column, (texPos.y + 1) / atlas_row));
+        // bottom left
+        uv.Add(new Vector2(texPos.x / atlas_column + compensation_x, texPos.y / atlas_row + compensation_y));
+        // top left
+        uv.Add(new Vector2(texPos.x / atlas_column + compensation_x, (texPos.y + 1) / atlas_row - compensation_y));
+        // bottom right
+        uv.Add(new Vector2((texPos.x + 1) / atlas_column - compensation_x, texPos.y / atlas_row + compensation_y));
+        // top right
+        uv.Add(new Vector2((texPos.x + 1) / atlas_column - compensation_x, (texPos.y + 1) / atlas_row - compensation_y));
 
         int verticesCount = vertices.Count;
         triangles.Add(verticesCount - 4);
@@ -120,10 +129,14 @@ public class ChunkMeshGenerator : MonoBehaviour
         //上下翻转
         texPos.y = (atlas_row - 1) - texPos.y;
 
-        uv.Add(new Vector2(texPos.x / atlas_column, texPos.y / atlas_row));
-        uv.Add(new Vector2(texPos.x / atlas_column, (texPos.y + 1) / atlas_row));
-        uv.Add(new Vector2((texPos.x + 1) / atlas_column, texPos.y / atlas_row));
-        uv.Add(new Vector2((texPos.x + 1) / atlas_column, (texPos.y + 1) / atlas_row));
+        // bottom left
+        uv.Add(new Vector2(texPos.x / atlas_column + compensation_x, texPos.y / atlas_row + compensation_y));
+        // top left
+        uv.Add(new Vector2(texPos.x / atlas_column + compensation_x, (texPos.y + 1) / atlas_row - compensation_y));
+        // bottom right
+        uv.Add(new Vector2((texPos.x + 1) / atlas_column - compensation_x, texPos.y / atlas_row + compensation_y));
+        // top right
+        uv.Add(new Vector2((texPos.x + 1) / atlas_column - compensation_x, (texPos.y + 1) / atlas_row - compensation_y));
 
         int verticesCount = vertices.Count;
         triangles.Add(verticesCount - 4);
