@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using protocol.cs_theircraft;
+using protocol.cs_enum;
+using System.Linq;
 
 public class ChunkManager : MonoBehaviour
 {
@@ -17,16 +19,16 @@ public class ChunkManager : MonoBehaviour
         chunkDict.Remove(chunk.pos);
     }
 
-    //intput is global position
+    // intput is global position
     public static bool HasBlock(int x, int y, int z)
     {
         return GetBlockType(x, y, z) != CSBlockType.None;
     }
 
-    //intput is global position
+    // intput is global position
     public static CSBlockType GetBlockType(int x, int y, int z)
     {
-        //get chunk position first
+        // get chunk position first
         Chunk chunk = GetChunk(x, y, z);
         if (chunk != null)
         {
@@ -39,7 +41,7 @@ public class ChunkManager : MonoBehaviour
         return CSBlockType.None;
     }
 
-    //intput is global position
+    // intput is global position
     public static Chunk GetChunk(int x, int y, int z)
     {
         int chunkX = Chunk.GetChunkPosByGlobalPos(x);
@@ -92,6 +94,21 @@ public class ChunkManager : MonoBehaviour
         return chunkDict.Keys;
     }
 
+    // get the chunks to be load (chunks should be loaded - chunks already loaded)
+    public static List<Vector2Int> GetLoadChunks(Vector2Int centerChunkPos)
+    {
+        List<Vector2Int> shouldLoadChunks = Utilities.GetSurroudingChunks(centerChunkPos);
+        return shouldLoadChunks.Except(chunkDict.Keys).ToList();
+    }
+
+    // get the chunks to be unload (any chunks in the loaded chunks dict whose distance to the centerChunkPos is bigger than chunkRadius should be unloaded)
+    public static List<Vector2Int> GetUnloadChunks(Vector2Int centerChunkPos, int chunkRadius)
+    {
+        return chunkDict.Keys.Where(chunkPos => 
+            Mathf.Abs(chunkPos.x - centerChunkPos.x) > chunkRadius || Mathf.Abs(chunkPos.y - centerChunkPos.y) > chunkRadius
+            ).ToList();
+    }
+
     public static void LoadChunk(CSChunk csChunk)
     {
         //Debug.Log("loadChunk,x=" + csChunk.Position.x + ",z=" + csChunk.Position.y);
@@ -117,4 +134,68 @@ public class ChunkManager : MonoBehaviour
             ChunkPool.Recover(chunk);
         }
     }
+
+    #region enter/leave view
+    public static void ChunksEnterLeaveViewReq(List<Vector2Int> enterViewChunks, List<Vector2Int> leaveViewChunks = null)
+    {
+        CSChunksEnterLeaveViewReq req = new CSChunksEnterLeaveViewReq();
+
+        List<CSVector2Int> enter = new List<CSVector2Int>();
+        foreach (Vector2Int chunk in enterViewChunks)
+        {
+            CSVector2Int c = new CSVector2Int
+            {
+                x = chunk.x,
+                y = chunk.y
+            };
+            enter.Add(c);
+        }
+        req.EnterViewChunks.AddRange(enter);
+
+        if (leaveViewChunks != null)
+        {
+            List<CSVector2Int> leave = new List<CSVector2Int>();
+            foreach (Vector2Int chunk in leaveViewChunks)
+            {
+                CSVector2Int c = new CSVector2Int
+                {
+                    x = chunk.x,
+                    y = chunk.y
+                };
+                leave.Add(c);
+            }
+            req.LeaveViewChunks.AddRange(leave);
+        }
+
+        //Debug.Log("CS_CHUNKS_ENTER_LEVAE_VIEW_REQ," + req.EnterViewChunks.Count + "," + req.LeaveViewChunks.Count);
+        NetworkManager.SendPkgToServer(ENUM_CMD.CS_CHUNKS_ENTER_LEVAE_VIEW_REQ, req, ChunksEnterLeaveViewRes);
+    }
+
+    static void ChunksEnterLeaveViewRes(byte[] data)
+    {
+        CSChunksEnterLeaveViewRes rsp = NetworkManager.Deserialize<CSChunksEnterLeaveViewRes>(data);
+
+        //Debug.Log("CSChunksEnterLeaveViewRes," + rsp.EnterViewChunks.Count + "," + rsp.LeaveViewChunks.Count);
+        if (rsp.RetCode == 0)
+        {
+            foreach (CSVector2Int csv in rsp.LeaveViewChunks)
+            {
+                UnloadChunk(csv);
+            }
+            foreach (CSChunk cschunk in rsp.EnterViewChunks)
+            {
+                LoadChunk(cschunk);
+            }
+            if (!PlayerController.isInitialized)
+            {
+                PlayerController.Init();
+            }
+            ChunkChecker.FinishRefresh();
+        }
+        else
+        {
+            FastTips.Show(rsp.RetCode);
+        }
+    }
+    #endregion
 }

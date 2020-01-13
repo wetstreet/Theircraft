@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using protocol.cs_enum;
 using protocol.cs_theircraft;
 using UnityEngine.SceneManagement;

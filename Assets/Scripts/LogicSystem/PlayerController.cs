@@ -86,7 +86,14 @@ public class PlayerController : MonoBehaviour
 
     public static Vector2Int GetCurrentChunk()
     {
-        Utilities.GetChunk(ref chunkPos, instance.transform.localPosition);
+        if (instance != null)
+        {
+            Utilities.GetChunk(ref chunkPos, instance.transform.localPosition);
+        }
+        else
+        {
+            Utilities.GetChunk(ref chunkPos, DataCenter.spawnPosition);
+        }
         return chunkPos;
     }
 
