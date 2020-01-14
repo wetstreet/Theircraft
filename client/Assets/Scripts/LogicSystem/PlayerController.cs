@@ -21,7 +21,7 @@ public class PlayerController : MonoBehaviour
 
     bool isMoving;
     static bool acceptInput = true;
-    private static PlayerController instance;
+    public static PlayerController instance;
 
     public static bool isInitialized { get { return instance != null; } }
 

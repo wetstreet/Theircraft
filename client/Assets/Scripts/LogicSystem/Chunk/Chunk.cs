@@ -35,6 +35,7 @@ public class Chunk
         collidableGO.AddComponent<MeshFilter>();
         collidableGO.AddComponent<MeshRenderer>().sharedMaterial = Resources.Load<Material>("Materials/block");
         collidableGO.AddComponent<MeshCollider>();
+        collidableGO.AddComponent<NavMeshSourceTag>();
         collidableGO.layer = LayerMask.NameToLayer("Chunk");
 
         nonCollidableGO = new GameObject("NonCollidable");
