@@ -49,7 +49,9 @@ public class LocalNavMeshBuilder : MonoBehaviour
             {
                 if (p == null)
                 {
-                    p = new Player(new protocol.cs_theircraft.CSPlayer {
+                    OtherPlayerManager.AddPlayer(new protocol.cs_theircraft.CSPlayer
+                    {
+                        PlayerID = 1,
                         Position = new protocol.cs_theircraft.CSVector3
                         {
                             x = PlayerController.instance.transform.position.x,
@@ -58,6 +60,7 @@ public class LocalNavMeshBuilder : MonoBehaviour
                         },
                         Rotation = new protocol.cs_theircraft.CSVector3()
                     });
+                    p = OtherPlayerManager.GetPlayer(1);
                 }
                 p.SetDestination(hit.point);
             }

@@ -1,14 +1,28 @@
 ﻿using protocol.cs_enum;
 using protocol.cs_theircraft;
 using System.Collections.Generic;
+using UnityEngine;
 
-public static class OtherPlayerManager
+public class OtherPlayerManager : MonoBehaviour
 {
     static Dictionary<uint, Player> playerDict = new Dictionary<uint, Player>();
 
+    static OtherPlayerManager instance;
+
     public static void Init()
     {
+        GameObject go = new GameObject("OtherPlayer");
+        instance = go.AddComponent<OtherPlayerManager>();
+
         NetworkManager.Register(ENUM_CMD.CS_PLAYER_MOVE_NOTIFY, OnPlayerMoveNotify);
+    }
+
+    private void Update()
+    {
+        foreach (Player p in playerDict.Values)
+        {
+            p.Update();
+        }
     }
 
     static void OnPlayerMoveNotify(byte[] data)
@@ -18,9 +32,20 @@ public static class OtherPlayerManager
         MovePlayer(notify.PlayerID, notify.Position, notify.Rotation);
     }
 
-    public static void AddPlayer(CSPlayer player)
+    public static void AddPlayer(CSPlayer csplayer)
     {
-        playerDict.Add(player.PlayerID, new Player(player));
+        Player player = new Player(csplayer);
+        player.transform.parent = instance.transform;
+        playerDict.Add(csplayer.PlayerID, player);
+    }
+
+    public static Player GetPlayer(uint id)
+    {
+        if (playerDict.ContainsKey(id))
+        {
+            return playerDict[id];
+        }
+        return null;
     }
 
     public static void MovePlayer(uint id, CSVector3 pos, CSVector3 rot)
