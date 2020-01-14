@@ -90,6 +90,28 @@ public class ChunkManager : MonoBehaviour
         }
     }
 
+    static List<Chunk> GetNearbyChunks(int xInChunk, int zInChunk, Chunk chunk)
+    {
+        List<Chunk> nearbyChunks = new List<Chunk>();
+        if (xInChunk == 0)
+        {
+            nearbyChunks.Add(GetChunk(chunk.x - 1, chunk.z));
+        }
+        else if (xInChunk == 15)
+        {
+            nearbyChunks.Add(GetChunk(chunk.x + 1, chunk.z));
+        }
+        if (zInChunk == 0)
+        {
+            nearbyChunks.Add(GetChunk(chunk.x, chunk.z - 1));
+        }
+        else if (zInChunk == 15)
+        {
+            nearbyChunks.Add(GetChunk(chunk.x, chunk.z + 1));
+        }
+        return nearbyChunks;
+    }
+
     public static void RemoveBlock(int x, int y, int z)
     {
         Chunk chunk = GetChunk(x, y, z);
@@ -103,6 +125,12 @@ public class ChunkManager : MonoBehaviour
                 chunk.SetBlockType(xInChunk, y + 1, zInChunk, CSBlockType.None);
             }
             chunk.RebuildMesh();
+
+            // if this block is adjacent to other chunks, refresh nearby chunks
+            foreach (Chunk nearbyChunk in GetNearbyChunks(xInChunk, zInChunk, chunk))
+            {
+                nearbyChunk.RebuildMesh();
+            }
         }
     }
 
