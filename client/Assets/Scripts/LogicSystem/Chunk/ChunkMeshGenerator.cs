@@ -284,7 +284,7 @@ public class ChunkMeshGenerator : MonoBehaviour
         List<Vector3> vertices2 = new List<Vector3>(capacity2);
         List<Vector2> uv2 = new List<Vector2>(capacity2);
         List<int> triangles2 = new List<int>(capacity2);
-
+        
         Vector3 pos = new Vector3();
         //压缩后的数据结构
         for (int k = 0; k < 256; k++)
@@ -307,27 +307,29 @@ public class ChunkMeshGenerator : MonoBehaviour
                         }
                         else
                         {
-                            if (texCoords.isTransparent || !chunk.HasOpaqueBlock(i, k, j - 1))
+                            int chunkX = chunk.x * 16;
+                            int chunkZ = chunk.z * 16;
+                            if (texCoords.isTransparent || !ChunkManager.HasOpaqueBlock(chunkX + i, k, chunkZ + j - 1))
                             {
                                 AddFrontFace(vertices1, uv1, triangles1, pos, texCoords.front);
                             }
-                            if (texCoords.isTransparent || !chunk.HasOpaqueBlock(i + 1, k, j))
+                            if (texCoords.isTransparent || !ChunkManager.HasOpaqueBlock(chunkX + i + 1, k, chunkZ + j))
                             {
                                 AddRightFace(vertices1, uv1, triangles1, pos, texCoords.right);
                             }
-                            if (texCoords.isTransparent || !chunk.HasOpaqueBlock(i - 1, k, j))
+                            if (texCoords.isTransparent || !ChunkManager.HasOpaqueBlock(chunkX + i - 1, k, chunkZ + j))
                             {
                                 AddLeftFace(vertices1, uv1, triangles1, pos, texCoords.left);
                             }
-                            if (texCoords.isTransparent || !chunk.HasOpaqueBlock(i, k, j + 1))
+                            if (texCoords.isTransparent || !ChunkManager.HasOpaqueBlock(chunkX + i, k, chunkZ + j + 1))
                             {
                                 AddBackFace(vertices1, uv1, triangles1, pos, texCoords.back);
                             }
-                            if (texCoords.isTransparent || !chunk.HasOpaqueBlock(i, k + 1, j))
+                            if (texCoords.isTransparent || !ChunkManager.HasOpaqueBlock(chunkX + i, k + 1, chunkZ + j))
                             {
                                 AddTopFace(vertices1, uv1, triangles1, pos, texCoords.top);
                             }
-                            if (texCoords.isTransparent || !chunk.HasOpaqueBlock(i, k - 1, j))
+                            if (texCoords.isTransparent || !ChunkManager.HasOpaqueBlock(chunkX + i, k - 1, chunkZ + j))
                             {
                                 AddBottomFace(vertices1, uv1, triangles1, pos, texCoords.bottom);
                             }
@@ -348,32 +350,5 @@ public class ChunkMeshGenerator : MonoBehaviour
         transparentNonCollidable.triangles = triangles2.ToArray();
         chunk.nonCollidableGO.GetComponent<MeshFilter>().sharedMesh = transparentNonCollidable;
         chunk.nonCollidableGO.GetComponent<MeshCollider>().sharedMesh = transparentNonCollidable;
-
-        //CombineMesh(grass);
-
-        //Debug.Log("vertices Capacity=" + vertices.Capacity+ ",uv Capacity=" + uv.Capacity + ",triangles Capacity=" + triangles.Capacity);
-        //mesh.vertices = vertices.ToArray();
-        //mesh.uv = uv.ToArray();
-        //mesh.triangles = triangles.ToArray();
-
-        //return mesh;
-    }
-
-    static void CombineMesh(GameObject grass)
-    {
-        MeshFilter[] meshFilters = grass.GetComponentsInChildren<MeshFilter>();
-        CombineInstance[] combine = new CombineInstance[meshFilters.Length];
-
-        int i = 0;
-        while (i < meshFilters.Length)
-        {
-            combine[i].mesh = meshFilters[i].sharedMesh;
-            combine[i].transform = meshFilters[i].transform.localToWorldMatrix;
-            meshFilters[i].gameObject.SetActive(false);
-
-            i++;
-        }
-        grass.gameObject.AddComponent<MeshFilter>().mesh = new Mesh();
-        grass.transform.GetComponent<MeshFilter>().mesh.CombineMeshes(combine);
     }
 }

@@ -40,8 +40,12 @@ public class ChunkManager : MonoBehaviour
     }
 
     // intput is global position
-    public static CSBlockType GetBlockType(int x, int y, int z)
+    public static byte GetBlockByte(int x, int y, int z)
     {
+        if (y < 0 || y > 255)
+        {
+            return 0;
+        }
         // get chunk position first
         Chunk chunk = GetChunk(x, y, z);
         if (chunk != null)
@@ -50,15 +54,28 @@ public class ChunkManager : MonoBehaviour
             int xInChunk = chunk.GetXInChunkByGlobalX(x);
             int zInChunk = chunk.GetZInChunkByGlobalZ(z);
             //Debug.Log("GetBlockType,globalblockpos=(" + x + "," + y + "," + z + "),chunkpos=(" + chunk.x + "," + chunk.z + "),blockposinchunk=(" + xInChunk + "," + y + "," + zInChunk + ")");
-            return chunk.GetBlockType(xInChunk, y, zInChunk);
+            return chunk.GetBlockByte(xInChunk, y, zInChunk);
         }
-        return CSBlockType.None;
+        return 0;
+    }
+
+    // intput is global position
+    public static CSBlockType GetBlockType(int x, int y, int z)
+    {
+        return (CSBlockType)GetBlockByte(x, y, z);
     }
 
     // intput is global position
     public static bool HasBlock(int x, int y, int z)
     {
         return GetBlockType(x, y, z) != CSBlockType.None;
+    }
+
+    //input is global position
+    public static bool HasOpaqueBlock(int x, int y, int z)
+    {
+        byte type = GetBlockByte(x, y, z);
+        return type > 0 && !ChunkMeshGenerator.type2texcoords[type].isTransparent;
     }
 
     public static void AddBlock(int x, int y, int z, CSBlockType type)
