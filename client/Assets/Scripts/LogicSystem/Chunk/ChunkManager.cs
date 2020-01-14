@@ -5,7 +5,7 @@ using protocol.cs_theircraft;
 using protocol.cs_enum;
 using System.Linq;
 
-public class ChunkManager : MonoBehaviour
+public class ChunkManager
 {
     static readonly Dictionary<Vector2Int, Chunk> chunkDict = new Dictionary<Vector2Int, Chunk>();
 
@@ -224,6 +224,7 @@ public class ChunkManager : MonoBehaviour
             if (!PlayerController.isInitialized)
             {
                 PlayerController.Init();
+                LocalNavMeshBuilder.Init();
                 ChunkRefresher.ForceRefreshAll();
             }
             ChunkChecker.FinishRefresh();
