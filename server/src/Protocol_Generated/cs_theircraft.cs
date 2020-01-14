@@ -660,8 +660,8 @@ namespace protocol.cs_theircraft
       [global::ProtoBuf.ProtoEnum(Name=@"Dirt", Value=1)]
       Dirt = 1,
             
-      [global::ProtoBuf.ProtoEnum(Name=@"Grass", Value=2)]
-      Grass = 2,
+      [global::ProtoBuf.ProtoEnum(Name=@"GrassBlock", Value=2)]
+      GrassBlock = 2,
             
       [global::ProtoBuf.ProtoEnum(Name=@"Tnt", Value=3)]
       Tnt = 3,
@@ -673,7 +673,31 @@ namespace protocol.cs_theircraft
       Furnace = 5,
             
       [global::ProtoBuf.ProtoEnum(Name=@"HayBlock", Value=6)]
-      HayBlock = 6
+      HayBlock = 6,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"Leaves", Value=7)]
+      Leaves = 7,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"Grass", Value=8)]
+      Grass = 8,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"Stone", Value=9)]
+      Stone = 9,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"BedRock", Value=10)]
+      BedRock = 10,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"Poppy", Value=11)]
+      Poppy = 11,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"Dandelion", Value=12)]
+      Dandelion = 12,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"OakWood", Value=13)]
+      OakWood = 13,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"OakLeaves", Value=14)]
+      OakLeaves = 14
     }
   
 }
