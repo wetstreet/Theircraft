@@ -4,16 +4,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class Player
+public class Player : MonoBehaviour
 {
     public uint id;
-    public string name;
+    public string playerName;
     public Vector3 position;
     public Vector3 rotation;
-
-    public Transform transform;
+    
     private Transform steve;
-    Transform head;
+    private Transform head;
     private CharacterController cc;
     private NavMeshPath path;
 
@@ -26,31 +25,34 @@ public class Player
 
     public float angularSpeed = 300f;
 
-    public Player(CSPlayer p)
+    public static Player CreatePlayer(CSPlayer p)
     {
         GameObject prefab = Resources.Load<GameObject>("Prefabs/OtherPlayer");
-        transform = Object.Instantiate(prefab).transform;
-        transform.name = "player_" + p.PlayerID;
+        GameObject go = Instantiate(prefab);
+        Player player = go.AddComponent<Player>();
+        player.id = p.PlayerID;
+        player.playerName = p.Name;
+        player.position = Utilities.CSVector3_To_Vector3(p.Position);
+        player.rotation = Utilities.CSVector3_To_Vector3(p.Rotation);
+        return player;
+    }
+
+    private void Start()
+    {
+        transform.name = "player_" + id;
         steve = transform.Find("steve");
         head = transform.Find("steve/Armature/Move/Body_Lower/Body_Upper/Head.001");
         cc = transform.GetComponent<CharacterController>();
         path = new NavMeshPath();
 
-        Move(p.Position, p.Rotation);
+        transform.position = position;
+        transform.localEulerAngles = new Vector3(0, rotation.y, 0);
+        head.transform.localEulerAngles = new Vector3(0, 0, rotation.z);
+
+        Move();
     }
 
-    public void SetDestination(Vector3 pos)
-    {
-        if (Physics.Raycast(transform.position + transform.up / 2, -transform.up, out RaycastHit playerHit))
-        {
-            if (NavMesh.CalculatePath(playerHit.point, pos, NavMesh.AllAreas, path))
-            {
-                currTargetIndex = 1;
-            }
-        }
-    }
-
-    public void Update()
+    private void Update()
     {
         Vector3 horizontalDir = Vector3.zero;
         if (path.corners.Length > 0 && currTargetIndex != path.corners.Length)
@@ -58,6 +60,7 @@ public class Player
             Vector3 player2target = path.corners[currTargetIndex] - transform.position;
             horizontalDir = new Vector3(player2target.x, 0, player2target.z);
             float dis = horizontalDir.sqrMagnitude;
+            //Debug.Log("dis=" + dis);
             if (dis < 0.005f)
             {
                 if (currTargetIndex < path.corners.Length - 1)
@@ -85,9 +88,10 @@ public class Player
         if (cc.isGrounded)
         {
             moveDir.y = 0;
-
-            if (Input.GetKeyDown(KeyCode.F2))
+            
+            if (shouldJump)
             {
+                shouldJump = false;
                 moveDir.y = jumpSpeed;
             }
         }
@@ -97,13 +101,29 @@ public class Player
         cc.Move(moveDir * Time.deltaTime);
     }
 
-    public void Move(CSVector3 pos, CSVector3 rot)
+    bool shouldJump = false;
+    private void OnControllerColliderHit(ControllerColliderHit collision)
     {
-        position = new Vector3(pos.x, pos.y, pos.z);
-        rotation = new Vector3(rot.x, rot.y, rot.z);
+        if (collision.collider.gameObject.layer == LayerMask.NameToLayer("Chunk") && collision.normal.y == 0 && cc.isGrounded)
+        {
+            shouldJump = true;
+        }
+    }
 
-        transform.position = position;
-        transform.localEulerAngles = new Vector3(0, rotation.y, 0);
-        head.transform.localEulerAngles = new Vector3(0, 0, rotation.z);
+    public void Move()
+    {
+        if (Physics.Raycast(transform.position + transform.up / 2, -transform.up, out RaycastHit playerHit))
+        {
+            if (NavMesh.CalculatePath(playerHit.point, position, NavMesh.AllAreas, path))
+            {
+                currTargetIndex = 1;
+            }
+        }
+    }
+
+    public void Move(Vector3 pos)
+    {
+        position = pos;
+        Move();
     }
 }

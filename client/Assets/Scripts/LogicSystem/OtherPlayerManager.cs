@@ -17,14 +17,6 @@ public class OtherPlayerManager : MonoBehaviour
         NetworkManager.Register(ENUM_CMD.CS_PLAYER_MOVE_NOTIFY, OnPlayerMoveNotify);
     }
 
-    private void Update()
-    {
-        foreach (Player p in playerDict.Values)
-        {
-            p.Update();
-        }
-    }
-
     static void OnPlayerMoveNotify(byte[] data)
     {
         CSPlayerMoveNotify notify = NetworkManager.Deserialize<CSPlayerMoveNotify>(data);
@@ -34,7 +26,7 @@ public class OtherPlayerManager : MonoBehaviour
 
     public static void AddPlayer(CSPlayer csplayer)
     {
-        Player player = new Player(csplayer);
+        Player player = Player.CreatePlayer(csplayer);
         player.transform.parent = instance.transform;
         playerDict.Add(csplayer.PlayerID, player);
     }
@@ -53,7 +45,7 @@ public class OtherPlayerManager : MonoBehaviour
         if (playerDict.ContainsKey(id))
         {
             Player p = playerDict[id];
-            p.Move(pos, rot);
+            //p.Move(pos, rot);
         }
     }
 }

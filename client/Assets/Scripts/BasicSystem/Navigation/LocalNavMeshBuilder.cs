@@ -62,7 +62,11 @@ public class LocalNavMeshBuilder : MonoBehaviour
                     });
                     p = OtherPlayerManager.GetPlayer(1);
                 }
-                p.SetDestination(hit.point);
+                else
+                {
+                    p.Move(hit.point);
+
+                }
             }
         }
     }
