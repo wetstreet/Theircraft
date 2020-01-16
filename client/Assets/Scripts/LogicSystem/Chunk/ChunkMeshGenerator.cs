@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using protocol.cs_theircraft;
 
-public class ChunkMeshGenerator : MonoBehaviour
+public static class ChunkMeshGenerator
 {
     public struct TexCoords
     {
@@ -267,37 +267,15 @@ public class ChunkMeshGenerator : MonoBehaviour
         return mesh;
     }
     
-    public static void GenerateMesh(Chunk chunk)
+    public static void RefreshMeshData(this Chunk chunk)
     {
-        //Mesh opaqueCollidable = new Mesh();
-        //opaqueCollidable.name = "OpaqueCollidableMesh";
-
-        //int capacity1 = 8192;
-        //List<Vector3> vertices1 = new List<Vector3>(capacity1);
-        //List<Vector2> uv1 = new List<Vector2>(capacity1);
-        //List<int> triangles1 = new List<int>(capacity1);
-
-        //Mesh transparentNonCollidable = new Mesh();
-        //transparentNonCollidable.name = "TransparentNonCollidableMesh";
-
-        //int capacity2 = 1024;
-        //List<Vector3> vertices2 = new List<Vector3>(capacity2);
-        //List<Vector2> uv2 = new List<Vector2>(capacity2);
-        //List<int> triangles2 = new List<int>(capacity2);
-
         chunk.vertices1.Clear();
         chunk.uv1.Clear();
         chunk.triangles1.Clear();
-        List<Vector3> vertices1 = chunk.vertices1;
-        List<Vector2> uv1 = chunk.uv1;
-        List<int> triangles1 = chunk.triangles1;
 
         chunk.vertices2.Clear();
         chunk.uv2.Clear();
         chunk.triangles2.Clear();
-        List<Vector3> vertices2 = chunk.vertices2;
-        List<Vector2> uv2 = chunk.uv2;
-        List<int> triangles2 = chunk.triangles2;
 
         Vector3 pos = new Vector3();
         //压缩后的数据结构
@@ -316,53 +294,39 @@ public class ChunkMeshGenerator : MonoBehaviour
 
                         if (!texCoords.isCollidable)
                         {
-                            AddDiagonalFace(vertices2, uv2, triangles2, pos, texCoords.front);
-                            AddAntiDiagonalFace(vertices2, uv2, triangles2, pos, texCoords.front);
+                            AddDiagonalFace(chunk.vertices2, chunk.uv2, chunk.triangles2, pos, texCoords.front);
+                            AddAntiDiagonalFace(chunk.vertices2, chunk.uv2, chunk.triangles2, pos, texCoords.front);
                         }
                         else
                         {
-                            int chunkX = chunk.x * 16;
-                            int chunkZ = chunk.z * 16;
-                            if (texCoords.isTransparent || !ChunkManager.HasOpaqueBlock(chunkX + i, k, chunkZ + j - 1))
+                            if (texCoords.isTransparent || !ChunkManager.HasOpaqueBlock(chunk.globalX + i, k, chunk.globalZ + j - 1))
                             {
-                                AddFrontFace(vertices1, uv1, triangles1, pos, texCoords.front);
+                                AddFrontFace(chunk.vertices1, chunk.uv1, chunk.triangles1, pos, texCoords.front);
                             }
-                            if (texCoords.isTransparent || !ChunkManager.HasOpaqueBlock(chunkX + i + 1, k, chunkZ + j))
+                            if (texCoords.isTransparent || !ChunkManager.HasOpaqueBlock(chunk.globalX + i + 1, k, chunk.globalZ + j))
                             {
-                                AddRightFace(vertices1, uv1, triangles1, pos, texCoords.right);
+                                AddRightFace(chunk.vertices1, chunk.uv1, chunk.triangles1, pos, texCoords.right);
                             }
-                            if (texCoords.isTransparent || !ChunkManager.HasOpaqueBlock(chunkX + i - 1, k, chunkZ + j))
+                            if (texCoords.isTransparent || !ChunkManager.HasOpaqueBlock(chunk.globalX + i - 1, k, chunk.globalZ + j))
                             {
-                                AddLeftFace(vertices1, uv1, triangles1, pos, texCoords.left);
+                                AddLeftFace(chunk.vertices1, chunk.uv1, chunk.triangles1, pos, texCoords.left);
                             }
-                            if (texCoords.isTransparent || !ChunkManager.HasOpaqueBlock(chunkX + i, k, chunkZ + j + 1))
+                            if (texCoords.isTransparent || !ChunkManager.HasOpaqueBlock(chunk.globalX + i, k, chunk.globalZ + j + 1))
                             {
-                                AddBackFace(vertices1, uv1, triangles1, pos, texCoords.back);
+                                AddBackFace(chunk.vertices1, chunk.uv1, chunk.triangles1, pos, texCoords.back);
                             }
-                            if (texCoords.isTransparent || !ChunkManager.HasOpaqueBlock(chunkX + i, k + 1, chunkZ + j))
+                            if (texCoords.isTransparent || !ChunkManager.HasOpaqueBlock(chunk.globalX + i, k + 1, chunk.globalZ + j))
                             {
-                                AddTopFace(vertices1, uv1, triangles1, pos, texCoords.top);
+                                AddTopFace(chunk.vertices1, chunk.uv1, chunk.triangles1, pos, texCoords.top);
                             }
-                            if (texCoords.isTransparent || !ChunkManager.HasOpaqueBlock(chunkX + i, k - 1, chunkZ + j))
+                            if (texCoords.isTransparent || !ChunkManager.HasOpaqueBlock(chunk.globalX + i, k - 1, chunk.globalZ + j))
                             {
-                                AddBottomFace(vertices1, uv1, triangles1, pos, texCoords.bottom);
+                                AddBottomFace(chunk.vertices1, chunk.uv1, chunk.triangles1, pos, texCoords.bottom);
                             }
                         }
                     }
                 }
             }
         }
-
-        //opaqueCollidable.vertices = vertices1.ToArray();
-        //opaqueCollidable.uv = uv1.ToArray();
-        //opaqueCollidable.triangles = triangles1.ToArray();
-        //chunk.collidableGO.GetComponent<MeshFilter>().sharedMesh = opaqueCollidable;
-        //chunk.collidableGO.GetComponent<MeshCollider>().sharedMesh = opaqueCollidable;
-
-        //transparentNonCollidable.vertices = vertices2.ToArray();
-        //transparentNonCollidable.uv = uv2.ToArray();
-        //transparentNonCollidable.triangles = triangles2.ToArray();
-        //chunk.nonCollidableGO.GetComponent<MeshFilter>().sharedMesh = transparentNonCollidable;
-        //chunk.nonCollidableGO.GetComponent<MeshCollider>().sharedMesh = transparentNonCollidable;
     }
 }

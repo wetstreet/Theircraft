@@ -16,34 +16,26 @@ public class GameStart : MonoBehaviour
         
         List<Vector2Int> preloadChunks = Utilities.GetSurroudingChunks(PlayerController.GetCurrentChunk());
         ChunkManager.ChunksEnterLeaveViewReq(preloadChunks);
-
-        rebuildCoroutine = StartCoroutine(RebuildChunks());
     }
 
+    public static Queue<Chunk> rebuildQueue = new Queue<Chunk>();
     void Update()
     {
         if (PlayerController.isInitialized)
         {
             ChunkChecker.Update();
+
+            // rebuild one chunk per frame
+            if (rebuildQueue.Count > 0)
+            {
+                Chunk chunk = rebuildQueue.Dequeue();
+                chunk.RebuildMesh();
+            }
         }
     }
 
     private void OnDestroy()
     {
         ChunkRefresher.Uninit();
-    }
-
-
-    public static Queue<Chunk> rebuildQueue = new Queue<Chunk>();
-    static Coroutine rebuildCoroutine;
-    IEnumerator RebuildChunks()
-    {
-        while (rebuildQueue.Count > 0)
-        {
-            Chunk chunk = rebuildQueue.Dequeue();
-            chunk.RebuildMesh();
-            yield return null;
-        }
-        yield return null;
     }
 }

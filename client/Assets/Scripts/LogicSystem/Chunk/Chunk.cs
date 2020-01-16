@@ -6,24 +6,17 @@ public class Chunk
 {
     public int x;
     public int z;
+    public int globalX;
+    public int globalZ;
     public Vector2Int pos;      //used for index in dictionary
     public Transform transform;
     public GameObject gameObject;
     public byte[] blocksInByte;
-    GameObject plantGameObject;
 
     static int capacity = 8192;
 
     public GameObject collidableGO;
     public GameObject nonCollidableGO;
-
-    //public List<Vector3> vertices = new List<Vector3>(capacity);
-    //public List<Vector2> uv = new List<Vector2>(capacity);
-    //public List<int> triangles = new List<int>(capacity);
-
-    //public List<Vector3> plantVertices = new List<Vector3>(1024);
-    //public List<Vector2> plantUV = new List<Vector2>(1024);
-    //public List<int> plantTriangles = new List<int>(1024);
 
     static int capacity1 = 8192;
     public List<Vector3> vertices1 = new List<Vector3>(capacity1);
@@ -71,6 +64,8 @@ public class Chunk
         z = _z;
         pos.x = x;
         pos.y = z;
+        globalX = x * 16;
+        globalZ = z * 16;
         blocksInByte = _blocksInByte;
         gameObject.name = "chunk (" + x + "," + z + ")";
         transform.localPosition = new Vector3(x * 16, 0, z * 16);
@@ -131,17 +126,12 @@ public class Chunk
         return type > 0 && !ChunkMeshGenerator.type2texcoords[type].isTransparent;
     }
 
-    public void RefreshMeshData()
-    {
-        ChunkMeshGenerator.GenerateMesh(this);
-    }
-
     public void RebuildMesh()
     {
         collidableMesh.Clear();
-        collidableMesh.vertices = vertices1.ToArray();
-        collidableMesh.uv = uv1.ToArray();
-        collidableMesh.triangles = triangles1.ToArray();
+        collidableMesh.SetVertices(vertices1);
+        collidableMesh.SetUVs(0, uv1);
+        collidableMesh.SetTriangles(triangles1, 0);
         collidableGO.GetComponent<MeshFilter>().sharedMesh = collidableMesh;
         collidableGO.GetComponent<MeshCollider>().sharedMesh = collidableMesh;
         

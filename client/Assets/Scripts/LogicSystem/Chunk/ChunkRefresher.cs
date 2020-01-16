@@ -9,17 +9,20 @@ public class ChunkRefresher
 
     static void RefreshChunks()
     {
-        if (refreshChunkList.Count > 0)
+        while (true)
         {
-            refreshChunkList.Sort(ChunkComparer.instance);
-            Chunk chunk = refreshChunkList[0];
-
-            // do not refresh if chunk is not in front
-            if (PlayerController.GetChunkToFrontDot(chunk) > 0)
+            if (PlayerController.isInitialized && refreshChunkList.Count > 0)
             {
-                chunk.RefreshMeshData();
-                GameStart.rebuildQueue.Enqueue(chunk);
-                refreshChunkList.RemoveAt(0);
+                refreshChunkList.Sort(ChunkComparer.instance);
+                Chunk chunk = refreshChunkList[0];
+
+                // do not refresh if chunk is not in front
+                if (PlayerController.GetChunkToFrontDot(chunk) > 0)
+                {
+                    chunk.RefreshMeshData();
+                    GameStart.rebuildQueue.Enqueue(chunk);
+                    refreshChunkList.RemoveAt(0);
+                }
             }
         }
     }

@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    public Vector3 position = new Vector3();
+    public Vector3 forward = new Vector3();
     public float horizontalScale = 1;
     public float verticalScale = 1;
 
@@ -23,7 +25,7 @@ public class PlayerController : MonoBehaviour
     static bool acceptInput = true;
     public static PlayerController instance;
 
-    public static bool isInitialized { get { return instance != null; } }
+    public static bool isInitialized = false;
 
     public static void LockCursor(bool isLock)
     {
@@ -80,6 +82,11 @@ public class PlayerController : MonoBehaviour
 
         blockMeshFilter = camera.transform.Find("hand/block").GetComponent<MeshFilter>();
         handMeshRenderer = camera.transform.Find("hand").GetComponent<MeshRenderer>();
+
+        position = transform.position;
+        forward = transform.forward;
+
+        isInitialized = true;
     }
 
     static Vector2Int chunkPos = new Vector2Int();
@@ -97,13 +104,13 @@ public class PlayerController : MonoBehaviour
         return chunkPos;
     }
 
+    static Vector3 _chunkPos = new Vector3();
     // get the dot product between the player front vector and chunk to player vector.
     public static float GetChunkToFrontDot(Chunk chunk)
     {
-        Vector3 pos = chunk.transform.position;
-        pos.y = instance.transform.position.y;
-        Vector3 chunk2player = pos - instance.transform.position;
-        return Vector3.Dot(instance.transform.forward, chunk2player.normalized);
+        _chunkPos.Set(chunk.globalX, instance.position.y, chunk.globalZ);
+        Vector3 chunk2player = _chunkPos - instance.position;
+        return Vector3.Dot(instance.forward, chunk2player.normalized);
     }
 
     public static void ShowHand()
@@ -273,7 +280,10 @@ public class PlayerController : MonoBehaviour
             }
         }
         cc.Move(horizontalMovement * horizontalScale + verticalMovement * verticalScale);
-        
+
+        position = transform.position;
+        forward = transform.forward;
+
         if (cc.isGrounded)
         {
             verticalSpeed = Vector3.zero;
