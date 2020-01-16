@@ -78,6 +78,13 @@ public class ChunkManager
         return type > 0 && !ChunkMeshGenerator.type2texcoords[type].isTransparent;
     }
 
+    //input is global position
+    public static bool HasTransparentBlock(int x, int y, int z)
+    {
+        byte type = GetBlockByte(x, y, z);
+        return type > 0 && ChunkMeshGenerator.type2texcoords[type].isTransparent;
+    }
+
     public static void AddBlock(int x, int y, int z, CSBlockType type)
     {
         Chunk chunk = GetChunk(x, y, z);
@@ -86,7 +93,6 @@ public class ChunkManager
             int xInChunk = chunk.GetXInChunkByGlobalX(x);
             int zInChunk = chunk.GetZInChunkByGlobalZ(z);
             chunk.SetBlockType(xInChunk, y, zInChunk, type);
-            chunk.RefreshMeshData();
             chunk.RebuildMesh();
         }
     }
@@ -125,13 +131,11 @@ public class ChunkManager
             {
                 chunk.SetBlockType(xInChunk, y + 1, zInChunk, CSBlockType.None);
             }
-            chunk.RefreshMeshData();
             chunk.RebuildMesh();
 
             // if this block is adjacent to other chunks, refresh nearby chunks
             foreach (Chunk nearbyChunk in GetNearbyChunks(xInChunk, zInChunk, chunk))
             {
-                nearbyChunk.RefreshMeshData();
                 nearbyChunk.RebuildMesh();
             }
         }

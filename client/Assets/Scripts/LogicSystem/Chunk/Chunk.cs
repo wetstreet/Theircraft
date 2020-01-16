@@ -126,8 +126,13 @@ public class Chunk
         return type > 0 && !ChunkMeshGenerator.type2texcoords[type].isTransparent;
     }
 
-    public void RebuildMesh()
+    public void RebuildMesh(bool forceRefreshMeshData = true)
     {
+        if (forceRefreshMeshData)
+        {
+            this.RefreshMeshData();
+        }
+
         collidableMesh.Clear();
         collidableMesh.SetVertices(vertices1);
         collidableMesh.SetUVs(0, uv1);

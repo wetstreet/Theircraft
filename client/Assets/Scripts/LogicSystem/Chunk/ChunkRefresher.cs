@@ -35,8 +35,7 @@ public class ChunkRefresher
     public static void Init()
     {
         chunkRefreshThread = new Thread(RefreshChunks);
-        chunkRefreshThread.Start();
-        
+        //chunkRefreshThread.Start();
     }
 
     public static void Uninit()
@@ -61,7 +60,6 @@ public class ChunkRefresher
         {
             foreach (Chunk chunk in refreshChunkList)
             {
-                chunk.RefreshMeshData();
                 chunk.RebuildMesh();
             }
             refreshChunkList.Clear();

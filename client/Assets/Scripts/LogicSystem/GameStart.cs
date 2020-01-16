@@ -29,7 +29,7 @@ public class GameStart : MonoBehaviour
             if (rebuildQueue.Count > 0)
             {
                 Chunk chunk = rebuildQueue.Dequeue();
-                chunk.RebuildMesh();
+                chunk.RebuildMesh(false);
             }
         }
     }
