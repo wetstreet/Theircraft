@@ -17,17 +17,20 @@ public class ChunkRefresher
             // do not refresh if chunk is not in front
             if (PlayerController.GetChunkToFrontDot(chunk) > 0)
             {
-                chunk.RebuildMesh();
+                chunk.RefreshMeshData();
+                GameStart.rebuildQueue.Enqueue(chunk);
                 refreshChunkList.RemoveAt(0);
             }
         }
     }
 
     static Thread chunkRefreshThread;
+    static Coroutine rebuildCoroutine;
     public static void Init()
     {
         chunkRefreshThread = new Thread(RefreshChunks);
         chunkRefreshThread.Start();
+        
     }
 
     public static void Uninit()
@@ -35,15 +38,21 @@ public class ChunkRefresher
         chunkRefreshThread.Abort();
     }
 
-    public static void AddRefreshList(Chunk chunk)
+    public static void Add(Chunk chunk)
     {
         refreshChunkList.Add(chunk);
+    }
+
+    public static void Remove(Chunk chunk)
+    {
+        refreshChunkList.Remove(chunk);
     }
 
     public static void ForceRefreshAll()
     {
         foreach (Chunk chunk in refreshChunkList)
         {
+            chunk.RefreshMeshData();
             chunk.RebuildMesh();
         }
         refreshChunkList.Clear();

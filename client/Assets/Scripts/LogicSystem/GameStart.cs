@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class GameStart : MonoBehaviour
@@ -14,6 +16,8 @@ public class GameStart : MonoBehaviour
         
         List<Vector2Int> preloadChunks = Utilities.GetSurroudingChunks(PlayerController.GetCurrentChunk());
         ChunkManager.ChunksEnterLeaveViewReq(preloadChunks);
+
+        rebuildCoroutine = StartCoroutine(RebuildChunks());
     }
 
     void Update()
@@ -27,5 +31,19 @@ public class GameStart : MonoBehaviour
     private void OnDestroy()
     {
         ChunkRefresher.Uninit();
+    }
+
+
+    public static Queue<Chunk> rebuildQueue = new Queue<Chunk>();
+    static Coroutine rebuildCoroutine;
+    IEnumerator RebuildChunks()
+    {
+        while (rebuildQueue.Count > 0)
+        {
+            Chunk chunk = rebuildQueue.Dequeue();
+            chunk.RebuildMesh();
+            yield return null;
+        }
+        yield return null;
     }
 }

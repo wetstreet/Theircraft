@@ -269,22 +269,36 @@ public class ChunkMeshGenerator : MonoBehaviour
     
     public static void GenerateMesh(Chunk chunk)
     {
-        Mesh opaqueCollidable = new Mesh();
-        opaqueCollidable.name = "OpaqueCollidableMesh";
+        //Mesh opaqueCollidable = new Mesh();
+        //opaqueCollidable.name = "OpaqueCollidableMesh";
 
-        int capacity1 = 8192;
-        List<Vector3> vertices1 = new List<Vector3>(capacity1);
-        List<Vector2> uv1 = new List<Vector2>(capacity1);
-        List<int> triangles1 = new List<int>(capacity1);
+        //int capacity1 = 8192;
+        //List<Vector3> vertices1 = new List<Vector3>(capacity1);
+        //List<Vector2> uv1 = new List<Vector2>(capacity1);
+        //List<int> triangles1 = new List<int>(capacity1);
 
-        Mesh transparentNonCollidable = new Mesh();
-        transparentNonCollidable.name = "TransparentNonCollidableMesh";
+        //Mesh transparentNonCollidable = new Mesh();
+        //transparentNonCollidable.name = "TransparentNonCollidableMesh";
 
-        int capacity2 = 1024;
-        List<Vector3> vertices2 = new List<Vector3>(capacity2);
-        List<Vector2> uv2 = new List<Vector2>(capacity2);
-        List<int> triangles2 = new List<int>(capacity2);
-        
+        //int capacity2 = 1024;
+        //List<Vector3> vertices2 = new List<Vector3>(capacity2);
+        //List<Vector2> uv2 = new List<Vector2>(capacity2);
+        //List<int> triangles2 = new List<int>(capacity2);
+
+        chunk.vertices1.Clear();
+        chunk.uv1.Clear();
+        chunk.triangles1.Clear();
+        List<Vector3> vertices1 = chunk.vertices1;
+        List<Vector2> uv1 = chunk.uv1;
+        List<int> triangles1 = chunk.triangles1;
+
+        chunk.vertices2.Clear();
+        chunk.uv2.Clear();
+        chunk.triangles2.Clear();
+        List<Vector3> vertices2 = chunk.vertices2;
+        List<Vector2> uv2 = chunk.uv2;
+        List<int> triangles2 = chunk.triangles2;
+
         Vector3 pos = new Vector3();
         //压缩后的数据结构
         for (int k = 0; k < 256; k++)
@@ -339,16 +353,16 @@ public class ChunkMeshGenerator : MonoBehaviour
             }
         }
 
-        opaqueCollidable.vertices = vertices1.ToArray();
-        opaqueCollidable.uv = uv1.ToArray();
-        opaqueCollidable.triangles = triangles1.ToArray();
-        chunk.collidableGO.GetComponent<MeshFilter>().sharedMesh = opaqueCollidable;
-        chunk.collidableGO.GetComponent<MeshCollider>().sharedMesh = opaqueCollidable;
+        //opaqueCollidable.vertices = vertices1.ToArray();
+        //opaqueCollidable.uv = uv1.ToArray();
+        //opaqueCollidable.triangles = triangles1.ToArray();
+        //chunk.collidableGO.GetComponent<MeshFilter>().sharedMesh = opaqueCollidable;
+        //chunk.collidableGO.GetComponent<MeshCollider>().sharedMesh = opaqueCollidable;
 
-        transparentNonCollidable.vertices = vertices2.ToArray();
-        transparentNonCollidable.uv = uv2.ToArray();
-        transparentNonCollidable.triangles = triangles2.ToArray();
-        chunk.nonCollidableGO.GetComponent<MeshFilter>().sharedMesh = transparentNonCollidable;
-        chunk.nonCollidableGO.GetComponent<MeshCollider>().sharedMesh = transparentNonCollidable;
+        //transparentNonCollidable.vertices = vertices2.ToArray();
+        //transparentNonCollidable.uv = uv2.ToArray();
+        //transparentNonCollidable.triangles = triangles2.ToArray();
+        //chunk.nonCollidableGO.GetComponent<MeshFilter>().sharedMesh = transparentNonCollidable;
+        //chunk.nonCollidableGO.GetComponent<MeshCollider>().sharedMesh = transparentNonCollidable;
     }
 }

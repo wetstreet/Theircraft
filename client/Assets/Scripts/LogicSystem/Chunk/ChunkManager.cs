@@ -155,7 +155,7 @@ public class ChunkManager
         Chunk chunk = ChunkPool.GetChunk();
         chunk.SetData(csChunk.Position.x, csChunk.Position.y, csChunk.BlocksInBytes);
         AddToChunkDict(chunk);
-        ChunkRefresher.AddRefreshList(chunk);
+        ChunkRefresher.Add(chunk);
     }
 
     public static void UnloadChunk(int x, int z)
@@ -164,6 +164,7 @@ public class ChunkManager
         Chunk chunk = GetChunk(x, z);
         if (chunk != null)
         {
+            ChunkRefresher.Remove(chunk);
             chunk.ClearData();
             RemoveFromChunkDict(chunk);
             ChunkPool.Recover(chunk);
