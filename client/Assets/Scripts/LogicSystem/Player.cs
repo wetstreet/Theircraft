@@ -102,11 +102,14 @@ public class Player : MonoBehaviour
     }
 
     bool shouldJump = false;
+    float lastCollisionTime;
     private void OnControllerColliderHit(ControllerColliderHit collision)
     {
-        if (collision.collider.gameObject.layer == LayerMask.NameToLayer("Chunk") && collision.normal.y == 0 && cc.isGrounded)
+        float timediff = Time.time - lastCollisionTime;
+        if (collision.collider.gameObject.layer == LayerMask.NameToLayer("Chunk") && collision.normal.y == 0 && cc.isGrounded && timediff >= 0.1f)
         {
             shouldJump = true;
+            lastCollisionTime = Time.time;
         }
     }
 
