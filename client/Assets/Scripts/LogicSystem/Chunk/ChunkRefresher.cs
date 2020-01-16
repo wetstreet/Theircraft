@@ -11,17 +11,20 @@ public class ChunkRefresher
     {
         while (true)
         {
-            if (PlayerController.isInitialized && refreshChunkList.Count > 0)
+            lock (refreshChunkList)
             {
-                refreshChunkList.Sort(ChunkComparer.instance);
-                Chunk chunk = refreshChunkList[0];
-
-                // do not refresh if chunk is not in front
-                if (PlayerController.GetChunkToFrontDot(chunk) > 0)
+                if (PlayerController.isInitialized && refreshChunkList.Count > 0)
                 {
-                    chunk.RefreshMeshData();
-                    GameStart.rebuildQueue.Enqueue(chunk);
-                    refreshChunkList.RemoveAt(0);
+                    refreshChunkList.Sort(ChunkComparer.instance);
+                    Chunk chunk = refreshChunkList[0];
+
+                    // do not refresh if chunk is not in front
+                    if (PlayerController.GetChunkToFrontDot(chunk) > 0)
+                    {
+                        chunk.RefreshMeshData();
+                        GameStart.rebuildQueue.Enqueue(chunk);
+                        refreshChunkList.RemoveAt(0);
+                    }
                 }
             }
         }
@@ -53,11 +56,15 @@ public class ChunkRefresher
 
     public static void ForceRefreshAll()
     {
-        foreach (Chunk chunk in refreshChunkList)
+
+        lock (refreshChunkList)
         {
-            chunk.RefreshMeshData();
-            chunk.RebuildMesh();
+            foreach (Chunk chunk in refreshChunkList)
+            {
+                chunk.RefreshMeshData();
+                chunk.RebuildMesh();
+            }
+            refreshChunkList.Clear();
         }
-        refreshChunkList.Clear();
     }
 }

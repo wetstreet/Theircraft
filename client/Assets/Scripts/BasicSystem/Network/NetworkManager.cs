@@ -195,10 +195,9 @@ public static class NetworkManager
 
     public static T Deserialize<T>(object data)
     {
-        T obj = (T)data;
-        if (obj != null)
+        if (IsSingle)
         {
-            return obj;
+            return (T)data;
         }
         MemoryStream stream = new MemoryStream((byte[])data);
         return Serializer.Deserialize<T>(stream);
