@@ -182,7 +182,7 @@ public class ChatPanel : MonoBehaviour
         NetworkManager.SendPkgToServer(ENUM_CMD.CS_SEND_MESSAGE_REQ, req, OnSendMessageRes);
     }
 
-    void OnSendMessageRes(byte[] data)
+    void OnSendMessageRes(object data)
     {
         CSSendMessageRes rsp = NetworkManager.Deserialize<CSSendMessageRes>(data);
         //Debug.Log("OnSendMessageRes,retCode=" + res.RetCode);
@@ -197,7 +197,7 @@ public class ChatPanel : MonoBehaviour
             FastTips.Show(rsp.RetCode);
         }
     }
-    static void OnMessageNotify(byte[] data)
+    static void OnMessageNotify(object data)
     {
         CSMessageNotify notify = NetworkManager.Deserialize<CSMessageNotify>(data);
         //Debug.Log($"OnMessageNotify,name={notify.Name},content={notify.Content}");

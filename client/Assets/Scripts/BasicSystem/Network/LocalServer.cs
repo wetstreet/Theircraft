@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class LocalServer : MonoBehaviour
 {
-    delegate void LocalServerCallback(object T, Action<byte[]> callback);
+    delegate void LocalServerCallback(object T, Action<object> callback);
 
     static Dictionary<ENUM_CMD, LocalServerCallback> dict = new Dictionary<ENUM_CMD, LocalServerCallback>
     {
@@ -18,7 +18,7 @@ public class LocalServer : MonoBehaviour
         [ENUM_CMD.CS_ADD_BLOCK_REQ] = Single_OnAddBlockReq,
     };
 
-    public static bool ProcessRequest<T>(ENUM_CMD cmdID, T obj, Action<byte[]> callback = null)
+    public static bool ProcessRequest<T>(ENUM_CMD cmdID, T obj, Action<object> callback = null)
     {
         if (dict.ContainsKey(cmdID))
         {
@@ -28,7 +28,7 @@ public class LocalServer : MonoBehaviour
         return false;
     }
 
-    static void Single_OnLoginReq(object obj, Action<byte[]> callback)
+    static void Single_OnLoginReq(object obj, Action<object> callback)
     {
         Debug.Log("OnSingleLoginReq");
         CSLoginReq req = obj as CSLoginReq;
@@ -44,10 +44,10 @@ public class LocalServer : MonoBehaviour
             }
         };
         
-        callback(NetworkManager.Serialize(rsp));
+        callback(rsp);
     }
 
-    static void Single_OnChunksEnterLeaveViewReq(object obj, Action<byte[]> callback)
+    static void Single_OnChunksEnterLeaveViewReq(object obj, Action<object> callback)
     {
         CSChunksEnterLeaveViewReq req = obj as CSChunksEnterLeaveViewReq;
         CSChunksEnterLeaveViewRes res = new CSChunksEnterLeaveViewRes();
@@ -64,29 +64,29 @@ public class LocalServer : MonoBehaviour
         {
             res.LeaveViewChunks.Add(chunk);
         }
-        callback(NetworkManager.Serialize(res));
+        callback(res);
     }
 
-    static void Single_OnHeroMoveReq(object obj, Action<byte[]> callback)
+    static void Single_OnHeroMoveReq(object obj, Action<object> callback)
     {
         CSHeroMoveReq req = obj as CSHeroMoveReq;
     }
 
-    static void Single_OnDeleteBlockReq(object obj, Action<byte[]> callback)
+    static void Single_OnDeleteBlockReq(object obj, Action<object> callback)
     {
         CSDeleteBlockReq req = obj as CSDeleteBlockReq;
         CSDeleteBlockRes res = new CSDeleteBlockRes();
         res.RetCode = 0;
         res.position = req.position;
-        callback(NetworkManager.Serialize(res));
+        callback(res);
     }
 
-    static void Single_OnAddBlockReq(object obj, Action<byte[]> callback)
+    static void Single_OnAddBlockReq(object obj, Action<object> callback)
     {
         CSAddBlockReq req = obj as CSAddBlockReq;
         CSAddBlockRes res = new CSAddBlockRes();
         res.RetCode = 0;
         res.block = req.block;
-        callback(NetworkManager.Serialize(res));
+        callback(res);
     }
 }

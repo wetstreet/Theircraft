@@ -193,9 +193,14 @@ public static class NetworkManager
         }
     }
 
-    public static T Deserialize<T>(byte[] data)
+    public static T Deserialize<T>(object data)
     {
-        MemoryStream stream = new MemoryStream(data);
+        T obj = (T)data;
+        if (obj != null)
+        {
+            return obj;
+        }
+        MemoryStream stream = new MemoryStream((byte[])data);
         return Serializer.Deserialize<T>(stream);
     }
 
@@ -206,7 +211,7 @@ public static class NetworkManager
         return stream.ToArray();
     }
 
-    public static void SendPkgToServer<T>(ENUM_CMD cmdID, T obj, Action<byte[]> callback = null)
+    public static void SendPkgToServer<T>(ENUM_CMD cmdID, T obj, Action<object> callback = null)
     {
         //Debug.Log("SendPkgToServer,cmd=" + cmdID);
         if (IsSingle && LocalServer.ProcessRequest(cmdID, obj, callback))

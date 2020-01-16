@@ -1,26 +1,18 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
 // refresh chunk meshes based on priority
 public class ChunkRefresher
 {
     static List<Chunk> refreshChunkList = new List<Chunk>();
-    // refresh a chunk per 3 frames
-    static int refreshInterval = 3;
-    static int refreshCounter;
-    public static void Update()
-    {
-        refreshCounter = ++refreshCounter % refreshInterval;
-        if (refreshCounter != 0)
-        {
-            return;
-        }
 
+    static void RefreshChunks()
+    {
         if (refreshChunkList.Count > 0)
         {
             refreshChunkList.Sort(ChunkComparer.instance);
             Chunk chunk = refreshChunkList[0];
-            //Debug.Log(chunk.transform.name);
 
             // do not refresh if chunk is not in front
             if (PlayerController.GetChunkToFrontDot(chunk) > 0)
@@ -29,6 +21,18 @@ public class ChunkRefresher
                 refreshChunkList.RemoveAt(0);
             }
         }
+    }
+
+    static Thread chunkRefreshThread;
+    public static void Init()
+    {
+        chunkRefreshThread = new Thread(RefreshChunks);
+        chunkRefreshThread.Start();
+    }
+
+    public static void Uninit()
+    {
+        chunkRefreshThread.Abort();
     }
 
     public static void AddRefreshList(Chunk chunk)

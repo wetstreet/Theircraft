@@ -206,7 +206,7 @@ public class ChunkManager
         NetworkManager.SendPkgToServer(ENUM_CMD.CS_CHUNKS_ENTER_LEVAE_VIEW_REQ, req, ChunksEnterLeaveViewRes);
     }
 
-    static void ChunksEnterLeaveViewRes(byte[] data)
+    static void ChunksEnterLeaveViewRes(object data)
     {
         CSChunksEnterLeaveViewRes rsp = NetworkManager.Deserialize<CSChunksEnterLeaveViewRes>(data);
 

@@ -64,7 +64,7 @@ public class RegisterAccountUI : MonoBehaviour
     }
 
 
-    void OnRegisterAccountRes(byte[] data)
+    void OnRegisterAccountRes(object data)
     {
         CSRegisterRes rsp = NetworkManager.Deserialize<CSRegisterRes>(data);
         Debug.Log("CSRegisterRes," + rsp.RetCode);

@@ -10,6 +10,7 @@ public class GameStart : MonoBehaviour
         OtherPlayerManager.Init();
         ItemSelectPanel.Show();
         ChatPanel.ShowChatPanel();
+        ChunkRefresher.Init();
         
         List<Vector2Int> preloadChunks = Utilities.GetSurroudingChunks(PlayerController.GetCurrentChunk());
         ChunkManager.ChunksEnterLeaveViewReq(preloadChunks);
@@ -20,7 +21,11 @@ public class GameStart : MonoBehaviour
         if (PlayerController.isInitialized)
         {
             ChunkChecker.Update();
-            ChunkRefresher.Update();
         }
+    }
+
+    private void OnDestroy()
+    {
+        ChunkRefresher.Uninit();
     }
 }

@@ -21,7 +21,7 @@ public class LoginSystem
         NetworkManager.SendPkgToServer(ENUM_CMD.CS_LOGIN_REQ, req, OnLoginRes);
     }
 
-    static void OnLoginRes(byte[] data)
+    static void OnLoginRes(object data)
     {
         CSLoginRes rsp = NetworkManager.Deserialize<CSLoginRes>(data);
         Debug.Log("OnLoginRes,retcode=" + rsp.RetCode);

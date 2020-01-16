@@ -375,7 +375,7 @@ public class PlayerController : MonoBehaviour
         NetworkManager.SendPkgToServer(ENUM_CMD.CS_ADD_BLOCK_REQ, addBlockReq, AddBlockRes);
     }
 
-    void AddBlockRes(byte[] data)
+    void AddBlockRes(object data)
     {
         CSAddBlockRes rsp = NetworkManager.Deserialize<CSAddBlockRes>(data);
         //Debug.Log("AddBlockRes,retCode=" + rsp.RetCode);
@@ -390,7 +390,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void OnAddBlockNotify(byte[] data)
+    void OnAddBlockNotify(object data)
     {
         //Debug.Log("OnAddBlockNotify");
         CSAddBlockNotify notify = NetworkManager.Deserialize<CSAddBlockNotify>(data);
@@ -411,7 +411,7 @@ public class PlayerController : MonoBehaviour
         NetworkManager.SendPkgToServer(ENUM_CMD.CS_DELETE_BLOCK_REQ, req, DeleteBlockRes);
     }
 
-    void DeleteBlockRes(byte[] data)
+    void DeleteBlockRes(object data)
     {
         CSDeleteBlockRes rsp = NetworkManager.Deserialize<CSDeleteBlockRes>(data);
         //Debug.Log("DeleteBlockRes,retCode=" + rsp.RetCode);
@@ -429,7 +429,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void OnDeleteBlockNotify(byte[] data)
+    void OnDeleteBlockNotify(object data)
     {
         //Debug.Log("OnDeleteBlockNotify");
         CSDeleteBlockNotify notify = NetworkManager.Deserialize<CSDeleteBlockNotify>(data);
