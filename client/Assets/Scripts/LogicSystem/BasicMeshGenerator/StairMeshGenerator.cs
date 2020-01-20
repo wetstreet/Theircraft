@@ -27,12 +27,12 @@ public class StairMeshGenerator : IMeshGenerator
         List<int> triangles = new List<int>();
 
         ChunkMeshGenerator.TexCoords texCoords = ChunkMeshGenerator.type2texcoords[(byte)type];
-        AddFrontFace(vertices, uv, triangles, Vector3.zero, texCoords.front);
-        AddRightFace(vertices, uv, triangles, Vector3.zero, texCoords.right);
-        AddLeftFace(vertices, uv, triangles, Vector3.zero, texCoords.left);
-        AddBackFace(vertices, uv, triangles, Vector3.zero, texCoords.back);
-        AddTopFace(vertices, uv, triangles, Vector3.zero, texCoords.top);
-        AddBottomFace(vertices, uv, triangles, Vector3.zero, texCoords.bottom);
+        AddFrontFace(Matrix4x4.identity, vertices, uv, triangles, Vector3.zero, texCoords.front);
+        AddRightFace(Matrix4x4.identity, vertices, uv, triangles, Vector3.zero, texCoords.right);
+        AddLeftFace(Matrix4x4.identity, vertices, uv, triangles, Vector3.zero, texCoords.left);
+        AddBackFace(Matrix4x4.identity, vertices, uv, triangles, Vector3.zero, texCoords.back);
+        AddTopFace(Matrix4x4.identity, vertices, uv, triangles, Vector3.zero, texCoords.top);
+        AddBottomFace(Matrix4x4.identity, vertices, uv, triangles, Vector3.zero, texCoords.bottom);
 
         mesh.vertices = vertices.ToArray();
         mesh.uv = uv.ToArray();
@@ -45,25 +45,13 @@ public class StairMeshGenerator : IMeshGenerator
     {
         ChunkMeshGenerator.TexCoords texCoords = ChunkMeshGenerator.type2texcoords[(byte)type];
 
-        AddFrontFace(vertices, uv, triangles, posInChunk, texCoords.front);
-        AddTopFace(vertices, uv, triangles, posInChunk, texCoords.top);
-
-        if (!ChunkManager.HasOpaqueBlock(globalPos.x + 1, globalPos.y, globalPos.z))
-        {
-            AddRightFace(vertices, uv, triangles, posInChunk, texCoords.right);
-        }
-        if (!ChunkManager.HasOpaqueBlock(globalPos.x - 1, globalPos.y, globalPos.z))
-        {
-            AddLeftFace(vertices, uv, triangles, posInChunk, texCoords.left);
-        }
-        if (!ChunkManager.HasOpaqueBlock(globalPos.x, globalPos.y, globalPos.z + 1))
-        {
-            AddBackFace(vertices, uv, triangles, posInChunk, texCoords.back);
-        }
-        if (!ChunkManager.HasOpaqueBlock(globalPos.x, globalPos.y - 1, globalPos.z))
-        {
-            AddBottomFace(vertices, uv, triangles, posInChunk, texCoords.bottom);
-        }
+        Matrix4x4 rotationMatrix = Matrix4x4.Rotate(Quaternion.Euler(0, 90, 0));
+        AddFrontFace(rotationMatrix, vertices, uv, triangles, posInChunk, texCoords.front);
+        AddTopFace(rotationMatrix, vertices, uv, triangles, posInChunk, texCoords.top);
+        AddRightFace(rotationMatrix, vertices, uv, triangles, posInChunk, texCoords.right);
+        AddLeftFace(rotationMatrix, vertices, uv, triangles, posInChunk, texCoords.left);
+        AddBackFace(rotationMatrix, vertices, uv, triangles, posInChunk, texCoords.back);
+        AddBottomFace(rotationMatrix, vertices, uv, triangles, posInChunk, texCoords.bottom);
     }
     
     static Vector3 nearMidLeft = new Vector3(-0.5f, 0, -0.5f);
@@ -75,32 +63,32 @@ public class StairMeshGenerator : IMeshGenerator
     static Vector3 midTopLeft = new Vector3(-0.5f, 0.5f, 0);
     static Vector3 midTopRight = new Vector3(0.5f, 0.5f, 0);
     
-    static void AddBottomFace(List<Vector3> vertices, List<Vector2> uv, List<int> triangles, Vector3 pos, Vector2 texPos)
+    static void AddBottomFace(Matrix4x4 rotationMatrix, List<Vector3> vertices, List<Vector2> uv, List<int> triangles, Vector3 pos, Vector2 texPos)
     {
-        vertices.Add(farBottomLeft + pos);
-        vertices.Add(nearBottomLeft + pos);
-        vertices.Add(nearBottomRight + pos);
-        vertices.Add(farBottomRight + pos);
+        vertices.Add(rotationMatrix.MultiplyPoint(farBottomLeft) + pos);
+        vertices.Add(rotationMatrix.MultiplyPoint(nearBottomLeft) + pos);
+        vertices.Add(rotationMatrix.MultiplyPoint(nearBottomRight) + pos);
+        vertices.Add(rotationMatrix.MultiplyPoint(farBottomRight) + pos);
         AddUV(vertices, uv, triangles, texPos);
     }
 
-    static void AddBackFace(List<Vector3> vertices, List<Vector2> uv, List<int> triangles, Vector3 pos, Vector2 texPos)
+    static void AddBackFace(Matrix4x4 rotationMatrix, List<Vector3> vertices, List<Vector2> uv, List<int> triangles, Vector3 pos, Vector2 texPos)
     {
-        vertices.Add(farBottomRight + pos);
-        vertices.Add(farTopRight + pos);
-        vertices.Add(farTopLeft + pos);
-        vertices.Add(farBottomLeft + pos);
+        vertices.Add(rotationMatrix.MultiplyPoint(farBottomRight) + pos);
+        vertices.Add(rotationMatrix.MultiplyPoint(farTopRight) + pos);
+        vertices.Add(rotationMatrix.MultiplyPoint(farTopLeft) + pos);
+        vertices.Add(rotationMatrix.MultiplyPoint(farBottomLeft) + pos);
         AddUV(vertices, uv, triangles, texPos);
     }
 
-    static void AddLeftFace(List<Vector3> vertices, List<Vector2> uv, List<int> triangles, Vector3 pos, Vector2 texPos)
+    static void AddLeftFace(Matrix4x4 rotationMatrix, List<Vector3> vertices, List<Vector2> uv, List<int> triangles, Vector3 pos, Vector2 texPos)
     {
-        vertices.Add(farBottomLeft + pos);
-        vertices.Add(farTopLeft + pos);
-        vertices.Add(midTopLeft + pos);
-        vertices.Add(midMidLeft + pos);
-        vertices.Add(nearMidLeft + pos);
-        vertices.Add(nearBottomLeft + pos);
+        vertices.Add(rotationMatrix.MultiplyPoint(farBottomLeft) + pos);
+        vertices.Add(rotationMatrix.MultiplyPoint(farTopLeft) + pos);
+        vertices.Add(rotationMatrix.MultiplyPoint(midTopLeft) + pos);
+        vertices.Add(rotationMatrix.MultiplyPoint(midMidLeft) + pos);
+        vertices.Add(rotationMatrix.MultiplyPoint(nearMidLeft) + pos);
+        vertices.Add(rotationMatrix.MultiplyPoint(nearBottomLeft) + pos);
 
         //上下翻转
         texPos.y = (atlas_row - 1) - texPos.y;
@@ -137,14 +125,14 @@ public class StairMeshGenerator : IMeshGenerator
         triangles.Add(verticesCount - 1);
     }
 
-    static void AddRightFace(List<Vector3> vertices, List<Vector2> uv, List<int> triangles, Vector3 pos, Vector2 texPos)
+    static void AddRightFace(Matrix4x4 rotationMatrix, List<Vector3> vertices, List<Vector2> uv, List<int> triangles, Vector3 pos, Vector2 texPos)
     {
-        vertices.Add(farBottomRight + pos);
-        vertices.Add(farTopRight + pos);
-        vertices.Add(midTopRight + pos);
-        vertices.Add(midMidRight + pos);
-        vertices.Add(nearMidRight + pos);
-        vertices.Add(nearBottomRight + pos);
+        vertices.Add(rotationMatrix.MultiplyPoint(farBottomRight) + pos);
+        vertices.Add(rotationMatrix.MultiplyPoint(farTopRight) + pos);
+        vertices.Add(rotationMatrix.MultiplyPoint(midTopRight) + pos);
+        vertices.Add(rotationMatrix.MultiplyPoint(midMidRight) + pos);
+        vertices.Add(rotationMatrix.MultiplyPoint(nearMidRight) + pos);
+        vertices.Add(rotationMatrix.MultiplyPoint(nearBottomRight) + pos);
 
         //上下翻转
         texPos.y = (atlas_row - 1) - texPos.y;
@@ -223,32 +211,32 @@ public class StairMeshGenerator : IMeshGenerator
         triangles.Add(verticesCount - 1);
     }
 
-    static void AddFrontFace(List<Vector3> vertices, List<Vector2> uv, List<int> triangles, Vector3 pos, Vector2 texPos)
+    static void AddFrontFace(Matrix4x4 rotationMatrix, List<Vector3> vertices, List<Vector2> uv, List<int> triangles, Vector3 pos, Vector2 texPos)
     {
-        vertices.Add(nearBottomLeft + pos);
-        vertices.Add(nearMidLeft + pos);
-        vertices.Add(nearMidRight + pos);
-        vertices.Add(nearBottomRight + pos);
+        vertices.Add(rotationMatrix.MultiplyPoint(nearBottomLeft) + pos);
+        vertices.Add(rotationMatrix.MultiplyPoint(nearMidLeft) + pos);
+        vertices.Add(rotationMatrix.MultiplyPoint(nearMidRight) + pos);
+        vertices.Add(rotationMatrix.MultiplyPoint(nearBottomRight) + pos);
 
-        vertices.Add(midMidLeft + pos);
-        vertices.Add(midTopLeft + pos);
-        vertices.Add(midTopRight + pos);
-        vertices.Add(midMidRight + pos);
+        vertices.Add(rotationMatrix.MultiplyPoint(midMidLeft) + pos);
+        vertices.Add(rotationMatrix.MultiplyPoint(midTopLeft) + pos);
+        vertices.Add(rotationMatrix.MultiplyPoint(midTopRight) + pos);
+        vertices.Add(rotationMatrix.MultiplyPoint(midMidRight) + pos);
 
         AddUV_SplitInHalf(vertices, uv, triangles, texPos);
     }
 
-    static void AddTopFace(List<Vector3> vertices, List<Vector2> uv, List<int> triangles, Vector3 pos, Vector2 texPos)
+    static void AddTopFace(Matrix4x4 rotationMatrix, List<Vector3> vertices, List<Vector2> uv, List<int> triangles, Vector3 pos, Vector2 texPos)
     {
-        vertices.Add(nearMidLeft + pos);
-        vertices.Add(midMidLeft + pos);
-        vertices.Add(midMidRight + pos);
-        vertices.Add(nearMidRight + pos);
+        vertices.Add(rotationMatrix.MultiplyPoint(nearMidLeft) + pos);
+        vertices.Add(rotationMatrix.MultiplyPoint(midMidLeft) + pos);
+        vertices.Add(rotationMatrix.MultiplyPoint(midMidRight) + pos);
+        vertices.Add(rotationMatrix.MultiplyPoint(nearMidRight) + pos);
 
-        vertices.Add(midTopLeft + pos);
-        vertices.Add(farTopLeft + pos);
-        vertices.Add(farTopRight + pos);
-        vertices.Add(midTopRight + pos);
+        vertices.Add(rotationMatrix.MultiplyPoint(midTopLeft) + pos);
+        vertices.Add(rotationMatrix.MultiplyPoint(farTopLeft) + pos);
+        vertices.Add(rotationMatrix.MultiplyPoint(farTopRight) + pos);
+        vertices.Add(rotationMatrix.MultiplyPoint(midTopRight) + pos);
 
         AddUV_SplitInHalf(vertices, uv, triangles, texPos);
     }

@@ -154,18 +154,18 @@ public class PlayerController : MonoBehaviour
             {
                 if (WireFrameHelper.render && ItemSelectPanel.curBlockType != CSBlockType.None)
                 {
-                    if (ChunkManager.HasTransparentBlock(WireFrameHelper.pos.x, WireFrameHelper.pos.y, WireFrameHelper.pos.z))
-                    {
-                        if (!cc.bounds.Intersects(new Bounds(WireFrameHelper.pos, Vector3.one)))
-                        {
-                            AddBlockReq(Vector3Int.RoundToInt(WireFrameHelper.pos), ItemSelectPanel.curBlockType);
-                        }
-                    }
-                    else
+                    if (ChunkManager.HasCollidableBlock(WireFrameHelper.pos.x, WireFrameHelper.pos.y, WireFrameHelper.pos.z))
                     {
                         if (!cc.bounds.Intersects(new Bounds(WireFrameHelper.pos + hit.normal, Vector3.one)))
                         {
                             AddBlockReq(Vector3Int.RoundToInt(WireFrameHelper.pos + hit.normal), ItemSelectPanel.curBlockType);
+                        }
+                    }
+                    else
+                    {
+                        if (!cc.bounds.Intersects(new Bounds(WireFrameHelper.pos, Vector3.one)))
+                        {
+                            AddBlockReq(Vector3Int.RoundToInt(WireFrameHelper.pos), ItemSelectPanel.curBlockType);
                         }
                     }
                 }

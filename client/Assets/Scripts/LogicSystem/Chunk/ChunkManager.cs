@@ -79,10 +79,10 @@ public class ChunkManager
     }
 
     //input is global position
-    public static bool HasTransparentBlock(int x, int y, int z)
+    public static bool HasCollidableBlock(int x, int y, int z)
     {
         byte type = GetBlockByte(x, y, z);
-        return type > 0 && ChunkMeshGenerator.type2texcoords[type].isTransparent;
+        return type > 0 && ChunkMeshGenerator.type2texcoords[type].isCollidable;
     }
 
     public static void AddBlock(int x, int y, int z, CSBlockType type)
