@@ -10,6 +10,30 @@
 // Generated from: protocol/cs_theircraft.proto
 namespace protocol.cs_theircraft
 {
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"CSPosOrientPair")]
+  public partial class CSPosOrientPair : global::ProtoBuf.IExtensible
+  {
+    public CSPosOrientPair() {}
+    
+    private CSVector3Int _pos;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"pos", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public CSVector3Int pos
+    {
+      get { return _pos; }
+      set { _pos = value; }
+    }
+    private CSBlockOrientation _orient;
+    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"orient", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public CSBlockOrientation orient
+    {
+      get { return _orient; }
+      set { _orient = value; }
+    }
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
   [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"CSVector2Int")]
   public partial class CSVector2Int : global::ProtoBuf.IExtensible
   {
@@ -115,6 +139,13 @@ namespace protocol.cs_theircraft
       get { return _type; }
       set { _type = value; }
     }
+    private CSBlockOrientation _orient;
+    [global::ProtoBuf.ProtoMember(3, IsRequired = true, Name=@"orient", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public CSBlockOrientation orient
+    {
+      get { return _orient; }
+      set { _orient = value; }
+    }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
@@ -194,6 +225,13 @@ namespace protocol.cs_theircraft
     public global::System.Collections.Generic.List<CSPlayer> Players
     {
       get { return _Players; }
+    }
+  
+    private readonly global::System.Collections.Generic.List<CSPosOrientPair> _BlockOrientations = new global::System.Collections.Generic.List<CSPosOrientPair>();
+    [global::ProtoBuf.ProtoMember(5, Name=@"BlockOrientations", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public global::System.Collections.Generic.List<CSPosOrientPair> BlockOrientations
+    {
+      get { return _BlockOrientations; }
     }
   
     private global::ProtoBuf.IExtension extensionObject;
@@ -698,6 +736,38 @@ namespace protocol.cs_theircraft
             
       [global::ProtoBuf.ProtoEnum(Name=@"OakLeaves", Value=14)]
       OakLeaves = 14
+    }
+  
+    [global::ProtoBuf.ProtoContract(Name=@"CSBlockOrientation")]
+    public enum CSBlockOrientation
+    {
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"Default", Value=0)]
+      Default = 0,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"PositiveY_PositiveZ", Value=1)]
+      PositiveY_PositiveZ = 1,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"PositiveY_PositiveX", Value=2)]
+      PositiveY_PositiveX = 2,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"PositiveY_NegativeZ", Value=3)]
+      PositiveY_NegativeZ = 3,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"PositiveY_NegativeX", Value=4)]
+      PositiveY_NegativeX = 4,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"NegativeY_PositiveZ", Value=5)]
+      NegativeY_PositiveZ = 5,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"NegativeY_PositiveX", Value=6)]
+      NegativeY_PositiveX = 6,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"NegativeY_NegativeZ", Value=7)]
+      NegativeY_NegativeZ = 7,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"NegativeY_NegativeX", Value=8)]
+      NegativeY_NegativeX = 8
     }
   
 }

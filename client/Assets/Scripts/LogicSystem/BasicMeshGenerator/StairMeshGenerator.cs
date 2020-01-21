@@ -45,7 +45,26 @@ public class StairMeshGenerator : IMeshGenerator
     {
         ChunkMeshGenerator.TexCoords texCoords = ChunkMeshGenerator.type2texcoords[(byte)type];
 
-        Matrix4x4 rotationMatrix = Matrix4x4.Rotate(Quaternion.Euler(0, 90, 0));
+        CSBlockOrientation orient = ChunkManager.GetBlockOrientation(globalPos);
+
+        Matrix4x4 rotationMatrix = Matrix4x4.identity;
+        if (orient == CSBlockOrientation.PositiveY_NegativeZ)
+        {
+            rotationMatrix = Matrix4x4.identity;
+        }
+        else if (orient == CSBlockOrientation.PositiveY_NegativeX)
+        {
+            rotationMatrix = Matrix4x4.Rotate(Quaternion.Euler(0, 90, 0));
+        }
+        else if (orient == CSBlockOrientation.PositiveY_PositiveZ)
+        {
+            rotationMatrix = Matrix4x4.Rotate(Quaternion.Euler(0, 180, 0));
+        }
+        else if (orient == CSBlockOrientation.PositiveY_PositiveX)
+        {
+            rotationMatrix = Matrix4x4.Rotate(Quaternion.Euler(0, 270, 0));
+        }
+
         AddFrontFace(rotationMatrix, vertices, uv, triangles, posInChunk, texCoords.front);
         AddTopFace(rotationMatrix, vertices, uv, triangles, posInChunk, texCoords.top);
         AddRightFace(rotationMatrix, vertices, uv, triangles, posInChunk, texCoords.right);

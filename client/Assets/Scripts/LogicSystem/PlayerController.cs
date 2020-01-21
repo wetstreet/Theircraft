@@ -154,19 +154,68 @@ public class PlayerController : MonoBehaviour
             {
                 if (WireFrameHelper.render && ItemSelectPanel.curBlockType != CSBlockType.None)
                 {
+                    Vector3 pos = WireFrameHelper.pos;
                     if (ChunkManager.HasCollidableBlock(WireFrameHelper.pos.x, WireFrameHelper.pos.y, WireFrameHelper.pos.z))
                     {
-                        if (!cc.bounds.Intersects(new Bounds(WireFrameHelper.pos + hit.normal, Vector3.one)))
+                        pos = WireFrameHelper.pos + hit.normal;
+                    }
+                    
+                    Vector2 dir = (new Vector2(transform.position.x, transform.position.z) - new Vector2(pos.x, pos.z)).normalized;
+                    CSBlockOrientation orient = CSBlockOrientation.Default;
+                    if (dir.x > 0)
+                    {
+                        if (dir.y > 0)
                         {
-                            AddBlockReq(Vector3Int.RoundToInt(WireFrameHelper.pos + hit.normal), ItemSelectPanel.curBlockType);
+                            if (dir.y > dir.x)
+                            {
+                                orient = CSBlockOrientation.PositiveY_PositiveZ;
+                            }
+                            else
+                            {
+                                orient = CSBlockOrientation.PositiveY_PositiveX;
+                            }
+                        }
+                        else
+                        {
+                            if (-dir.y > dir.x)
+                            {
+                                orient = CSBlockOrientation.PositiveY_NegativeZ;
+                            }
+                            else
+                            {
+                                orient = CSBlockOrientation.PositiveY_PositiveX;
+                            }
                         }
                     }
                     else
                     {
-                        if (!cc.bounds.Intersects(new Bounds(WireFrameHelper.pos, Vector3.one)))
+                        if (dir.y > 0)
                         {
-                            AddBlockReq(Vector3Int.RoundToInt(WireFrameHelper.pos), ItemSelectPanel.curBlockType);
+                            if (dir.y > -dir.x)
+                            {
+                                orient = CSBlockOrientation.PositiveY_PositiveZ;
+                            }
+                            else
+                            {
+                                orient = CSBlockOrientation.PositiveY_NegativeX;
+                            }
                         }
+                        else
+                        {
+                            if (-dir.y > -dir.x)
+                            {
+                                orient = CSBlockOrientation.PositiveY_NegativeZ;
+                            }
+                            else
+                            {
+                                orient = CSBlockOrientation.PositiveY_NegativeX;
+                            }
+                        }
+                    }
+
+                    if (!cc.bounds.Intersects(new Bounds(pos, Vector3.one)))
+                    {
+                        AddBlockReq(Vector3Int.RoundToInt(pos), ItemSelectPanel.curBlockType, orient);
                     }
                 }
             }
@@ -205,12 +254,13 @@ public class PlayerController : MonoBehaviour
             {
                 if (hit.transform.gameObject.layer == cubeLayerIndex || hit.transform.gameObject.layer == plantLayerIndex)
                 {
-                    bool hasBlock = WireFrameHelper.GetBlockPosByRaycast(hit.point, out Vector3Int actualPos);
+                    Vector3Int pos = Vector3Int.RoundToInt(hit.point - hit.normal / 10);
+                    bool hasBlock = ChunkManager.HasBlock(pos);
                     if (hasBlock)
                     {
                         //Debug.Log(hit.point + "," + pos);
                         WireFrameHelper.render = true;
-                        WireFrameHelper.pos = actualPos;
+                        WireFrameHelper.pos = pos;
                     }
                 }
             }
@@ -308,7 +358,8 @@ public class PlayerController : MonoBehaviour
             
             if (isMoving && horizontalSpeed.sqrMagnitude > 0.2f)
             {
-                bool hasBlock = WireFrameHelper.GetBlockPosByRaycast(transform.position, out Vector3Int pos);
+                Vector3Int pos = Vector3Int.RoundToInt(transform.position - Vector3.up / 10);
+                bool hasBlock = ChunkManager.HasBlock(pos);
                 if (hasBlock)
                 {
                     CSBlockType type = ChunkManager.GetBlockType(pos.x, pos.y, pos.z);
@@ -381,7 +432,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void AddBlockReq(Vector3Int pos, CSBlockType type)
+    void AddBlockReq(Vector3Int pos, CSBlockType type, CSBlockOrientation orient = CSBlockOrientation.Default)
     {
         CSAddBlockReq addBlockReq = new CSAddBlockReq
         {
@@ -393,7 +444,8 @@ public class PlayerController : MonoBehaviour
                     y = pos.y,
                     z = pos.z
                 },
-                type = type
+                type = type,
+                orient = orient
             }
         };
         NetworkManager.SendPkgToServer(ENUM_CMD.CS_ADD_BLOCK_REQ, addBlockReq, AddBlockRes);
@@ -405,7 +457,7 @@ public class PlayerController : MonoBehaviour
         //Debug.Log("AddBlockRes,retCode=" + rsp.RetCode);
         if (rsp.RetCode == 0)
         {
-            ChunkManager.AddBlock(rsp.block.position.x, rsp.block.position.y, rsp.block.position.z, rsp.block.type);
+            ChunkManager.AddBlock(rsp.block);
             SoundManager.PlayDigSound(rsp.block.type, gameObject);
         }
         else
@@ -418,7 +470,7 @@ public class PlayerController : MonoBehaviour
     {
         //Debug.Log("OnAddBlockNotify");
         CSAddBlockNotify notify = NetworkManager.Deserialize<CSAddBlockNotify>(data);
-        ChunkManager.AddBlock(notify.block.position.x, notify.block.position.y, notify.block.position.z, notify.block.type);
+        ChunkManager.AddBlock(notify.block);
     }
 
     void DeleteBlockReq(Vector3 pos)

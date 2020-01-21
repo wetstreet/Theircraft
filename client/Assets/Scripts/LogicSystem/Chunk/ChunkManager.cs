@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using protocol.cs_theircraft;
 using protocol.cs_enum;
@@ -66,6 +65,12 @@ public class ChunkManager
     }
 
     // intput is global position
+    public static bool HasBlock(Vector3Int pos)
+    {
+        return HasBlock(pos.x, pos.y, pos.z);
+    }
+
+    // intput is global position
     public static bool HasBlock(int x, int y, int z)
     {
         return GetBlockType(x, y, z) != CSBlockType.None;
@@ -85,14 +90,15 @@ public class ChunkManager
         return type > 0 && ChunkMeshGenerator.type2texcoords[type].isCollidable;
     }
 
-    public static void AddBlock(int x, int y, int z, CSBlockType type)
+    public static void AddBlock(CSBlock block)
     {
-        Chunk chunk = GetChunk(x, y, z);
+        Chunk chunk = GetChunk(block.position.x, block.position.y, block.position.z);
         if (chunk != null)
         {
-            int xInChunk = chunk.GetXInChunkByGlobalX(x);
-            int zInChunk = chunk.GetZInChunkByGlobalZ(z);
-            chunk.SetBlockType(xInChunk, y, zInChunk, type);
+            int xInChunk = chunk.GetXInChunkByGlobalX(block.position.x);
+            int zInChunk = chunk.GetZInChunkByGlobalZ(block.position.z);
+            chunk.SetBlockType(xInChunk, block.position.y, zInChunk, block.type);
+            AddBlockOrientation(block.position.ToVector3Int(), block.orient);
             chunk.RebuildMesh();
         }
     }
@@ -127,6 +133,7 @@ public class ChunkManager
             int xInChunk = chunk.GetXInChunkByGlobalX(x);
             int zInChunk = chunk.GetZInChunkByGlobalZ(z);
             chunk.SetBlockType(xInChunk, y, zInChunk, CSBlockType.None);
+            RemoveBlockOrientation(new Vector3Int(x, y, z));
             if (!chunk.HasCollidableBlock(xInChunk, y + 1, zInChunk))
             {
                 chunk.SetBlockType(xInChunk, y + 1, zInChunk, CSBlockType.None);
@@ -138,6 +145,29 @@ public class ChunkManager
             {
                 nearbyChunk.RebuildMesh();
             }
+        }
+    }
+
+    static readonly Dictionary<Vector3Int, CSBlockOrientation> orientationDict = new Dictionary<Vector3Int, CSBlockOrientation>();
+    public static void AddBlockOrientation(Vector3Int pos, CSBlockOrientation orientation)
+    {
+        orientationDict.Add(pos, orientation);
+    }
+
+    public static void RemoveBlockOrientation(Vector3Int pos)
+    {
+        orientationDict.Remove(pos);
+    }
+
+    public static CSBlockOrientation GetBlockOrientation(Vector3Int pos)
+    {
+        if (orientationDict.ContainsKey(pos))
+        {
+            return orientationDict[pos];
+        }
+        else
+        {
+            return CSBlockOrientation.Default;
         }
     }
 

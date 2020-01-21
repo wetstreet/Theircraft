@@ -5,6 +5,16 @@ using UnityEngine.UI;
 
 public static class Utilities {
 
+    public static Vector3 ToVector3(this CSVector3 csv)
+    {
+        return new Vector3(csv.x, csv.y, csv.z);
+    }
+
+    public static Vector3Int ToVector3Int(this CSVector3Int csv)
+    {
+        return new Vector3Int(csv.x, csv.y, csv.z);
+    }
+
     public static void GetChunk(ref Vector2Int chunkPos, Vector3 position)
     {
         chunkPos.x = Mathf.FloorToInt(position.x / 16f);
@@ -34,21 +44,6 @@ public static class Utilities {
             Debug.Log(count + "," + t);
             count++;
         }
-    }
-
-    public static Vector2Int CSVector2Int_To_Vector2Int(CSVector2Int v)
-    {
-        return new Vector2Int { x = v.x, y = v.y };
-    }
-
-    public static Vector3Int CSVector3Int_To_Vector3Int(CSVector3Int v)
-    {
-        return new Vector3Int { x = v.x, y = v.y, z = v.z };
-    }
-
-    public static Vector3 CSVector3_To_Vector3(CSVector3 v)
-    {
-        return new Vector3 { x = v.x, y = v.y, z = v.z };
     }
 
     public static void SetClickCallback(Transform trans, string path, UnityEngine.Events.UnityAction call)

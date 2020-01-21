@@ -29,8 +29,8 @@ public class LoginSystem
         {
             DataCenter.playerID = rsp.PlayerData.PlayerID;
             DataCenter.name = rsp.PlayerData.Name;
-            DataCenter.spawnPosition = Utilities.CSVector3_To_Vector3(rsp.PlayerData.Position);
-            DataCenter.spawnRotation = Utilities.CSVector3_To_Vector3(rsp.PlayerData.Rotation);
+            DataCenter.spawnPosition = rsp.PlayerData.Position.ToVector3();
+            DataCenter.spawnRotation = rsp.PlayerData.Rotation.ToVector3();
             DataCenter.state = ClientState.InRoom;
             LoginPanel.Close();
             MainMenu.Close();

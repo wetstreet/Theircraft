@@ -19,6 +19,25 @@ enum CSBlockType
 	OakLeaves = 14;
 }
 
+enum CSBlockOrientation
+{
+	Default = 0;
+	PositiveY_PositiveZ = 1;
+	PositiveY_PositiveX = 2;
+	PositiveY_NegativeZ = 3;
+	PositiveY_NegativeX = 4;
+	NegativeY_PositiveZ = 5;
+	NegativeY_PositiveX = 6;
+	NegativeY_NegativeZ = 7;
+	NegativeY_NegativeX = 8;
+}
+
+message CSPosOrientPair
+{
+	required CSVector3Int pos = 1;
+	required CSBlockOrientation orient = 2;
+}
+
 message CSVector2Int
 {
 	required int32 x = 1;
@@ -42,6 +61,7 @@ message CSBlock
 {
 	required CSVector3Int position = 1;
 	required CSBlockType type = 2;
+	required CSBlockOrientation orient = 3;
 }
 
 message CSPlayer
@@ -58,6 +78,7 @@ message CSChunk
 	repeated CSBlock Blocks = 2;
 	optional bytes BlocksInBytes = 3;
 	repeated CSPlayer Players = 4;
+	repeated CSPosOrientPair BlockOrientations = 5;
 }
 
 //CS_REGISTER_REQ

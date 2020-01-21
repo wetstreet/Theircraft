@@ -32,8 +32,8 @@ public class Player : MonoBehaviour
         Player player = go.AddComponent<Player>();
         player.id = p.PlayerID;
         player.playerName = p.Name;
-        player.position = Utilities.CSVector3_To_Vector3(p.Position);
-        player.rotation = Utilities.CSVector3_To_Vector3(p.Rotation);
+        player.position = p.Position.ToVector3();
+        player.rotation = p.Rotation.ToVector3();
         return player;
     }
 
