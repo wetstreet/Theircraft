@@ -64,6 +64,22 @@ public class StairMeshGenerator : IMeshGenerator
         {
             rotationMatrix = Matrix4x4.Rotate(Quaternion.Euler(0, 270, 0));
         }
+        else if (orient == CSBlockOrientation.NegativeY_NegativeZ)
+        {
+            rotationMatrix = Matrix4x4.Rotate(Quaternion.Euler(0, 0, 180));
+        }
+        else if (orient == CSBlockOrientation.NegativeY_NegativeX)
+        {
+            rotationMatrix = Matrix4x4.Rotate(Quaternion.Euler(0, 90, 180));
+        }
+        else if (orient == CSBlockOrientation.NegativeY_PositiveZ)
+        {
+            rotationMatrix = Matrix4x4.Rotate(Quaternion.Euler(0, 180, 180));
+        }
+        else if (orient == CSBlockOrientation.NegativeY_PositiveX)
+        {
+            rotationMatrix = Matrix4x4.Rotate(Quaternion.Euler(0, 270, 180));
+        }
 
         AddFrontFace(rotationMatrix, vertices, uv, triangles, posInChunk, texCoords.front);
         AddTopFace(rotationMatrix, vertices, uv, triangles, posInChunk, texCoords.top);

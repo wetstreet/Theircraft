@@ -144,4 +144,63 @@ public static class ChunkMeshGenerator
             }
         }
     }
+
+    public static CSBlockOrientation GetBlockOrientation(Vector3 playerPos, Vector3 blockPos, Vector3 hitPos)
+    {
+        float diff = hitPos.y - blockPos.y;
+
+        Vector2 dir = (new Vector2(playerPos.x, playerPos.z) - new Vector2(blockPos.x, blockPos.z)).normalized;
+        CSBlockOrientation orient = CSBlockOrientation.Default;
+        if (dir.x > 0)
+        {
+            if (dir.y > 0)
+            {
+                if (dir.y > dir.x)
+                {
+                    orient = diff < 0 ? CSBlockOrientation.PositiveY_PositiveZ : CSBlockOrientation.NegativeY_PositiveZ;
+                }
+                else
+                {
+                    orient = diff < 0 ? CSBlockOrientation.PositiveY_PositiveX : CSBlockOrientation.NegativeY_PositiveX;
+                }
+            }
+            else
+            {
+                if (-dir.y > dir.x)
+                {
+                    orient = diff < 0 ? CSBlockOrientation.PositiveY_NegativeZ : CSBlockOrientation.NegativeY_NegativeZ;
+                }
+                else
+                {
+                    orient = diff < 0 ? CSBlockOrientation.PositiveY_PositiveX : CSBlockOrientation.NegativeY_PositiveX;
+                }
+            }
+        }
+        else
+        {
+            if (dir.y > 0)
+            {
+                if (dir.y > -dir.x)
+                {
+                    orient = diff < 0 ? CSBlockOrientation.PositiveY_PositiveZ : CSBlockOrientation.NegativeY_PositiveZ;
+                }
+                else
+                {
+                    orient = diff < 0 ? CSBlockOrientation.PositiveY_NegativeX : CSBlockOrientation.NegativeY_NegativeX;
+                }
+            }
+            else
+            {
+                if (-dir.y > -dir.x)
+                {
+                    orient = diff < 0 ? CSBlockOrientation.PositiveY_NegativeZ : CSBlockOrientation.NegativeY_NegativeZ;
+                }
+                else
+                {
+                    orient = diff < 0 ? CSBlockOrientation.PositiveY_NegativeX : CSBlockOrientation.NegativeY_NegativeX;
+                }
+            }
+        }
+        return orient;
+    }
 }

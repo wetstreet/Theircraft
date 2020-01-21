@@ -159,63 +159,11 @@ public class PlayerController : MonoBehaviour
                     {
                         pos = WireFrameHelper.pos + hit.normal;
                     }
-                    
-                    Vector2 dir = (new Vector2(transform.position.x, transform.position.z) - new Vector2(pos.x, pos.z)).normalized;
-                    CSBlockOrientation orient = CSBlockOrientation.Default;
-                    if (dir.x > 0)
-                    {
-                        if (dir.y > 0)
-                        {
-                            if (dir.y > dir.x)
-                            {
-                                orient = CSBlockOrientation.PositiveY_PositiveZ;
-                            }
-                            else
-                            {
-                                orient = CSBlockOrientation.PositiveY_PositiveX;
-                            }
-                        }
-                        else
-                        {
-                            if (-dir.y > dir.x)
-                            {
-                                orient = CSBlockOrientation.PositiveY_NegativeZ;
-                            }
-                            else
-                            {
-                                orient = CSBlockOrientation.PositiveY_PositiveX;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (dir.y > 0)
-                        {
-                            if (dir.y > -dir.x)
-                            {
-                                orient = CSBlockOrientation.PositiveY_PositiveZ;
-                            }
-                            else
-                            {
-                                orient = CSBlockOrientation.PositiveY_NegativeX;
-                            }
-                        }
-                        else
-                        {
-                            if (-dir.y > -dir.x)
-                            {
-                                orient = CSBlockOrientation.PositiveY_NegativeZ;
-                            }
-                            else
-                            {
-                                orient = CSBlockOrientation.PositiveY_NegativeX;
-                            }
-                        }
-                    }
 
+                    CSBlockOrientation orientation = ChunkMeshGenerator.GetBlockOrientation(transform.position, pos, WireFrameHelper.hitPos);
                     if (!cc.bounds.Intersects(new Bounds(pos, Vector3.one)))
                     {
-                        AddBlockReq(Vector3Int.RoundToInt(pos), ItemSelectPanel.curBlockType, orient);
+                        AddBlockReq(Vector3Int.RoundToInt(pos), ItemSelectPanel.curBlockType, orientation);
                     }
                 }
             }
@@ -261,6 +209,7 @@ public class PlayerController : MonoBehaviour
                         //Debug.Log(hit.point + "," + pos);
                         WireFrameHelper.render = true;
                         WireFrameHelper.pos = pos;
+                        WireFrameHelper.hitPos = hit.point;
                     }
                 }
             }
