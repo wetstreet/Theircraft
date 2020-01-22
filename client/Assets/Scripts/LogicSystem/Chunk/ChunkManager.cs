@@ -59,6 +59,12 @@ public class ChunkManager
     }
 
     // intput is global position
+    public static CSBlockType GetBlockType(Vector3Int position)
+    {
+        return GetBlockType(position.x, position.y, position.z);
+    }
+
+    // intput is global position
     public static CSBlockType GetBlockType(int x, int y, int z)
     {
         return (CSBlockType)GetBlockByte(x, y, z);
@@ -100,6 +106,12 @@ public class ChunkManager
             chunk.SetBlockType(xInChunk, block.position.y, zInChunk, block.type);
             AddBlockOrientation(block.position.ToVector3Int(), block.orient);
             chunk.RebuildMesh();
+
+            // if this block is adjacent to other chunks, refresh nearby chunks
+            foreach (Chunk nearbyChunk in GetNearbyChunks(xInChunk, zInChunk, chunk))
+            {
+                nearbyChunk.RebuildMesh();
+            }
         }
     }
 

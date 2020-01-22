@@ -32,6 +32,7 @@ public class SoundManager : MonoBehaviour
         {CSBlockType.Dirt, "Gravel" },
         {CSBlockType.Tnt, "Grass" },
         {CSBlockType.Brick, "Stone" },
+        {CSBlockType.BrickStairs, "Stone" },
         {CSBlockType.Furnace, "Stone" },
         {CSBlockType.HayBlock, "Grass" },
     };
