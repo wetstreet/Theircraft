@@ -94,7 +94,14 @@ public static class ChunkMeshGenerator
         }
         else
         {
-            return BlockMeshGenerator.Instance.GenerateSingleMesh(type);
+            if (type == CSBlockType.BrickStairs)
+            {
+                return StairMeshGenerator.Instance.GenerateSingleMesh(type);
+            }
+            else
+            {
+                return BlockMeshGenerator.Instance.GenerateSingleMesh(type);
+            }
         }
     }
 

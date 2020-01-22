@@ -19,7 +19,7 @@ public class StairMeshGenerator : IMeshGenerator
 
     override public Mesh GenerateSingleMesh(CSBlockType type)
     {
-        Mesh stairMesh = Resources.Load<Mesh>("Meshes/blocks/stair/stair");
+        Mesh stairMesh = Resources.Load<Mesh>("Meshes/blocks/stair/stair_+y-z");
 
         Mesh mesh = new Mesh();
         mesh.name = "CubeMesh";
@@ -44,134 +44,35 @@ public class StairMeshGenerator : IMeshGenerator
 
     static Vector3Int forward = new Vector3Int(0, 0, 1);
     static Vector3Int back = new Vector3Int(0, 0, -1);
-    static Mesh GetMeshByOrientationAndPosition(CSBlockOrientation orientation, Vector3Int globalPosition)
+    static Mesh GetStairMesh(CSBlockOrientation orientation, Vector3Int globalPosition)
     {
         Mesh mesh = null;
         Debug.Log("orient=" + orientation);
         switch (orientation)
         {
             case CSBlockOrientation.PositiveY_NegativeX:
-                mesh = Resources.Load<Mesh>("Meshes/blocks/stair/stair_+y-x");
-                if (ChunkManager.GetBlockType(globalPosition + Vector3Int.right) == CSBlockType.BrickStairs)
-                {
-                    CSBlockOrientation rightOrientation = ChunkManager.GetBlockOrientation(globalPosition + Vector3Int.right);
-                    if (rightOrientation == CSBlockOrientation.PositiveY_PositiveZ)
-                    {
-                        mesh = Resources.Load<Mesh>("Meshes/blocks/stair/stair_joint_top_left");
-                    }
-                    else if (rightOrientation == CSBlockOrientation.PositiveY_NegativeZ)
-                    {
-                        mesh = Resources.Load<Mesh>("Meshes/blocks/stair/stair_joint_bottom_left");
-                    }
-                }
-                else if (ChunkManager.GetBlockType(globalPosition + Vector3Int.left) == CSBlockType.BrickStairs)
-                {
-                    CSBlockOrientation leftOrientation = ChunkManager.GetBlockOrientation(globalPosition + Vector3Int.left);
-                    if (leftOrientation == CSBlockOrientation.PositiveY_PositiveZ)
-                    {
-                        mesh = Resources.Load<Mesh>("Meshes/blocks/stair/stair_joint_no_bottom_right");
-                    }
-                    else if (leftOrientation == CSBlockOrientation.PositiveY_NegativeZ)
-                    {
-                        mesh = Resources.Load<Mesh>("Meshes/blocks/stair/stair_joint_no_top_right");
-                    }
-                }
+                mesh = GetMeshPositiveYNegativeX(globalPosition);
                 break;
             case CSBlockOrientation.PositiveY_NegativeZ:
-                mesh = Resources.Load<Mesh>("Meshes/blocks/stair/stair_+y-z");
-                if (ChunkManager.GetBlockType(globalPosition + forward) == CSBlockType.BrickStairs)
-                {
-                    CSBlockOrientation forwardOrientation = ChunkManager.GetBlockOrientation(globalPosition + forward);
-                    if (forwardOrientation == CSBlockOrientation.PositiveY_PositiveX)
-                    {
-                        mesh = Resources.Load<Mesh>("Meshes/blocks/stair/stair_joint_bottom_right");
-                    }
-                    else if (forwardOrientation == CSBlockOrientation.PositiveY_NegativeX)
-                    {
-                        mesh = Resources.Load<Mesh>("Meshes/blocks/stair/stair_joint_bottom_left");
-                    }
-                }
-                else if (ChunkManager.GetBlockType(globalPosition + back) == CSBlockType.BrickStairs)
-                {
-                    CSBlockOrientation backOrientation = ChunkManager.GetBlockOrientation(globalPosition + back);
-                    if (backOrientation == CSBlockOrientation.PositiveY_PositiveX)
-                    {
-                        mesh = Resources.Load<Mesh>("Meshes/blocks/stair/stair_joint_no_top_left");
-                    }
-                    else if (backOrientation == CSBlockOrientation.PositiveY_NegativeX)
-                    {
-                        mesh = Resources.Load<Mesh>("Meshes/blocks/stair/stair_joint_no_top_right");
-                    }
-                }
+                mesh = GetMeshPositiveYNegativeZ(globalPosition);
                 break;
             case CSBlockOrientation.PositiveY_PositiveX:
-                mesh = Resources.Load<Mesh>("Meshes/blocks/stair/stair_+y+x");
-                if (ChunkManager.GetBlockType(globalPosition + Vector3Int.left) == CSBlockType.BrickStairs)
-                {
-                    CSBlockOrientation leftOrientation = ChunkManager.GetBlockOrientation(globalPosition + Vector3Int.left);
-                    if (leftOrientation == CSBlockOrientation.PositiveY_PositiveZ)
-                    {
-                        mesh = Resources.Load<Mesh>("Meshes/blocks/stair/stair_joint_top_right");
-                    }
-                    else if (leftOrientation == CSBlockOrientation.PositiveY_NegativeZ)
-                    {
-                        mesh = Resources.Load<Mesh>("Meshes/blocks/stair/stair_joint_bottom_right");
-                    }
-                }
-                else if (ChunkManager.GetBlockType(globalPosition + Vector3Int.right) == CSBlockType.BrickStairs)
-                {
-                    CSBlockOrientation rightOrientation = ChunkManager.GetBlockOrientation(globalPosition + Vector3Int.right);
-                    if (rightOrientation == CSBlockOrientation.PositiveY_PositiveZ)
-                    {
-                        mesh = Resources.Load<Mesh>("Meshes/blocks/stair/stair_joint_no_bottom_left");
-                    }
-                    else if (rightOrientation == CSBlockOrientation.PositiveY_NegativeZ)
-                    {
-                        mesh = Resources.Load<Mesh>("Meshes/blocks/stair/stair_joint_no_top_left");
-                    }
-                }
+                mesh = GetMeshPositiveYPositiveX(globalPosition);
                 break;
             case CSBlockOrientation.PositiveY_PositiveZ:
-                mesh = Resources.Load<Mesh>("Meshes/blocks/stair/stair_+y+z");
-                if (ChunkManager.GetBlockType(globalPosition + forward) == CSBlockType.BrickStairs)
-                {
-                    CSBlockOrientation forwardOrientation = ChunkManager.GetBlockOrientation(globalPosition + forward);
-                    if (forwardOrientation == CSBlockOrientation.PositiveY_PositiveX)
-                    {
-                        mesh = Resources.Load<Mesh>("Meshes/blocks/stair/stair_joint_no_bottom_left");
-                    }
-                    else if (forwardOrientation == CSBlockOrientation.PositiveY_NegativeX)
-                    {
-                        mesh = Resources.Load<Mesh>("Meshes/blocks/stair/stair_joint_no_bottom_right");
-                    }
-                }
-                else if (ChunkManager.GetBlockType(globalPosition + back) == CSBlockType.BrickStairs)
-                {
-                    CSBlockOrientation backOrientation = ChunkManager.GetBlockOrientation(globalPosition + back);
-                    if (backOrientation == CSBlockOrientation.PositiveY_PositiveX)
-                    {
-                        mesh = Resources.Load<Mesh>("Meshes/blocks/stair/stair_joint_top_right");
-                    }
-                    else if (backOrientation == CSBlockOrientation.PositiveY_NegativeX)
-                    {
-                        mesh = Resources.Load<Mesh>("Meshes/blocks/stair/stair_joint_top_left");
-                    }
-                }
+                mesh = GetMeshPositiveYPositiveZ(globalPosition);
                 break;
             case CSBlockOrientation.NegativeY_NegativeX:
-                mesh = Resources.Load<Mesh>("Meshes/blocks/stair/stair_-y-x");
+                mesh = GetMeshNegativeYNegativeX(globalPosition);
                 break;
             case CSBlockOrientation.NegativeY_NegativeZ:
-                mesh = Resources.Load<Mesh>("Meshes/blocks/stair/stair_-y-z");
+                mesh = GetMeshNegativeYNegativeZ(globalPosition);
                 break;
             case CSBlockOrientation.NegativeY_PositiveX:
-                mesh = Resources.Load<Mesh>("Meshes/blocks/stair/stair_-y+x");
+                mesh = GetMeshNegativeYPositiveX(globalPosition);
                 break;
             case CSBlockOrientation.NegativeY_PositiveZ:
-                mesh = Resources.Load<Mesh>("Meshes/blocks/stair/stair_-y+z");
-                break;
-            default:
-                mesh = Resources.Load<Mesh>("Meshes/blocks/stair/stair_-z");
+                mesh = GetMeshNegativeYPositiveZ(globalPosition);
                 break;
         }
         return mesh;
@@ -185,7 +86,7 @@ public class StairMeshGenerator : IMeshGenerator
 
         CSBlockOrientation orient = ChunkManager.GetBlockOrientation(globalPos);
 
-        Mesh stairMesh = GetMeshByOrientationAndPosition(orient, globalPos);
+        Mesh stairMesh = GetStairMesh(orient, globalPos);
         int length = vertices.Count;
         foreach (Vector3 singleVertex in stairMesh.vertices)
         {
@@ -202,5 +103,255 @@ public class StairMeshGenerator : IMeshGenerator
         {
             triangles.Add(index + length);
         }
+    }
+
+    static Dictionary<string, Mesh> stairMeshDict = new Dictionary<string, Mesh>();
+    static Mesh LoadMesh(string path)
+    {
+        if (!stairMeshDict.ContainsKey(path))
+        {
+            stairMeshDict.Add(path, Resources.Load<Mesh>(path));
+        }
+        return stairMeshDict[path];
+    }
+
+    static Mesh GetMeshPositiveYPositiveX(Vector3Int globalPosition)
+    {
+        Mesh mesh = LoadMesh("Meshes/blocks/stair/stair_+y+x");
+        if (ChunkManager.GetBlockType(globalPosition + Vector3Int.left) == CSBlockType.BrickStairs)
+        {
+            CSBlockOrientation leftOrientation = ChunkManager.GetBlockOrientation(globalPosition + Vector3Int.left);
+            if (leftOrientation == CSBlockOrientation.PositiveY_PositiveZ)
+            {
+                mesh = LoadMesh("Meshes/blocks/stair/stair_joint_top_right");
+            }
+            else if (leftOrientation == CSBlockOrientation.PositiveY_NegativeZ)
+            {
+                mesh = LoadMesh("Meshes/blocks/stair/stair_joint_bottom_right");
+            }
+        }
+        else if (ChunkManager.GetBlockType(globalPosition + Vector3Int.right) == CSBlockType.BrickStairs)
+        {
+            CSBlockOrientation rightOrientation = ChunkManager.GetBlockOrientation(globalPosition + Vector3Int.right);
+            if (rightOrientation == CSBlockOrientation.PositiveY_PositiveZ)
+            {
+                mesh = LoadMesh("Meshes/blocks/stair/stair_joint_no_bottom_left");
+            }
+            else if (rightOrientation == CSBlockOrientation.PositiveY_NegativeZ)
+            {
+                mesh = LoadMesh("Meshes/blocks/stair/stair_joint_no_top_left");
+            }
+        }
+        return mesh;
+    }
+
+    static Mesh GetMeshPositiveYNegativeX(Vector3Int globalPosition)
+    {
+        Mesh mesh = LoadMesh("Meshes/blocks/stair/stair_+y-x");
+        if (ChunkManager.GetBlockType(globalPosition + Vector3Int.right) == CSBlockType.BrickStairs)
+        {
+            CSBlockOrientation rightOrientation = ChunkManager.GetBlockOrientation(globalPosition + Vector3Int.right);
+            if (rightOrientation == CSBlockOrientation.PositiveY_PositiveZ)
+            {
+                mesh = LoadMesh("Meshes/blocks/stair/stair_joint_top_left");
+            }
+            else if (rightOrientation == CSBlockOrientation.PositiveY_NegativeZ)
+            {
+                mesh = LoadMesh("Meshes/blocks/stair/stair_joint_bottom_left");
+            }
+        }
+        else if (ChunkManager.GetBlockType(globalPosition + Vector3Int.left) == CSBlockType.BrickStairs)
+        {
+            CSBlockOrientation leftOrientation = ChunkManager.GetBlockOrientation(globalPosition + Vector3Int.left);
+            if (leftOrientation == CSBlockOrientation.PositiveY_PositiveZ)
+            {
+                mesh = LoadMesh("Meshes/blocks/stair/stair_joint_no_bottom_right");
+            }
+            else if (leftOrientation == CSBlockOrientation.PositiveY_NegativeZ)
+            {
+                mesh = LoadMesh("Meshes/blocks/stair/stair_joint_no_top_right");
+            }
+        }
+        return mesh;
+    }
+
+    static Mesh GetMeshPositiveYPositiveZ(Vector3Int globalPosition)
+    {
+        Mesh mesh = LoadMesh("Meshes/blocks/stair/stair_+y+z");
+        if (ChunkManager.GetBlockType(globalPosition + forward) == CSBlockType.BrickStairs)
+        {
+            CSBlockOrientation forwardOrientation = ChunkManager.GetBlockOrientation(globalPosition + forward);
+            if (forwardOrientation == CSBlockOrientation.PositiveY_PositiveX)
+            {
+                mesh = LoadMesh("Meshes/blocks/stair/stair_joint_no_bottom_left");
+            }
+            else if (forwardOrientation == CSBlockOrientation.PositiveY_NegativeX)
+            {
+                mesh = LoadMesh("Meshes/blocks/stair/stair_joint_no_bottom_right");
+            }
+        }
+        else if (ChunkManager.GetBlockType(globalPosition + back) == CSBlockType.BrickStairs)
+        {
+            CSBlockOrientation backOrientation = ChunkManager.GetBlockOrientation(globalPosition + back);
+            if (backOrientation == CSBlockOrientation.PositiveY_PositiveX)
+            {
+                mesh = LoadMesh("Meshes/blocks/stair/stair_joint_top_right");
+            }
+            else if (backOrientation == CSBlockOrientation.PositiveY_NegativeX)
+            {
+                mesh = LoadMesh("Meshes/blocks/stair/stair_joint_top_left");
+            }
+        }
+        return mesh;
+    }
+
+    static Mesh GetMeshPositiveYNegativeZ(Vector3Int globalPosition)
+    {
+        Mesh mesh = LoadMesh("Meshes/blocks/stair/stair_+y-z");
+        if (ChunkManager.GetBlockType(globalPosition + forward) == CSBlockType.BrickStairs)
+        {
+            CSBlockOrientation forwardOrientation = ChunkManager.GetBlockOrientation(globalPosition + forward);
+            if (forwardOrientation == CSBlockOrientation.PositiveY_PositiveX)
+            {
+                mesh = LoadMesh("Meshes/blocks/stair/stair_joint_bottom_right");
+            }
+            else if (forwardOrientation == CSBlockOrientation.PositiveY_NegativeX)
+            {
+                mesh = LoadMesh("Meshes/blocks/stair/stair_joint_bottom_left");
+            }
+        }
+        else if (ChunkManager.GetBlockType(globalPosition + back) == CSBlockType.BrickStairs)
+        {
+            CSBlockOrientation backOrientation = ChunkManager.GetBlockOrientation(globalPosition + back);
+            if (backOrientation == CSBlockOrientation.PositiveY_PositiveX)
+            {
+                mesh = LoadMesh("Meshes/blocks/stair/stair_joint_no_top_left");
+            }
+            else if (backOrientation == CSBlockOrientation.PositiveY_NegativeX)
+            {
+                mesh = LoadMesh("Meshes/blocks/stair/stair_joint_no_top_right");
+            }
+        }
+        return mesh;
+    }
+
+    static Mesh GetMeshNegativeYPositiveX(Vector3Int globalPosition)
+    {
+        Mesh mesh = LoadMesh("Meshes/blocks/stair/stair_-y+x");
+        if (ChunkManager.GetBlockType(globalPosition + Vector3Int.left) == CSBlockType.BrickStairs)
+        {
+            CSBlockOrientation leftOrientation = ChunkManager.GetBlockOrientation(globalPosition + Vector3Int.left);
+            if (leftOrientation == CSBlockOrientation.NegativeY_PositiveZ)
+            {
+                mesh = LoadMesh("Meshes/blocks/stair/stair_joint_-y_top_right");
+            }
+            else if (leftOrientation == CSBlockOrientation.NegativeY_NegativeZ)
+            {
+                mesh = LoadMesh("Meshes/blocks/stair/stair_joint_-y_bottom_right");
+            }
+        }
+        else if (ChunkManager.GetBlockType(globalPosition + Vector3Int.right) == CSBlockType.BrickStairs)
+        {
+            CSBlockOrientation rightOrientation = ChunkManager.GetBlockOrientation(globalPosition + Vector3Int.right);
+            if (rightOrientation == CSBlockOrientation.NegativeY_PositiveZ)
+            {
+                mesh = LoadMesh("Meshes/blocks/stair/stair_joint_-y_no_bottom_left");
+            }
+            else if (rightOrientation == CSBlockOrientation.NegativeY_NegativeZ)
+            {
+                mesh = LoadMesh("Meshes/blocks/stair/stair_joint_-y_no_top_left");
+            }
+        }
+        return mesh;
+    }
+
+    static Mesh GetMeshNegativeYNegativeX(Vector3Int globalPosition)
+    {
+        Mesh mesh = LoadMesh("Meshes/blocks/stair/stair_-y-x");
+        if (ChunkManager.GetBlockType(globalPosition + Vector3Int.right) == CSBlockType.BrickStairs)
+        {
+            CSBlockOrientation rightOrientation = ChunkManager.GetBlockOrientation(globalPosition + Vector3Int.right);
+            if (rightOrientation == CSBlockOrientation.NegativeY_PositiveZ)
+            {
+                mesh = LoadMesh("Meshes/blocks/stair/stair_joint_-y_top_left");
+            }
+            else if (rightOrientation == CSBlockOrientation.NegativeY_NegativeZ)
+            {
+                mesh = LoadMesh("Meshes/blocks/stair/stair_joint_-y_bottom_left");
+            }
+        }
+        else if (ChunkManager.GetBlockType(globalPosition + Vector3Int.left) == CSBlockType.BrickStairs)
+        {
+            CSBlockOrientation leftOrientation = ChunkManager.GetBlockOrientation(globalPosition + Vector3Int.left);
+            if (leftOrientation == CSBlockOrientation.NegativeY_PositiveZ)
+            {
+                mesh = LoadMesh("Meshes/blocks/stair/stair_joint_-y_no_bottom_right");
+            }
+            else if (leftOrientation == CSBlockOrientation.NegativeY_NegativeZ)
+            {
+                mesh = LoadMesh("Meshes/blocks/stair/stair_joint_-y_no_top_right");
+            }
+        }
+        return mesh;
+    }
+
+    static Mesh GetMeshNegativeYPositiveZ(Vector3Int globalPosition)
+    {
+        Mesh mesh = LoadMesh("Meshes/blocks/stair/stair_-y+z");
+        if (ChunkManager.GetBlockType(globalPosition + forward) == CSBlockType.BrickStairs)
+        {
+            CSBlockOrientation forwardOrientation = ChunkManager.GetBlockOrientation(globalPosition + forward);
+            if (forwardOrientation == CSBlockOrientation.NegativeY_PositiveX)
+            {
+                mesh = LoadMesh("Meshes/blocks/stair/stair_joint_-y_no_bottom_left");
+            }
+            else if (forwardOrientation == CSBlockOrientation.NegativeY_NegativeX)
+            {
+                mesh = LoadMesh("Meshes/blocks/stair/stair_joint_-y_no_bottom_right");
+            }
+        }
+        else if (ChunkManager.GetBlockType(globalPosition + back) == CSBlockType.BrickStairs)
+        {
+            CSBlockOrientation backOrientation = ChunkManager.GetBlockOrientation(globalPosition + back);
+            if (backOrientation == CSBlockOrientation.NegativeY_PositiveX)
+            {
+                mesh = LoadMesh("Meshes/blocks/stair/stair_joint_-y_top_right");
+            }
+            else if (backOrientation == CSBlockOrientation.NegativeY_NegativeX)
+            {
+                mesh = LoadMesh("Meshes/blocks/stair/stair_joint_-y_top_left");
+            }
+        }
+        return mesh;
+    }
+
+    static Mesh GetMeshNegativeYNegativeZ(Vector3Int globalPosition)
+    {
+        Mesh mesh = LoadMesh("Meshes/blocks/stair/stair_-y-z");
+        if (ChunkManager.GetBlockType(globalPosition + forward) == CSBlockType.BrickStairs)
+        {
+            CSBlockOrientation forwardOrientation = ChunkManager.GetBlockOrientation(globalPosition + forward);
+            if (forwardOrientation == CSBlockOrientation.NegativeY_PositiveX)
+            {
+                mesh = LoadMesh("Meshes/blocks/stair/stair_joint_-y_bottom_right");
+            }
+            else if (forwardOrientation == CSBlockOrientation.NegativeY_NegativeX)
+            {
+                mesh = LoadMesh("Meshes/blocks/stair/stair_joint_-y_bottom_left");
+            }
+        }
+        else if (ChunkManager.GetBlockType(globalPosition + back) == CSBlockType.BrickStairs)
+        {
+            CSBlockOrientation backOrientation = ChunkManager.GetBlockOrientation(globalPosition + back);
+            if (backOrientation == CSBlockOrientation.NegativeY_PositiveX)
+            {
+                mesh = LoadMesh("Meshes/blocks/stair/stair_joint_-y_no_top_left");
+            }
+            else if (backOrientation == CSBlockOrientation.NegativeY_NegativeX)
+            {
+                mesh = LoadMesh("Meshes/blocks/stair/stair_joint_-y_no_top_right");
+            }
+        }
+        return mesh;
     }
 }
