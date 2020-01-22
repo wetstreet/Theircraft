@@ -735,7 +735,10 @@ namespace protocol.cs_theircraft
       OakWood = 13,
             
       [global::ProtoBuf.ProtoEnum(Name=@"OakLeaves", Value=14)]
-      OakLeaves = 14
+      OakLeaves = 14,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"BrickStairs", Value=15)]
+      BrickStairs = 15
     }
   
     [global::ProtoBuf.ProtoContract(Name=@"CSBlockOrientation")]

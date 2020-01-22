@@ -26,7 +26,7 @@ public class ItemSelectPanel : MonoBehaviour
     {
         {CSBlockType.GrassBlock, "grass" },
         {CSBlockType.Dirt, "dirt" },
-        {CSBlockType.Tnt, "tnt" },
+        {CSBlockType.BrickStairs, "Brick_Stairs" },
         {CSBlockType.Brick, "brick" },
         {CSBlockType.Furnace, "furnace" },
         {CSBlockType.HayBlock, "hayblock" },
@@ -82,7 +82,7 @@ public class ItemSelectPanel : MonoBehaviour
         Init();
 
         SetSlotItem(0, CSBlockType.GrassBlock);
-        SetSlotItem(1, CSBlockType.Tnt);
+        SetSlotItem(1, CSBlockType.BrickStairs);
         SetSlotItem(2, CSBlockType.Brick);
         SetSlotItem(3, CSBlockType.Furnace);
         SetSlotItem(4, CSBlockType.HayBlock);

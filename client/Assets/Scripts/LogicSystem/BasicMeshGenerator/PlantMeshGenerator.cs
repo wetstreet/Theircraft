@@ -26,7 +26,7 @@ public class PlantMeshGenerator : IMeshGenerator
         List<Vector2> uv = new List<Vector2>();
         List<int> triangles = new List<int>();
 
-        ChunkMeshGenerator.TexCoords texCoords = ChunkMeshGenerator.type2texcoords[(byte)type];
+        TexCoords texCoords = ChunkMeshGenerator.type2texcoords[(byte)type];
 
         AddDiagonalFace(vertices, uv, triangles, Vector3.zero, texCoords.front);
         AddAntiDiagonalFace(vertices, uv, triangles, Vector3.zero, texCoords.front);
@@ -40,7 +40,7 @@ public class PlantMeshGenerator : IMeshGenerator
 
     override public void GenerateMeshInChunk(CSBlockType type, Vector3Int pos, Vector3Int globalPos, List<Vector3> vertices, List<Vector2> uv, List<int> triangles)
     {
-        ChunkMeshGenerator.TexCoords texCoords = ChunkMeshGenerator.type2texcoords[(byte)type];
+        TexCoords texCoords = ChunkMeshGenerator.type2texcoords[(byte)type];
 
         AddDiagonalFace(vertices, uv, triangles, pos, texCoords.front);
         AddAntiDiagonalFace(vertices, uv, triangles, pos, texCoords.front);
