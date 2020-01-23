@@ -1,79 +1,221 @@
 fileFormatVersion: 2
 guid: 79e2b4538b349eb48a93bded66b2a76d
 ModelImporter:
-  serializedVersion: 23
-  fileIDToRecycleName:
-    100000: Arm_L
-    100002: Arm_L_1
-    100004: Arm_L_2
-    100006: Arm_L_2_end
-    100008: Arm_R
-    100010: Arm_R_1
-    100012: Arm_R_2
-    100014: Arm_R_2_end
-    100016: Armature
-    100018: Body
-    100020: Body_Lower
-    100022: Body_Upper
-    100024: Cube
-    100026: Head
-    100028: Head.001
-    100030: Head.001_end
-    100032: Leg_L
-    100034: Leg_L_1
-    100036: Leg_L_2
-    100038: Leg_L_2_end
-    100040: Leg_R
-    100042: Leg_R_1
-    100044: Leg_R_2
-    100046: Leg_R_2_end
-    100048: Move
-    100050: //RootNode
-    400000: Arm_L
-    400002: Arm_L_1
-    400004: Arm_L_2
-    400006: Arm_L_2_end
-    400008: Arm_R
-    400010: Arm_R_1
-    400012: Arm_R_2
-    400014: Arm_R_2_end
-    400016: Armature
-    400018: Body
-    400020: Body_Lower
-    400022: Body_Upper
-    400024: Cube
-    400026: Head
-    400028: Head.001
-    400030: Head.001_end
-    400032: Leg_L
-    400034: Leg_L_1
-    400036: Leg_L_2
-    400038: Leg_L_2_end
-    400040: Leg_R
-    400042: Leg_R_1
-    400044: Leg_R_2
-    400046: Leg_R_2_end
-    400048: Move
-    400050: //RootNode
-    2100000: Steve
-    2100002: No Name
-    2300000: Cube
-    2300002: Head
-    3300000: Cube
-    3300002: Head
-    4300000: Head
-    4300002: Arm_L
-    4300004: Arm_R
-    4300006: Leg_L
-    4300008: Leg_R
-    4300010: Body
-    4300012: Cube
-    9500000: //RootNode
-    13700000: Arm_L
-    13700002: Arm_R
-    13700004: Body
-    13700006: Leg_L
-    13700008: Leg_R
+  serializedVersion: 26
+  internalIDToNameTable:
+  - first:
+      1: 100000
+    second: Arm_L
+  - first:
+      1: 100002
+    second: Arm_L_1
+  - first:
+      1: 100004
+    second: Arm_L_2
+  - first:
+      1: 100006
+    second: Arm_L_2_end
+  - first:
+      1: 100008
+    second: Arm_R
+  - first:
+      1: 100010
+    second: Arm_R_1
+  - first:
+      1: 100012
+    second: Arm_R_2
+  - first:
+      1: 100014
+    second: Arm_R_2_end
+  - first:
+      1: 100016
+    second: Armature
+  - first:
+      1: 100018
+    second: Body
+  - first:
+      1: 100020
+    second: Body_Lower
+  - first:
+      1: 100022
+    second: Body_Upper
+  - first:
+      1: 100024
+    second: Cube
+  - first:
+      1: 100026
+    second: Head
+  - first:
+      1: 100028
+    second: Head.001
+  - first:
+      1: 100030
+    second: Head.001_end
+  - first:
+      1: 100032
+    second: Leg_L
+  - first:
+      1: 100034
+    second: Leg_L_1
+  - first:
+      1: 100036
+    second: Leg_L_2
+  - first:
+      1: 100038
+    second: Leg_L_2_end
+  - first:
+      1: 100040
+    second: Leg_R
+  - first:
+      1: 100042
+    second: Leg_R_1
+  - first:
+      1: 100044
+    second: Leg_R_2
+  - first:
+      1: 100046
+    second: Leg_R_2_end
+  - first:
+      1: 100048
+    second: Move
+  - first:
+      1: 100050
+    second: //RootNode
+  - first:
+      4: 400000
+    second: Arm_L
+  - first:
+      4: 400002
+    second: Arm_L_1
+  - first:
+      4: 400004
+    second: Arm_L_2
+  - first:
+      4: 400006
+    second: Arm_L_2_end
+  - first:
+      4: 400008
+    second: Arm_R
+  - first:
+      4: 400010
+    second: Arm_R_1
+  - first:
+      4: 400012
+    second: Arm_R_2
+  - first:
+      4: 400014
+    second: Arm_R_2_end
+  - first:
+      4: 400016
+    second: Armature
+  - first:
+      4: 400018
+    second: Body
+  - first:
+      4: 400020
+    second: Body_Lower
+  - first:
+      4: 400022
+    second: Body_Upper
+  - first:
+      4: 400024
+    second: Cube
+  - first:
+      4: 400026
+    second: Head
+  - first:
+      4: 400028
+    second: Head.001
+  - first:
+      4: 400030
+    second: Head.001_end
+  - first:
+      4: 400032
+    second: Leg_L
+  - first:
+      4: 400034
+    second: Leg_L_1
+  - first:
+      4: 400036
+    second: Leg_L_2
+  - first:
+      4: 400038
+    second: Leg_L_2_end
+  - first:
+      4: 400040
+    second: Leg_R
+  - first:
+      4: 400042
+    second: Leg_R_1
+  - first:
+      4: 400044
+    second: Leg_R_2
+  - first:
+      4: 400046
+    second: Leg_R_2_end
+  - first:
+      4: 400048
+    second: Move
+  - first:
+      4: 400050
+    second: //RootNode
+  - first:
+      21: 2100000
+    second: Steve
+  - first:
+      21: 2100002
+    second: No Name
+  - first:
+      23: 2300000
+    second: Cube
+  - first:
+      23: 2300002
+    second: Head
+  - first:
+      33: 3300000
+    second: Cube
+  - first:
+      33: 3300002
+    second: Head
+  - first:
+      43: 4300000
+    second: Head
+  - first:
+      43: 4300002
+    second: Arm_L
+  - first:
+      43: 4300004
+    second: Arm_R
+  - first:
+      43: 4300006
+    second: Leg_L
+  - first:
+      43: 4300008
+    second: Leg_R
+  - first:
+      43: 4300010
+    second: Body
+  - first:
+      43: 4300012
+    second: Cube
+  - first:
+      95: 9500000
+    second: //RootNode
+  - first:
+      137: 13700000
+    second: Arm_L
+  - first:
+      137: 13700002
+    second: Arm_R
+  - first:
+      137: 13700004
+    second: Body
+  - first:
+      137: 13700006
+    second: Leg_L
+  - first:
+      137: 13700008
+    second: Leg_R
   externalObjects:
   - first:
       type: UnityEngine:Material
@@ -124,6 +266,7 @@ ModelImporter:
     meshCompression: 0
     addColliders: 0
     useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
     importVisibility: 1
     importBlendShapes: 1
     importCameras: 1
@@ -131,18 +274,19 @@ ModelImporter:
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
-    optimizeMeshForGPU: 1
     keepQuads: 0
     weldVertices: 1
     preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    meshOptimizationFlags: -1
     indexFormat: 0
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
     secondaryUVPackMargin: 4
     useFileScale: 1
-    previousCalculatedGlobalScale: 0.01
-    hasPreviousCalculatedGlobalScale: 1
   tangentSpace:
     normalSmoothAngle: 60
     normalImportMode: 0
@@ -151,10 +295,11 @@ ModelImporter:
     legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
     blendShapeNormalImportMode: 1
     normalSmoothingSource: 0
+  referencedClips: []
   importAnimation: 1
   copyAvatar: 0
   humanDescription:
-    serializedVersion: 2
+    serializedVersion: 3
     human: []
     skeleton: []
     armTwist: 0.5
@@ -164,6 +309,7 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
+    globalScale: 1
     rootMotionBoneName: 
     hasTranslationDoF: 0
     hasExtraRoot: 0

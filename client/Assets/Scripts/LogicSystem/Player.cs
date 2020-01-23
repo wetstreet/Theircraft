@@ -41,7 +41,7 @@ public class Player : MonoBehaviour
     {
         transform.name = "player_" + id;
         steve = transform.Find("steve");
-        head = transform.Find("steve/Armature/Move/Body_Lower/Body_Upper/Head.001");
+        head = transform.Find("steve/Move/Body/Head");
         cc = transform.GetComponent<CharacterController>();
         path = new NavMeshPath();
 
