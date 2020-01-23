@@ -104,7 +104,12 @@ public class ChunkManager
             int xInChunk = chunk.GetXInChunkByGlobalX(block.position.x);
             int zInChunk = chunk.GetZInChunkByGlobalZ(block.position.z);
             chunk.SetBlockType(xInChunk, block.position.y, zInChunk, block.type);
-            AddBlockOrientation(block.position.ToVector3Int(), block.orient);
+            Vector3Int pos = block.position.ToVector3Int();
+            AddBlockOrientation(pos, block.orient);
+            if (block.depentPos != null)
+            {
+                AddBlockDependence(pos, block.depentPos.ToVector3Int());
+            }
             chunk.RebuildMesh();
 
             // if this block is adjacent to other chunks, refresh nearby chunks
@@ -137,26 +142,36 @@ public class ChunkManager
         return nearbyChunks;
     }
 
-    public static void RemoveBlock(int x, int y, int z)
+    public static void RemoveBlock(int x, int y, int z, bool removeTopNotCollidable = true, bool refreshChunks = true)
     {
         Chunk chunk = GetChunk(x, y, z);
         if (chunk != null)
         {
             int xInChunk = chunk.GetXInChunkByGlobalX(x);
             int zInChunk = chunk.GetZInChunkByGlobalZ(z);
+            CSBlockType type = chunk.GetBlockType(xInChunk, y, zInChunk);
             chunk.SetBlockType(xInChunk, y, zInChunk, CSBlockType.None);
-            RemoveBlockOrientation(new Vector3Int(x, y, z));
-            if (!chunk.HasCollidableBlock(xInChunk, y + 1, zInChunk))
+            Vector3Int pos = new Vector3Int(x, y, z);
+            RemoveBlockOrientation(pos);
+            RemoveBlockDependence(pos);
+            if (removeTopNotCollidable && chunk.HasNotCollidableBlock(xInChunk, y + 1, zInChunk))
             {
-                chunk.SetBlockType(xInChunk, y + 1, zInChunk, CSBlockType.None);
+                RemoveBlock(x, y + 1, z, false, false);
             }
-            chunk.RebuildMesh();
+             
+            if (refreshChunks)
+            {
+                chunk.RebuildMesh();
 
-            // if this block is adjacent to other chunks, refresh nearby chunks
-            foreach (Chunk nearbyChunk in GetNearbyChunks(xInChunk, zInChunk, chunk))
-            {
-                nearbyChunk.RebuildMesh();
+                // if this block is adjacent to other chunks, refresh nearby chunks
+                foreach (Chunk nearbyChunk in GetNearbyChunks(xInChunk, zInChunk, chunk))
+                {
+                    nearbyChunk.RebuildMesh();
+                }
             }
+            
+            BreakBlockEffect.Create(type, x, y, z);
+            PlayerController.instance.PlayDigSound(type);
         }
     }
 
@@ -181,6 +196,22 @@ public class ChunkManager
         {
             return CSBlockOrientation.Default;
         }
+    }
+
+    static readonly Dictionary<Vector3Int, Vector3Int> dependenceDict = new Dictionary<Vector3Int, Vector3Int>();
+    public static void AddBlockDependence(Vector3Int pos, Vector3Int beDepentPos)
+    {
+        dependenceDict.Add(pos, beDepentPos);
+    }
+
+    public static void RemoveBlockDependence(Vector3Int pos)
+    {
+        dependenceDict.Remove(pos);
+    }
+
+    public static Vector3Int GetBlockDependence(Vector3Int pos)
+    {
+        return dependenceDict[pos];
     }
 
     // get the chunks to be load (chunks should be loaded - chunks already loaded)

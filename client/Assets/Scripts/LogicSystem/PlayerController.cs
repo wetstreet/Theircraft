@@ -154,16 +154,23 @@ public class PlayerController : MonoBehaviour
             {
                 if (WireFrameHelper.render && ItemSelectPanel.curBlockType != CSBlockType.None)
                 {
-                    Vector3 pos = WireFrameHelper.pos;
+                    Vector3Int pos = WireFrameHelper.pos;
                     if (ChunkManager.HasCollidableBlock(WireFrameHelper.pos.x, WireFrameHelper.pos.y, WireFrameHelper.pos.z))
                     {
-                        pos = WireFrameHelper.pos + hit.normal;
+                        pos = WireFrameHelper.pos + Vector3Int.RoundToInt(hit.normal);
                     }
 
-                    CSBlockOrientation orientation = ChunkMeshGenerator.GetBlockOrientation(transform.position, pos, WireFrameHelper.hitPos);
-                    if (!cc.bounds.Intersects(new Bounds(pos, Vector3.one)))
+                    if (!cc.bounds.Intersects(new Bounds(pos, Vector3.one)) && !ChunkManager.HasBlock(pos))
                     {
-                        AddBlockReq(Vector3Int.RoundToInt(pos), ItemSelectPanel.curBlockType, orientation);
+                        if (ItemSelectPanel.curBlockType == CSBlockType.Torch)
+                        {
+                            AddBlockReq(Vector3Int.RoundToInt(pos), ItemSelectPanel.curBlockType, WireFrameHelper.pos);
+                        }
+                        else
+                        {
+                            CSBlockOrientation orientation = ChunkMeshGenerator.GetBlockOrientation(transform.position, pos, WireFrameHelper.hitPos);
+                            AddBlockReq(Vector3Int.RoundToInt(pos), ItemSelectPanel.curBlockType, orientation);
+                        }
                     }
                 }
             }
@@ -394,7 +401,26 @@ public class PlayerController : MonoBehaviour
                     z = pos.z
                 },
                 type = type,
-                orient = orient
+                orient = orient,
+            }
+        };
+        NetworkManager.SendPkgToServer(ENUM_CMD.CS_ADD_BLOCK_REQ, addBlockReq, AddBlockRes);
+    }
+
+    void AddBlockReq(Vector3Int pos, CSBlockType type, Vector3Int dependPos)
+    {
+        CSAddBlockReq addBlockReq = new CSAddBlockReq
+        {
+            block = new CSBlock
+            {
+                position = new CSVector3Int
+                {
+                    x = pos.x,
+                    y = pos.y,
+                    z = pos.z
+                },
+                type = type,
+                depentPos = dependPos.ToCSVector3Int(),
             }
         };
         NetworkManager.SendPkgToServer(ENUM_CMD.CS_ADD_BLOCK_REQ, addBlockReq, AddBlockRes);
@@ -436,6 +462,11 @@ public class PlayerController : MonoBehaviour
         NetworkManager.SendPkgToServer(ENUM_CMD.CS_DELETE_BLOCK_REQ, req, DeleteBlockRes);
     }
 
+    public void PlayDigSound(CSBlockType type)
+    {
+        SoundManager.PlayDigSound(type, gameObject);
+    }
+
     void DeleteBlockRes(object data)
     {
         CSDeleteBlockRes rsp = NetworkManager.Deserialize<CSDeleteBlockRes>(data);
@@ -445,8 +476,6 @@ public class PlayerController : MonoBehaviour
             Vector3Int pos = new Vector3Int(rsp.position.x, rsp.position.y, rsp.position.z);
             CSBlockType type = ChunkManager.GetBlockType(rsp.position.x, rsp.position.y, rsp.position.z);
             ChunkManager.RemoveBlock(rsp.position.x, rsp.position.y, rsp.position.z);
-            BreakBlockEffect.Create(type, pos);
-            SoundManager.PlayDigSound(type, gameObject);
         }
         else
         {

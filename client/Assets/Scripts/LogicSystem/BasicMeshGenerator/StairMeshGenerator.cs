@@ -47,7 +47,6 @@ public class StairMeshGenerator : IMeshGenerator
     static Mesh GetStairMesh(CSBlockOrientation orientation, Vector3Int globalPosition)
     {
         Mesh mesh = null;
-        Debug.Log("orient=" + orientation);
         switch (orientation)
         {
             case CSBlockOrientation.PositiveY_NegativeX:
@@ -103,16 +102,6 @@ public class StairMeshGenerator : IMeshGenerator
         {
             triangles.Add(index + length);
         }
-    }
-
-    static Dictionary<string, Mesh> stairMeshDict = new Dictionary<string, Mesh>();
-    static Mesh LoadMesh(string path)
-    {
-        if (!stairMeshDict.ContainsKey(path))
-        {
-            stairMeshDict.Add(path, Resources.Load<Mesh>(path));
-        }
-        return stairMeshDict[path];
     }
 
     static Mesh GetMeshPositiveYPositiveX(Vector3Int globalPosition)

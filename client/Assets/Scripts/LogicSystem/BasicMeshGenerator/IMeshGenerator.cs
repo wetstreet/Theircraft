@@ -47,4 +47,14 @@ public abstract class IMeshGenerator
         triangles.Add(verticesCount - 2);
         triangles.Add(verticesCount - 1);
     }
+
+    static Dictionary<string, Mesh> meshDict = new Dictionary<string, Mesh>();
+    protected static Mesh LoadMesh(string path)
+    {
+        if (!meshDict.ContainsKey(path))
+        {
+            meshDict.Add(path, Resources.Load<Mesh>(path));
+        }
+        return meshDict[path];
+    }
 }

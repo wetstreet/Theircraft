@@ -10,10 +10,10 @@
 // Generated from: protocol/cs_theircraft.proto
 namespace protocol.cs_theircraft
 {
-  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"CSPosOrientPair")]
-  public partial class CSPosOrientPair : global::ProtoBuf.IExtensible
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"CSBlockAttrs")]
+  public partial class CSBlockAttrs : global::ProtoBuf.IExtensible
   {
-    public CSPosOrientPair() {}
+    public CSBlockAttrs() {}
     
     private CSVector3Int _pos;
     [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"pos", DataFormat = global::ProtoBuf.DataFormat.Default)]
@@ -22,12 +22,21 @@ namespace protocol.cs_theircraft
       get { return _pos; }
       set { _pos = value; }
     }
-    private CSBlockOrientation _orient;
-    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"orient", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    private CSBlockOrientation _orient = CSBlockOrientation.Default;
+    [global::ProtoBuf.ProtoMember(2, IsRequired = false, Name=@"orient", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    [global::System.ComponentModel.DefaultValue(CSBlockOrientation.Default)]
     public CSBlockOrientation orient
     {
       get { return _orient; }
       set { _orient = value; }
+    }
+    private CSVector3Int _depentPos = null;
+    [global::ProtoBuf.ProtoMember(3, IsRequired = false, Name=@"depentPos", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue(null)]
+    public CSVector3Int depentPos
+    {
+      get { return _depentPos; }
+      set { _depentPos = value; }
     }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
@@ -139,12 +148,21 @@ namespace protocol.cs_theircraft
       get { return _type; }
       set { _type = value; }
     }
-    private CSBlockOrientation _orient;
-    [global::ProtoBuf.ProtoMember(3, IsRequired = true, Name=@"orient", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    private CSBlockOrientation _orient = CSBlockOrientation.Default;
+    [global::ProtoBuf.ProtoMember(3, IsRequired = false, Name=@"orient", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    [global::System.ComponentModel.DefaultValue(CSBlockOrientation.Default)]
     public CSBlockOrientation orient
     {
       get { return _orient; }
       set { _orient = value; }
+    }
+    private CSVector3Int _depentPos = null;
+    [global::ProtoBuf.ProtoMember(4, IsRequired = false, Name=@"depentPos", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue(null)]
+    public CSVector3Int depentPos
+    {
+      get { return _depentPos; }
+      set { _depentPos = value; }
     }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
@@ -227,11 +245,11 @@ namespace protocol.cs_theircraft
       get { return _Players; }
     }
   
-    private readonly global::System.Collections.Generic.List<CSPosOrientPair> _BlockOrientations = new global::System.Collections.Generic.List<CSPosOrientPair>();
-    [global::ProtoBuf.ProtoMember(5, Name=@"BlockOrientations", DataFormat = global::ProtoBuf.DataFormat.Default)]
-    public global::System.Collections.Generic.List<CSPosOrientPair> BlockOrientations
+    private readonly global::System.Collections.Generic.List<CSBlockAttrs> _BlockAttrs = new global::System.Collections.Generic.List<CSBlockAttrs>();
+    [global::ProtoBuf.ProtoMember(5, Name=@"BlockAttrs", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public global::System.Collections.Generic.List<CSBlockAttrs> BlockAttrs
     {
-      get { return _BlockOrientations; }
+      get { return _BlockAttrs; }
     }
   
     private global::ProtoBuf.IExtension extensionObject;
@@ -738,7 +756,10 @@ namespace protocol.cs_theircraft
       OakLeaves = 14,
             
       [global::ProtoBuf.ProtoEnum(Name=@"BrickStairs", Value=15)]
-      BrickStairs = 15
+      BrickStairs = 15,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"Torch", Value=16)]
+      Torch = 16
     }
   
     [global::ProtoBuf.ProtoContract(Name=@"CSBlockOrientation")]

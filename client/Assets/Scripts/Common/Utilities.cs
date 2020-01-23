@@ -15,6 +15,11 @@ public static class Utilities {
         return new Vector3Int(csv.x, csv.y, csv.z);
     }
 
+    public static CSVector3Int ToCSVector3Int(this Vector3Int v)
+    {
+        return new CSVector3Int { x = v.x, y = v.y, z = v.z };
+    }
+
     public static void GetChunk(ref Vector2Int chunkPos, Vector3 position)
     {
         chunkPos.x = Mathf.FloorToInt(position.x / 16f);

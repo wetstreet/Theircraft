@@ -31,6 +31,7 @@ public class ItemSelectPanel : MonoBehaviour
         {CSBlockType.Furnace, "furnace" },
         {CSBlockType.HayBlock, "hayblock" },
         {CSBlockType.Stone, "stone" },
+        {CSBlockType.Torch, "torch" },
     };
 
     public static void SetSlotItem(int slotID, CSBlockType blockType)
@@ -73,7 +74,9 @@ public class ItemSelectPanel : MonoBehaviour
                 PlayerController.ShowBlock(curBlockType);
             }
             else
+            {
                 PlayerController.ShowHand();
+            }
         }
     }
 
@@ -87,6 +90,7 @@ public class ItemSelectPanel : MonoBehaviour
         SetSlotItem(3, CSBlockType.Furnace);
         SetSlotItem(4, CSBlockType.HayBlock);
         SetSlotItem(5, CSBlockType.Stone);
+        SetSlotItem(6, CSBlockType.Torch);
 
         RefreshUI();
     }

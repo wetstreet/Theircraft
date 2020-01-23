@@ -105,14 +105,14 @@ public class Chunk
         blocksInByte[256 * _y + 16 * xInChunk + zInChunk] = (byte)type;
     }
 
-    public bool HasCollidableBlock(int x, int y, int z)
+    public bool HasNotCollidableBlock(int x, int y, int z)
     {
         if (x < 0 || x > 15 || z < 0 || z > 15 || y < 0 || y > 255)
         {
             return false;
         }
         byte type = GetBlockByte(x, y, z);
-        return type > 0 && ChunkMeshGenerator.type2texcoords[type].isCollidable;
+        return type > 0 && !ChunkMeshGenerator.type2texcoords[type].isCollidable;
     }
 
     //input is local position
