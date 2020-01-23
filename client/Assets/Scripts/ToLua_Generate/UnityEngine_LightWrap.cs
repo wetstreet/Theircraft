@@ -8,7 +8,6 @@ public class UnityEngine_LightWrap
 	{
 		L.BeginClass(typeof(UnityEngine.Light), typeof(UnityEngine.Behaviour));
 		L.RegFunction("Reset", Reset);
-		L.RegFunction("SetLightDirty", SetLightDirty);
 		L.RegFunction("AddCommandBuffer", AddCommandBuffer);
 		L.RegFunction("AddCommandBufferAsync", AddCommandBufferAsync);
 		L.RegFunction("RemoveCommandBuffer", RemoveCommandBuffer);
@@ -83,22 +82,6 @@ public class UnityEngine_LightWrap
 			ToLua.CheckArgsCount(L, 1);
 			UnityEngine.Light obj = (UnityEngine.Light)ToLua.CheckObject(L, 1, typeof(UnityEngine.Light));
 			obj.Reset();
-			return 0;
-		}
-		catch (Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e);
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int SetLightDirty(IntPtr L)
-	{
-		try
-		{
-			ToLua.CheckArgsCount(L, 1);
-			UnityEngine.Light obj = (UnityEngine.Light)ToLua.CheckObject(L, 1, typeof(UnityEngine.Light));
-			obj.SetLightDirty();
 			return 0;
 		}
 		catch (Exception e)

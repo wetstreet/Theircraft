@@ -164,6 +164,8 @@ public static class ToLuaExport
         "Camera.FocalLengthToFOV",
         "Camera.FOVToFocalLength",
         "ParticleSystem.SetJob",
+        "Light.SetLightDirty",
+        "MeshRenderer.receiveGI",
     };
 
     class _MethodBase
