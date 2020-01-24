@@ -19,7 +19,7 @@ public class TorchMeshGenerator : IMeshGenerator
 
     override public Mesh GenerateSingleMesh(CSBlockType type)
     {
-        Mesh torchMesh = Resources.Load<Mesh>("Meshes/blocks/stair/stair_+y-z");
+        Mesh torchMesh = Resources.Load<Mesh>("Meshes/blocks/torch/torch");
 
         Mesh mesh = new Mesh();
         mesh.name = "CubeMesh";
@@ -34,8 +34,15 @@ public class TorchMeshGenerator : IMeshGenerator
         {
             uv.Add(new Vector2((texPos.x + singleUV.x) / atlas_column, (texPos.y + singleUV.y) / atlas_row));
         }
+        
+        Matrix4x4 matrix = Matrix4x4.TRS(Vector3.up / 2, Quaternion.Euler(-12, 28, 24), Vector3.one * 2);
+        List<Vector3> vertices = new List<Vector3>();
+        for (int i = 0; i < torchMesh.vertices.Length; i++)
+        {
+            vertices.Add(matrix.MultiplyPoint(torchMesh.vertices[i]));
+        }
 
-        mesh.vertices = torchMesh.vertices;
+        mesh.vertices = vertices.ToArray();
         mesh.uv = uv.ToArray();
         mesh.triangles = torchMesh.triangles;
 

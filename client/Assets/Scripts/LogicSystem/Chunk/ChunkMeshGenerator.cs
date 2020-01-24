@@ -93,7 +93,7 @@ public static class ChunkMeshGenerator
     {
         TexCoords texCoords = type2texcoords[(byte)type];
 
-        if (!texCoords.isCollidable)
+        if (texCoords.isPlant)
         {
             return PlantMeshGenerator.Instance.GenerateSingleMesh(type);
         }
@@ -154,7 +154,7 @@ public static class ChunkMeshGenerator
                             }
                             else if (type == CSBlockType.Torch)
                             {
-                                TorchMeshGenerator.Instance.GenerateMeshInChunk(type, pos, globalPos, chunk.vertices1, chunk.uv1, chunk.triangles1);
+                                TorchMeshGenerator.Instance.GenerateMeshInChunk(type, pos, globalPos, chunk.vertices2, chunk.uv2, chunk.triangles2);
                             }
                             else
                             {
