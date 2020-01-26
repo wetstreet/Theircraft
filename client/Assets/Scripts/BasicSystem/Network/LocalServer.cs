@@ -47,14 +47,39 @@ public class LocalServer : MonoBehaviour
         callback(rsp);
     }
 
+    static byte[] GetChunkData(Vector2Int pos)
+    {
+        if (!chunkDataDict.ContainsKey(pos))
+        {
+            chunkDataDict.Add(pos, new byte[65536]);
+        }
+        return chunkDataDict[pos];
+    }
+
+    static Dictionary<Vector2Int, byte[]> chunkDataDict = new Dictionary<Vector2Int, byte[]>();
+    static Vector2Int keyVector = new Vector2Int();
+    public static void SetBlockType(int x, int y, int z, CSBlockType type)
+    {
+        keyVector.x = Chunk.GetChunkPosByGlobalPos(x);
+        keyVector.y = Chunk.GetChunkPosByGlobalPos(z);
+        byte[] chunkData = GetChunkData(keyVector);
+
+        int xInChunk = x - keyVector.x * 16;
+        int zInChunk = z - keyVector.y * 16;
+
+        chunkData[256 * y + 16 * xInChunk + zInChunk] = (byte)type;
+    }
+
     static void Single_OnChunksEnterLeaveViewReq(object obj, Action<object> callback)
     {
         CSChunksEnterLeaveViewReq req = obj as CSChunksEnterLeaveViewReq;
         CSChunksEnterLeaveViewRes res = new CSChunksEnterLeaveViewRes();
         res.RetCode = 0;
+
         foreach (CSVector2Int chunk in req.EnterViewChunks)
         {
-            byte[] blocks = TerrainGenerator.GenerateChunkData(chunk);
+            byte[] blocks = GetChunkData(chunk.ToVector2Int());
+            TerrainGenerator.GenerateChunkData(chunk, blocks);
             CSChunk c = new CSChunk();
             c.Position = chunk;
             c.BlocksInBytes = blocks;

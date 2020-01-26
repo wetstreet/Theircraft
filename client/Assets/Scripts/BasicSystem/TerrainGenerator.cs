@@ -8,9 +8,8 @@ public class TerrainGenerator : MonoBehaviour
     static readonly float scale = 35;
     static readonly int maxHeight = 15;
 
-    public static byte[] GenerateChunkData(CSVector2Int chunk)
+    public static byte[] GenerateChunkData(CSVector2Int chunk, byte[] blocks)
     {
-        byte[] blocks = new byte[65536];
         for (int i = 0; i < 16; i++)
         {
             for (int j = 0; j < 16; j++)
@@ -52,12 +51,12 @@ public class TerrainGenerator : MonoBehaviour
                                             break;
                                     }
                                 }
-                                else if (dice == 199)
+                                else if (dice <= 199 && dice > 197)
                                 {
                                     int treedice = Random.Range(1, 10);
                                     if (treedice == 1)
                                     {
-                                        GenerateTree(blocks, i, k, j);
+                                        GenerateTree(blocks, i, k, j, chunk.ToVector2Int());
                                     }
                                 }
                                 break;
@@ -75,33 +74,31 @@ public class TerrainGenerator : MonoBehaviour
                                 break;
                         }
                     }
-                    blocks[256 * k + 16 * i + j] = (byte)type;
+                    if (type != CSBlockType.None)
+                    {
+                        blocks[256 * k + 16 * i + j] = (byte)type;
+                    }
                 }
             }
         }
         return blocks;
     }
 
-    static void SetBlockType(byte[] blocks, int x, int y, int z, CSBlockType type)
+    static void GenerateTree(byte[] blocks, int x, int y, int z, Vector2Int chunk)
     {
-        blocks[256 * y + 16 * x + z] = (byte)type;
-    }
-
-    static void GenerateTree(byte[] blocks, int x, int y, int z)
-    {
-        for (int k = y + 3; k <= y + 5; k++)
+        for (int k = y + 2; k <= y + 4; k++)
         {
             for (int i = x - 1; i <= x + 1; i++)
             {
                 for (int j = z - 1; j <= z + 1; j++)
                 {
-                    SetBlockType(blocks, i, k, j, CSBlockType.OakLeaves);
+                    LocalServer.SetBlockType(i + chunk.x * 16, k, j + chunk.y * 16, CSBlockType.OakLeaves);
                 }
             }
         }
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < 3; i++)
         {
-            SetBlockType(blocks, x, y + i, z, CSBlockType.OakWood);
+            LocalServer.SetBlockType(x + chunk.x * 16, y + i, z + chunk.y * 16, CSBlockType.OakWood);
         }
     }
 }
