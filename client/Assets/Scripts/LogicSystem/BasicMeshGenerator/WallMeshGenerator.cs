@@ -59,50 +59,49 @@ public class WallMeshGenerator : IMeshGenerator
         return false;
     }
 
+    static string[] wallMeshPath = new string[16]
+    {
+        "wall",
+        "wall_-x",
+        "wall_+x",
+        "wall_+x-x",
+        "wall_-z",
+        "wall_-x-z",
+        "wall_+x-z",
+        "wall_no_-z",
+        "wall_+z",
+        "wall_-x+z",
+        "wall_+x+z",
+        "wall_no_+z",
+        "wall_+z-z",
+        "wall_no_+x",
+        "wall_no_-x",
+        "wall_full"
+    };
+
     static Vector3Int vector3int_forward = new Vector3Int(0, 0, 1);
     static Vector3Int vector3int_back = new Vector3Int(0, 0, -1);
     static Mesh GetWallMesh(Vector3Int globalPosition)
     {
-        Vector3Int right = globalPosition + Vector3Int.right;
-        Vector3Int left = globalPosition + Vector3Int.left;
-        Vector3Int forward = globalPosition + vector3int_forward;
-        Vector3Int back = globalPosition + vector3int_back;
-        
         byte directionMask = 0;
-        if (IsCanLink(right))
+        if (IsCanLink(globalPosition + Vector3Int.right))
         {
             directionMask += 1 << 0;
         }
-        if (IsCanLink(left))
+        if (IsCanLink(globalPosition + Vector3Int.left))
         {
             directionMask += 1 << 1;
         }
-        if (IsCanLink(forward))
+        if (IsCanLink(globalPosition + vector3int_forward))
         {
             directionMask += 1 << 2;
         }
-        if (IsCanLink(back))
+        if (IsCanLink(globalPosition + vector3int_back))
         {
             directionMask += 1 << 3;
         }
 
-        Dictionary<byte, string> dirPathDict = new Dictionary<byte, string>
-        {
-            {0, "wall" },
-            {1, "wall_-x" },
-            {2, "wall_+x" },
-            {3, "wall_+x-x" },
-            {4, "wall_-z" },
-            {8, "wall_+z" },
-            {12, "wall_+z-z" },
-            {13, "wall_no_+x" },
-            {14, "wall_no_+x" },
-        };
-
-        Debug.Log("mask=" + directionMask);
-        Mesh mesh = LoadMesh("Meshes/blocks/wall/" + dirPathDict[directionMask]);
-
-        return mesh;
+        return LoadMesh("Meshes/blocks/wall/" + wallMeshPath[directionMask]);
     }
 
     override public void GenerateMeshInChunk(CSBlockType type, Vector3Int posInChunk, Vector3Int globalPos, List<Vector3> vertices, List<Vector2> uv, List<int> triangles)
