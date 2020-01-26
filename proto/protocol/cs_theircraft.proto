@@ -19,6 +19,7 @@ enum CSBlockType
 	OakLeaves = 14;
 	BrickStairs = 15;
 	Torch = 16;
+	BrickWall = 17;
 }
 
 enum CSBlockOrientation

@@ -83,6 +83,12 @@ public class ChunkManager
     }
 
     //input is global position
+    public static bool HasOpaqueBlock(Vector3Int pos)
+    {
+        return HasOpaqueBlock(pos.x, pos.y, pos.z);
+    }
+
+    //input is global position
     public static bool HasOpaqueBlock(int x, int y, int z)
     {
         byte type = GetBlockByte(x, y, z);

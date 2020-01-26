@@ -32,6 +32,7 @@ public class ItemSelectPanel : MonoBehaviour
         {CSBlockType.HayBlock, "hayblock" },
         {CSBlockType.Stone, "stone" },
         {CSBlockType.Torch, "torch" },
+        {CSBlockType.BrickWall, "Brick_Wall" },
     };
 
     public static void SetSlotItem(int slotID, CSBlockType blockType)
@@ -91,6 +92,7 @@ public class ItemSelectPanel : MonoBehaviour
         SetSlotItem(4, CSBlockType.HayBlock);
         SetSlotItem(5, CSBlockType.Stone);
         SetSlotItem(6, CSBlockType.Torch);
+        SetSlotItem(7, CSBlockType.BrickWall);
 
         RefreshUI();
     }

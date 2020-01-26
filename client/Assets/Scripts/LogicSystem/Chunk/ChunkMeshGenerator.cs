@@ -56,6 +56,7 @@ public static class ChunkMeshGenerator
     public static TexCoords Coords_Tnt = new TexCoords { isPlant = false, isTransparent = false, isCollidable = true, isRotatable = false, front = tnt_side, right = tnt_side, left = tnt_side, back = tnt_side, top = tnt_top, bottom = tnt_bottom };
     public static TexCoords Coords_Brick = new TexCoords { isPlant = false, isTransparent = false, isCollidable = true, isRotatable = false, front = brick, right = brick, left = brick, back = brick, top = brick, bottom = brick };
     public static TexCoords Coords_BrickStairs = new TexCoords { isPlant = false, isTransparent = true, isCollidable = true, isRotatable = true, front = brick };
+    public static TexCoords Coords_BrickWall = new TexCoords { isPlant = false, isTransparent = true, isCollidable = true, isRotatable = true, front = brick };
     public static TexCoords Coords_Furnace = new TexCoords { isPlant = false, isTransparent = false, isCollidable = true, isRotatable = true, front = furnace_front, right = furnace_side, left = furnace_side, back = furnace_side, top = furnace_top, bottom = furnace_top };
     public static TexCoords Coords_HayBlock = new TexCoords { isPlant = false, isTransparent = false, isCollidable = true, isRotatable = false, front = hay_side, right = hay_side, left = hay_side, back = hay_side, top = hay_top, bottom = hay_top };
     public static TexCoords Coords_Leaves = new TexCoords { isPlant = false, isTransparent = true, isCollidable = true, isRotatable = false, front = leaves_side, right = leaves_side, left = leaves_side, back = leaves_side, top = leaves_side, bottom = leaves_side };
@@ -68,7 +69,7 @@ public static class ChunkMeshGenerator
     public static TexCoords Coords_OakLeaves = new TexCoords { isPlant = false, isTransparent = true, isCollidable = true, isRotatable = false, front = uv_oakleaves, right = uv_oakleaves, left = uv_oakleaves, back = uv_oakleaves, top = uv_oakleaves, bottom = uv_oakleaves };
     public static TexCoords Coords_Torch = new TexCoords { isPlant = false, isTransparent = true, isCollidable = false, isRotatable = false, front = uv_torch };
 
-    public static TexCoords[] type2texcoords = new TexCoords[17]
+    public static TexCoords[] type2texcoords = new TexCoords[18]
     {
         Coords_None,
         Coords_Dirt,
@@ -87,6 +88,7 @@ public static class ChunkMeshGenerator
         Coords_OakLeaves,
         Coords_BrickStairs,
         Coords_Torch,
+        Coords_BrickWall,
     };
 
     public static Mesh GetCubeMesh(CSBlockType type)
@@ -102,6 +104,10 @@ public static class ChunkMeshGenerator
             if (type == CSBlockType.BrickStairs)
             {
                 return StairMeshGenerator.Instance.GenerateSingleMesh(type);
+            }
+            else if (type == CSBlockType.BrickWall)
+            {
+                return WallMeshGenerator.Instance.GenerateSingleMesh(type);
             }
             else if (type == CSBlockType.Torch)
             {
@@ -151,6 +157,10 @@ public static class ChunkMeshGenerator
                             if (type == CSBlockType.BrickStairs)
                             {
                                 StairMeshGenerator.Instance.GenerateMeshInChunk(type, pos, globalPos, chunk.vertices1, chunk.uv1, chunk.triangles1);
+                            }
+                            else if (type == CSBlockType.BrickWall)
+                            {
+                                WallMeshGenerator.Instance.GenerateMeshInChunk(type, pos, globalPos, chunk.vertices1, chunk.uv1, chunk.triangles1);
                             }
                             else if (type == CSBlockType.Torch)
                             {

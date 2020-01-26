@@ -759,7 +759,10 @@ namespace protocol.cs_theircraft
       BrickStairs = 15,
             
       [global::ProtoBuf.ProtoEnum(Name=@"Torch", Value=16)]
-      Torch = 16
+      Torch = 16,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"BrickWall", Value=17)]
+      BrickWall = 17
     }
   
     [global::ProtoBuf.ProtoContract(Name=@"CSBlockOrientation")]

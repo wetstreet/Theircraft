@@ -54,10 +54,8 @@ public class TorchMeshGenerator : IMeshGenerator
     static Mesh GetTorchMesh(Vector3Int globalPosition)
     {
         Mesh mesh = LoadMesh("Meshes/blocks/torch/torch");
-        //Debug.Log("orient=" + orientation);
         Vector3Int dependPos = ChunkManager.GetBlockDependence(globalPosition);
         Vector3Int diff = dependPos - globalPosition;
-        Debug.Log("diff=" + diff);
         if (diff == Vector3Int.left)
         {
             mesh = LoadMesh("Meshes/blocks/torch/torch_+x");

@@ -35,6 +35,7 @@ public class SoundManager : MonoBehaviour
         {CSBlockType.BrickStairs, "Stone" },
         {CSBlockType.Furnace, "Stone" },
         {CSBlockType.HayBlock, "Grass" },
+        {CSBlockType.BrickWall, "Stone" },
     };
 
     public static void PlayDigSound(CSBlockType type, GameObject gameObject)
