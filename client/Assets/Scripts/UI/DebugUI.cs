@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 
 public class DebugUI : MonoBehaviour
@@ -60,6 +58,10 @@ public class DebugUI : MonoBehaviour
 
         Vector3 pos = PlayerController.instance.transform.position;
         text += string.Format("\nXYZ: {0:0.000} / {1:0.000} / {2:0.000}", pos.x, pos.y, pos.z);
+        Vector3Int curBlock = PlayerController.GetCurrentBlock();
+        text += string.Format("\nBlock: {0} {1} {2}", curBlock.x, curBlock.y, curBlock.z);
+        Vector2Int curChunk = PlayerController.GetCurrentChunk();
+        text += string.Format("\nChunk: {0} {1}", curChunk.x, curChunk.y); 
         if (WireFrameHelper.render)
         {
             text += string.Format("\nLooking at: {0} {1} {2}", WireFrameHelper.pos.x, WireFrameHelper.pos.y, WireFrameHelper.pos.z);

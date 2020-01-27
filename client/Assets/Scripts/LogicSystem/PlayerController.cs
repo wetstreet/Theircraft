@@ -89,6 +89,12 @@ public class PlayerController : MonoBehaviour
         isInitialized = true;
     }
 
+    static Vector3 compensation = new Vector3(0, 0.0001f, 0);
+    public static Vector3Int GetCurrentBlock()
+    {
+        return Vector3Int.RoundToInt(instance.transform.position + compensation);
+    }
+
     static Vector2Int chunkPos = new Vector2Int();
 
     public static Vector2Int GetCurrentChunk()
