@@ -1,6 +1,4 @@
 ﻿using protocol.cs_theircraft;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class TerrainGenerator : MonoBehaviour
@@ -10,6 +8,7 @@ public class TerrainGenerator : MonoBehaviour
 
     public static byte[] GenerateChunkData(CSVector2Int chunk, byte[] blocks)
     {
+        Random.InitState(chunk.x * 1000 + chunk.y);
         for (int i = 0; i < 16; i++)
         {
             for (int j = 0; j < 16; j++)
@@ -28,7 +27,6 @@ public class TerrainGenerator : MonoBehaviour
                     else
                     {
                         int distanceFromHighestBlock = height - k;
-                        //Ultilities.Print($"i={i},j={j},height{item.position.y}");
                         switch (distanceFromHighestBlock)
                         {
                             case 0:
