@@ -56,6 +56,7 @@ public class LocalServer : MonoBehaviour
         return chunkDataDict[pos];
     }
 
+    static HashSet<Vector2Int> chunkGenerateFlagDict = new HashSet<Vector2Int>();
     static Dictionary<Vector2Int, byte[]> chunkDataDict = new Dictionary<Vector2Int, byte[]>();
     static Vector2Int keyVector = new Vector2Int();
     public static void SetBlockType(int x, int y, int z, CSBlockType type)
@@ -78,8 +79,13 @@ public class LocalServer : MonoBehaviour
 
         foreach (CSVector2Int chunk in req.EnterViewChunks)
         {
-            byte[] blocks = GetChunkData(chunk.ToVector2Int());
-            TerrainGenerator.GenerateChunkData(chunk, blocks);
+            Vector2Int chunkPos = chunk.ToVector2Int();
+            byte[] blocks = GetChunkData(chunkPos);
+            if (!chunkGenerateFlagDict.Contains(chunkPos))
+            {
+                TerrainGenerator.GenerateChunkData(chunk, blocks);
+                chunkGenerateFlagDict.Add(chunkPos);
+            }
             CSChunk c = new CSChunk();
             c.Position = chunk;
             c.BlocksInBytes = blocks;

@@ -71,6 +71,13 @@ public class ChunkManager
     }
 
     // intput is global position
+    public static bool HasNotPlantBlock(Vector3Int pos)
+    {
+        byte type = GetBlockByte(pos.x, pos.y, pos.z);
+        return type > 0 && !ChunkMeshGenerator.type2texcoords[type].isPlant;
+    }
+
+    // intput is global position
     public static bool HasBlock(Vector3Int pos)
     {
         return HasBlock(pos.x, pos.y, pos.z);

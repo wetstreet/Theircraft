@@ -160,7 +160,7 @@ public class PlayerController : MonoBehaviour
                         pos = WireFrameHelper.pos + Vector3Int.RoundToInt(hit.normal);
                     }
 
-                    if (!cc.bounds.Intersects(new Bounds(pos, Vector3.one)) && !ChunkManager.HasBlock(pos))
+                    if (!cc.bounds.Intersects(new Bounds(pos, Vector3.one)) && !ChunkManager.HasNotPlantBlock(pos))
                     {
                         if (ItemSelectPanel.curBlockType == CSBlockType.Torch)
                         {
