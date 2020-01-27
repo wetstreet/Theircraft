@@ -20,12 +20,12 @@ public class SettingsPanel : MonoBehaviour {
         set { PlayerPrefs.SetInt(MASTER_VOLUME_KEY, value); }
     }
 
+    static readonly int MinChunkView = 2;
+    static readonly int MaxChunkView = 15;
+
     public static int RenderDistance
     {
-        get {
-            //return PlayerPrefs.GetInt(RENDER_DISTANCE_KEY, 3);
-            return 6;
-        }
+        get { return Mathf.Clamp(PlayerPrefs.GetInt(RENDER_DISTANCE_KEY, 3), MinChunkView, MaxChunkView); }
         set { PlayerPrefs.SetInt(RENDER_DISTANCE_KEY, value); }
     }
 
@@ -69,14 +69,16 @@ public class SettingsPanel : MonoBehaviour {
         MainMenu.Show();
     }
 
-	// Use this for initialization
-	void Start ()
+    // Use this for initialization
+    void Start ()
     {
         //没做退出登陆，先屏蔽
         transform.Find("btn_quit").GetComponent<Button>().interactable = false;
         //transform.Find("btn_quit").GetComponent<Button>().onClick.AddListener(OnClickQuit);
         Utilities.SetClickCallback(transform, "btn_close", OnClickClose);
         renderDistanceSlider = transform.Find("slider_chunkview").GetComponent<Slider>();
+        renderDistanceSlider.minValue = MinChunkView;
+        renderDistanceSlider.maxValue = MaxChunkView;
         renderDistanceSlider.onValueChanged.AddListener(OnRenderDistanceChange);
         sliderLabel = transform.Find("slider_label").GetComponent<TextMeshProUGUI>();
         masterVolumeSlider = transform.Find("slider_master_volume").GetComponent<Slider>();

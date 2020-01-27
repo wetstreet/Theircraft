@@ -155,7 +155,7 @@ public class ChunkManager
         return nearbyChunks;
     }
 
-    public static void RemoveBlock(int x, int y, int z, bool removeTopNotCollidable = true, bool refreshChunks = true)
+    public static void RemoveBlock(int x, int y, int z, bool removeBeDependBlocks = true, bool refreshChunks = true)
     {
         Chunk chunk = GetChunk(x, y, z);
         if (chunk != null)
@@ -167,9 +167,16 @@ public class ChunkManager
             Vector3Int pos = new Vector3Int(x, y, z);
             RemoveBlockOrientation(pos);
             RemoveBlockDependence(pos);
-            if (removeTopNotCollidable && chunk.HasNotCollidableBlock(xInChunk, y + 1, zInChunk))
+
+            if (removeBeDependBlocks)
             {
-                RemoveBlock(x, y + 1, z, false, false);
+                RemoveDependingBlocks(pos);
+
+                // removes block on top if exists
+                if (chunk.HasNotCollidableBlock(xInChunk, y + 1, zInChunk))
+                {
+                    RemoveBlock(x, y + 1, z, false, false);
+                }
             }
              
             if (refreshChunks)
@@ -220,6 +227,25 @@ public class ChunkManager
     public static void RemoveBlockDependence(Vector3Int pos)
     {
         dependenceDict.Remove(pos);
+    }
+
+    static List<Vector3Int> removeList = new List<Vector3Int>();
+    public static void RemoveDependingBlocks(Vector3Int pos)
+    {
+        removeList.Clear();
+        foreach(KeyValuePair<Vector3Int, Vector3Int> kvPair in dependenceDict)
+        {
+            if (kvPair.Value == pos)
+            {
+                removeList.Add(kvPair.Key);
+            }
+        }
+
+        for(int i = 0; i < removeList.Count; i++)
+        {
+            Vector3Int rmpos = removeList[i];
+            RemoveBlock(rmpos.x, rmpos.y, rmpos.z, false, false);
+        }
     }
 
     public static Vector3Int GetBlockDependence(Vector3Int pos)
