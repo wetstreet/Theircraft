@@ -40,12 +40,15 @@ public class DatabaseHelper
     static readonly string KEY_DEPENDENCE = "KEY_DEPENDENCE";
     static readonly string KEY_ORIENTATION = "KEY_ORIENTATION";
 
+    public static readonly string KEY_PLAYER_DATA = "KEY_PLAYER_DATA";
+
     public static void ClearAll()
     {
         PlayerPrefs.DeleteKey(KEY_GENERATE_FLAG);
         PlayerPrefs.DeleteKey(KEY_CHUNK_DATA);
         PlayerPrefs.DeleteKey(KEY_DEPENDENCE);
         PlayerPrefs.DeleteKey(KEY_ORIENTATION);
+        PlayerPrefs.DeleteKey(KEY_PLAYER_DATA);
     }
 
     [Serializable]

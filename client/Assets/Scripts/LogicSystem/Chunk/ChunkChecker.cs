@@ -15,6 +15,14 @@ public static class ChunkChecker
     static Vector2Int tmpChunk;
     
     static bool isRefreshing = false;
+
+    public static void Init()
+    {
+        isRefreshing = false;
+        tmpChunk = Vector2Int.zero;
+        lastChunk = Vector2Int.zero;
+        lastRenderDistance = 0;
+    }
     
     public static void Update()
     {

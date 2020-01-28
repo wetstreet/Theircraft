@@ -75,6 +75,7 @@ message CSPlayer
 	optional string Name = 3;
 	optional CSVector3 Position = 4;
 	optional CSVector3 Rotation = 5;
+	optional uint32 SelectIndex = 6;
 }
 
 message CSChunk
@@ -217,6 +218,12 @@ message CSPlayerEnterViewNotify
 message CSPlayerLeaveViewNotify
 {
 	required uint32 PlayerID = 1;
+}
+
+//CS_HERO_CHANGE_SELECT_INDEX_REQ
+message CSHeroChangeSelectIndexReq
+{
+	required uint32 Index = 1;
 }
 
 message BlobChunkData

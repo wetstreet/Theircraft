@@ -50,6 +50,6 @@ public class MainMenu : MonoBehaviour
     void OnClickClear()
     {
         LocalServer.ClearData();
-        FastTips.Show("Reset Map Data Done!");
+        FastTips.Show("Clear Map Data & Player Data Done!");
     }
 }

@@ -3,7 +3,12 @@
 // refresh chunk meshes based on priority
 public class ChunkRefresher
 {
-    static List<Chunk> refreshChunkList = new List<Chunk>();
+    static List<Chunk> refreshChunkList;
+
+    public static void Init()
+    {
+        refreshChunkList = new List<Chunk>();
+    }
 
     public static void Update()
     {

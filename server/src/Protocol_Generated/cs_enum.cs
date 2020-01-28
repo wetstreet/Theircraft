@@ -72,7 +72,10 @@ namespace protocol.cs_enum
       CS_PLAYER_ENTER_VIEW_NOTIFY = 20,
             
       [global::ProtoBuf.ProtoEnum(Name=@"CS_PLAYER_LEAVE_VIEW_NOTIFY", Value=21)]
-      CS_PLAYER_LEAVE_VIEW_NOTIFY = 21
+      CS_PLAYER_LEAVE_VIEW_NOTIFY = 21,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"CS_HERO_CHANGE_SELECT_INDEX_REQ", Value=22)]
+      CS_HERO_CHANGE_SELECT_INDEX_REQ = 22
     }
   
 }

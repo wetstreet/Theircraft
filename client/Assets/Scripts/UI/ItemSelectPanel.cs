@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 public class ItemSelectPanel : MonoBehaviour
 {
-    public static int curIndex;
+    public static uint curIndex;
     public static CSBlockType curBlockType { get { return dataList[curIndex]; } }
 
     static Item[] itemList = new Item[9];
@@ -56,11 +56,9 @@ public class ItemSelectPanel : MonoBehaviour
             item.select.SetActive(false);
             itemList[i] = item;
         }
-
-        curIndex = 0;
     }
 
-    int lastIndex = 0;
+    uint lastIndex = 0;
     void RefreshUI()
     {
         for (int i = 0; i < 9; i++)
@@ -70,6 +68,7 @@ public class ItemSelectPanel : MonoBehaviour
         if (lastIndex != curIndex)
         {
             lastIndex = curIndex;
+            HeroChangeSelectIndexReq(curIndex);
             if (curBlockType != CSBlockType.None)
             {
                 PlayerController.ShowBlock(curBlockType);
@@ -79,6 +78,15 @@ public class ItemSelectPanel : MonoBehaviour
                 PlayerController.ShowHand();
             }
         }
+    }
+
+    void HeroChangeSelectIndexReq(uint index)
+    {
+        CSHeroChangeSelectIndexReq req = new CSHeroChangeSelectIndexReq
+        {
+            Index = index
+        };
+        NetworkManager.SendPkgToServer(protocol.cs_enum.ENUM_CMD.CS_HERO_CHANGE_SELECT_INDEX_REQ, req);
     }
 
     // Use this for initialization
@@ -110,21 +118,28 @@ public class ItemSelectPanel : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.Alpha8)) { curIndex = 7; }
         else if (Input.GetKeyDown(KeyCode.Alpha9)) { curIndex = 8; }
 
-        if (Input.GetAxis("Mouse ScrollWheel") < 0)
+        float mouseMove = Input.GetAxis("Mouse ScrollWheel");
+        if (mouseMove < 0)
         {
-            curIndex++;
+            if (curIndex == 8)
+            {
+                curIndex = 0;
+            }
+            else
+            {
+                curIndex++;
+            }
         }
-        else if (Input.GetAxis("Mouse ScrollWheel") > 0)
+        else if (mouseMove > 0)
         {
-            curIndex--;
-        }
-        if (curIndex == 9)
-        {
-            curIndex = 0;
-        }
-        if (curIndex == -1)
-        {
-            curIndex = 8;
+            if (curIndex == 0)
+            {
+                curIndex = 8;
+            }
+            else
+            {
+                curIndex--;
+            }
         }
 
         RefreshUI();

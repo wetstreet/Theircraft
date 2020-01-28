@@ -206,6 +206,14 @@ namespace protocol.cs_theircraft
       get { return _Rotation; }
       set { _Rotation = value; }
     }
+    private uint _SelectIndex = default(uint);
+    [global::ProtoBuf.ProtoMember(6, IsRequired = false, Name=@"SelectIndex", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    [global::System.ComponentModel.DefaultValue(default(uint))]
+    public uint SelectIndex
+    {
+      get { return _SelectIndex; }
+      set { _SelectIndex = value; }
+    }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
@@ -683,6 +691,23 @@ namespace protocol.cs_theircraft
     {
       get { return _PlayerID; }
       set { _PlayerID = value; }
+    }
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"CSHeroChangeSelectIndexReq")]
+  public partial class CSHeroChangeSelectIndexReq : global::ProtoBuf.IExtensible
+  {
+    public CSHeroChangeSelectIndexReq() {}
+    
+    private uint _Index;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"Index", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public uint Index
+    {
+      get { return _Index; }
+      set { _Index = value; }
     }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
