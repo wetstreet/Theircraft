@@ -25,7 +25,6 @@ public class Main : MonoBehaviour {
         SoundManager.Init();
 
         SceneManager.LoadScene("LoginScene");
-        MainMenu.Show();
 
         //if (NetworkManager.Connect())
         //{

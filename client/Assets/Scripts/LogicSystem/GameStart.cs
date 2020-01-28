@@ -7,8 +7,8 @@ public class GameStart : MonoBehaviour
 {
     void Start()
     {
+        ChunkManager.Init();
         ChunkPool.Init();
-        GameKernel.Create();
         OtherPlayerManager.Init();
         ItemSelectPanel.Show();
         ChatPanel.ShowChatPanel();
@@ -25,5 +25,14 @@ public class GameStart : MonoBehaviour
             ChunkChecker.Update();
             ChunkRefresher.Update();
         }
+    }
+
+    private void OnDestroy()
+    {
+        ChunkManager.Uninit();
+        ChunkPool.Uninit();
+        InputManager.Destroy();
+        UISystem.DestroyUIRoot();
+        PlayerController.Destroy();
     }
 }

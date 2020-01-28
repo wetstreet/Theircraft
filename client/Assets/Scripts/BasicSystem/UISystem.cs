@@ -8,16 +8,25 @@ public class UISystem : MonoBehaviour
     static void InitializeCanvas()
     {
         GameObject prefab = Resources.Load("Prefabs/UI/ui_root") as GameObject;
-        GameObject uiroot = Object.Instantiate(prefab);
+        GameObject uiroot = Instantiate(prefab);
         if (Application.isPlaying)
+        {
             DontDestroyOnLoad(uiroot);
+        }
         canvas = GameObject.Find("Canvas");
+    }
+
+    public static void DestroyUIRoot()
+    {
+        Debug.Log("canvas =" + canvas);
+        DestroyImmediate(canvas.transform.parent.gameObject);
+        canvas = null;
     }
 
     public static GameObject InstantiateUI(string name)
     {
         GameObject prefab = Resources.Load("Prefabs/UI/" + name) as GameObject;
-        GameObject uiobj = Object.Instantiate(prefab);
+        GameObject uiobj = Instantiate(prefab);
         return InstantiateUI(uiobj);
     }
 
@@ -27,13 +36,17 @@ public class UISystem : MonoBehaviour
         {
             canvas = GameObject.Find("Canvas");
             if (canvas == null)
+            {
                 InitializeCanvas();
+            }
         }
         uiobj.transform.SetParent(canvas.transform);
         uiobj.transform.localScale = Vector3.one;
 
         if (LoadingUI.isLoading)
+        {
             LoadingUI.SetOnTop();
+        }
 
         RectTransform rt = uiobj.GetComponent<RectTransform>();
         rt.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Left, 0, 0);

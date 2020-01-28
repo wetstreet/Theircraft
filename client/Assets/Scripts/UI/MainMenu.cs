@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
+﻿using UnityEngine;
 
 public class MainMenu : MonoBehaviour
 {
@@ -15,7 +12,9 @@ public class MainMenu : MonoBehaviour
     public static void Close()
     {
         if (instance != null)
+        {
             Destroy(instance.gameObject);
+        }
     }
 
     // Start is called before the first frame update
@@ -25,6 +24,7 @@ public class MainMenu : MonoBehaviour
         //Utilities.SetClickCallback(transform, "ButtonLogin", OnClickLogin);
         //Utilities.SetClickCallback(transform, "ButtonRegister", OnClickRegister);
         Utilities.SetClickCallback(transform, "ButtonQuit", OnClickQuit);
+        Utilities.SetClickCallback(transform, "ButtonClear", OnClickClear);
     }
 
     void OnClickSingle()
@@ -45,5 +45,11 @@ public class MainMenu : MonoBehaviour
     void OnClickQuit()
     {
         Application.Quit();
+    }
+
+    void OnClickClear()
+    {
+        LocalServer.ClearData();
+        FastTips.Show("Reset Map Data Done!");
     }
 }

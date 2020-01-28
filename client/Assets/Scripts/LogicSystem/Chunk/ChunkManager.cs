@@ -6,7 +6,23 @@ using System.Linq;
 
 public class ChunkManager
 {
-    static readonly Dictionary<Vector2Int, Chunk> chunkDict = new Dictionary<Vector2Int, Chunk>();
+    static Dictionary<Vector2Int, Chunk> chunkDict;
+    static Dictionary<Vector3Int, CSBlockOrientation> orientationDict;
+    static Dictionary<Vector3Int, Vector3Int> dependenceDict;
+
+    public static void Init()
+    {
+        chunkDict = new Dictionary<Vector2Int, Chunk>();
+        orientationDict = new Dictionary<Vector3Int, CSBlockOrientation>();
+        dependenceDict = new Dictionary<Vector3Int, Vector3Int>();
+    }
+
+    public static void Uninit()
+    {
+        chunkDict = null;
+        orientationDict = null;
+        dependenceDict = null;
+    }
 
     static void AddToChunkDict(Chunk chunk)
     {
@@ -195,7 +211,6 @@ public class ChunkManager
         }
     }
 
-    static readonly Dictionary<Vector3Int, CSBlockOrientation> orientationDict = new Dictionary<Vector3Int, CSBlockOrientation>();
     public static void AddBlockOrientation(Vector3Int pos, CSBlockOrientation orientation)
     {
         orientationDict.Add(pos, orientation);
@@ -218,7 +233,6 @@ public class ChunkManager
         }
     }
 
-    static readonly Dictionary<Vector3Int, Vector3Int> dependenceDict = new Dictionary<Vector3Int, Vector3Int>();
     public static void AddBlockDependence(Vector3Int pos, Vector3Int beDepentPos)
     {
         dependenceDict.Add(pos, beDepentPos);

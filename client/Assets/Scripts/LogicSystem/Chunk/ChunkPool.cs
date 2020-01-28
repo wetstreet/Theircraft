@@ -4,14 +4,15 @@ using UnityEngine;
 
 public class ChunkPool
 {
-    static Queue<Chunk> chunks = new Queue<Chunk>(1000);
+    static Queue<Chunk> chunks;
     static GameObject instance;
-    static GameObject chunkParent;
+    static Transform chunkParent;
 
     public static void Init()
     {
+        chunks = new Queue<Chunk>(1000);
         instance = new GameObject("ChunkPool");
-        chunkParent = new GameObject("Chunks");
+        chunkParent = new GameObject("Chunks").transform;
         instance.transform.localPosition = new Vector3(0, -100, 0);
         for (int i = 0; i < 1000; i++)
         {
@@ -23,7 +24,7 @@ public class ChunkPool
     public static Chunk GetChunk()
     {
         Chunk chunk = chunks.Dequeue();
-        chunk.transform.parent = chunkParent.transform;
+        chunk.transform.parent = chunkParent;
         chunk.transform.localPosition = Vector3.zero;
         return chunk;
     }
@@ -33,5 +34,10 @@ public class ChunkPool
         chunk.transform.parent = instance.transform;
         chunk.transform.localPosition = Vector3.zero;
         chunks.Enqueue(chunk);
+    }
+
+    public static void Uninit()
+    {
+        chunks = null;
     }
 }

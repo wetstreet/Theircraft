@@ -55,7 +55,15 @@ public class PlayerController : MonoBehaviour
             Object prefab = Resources.Load("Prefabs/Character");
             GameObject obj = Instantiate(prefab) as GameObject;
             instance = obj.GetComponent<PlayerController>();
+            acceptInput = true;
         }
+    }
+
+    public static void Destroy()
+    {
+        DestroyImmediate(instance);
+        instance = null;
+        isInitialized = false;
     }
 
     // Use this for initialization

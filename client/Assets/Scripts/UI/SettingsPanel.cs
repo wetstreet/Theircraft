@@ -20,7 +20,7 @@ public class SettingsPanel : MonoBehaviour {
         set { PlayerPrefs.SetInt(MASTER_VOLUME_KEY, value); }
     }
 
-    static readonly int MinChunkView = 2;
+    static readonly int MinChunkView = 1;
     static readonly int MaxChunkView = 15;
 
     public static int RenderDistance
@@ -32,9 +32,13 @@ public class SettingsPanel : MonoBehaviour {
     public static void Show()
     {
         if (Instance != null)
+        {
             Instance.gameObject.SetActive(true);
+        }
         else
+        {
             Instance = UISystem.InstantiateUI("SettingsPanel").GetComponent<SettingsPanel>();
+        }
 
         PlayerController.LockCursor(false);
     }
@@ -48,8 +52,9 @@ public class SettingsPanel : MonoBehaviour {
     {
         PlayerController.LockCursor(true);
         if (Instance != null)
+        {
             Instance.gameObject.SetActive(false);
-
+        }
     }
 
     public static void HandleInput()
@@ -57,9 +62,13 @@ public class SettingsPanel : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             if (Instance != null && Instance.gameObject.activeSelf)
+            {
                 Hide();
+            }
             else
+            {
                 Show();
+            }
         }
     }
 
@@ -67,7 +76,6 @@ public class SettingsPanel : MonoBehaviour {
     {
         LocalServer.SaveData();
         SceneManager.LoadScene("LoginScene");
-        MainMenu.Show();
     }
 
     // Use this for initialization
@@ -91,6 +99,11 @@ public class SettingsPanel : MonoBehaviour {
         masterVolumeSlider.value = MasterVolume;
     }
 
+    private void OnDestroy()
+    {
+        Instance = null;
+    }
+
     void RefreshRenderDistanceLabel()
     {
         sliderLabel.text = $"Render Distance: {RenderDistance} chunks";
@@ -112,8 +125,12 @@ public class SettingsPanel : MonoBehaviour {
     void RefreshMasterVolumeLabel()
     {
         if (MasterVolume == 0)
+        {
             masterVolumeLabel.text = $"Master Volume: OFF";
+        }
         else
+        {
             masterVolumeLabel.text = $"Master Volume: {MasterVolume}%";
+        }
     }
 }

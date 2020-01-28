@@ -4,10 +4,12 @@ using UnityEngine;
 
 public class InputManager : MonoBehaviour {
 
-    static List<Action> callbacks = new List<Action>();
+    static List<Action> callbacks;
 
 	// Use this for initialization
 	void Start () {
+        callbacks = new List<Action>();
+
         RegisterCallback(SettingsPanel.HandleInput);
         RegisterCallback(DebugUI.HandleInput);
     }
@@ -35,6 +37,12 @@ public class InputManager : MonoBehaviour {
         instance = new GameObject("InputManager");
         instance.AddComponent<InputManager>();
         DontDestroyOnLoad(instance);
+    }
+
+    public static void Destroy()
+    {
+        Destroy(instance);
+        callbacks = null;
     }
     
 
