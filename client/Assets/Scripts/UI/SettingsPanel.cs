@@ -65,6 +65,7 @@ public class SettingsPanel : MonoBehaviour {
 
     void OnClickQuit()
     {
+        LocalServer.SaveData();
         SceneManager.LoadScene("LoginScene");
         MainMenu.Show();
     }
@@ -72,9 +73,7 @@ public class SettingsPanel : MonoBehaviour {
     // Use this for initialization
     void Start ()
     {
-        //没做退出登陆，先屏蔽
-        transform.Find("btn_quit").GetComponent<Button>().interactable = false;
-        //transform.Find("btn_quit").GetComponent<Button>().onClick.AddListener(OnClickQuit);
+        transform.Find("btn_quit").GetComponent<Button>().onClick.AddListener(OnClickQuit);
         Utilities.SetClickCallback(transform, "btn_close", OnClickClose);
         renderDistanceSlider = transform.Find("slider_chunkview").GetComponent<Slider>();
         renderDistanceSlider.minValue = MinChunkView;
