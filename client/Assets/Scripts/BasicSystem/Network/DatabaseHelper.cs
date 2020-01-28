@@ -14,6 +14,11 @@ public class DatabaseHelper
         PlayerPrefs.SetString(prefKey, tmp);
     }
 
+    public static bool CanLoad(string key)
+    {
+        return PlayerPrefs.HasKey(key);
+    }
+
     public static object Load<T>(string prefKey)
     {
         if (!PlayerPrefs.HasKey(prefKey))
@@ -25,5 +30,10 @@ public class DatabaseHelper
         T deserializedObject = (T)bf.Deserialize(dataStream);
 
         return deserializedObject;
+    }
+
+    public static void Clear(string key)
+    {
+        PlayerPrefs.DeleteKey(key);
     }
 }

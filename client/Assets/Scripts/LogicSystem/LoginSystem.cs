@@ -8,6 +8,7 @@ public class LoginSystem
     public static void LoginSingle()
     {
         NetworkManager.IsSingle = true;
+        LocalServer.InitData();
         LoginReq("test", "test");
     }
 
