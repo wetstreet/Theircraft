@@ -245,13 +245,6 @@ namespace protocol.cs_theircraft
       get { return _Players; }
     }
   
-    private readonly global::System.Collections.Generic.List<CSBlockAttrs> _BlockAttrs = new global::System.Collections.Generic.List<CSBlockAttrs>();
-    [global::ProtoBuf.ProtoMember(5, Name=@"BlockAttrs", DataFormat = global::ProtoBuf.DataFormat.Default)]
-    public global::System.Collections.Generic.List<CSBlockAttrs> BlockAttrs
-    {
-      get { return _BlockAttrs; }
-    }
-  
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
@@ -349,6 +342,13 @@ namespace protocol.cs_theircraft
       get { return _PlayerData; }
       set { _PlayerData = value; }
     }
+    private readonly global::System.Collections.Generic.List<CSBlockAttrs> _BlockAttrs = new global::System.Collections.Generic.List<CSBlockAttrs>();
+    [global::ProtoBuf.ProtoMember(4, Name=@"BlockAttrs", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public global::System.Collections.Generic.List<CSBlockAttrs> BlockAttrs
+    {
+      get { return _BlockAttrs; }
+    }
+  
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }

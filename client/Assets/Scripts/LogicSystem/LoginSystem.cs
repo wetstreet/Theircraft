@@ -33,10 +33,10 @@ public class LoginSystem
             DataCenter.spawnPosition = rsp.PlayerData.Position.ToVector3();
             DataCenter.spawnRotation = rsp.PlayerData.Rotation.ToVector3();
             DataCenter.state = ClientState.InRoom;
+            ChunkManager.blockAttrs = rsp.BlockAttrs;
             LoginPanel.Close();
             MainMenu.Close();
             LoadingUI.Show();
-            //SceneManager.LoadScene("MultiplayerScene");
             SceneManager.LoadScene("GameScene");
             ChatPanel.AddLine(DataCenter.name + ", welcome!");
         }

@@ -83,7 +83,6 @@ message CSChunk
 	repeated CSBlock Blocks = 2;
 	optional bytes BlocksInBytes = 3;
 	repeated CSPlayer Players = 4;
-	repeated CSBlockAttrs BlockAttrs = 5;
 }
 
 //CS_REGISTER_REQ
@@ -112,6 +111,7 @@ message CSLoginRes
 {
 	required int32 RetCode = 1;
 	optional CSPlayer PlayerData = 2;
+	repeated CSBlockAttrs BlockAttrs = 4;
 }
 
 //CS_SEND_MESSAGE_REQ

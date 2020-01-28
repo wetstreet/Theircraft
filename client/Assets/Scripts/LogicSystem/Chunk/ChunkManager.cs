@@ -10,11 +10,25 @@ public class ChunkManager
     static Dictionary<Vector3Int, CSBlockOrientation> orientationDict;
     static Dictionary<Vector3Int, Vector3Int> dependenceDict;
 
+    public static List<CSBlockAttrs> blockAttrs;
+
     public static void Init()
     {
         chunkDict = new Dictionary<Vector2Int, Chunk>();
         orientationDict = new Dictionary<Vector3Int, CSBlockOrientation>();
         dependenceDict = new Dictionary<Vector3Int, Vector3Int>();
+
+        foreach (CSBlockAttrs attr in blockAttrs)
+        {
+            if (attr.orient != CSBlockOrientation.Default)
+            {
+                AddBlockOrientation(attr.pos.ToVector3Int(), attr.orient);
+            }
+            if (attr.depentPos != null)
+            {
+                AddBlockDependence(attr.pos.ToVector3Int(), attr.depentPos.ToVector3Int());
+            }
+        }
     }
 
     public static void Uninit()

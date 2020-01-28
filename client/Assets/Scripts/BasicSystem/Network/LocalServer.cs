@@ -43,7 +43,24 @@ public class LocalServer : MonoBehaviour
                 Rotation = new CSVector3 { x = 0, y = 0, z = 0 },
             }
         };
-        
+
+        foreach (KeyValuePair<Vector3Int, Vector3Int> kvPair in dependenceDict)
+        {
+            rsp.BlockAttrs.Add(new CSBlockAttrs {
+                pos = kvPair.Key.ToCSVector3Int(),
+                depentPos = kvPair.Value.ToCSVector3Int(),
+            });
+        }
+
+        foreach (KeyValuePair<Vector3Int, CSBlockOrientation> kvPair in orientationDict)
+        {
+            rsp.BlockAttrs.Add(new CSBlockAttrs
+            {
+                pos = kvPair.Key.ToCSVector3Int(),
+                orient = kvPair.Value,
+            });
+        }
+
         callback(rsp);
     }
 
@@ -56,81 +73,32 @@ public class LocalServer : MonoBehaviour
         return chunkDataDict[pos];
     }
 
-    static readonly string KEY_GENERATE_FLAG = "KEY_GENERATE_FLAG";
-    static HashSet<Vector2IntSerializable> _chunkGenerateFlagSet;
-
-    static readonly string KEY_CHUNK_DATA = "KEY_CHUNK_DATA";
-    static Dictionary<Vector2IntSerializable, byte[]> _chunkDataDict;
+    static Dictionary<Vector3Int, CSBlockOrientation> orientationDict;
+    static Dictionary<Vector3Int, Vector3Int> dependenceDict;
+    static HashSet<Vector2Int> chunkGenerateFlagSet;
+    static Dictionary<Vector2Int, byte[]> chunkDataDict;
 
     public static void SaveData()
     {
-        _chunkGenerateFlagSet = new HashSet<Vector2IntSerializable>();
-        foreach (Vector2Int chunk in chunkGenerateFlagSet)
-        {
-            _chunkGenerateFlagSet.Add(new Vector2IntSerializable(chunk));
-        }
-        DatabaseHelper.Save(KEY_GENERATE_FLAG, _chunkGenerateFlagSet);
-
-        _chunkDataDict = new Dictionary<Vector2IntSerializable, byte[]>();
-        foreach (KeyValuePair<Vector2Int, byte[]> keyValue in chunkDataDict)
-        {
-            _chunkDataDict.Add(new Vector2IntSerializable(keyValue.Key), keyValue.Value);
-        }
-        DatabaseHelper.Save(KEY_CHUNK_DATA, _chunkDataDict);
+        DatabaseHelper.SaveGenerateFlag(chunkGenerateFlagSet);
+        DatabaseHelper.SaveChunkData(chunkDataDict);
+        DatabaseHelper.SaveDependence(dependenceDict);
+        DatabaseHelper.SaveOrientation(orientationDict);
     }
 
     public static void InitData()
     {
-        chunkGenerateFlagSet = new HashSet<Vector2Int>();
-        chunkDataDict = new Dictionary<Vector2Int, byte[]>();
-
-        if (DatabaseHelper.CanLoad(KEY_GENERATE_FLAG))
-        {
-            _chunkGenerateFlagSet = (HashSet<Vector2IntSerializable>)DatabaseHelper.Load<HashSet<Vector2IntSerializable>>(KEY_GENERATE_FLAG);
-
-            foreach (Vector2IntSerializable chunk in _chunkGenerateFlagSet)
-            {
-                chunkGenerateFlagSet.Add(chunk.ToVector2Int());
-            }
-        }
-
-        if (DatabaseHelper.CanLoad(KEY_CHUNK_DATA))
-        {
-            _chunkDataDict = (Dictionary<Vector2IntSerializable, byte[]>)DatabaseHelper.Load<Dictionary<Vector2IntSerializable, byte[]>>(KEY_CHUNK_DATA);
-
-            foreach (KeyValuePair<Vector2IntSerializable, byte[]> keyValue in _chunkDataDict)
-            {
-                chunkDataDict.Add(keyValue.Key.ToVector2Int(), keyValue.Value);
-            }
-        }
+        chunkGenerateFlagSet = DatabaseHelper.LoadGenerateFlag();
+        chunkDataDict = DatabaseHelper.LoadChunkData();
+        dependenceDict = DatabaseHelper.LoadDependence();
+        orientationDict = DatabaseHelper.LoadOrientation();
     }
 
     public static void ClearData()
     {
-        DatabaseHelper.Clear(KEY_GENERATE_FLAG);
-        DatabaseHelper.Clear(KEY_CHUNK_DATA);
+        DatabaseHelper.ClearAll();
     }
 
-    [Serializable]
-    struct Vector2IntSerializable
-    {
-        int x;
-        int y;
-
-        public Vector2IntSerializable(Vector2Int v)
-        {
-            x = v.x;
-            y = v.y;
-        }
-
-        public Vector2Int ToVector2Int()
-        {
-            return new Vector2Int(x, y);
-        }
-    }
-
-    static HashSet<Vector2Int> chunkGenerateFlagSet;
-    static Dictionary<Vector2Int, byte[]> chunkDataDict;
     static Vector2Int keyVector = new Vector2Int();
     public static void SetBlockType(int x, int y, int z, CSBlockType type)
     {
@@ -182,6 +150,14 @@ public class LocalServer : MonoBehaviour
         CSDeleteBlockRes res = new CSDeleteBlockRes();
         res.RetCode = 0;
         res.position = req.position;
+        if (dependenceDict.ContainsKey(req.position.ToVector3Int()))
+        {
+            dependenceDict.Remove(req.position.ToVector3Int());
+        }
+        if (orientationDict.ContainsKey(req.position.ToVector3Int()))
+        {
+            orientationDict.Remove(req.position.ToVector3Int());
+        }
         callback(res);
     }
 
@@ -191,6 +167,14 @@ public class LocalServer : MonoBehaviour
         CSAddBlockRes res = new CSAddBlockRes();
         res.RetCode = 0;
         res.block = req.block;
+        if (req.block.depentPos != null)
+        {
+            dependenceDict.Add(req.block.position.ToVector3Int(), req.block.depentPos.ToVector3Int());
+        }
+        if (req.block.orient != CSBlockOrientation.Default)
+        {
+            orientationDict.Add(req.block.position.ToVector3Int(), req.block.orient);
+        }
         callback(res);
     }
 }

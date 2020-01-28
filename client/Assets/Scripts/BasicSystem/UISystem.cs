@@ -18,9 +18,11 @@ public class UISystem : MonoBehaviour
 
     public static void DestroyUIRoot()
     {
-        Debug.Log("canvas =" + canvas);
-        DestroyImmediate(canvas.transform.parent.gameObject);
-        canvas = null;
+        if (canvas != null)
+        {
+            DestroyImmediate(canvas.transform.parent.gameObject);
+            canvas = null;
+        }
     }
 
     public static GameObject InstantiateUI(string name)
