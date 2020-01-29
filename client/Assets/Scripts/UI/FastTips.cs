@@ -60,7 +60,7 @@ public class FastTips : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (Time.time - createTime > 1)
+        if (Time.time - createTime > 2)
         {
             Destroy(gameObject);
         }

@@ -1,16 +1,13 @@
-﻿using protocol.cs_theircraft;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class Player : MonoBehaviour
+public class Monster : MonoBehaviour
 {
     public uint id;
-    public string playerName;
     public Vector3 position;
-    public Vector3 rotation;
-    
+
     private Transform steve;
     private Transform head;
     private CharacterController cc;
@@ -25,35 +22,58 @@ public class Player : MonoBehaviour
 
     public float angularSpeed = 300f;
 
-    public static Player CreatePlayer(CSPlayer p)
+    public static Monster CreateMonster(uint id, Vector3 position)
     {
-        GameObject prefab = Resources.Load<GameObject>("Prefabs/OtherPlayer");
+        GameObject prefab = Resources.Load<GameObject>("Prefabs/Zombie");
         GameObject go = Instantiate(prefab);
-        Player player = go.AddComponent<Player>();
-        player.id = p.PlayerID;
-        player.playerName = p.Name;
-        player.position = p.Position.ToVector3();
-        player.rotation = p.Rotation.ToVector3();
-        return player;
+        Monster monster = go.AddComponent<Monster>();
+        monster.id = id;
+        monster.position = position;
+        return monster;
     }
 
     private void Start()
     {
-        transform.name = "player_" + id;
-        steve = transform.Find("steve");
-        head = transform.Find("steve/Move/Body/Head");
+        transform.name = "monster_" + id;
+        //steve = transform.Find("steve");
+        head = transform.Find("zombie/Move/Body/Head");
         cc = transform.GetComponent<CharacterController>();
         path = new NavMeshPath();
 
         transform.position = position;
-        transform.localEulerAngles = new Vector3(0, rotation.y, 0);
-        head.transform.localEulerAngles = new Vector3(0, 0, rotation.z);
+        //transform.localEulerAngles = new Vector3(0, rotation.y, 0);
+        //head.transform.localEulerAngles = new Vector3(0, 0, rotation.z);
 
         Move();
     }
 
+    public Vector3 rotation;
+    Vector3 realForward;
+    void LookAt(Vector3 targetPosition)
+    {
+        realForward = -head.right;
+        Vector2 forwardHorizontal = new Vector2(realForward.x, realForward.z).normalized;
+        Debug.DrawLine(head.position, head.position - head.right);
+
+        Vector2 headHorizontal = new Vector2(head.position.x, head.position.z);
+        Vector2 targetHorizontal = new Vector2(targetPosition.x, targetPosition.z);
+        Vector2 target2head = (targetHorizontal - headHorizontal).normalized;
+
+        float dot = Vector2.Dot(forwardHorizontal, target2head);
+
+
+
+        //Debug.Log("dot=" + dot + ",forward = " + forwardHorizontal + ",target2head=" + target2head);
+
+        //Debug.Log(Vector3.Dot(realForward, target2head) + "," + Vector3.Angle(realForward, target2head));
+        //Debug.DrawLine(head.position, targetPosition);
+        //head.eulerAngles = rotation;
+    }
+
     private void Update()
     {
+        LookAt(PlayerController.instance.position);
+
         Vector3 horizontalDir = Vector3.zero;
         if (path.corners.Length > 0 && currTargetIndex != path.corners.Length)
         {
@@ -88,7 +108,7 @@ public class Player : MonoBehaviour
         if (cc.isGrounded)
         {
             moveDir.y = 0;
-            
+
             if (shouldJump)
             {
                 shouldJump = false;
@@ -103,7 +123,7 @@ public class Player : MonoBehaviour
 
     bool shouldJump = false;
     float lastCollisionTime;
-    private void OnControllerColliderHit(ControllerColliderHit collision)
+    protected void OnControllerColliderHit(ControllerColliderHit collision)
     {
         float timediff = Time.time - lastCollisionTime;
         if (collision.collider.gameObject.layer == LayerMask.NameToLayer("Chunk") && collision.normal.y == 0 && cc.isGrounded && timediff >= 0.1f)

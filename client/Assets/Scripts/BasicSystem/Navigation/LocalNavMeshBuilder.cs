@@ -40,37 +40,6 @@ public class LocalNavMeshBuilder : MonoBehaviour
         }
     }
 
-    Player p;
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.F1))
-        {
-            if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hit, 100, LayerMask.GetMask("Chunk")))
-            {
-                if (p == null)
-                {
-                    OtherPlayerManager.AddPlayer(new protocol.cs_theircraft.CSPlayer
-                    {
-                        PlayerID = 1,
-                        Position = new protocol.cs_theircraft.CSVector3
-                        {
-                            x = PlayerController.instance.transform.position.x,
-                            y = PlayerController.instance.transform.position.y,
-                            z = PlayerController.instance.transform.position.z,
-                        },
-                        Rotation = new protocol.cs_theircraft.CSVector3()
-                    });
-                    p = OtherPlayerManager.GetPlayer(1);
-                }
-                else
-                {
-                    p.Move(hit.point);
-
-                }
-            }
-        }
-    }
-
     void OnEnable()
     {
         // Construct and add navmesh
