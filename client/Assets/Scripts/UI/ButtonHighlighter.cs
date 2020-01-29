@@ -11,15 +11,29 @@ public class ButtonHighlighter : MonoBehaviour ,IPointerEnterHandler ,IPointerEx
     public Color highlightColor = new Color(255 / 255f, 255 / 255f, 160 / 255f);
     public TextMeshProUGUI label;
     Button button;
+    Image image;
 
     void Start()
     {
         button = GetComponent<Button>();
+        image = GetComponent<Image>();
+    }
+
+    private void OnEnable()
+    {
+        bool buttonEnabled = button != null && button.interactable;
+        bool imageEnabled = image != null;
+        if (label != null && (buttonEnabled || imageEnabled))
+        {
+            label.color = normalColor;
+        }
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (label != null && button != null && button.interactable)
+        bool buttonEnabled = button != null && button.interactable;
+        bool imageEnabled = image != null;
+        if (label != null && (buttonEnabled || imageEnabled))
         {
             label.color = highlightColor;
         }
@@ -27,7 +41,9 @@ public class ButtonHighlighter : MonoBehaviour ,IPointerEnterHandler ,IPointerEx
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        if (label != null && button != null && button.interactable)
+        bool buttonEnabled = button != null && button.interactable;
+        bool imageEnabled = image != null;
+        if (label != null && (buttonEnabled || imageEnabled))
         {
             label.color = normalColor;
         }

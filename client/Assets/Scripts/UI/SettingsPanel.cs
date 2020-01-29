@@ -87,10 +87,10 @@ public class SettingsPanel : MonoBehaviour {
         renderDistanceSlider.minValue = MinChunkView;
         renderDistanceSlider.maxValue = MaxChunkView;
         renderDistanceSlider.onValueChanged.AddListener(OnRenderDistanceChange);
-        sliderLabel = transform.Find("slider_label").GetComponent<TextMeshProUGUI>();
+        sliderLabel = transform.Find("slider_chunkview/slider_label").GetComponent<TextMeshProUGUI>();
         masterVolumeSlider = transform.Find("slider_master_volume").GetComponent<Slider>();
         masterVolumeSlider.onValueChanged.AddListener(OnMasterVolumeChange);
-        masterVolumeLabel = transform.Find("label_master_volume").GetComponent<TextMeshProUGUI>();
+        masterVolumeLabel = transform.Find("slider_master_volume/label_master_volume").GetComponent<TextMeshProUGUI>();
 
         RefreshRenderDistanceLabel();
         renderDistanceSlider.value = RenderDistance;
