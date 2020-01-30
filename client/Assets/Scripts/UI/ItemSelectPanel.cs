@@ -9,7 +9,18 @@ public class ItemSelectPanel : MonoBehaviour
     public static CSBlockType curBlockType { get { return dataList[curIndex]; } }
 
     static Item[] itemList = new Item[9];
-    static CSBlockType[] dataList = new CSBlockType[9];
+    public static CSBlockType[] dataList = new CSBlockType[9]
+    {
+        CSBlockType.GrassBlock,
+        CSBlockType.Brick,
+        CSBlockType.BrickStairs,
+        CSBlockType.BrickWall,
+        CSBlockType.Furnace,
+        CSBlockType.HayBlock,
+        CSBlockType.None,
+        CSBlockType.None,
+        CSBlockType.None
+    };
 
     struct Item
     {
@@ -17,9 +28,10 @@ public class ItemSelectPanel : MonoBehaviour
         public GameObject select;
     }
 
+    public static ItemSelectPanel instance;
     public static void Show()
     {
-        UISystem.InstantiateUI("ItemSelectPanel");
+        instance = UISystem.InstantiateUI("ItemSelectPanel").GetComponent<ItemSelectPanel>();
     }
 
     public static Dictionary<CSBlockType, string> type2icon = new Dictionary<CSBlockType, string>
@@ -34,14 +46,6 @@ public class ItemSelectPanel : MonoBehaviour
         {CSBlockType.Torch, "torch" },
         {CSBlockType.BrickWall, "Brick_Wall" },
     };
-
-    public static void SetSlotItem(int slotID, CSBlockType blockType)
-    {
-        dataList[slotID] = blockType;
-        string iconPath = type2icon[blockType];
-        itemList[slotID].icon.sprite = Resources.Load<Sprite>("GUI/CubeBlock/" + iconPath);
-        itemList[slotID].icon.gameObject.SetActive(true);
-    }
 
     void Init()
     {
@@ -59,24 +63,36 @@ public class ItemSelectPanel : MonoBehaviour
     }
 
     uint lastIndex = 0;
-    void RefreshUI()
+    public void RefreshUI()
     {
         for (int i = 0; i < 9; i++)
         {
+            CSBlockType blockType = dataList[i];
+            if (blockType == CSBlockType.None)
+            {
+                itemList[i].icon.gameObject.SetActive(false);
+            }
+            else
+            {
+                string iconPath = type2icon[blockType];
+                itemList[i].icon.sprite = Resources.Load<Sprite>("GUI/CubeBlock/" + iconPath);
+                itemList[i].icon.gameObject.SetActive(true);
+            }
             itemList[i].select.SetActive(i == curIndex);
         }
+
         if (lastIndex != curIndex)
         {
             lastIndex = curIndex;
             HeroChangeSelectIndexReq(curIndex);
-            if (curBlockType != CSBlockType.None)
-            {
-                PlayerController.ShowBlock(curBlockType);
-            }
-            else
-            {
-                PlayerController.ShowHand();
-            }
+        }
+        if (curBlockType != CSBlockType.None)
+        {
+            PlayerController.ShowBlock(curBlockType);
+        }
+        else
+        {
+            PlayerController.ShowHand();
         }
     }
 
@@ -92,15 +108,6 @@ public class ItemSelectPanel : MonoBehaviour
     // Use this for initialization
     void Start () {
         Init();
-
-        SetSlotItem(0, CSBlockType.GrassBlock);
-        SetSlotItem(1, CSBlockType.BrickStairs);
-        SetSlotItem(2, CSBlockType.Brick);
-        SetSlotItem(3, CSBlockType.Furnace);
-        SetSlotItem(4, CSBlockType.HayBlock);
-        SetSlotItem(5, CSBlockType.Stone);
-        SetSlotItem(6, CSBlockType.Torch);
-        SetSlotItem(7, CSBlockType.BrickWall);
 
         RefreshUI();
     }
@@ -142,6 +149,9 @@ public class ItemSelectPanel : MonoBehaviour
             }
         }
 
-        RefreshUI();
+        if (lastIndex != curIndex)
+        {
+            RefreshUI();
+        }
     }
 }

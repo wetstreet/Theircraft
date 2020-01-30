@@ -2,11 +2,12 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class OnPointerCallback : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class OnPointerCallback : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler
 {
     public int index;
     public Action<int> pointerEnterCallback;
     public Action<int> pointerExitCallback;
+    public Action<int> pointerDownCallback;
 
     public void OnPointerEnter(PointerEventData eventData)
     {
@@ -16,5 +17,10 @@ public class OnPointerCallback : MonoBehaviour, IPointerEnterHandler, IPointerEx
     public void OnPointerExit(PointerEventData eventData)
     {
         pointerExitCallback?.Invoke(index);
+    }
+
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        pointerDownCallback?.Invoke(index);
     }
 }

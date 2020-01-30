@@ -10,6 +10,7 @@ public class InputManager : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         callbacks = new List<Action>();
+        enabled = true;
 
         RegisterCallback(SettingsPanel.HandleInput);
         RegisterCallback(DebugUI.HandleInput);
