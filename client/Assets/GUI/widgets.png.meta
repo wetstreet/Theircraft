@@ -32,6 +32,9 @@ TextureImporter:
   - first:
       213: -8209697960688083828
     second: button_middle
+  - first:
+      213: -4468942713734187604
+    second: crosshair
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -258,6 +261,27 @@ TextureImporter:
       bones: []
       spriteID: ffee67bc49c02e04bb725b4c987190be
       internalID: 21300012
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crosshair
+      rect:
+        serializedVersion: 2
+        x: 243
+        y: 244
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: dd2e354bcb4b0404ea1e3197fe4837c9
+      internalID: -4468942713734187604
       vertices: []
       indices: 
       edges: []

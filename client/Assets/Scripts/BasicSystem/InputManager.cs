@@ -5,6 +5,7 @@ using UnityEngine;
 public class InputManager : MonoBehaviour {
 
     static List<Action> callbacks;
+    public static bool enabled = true;
 
 	// Use this for initialization
 	void Start () {
@@ -12,11 +13,12 @@ public class InputManager : MonoBehaviour {
 
         RegisterCallback(SettingsPanel.HandleInput);
         RegisterCallback(DebugUI.HandleInput);
+        RegisterCallback(CreativeInventory.HandleInput);
     }
 	
 	// Update is called once per frame
 	void Update () {
-        if (Input.anyKeyDown)
+        if (enabled && Input.anyKeyDown)
         {
             foreach (Action callback in callbacks)
             {

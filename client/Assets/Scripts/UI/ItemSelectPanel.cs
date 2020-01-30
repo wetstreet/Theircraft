@@ -22,7 +22,7 @@ public class ItemSelectPanel : MonoBehaviour
         UISystem.InstantiateUI("ItemSelectPanel");
     }
 
-    static Dictionary<CSBlockType, string> type2icon = new Dictionary<CSBlockType, string>
+    public static Dictionary<CSBlockType, string> type2icon = new Dictionary<CSBlockType, string>
     {
         {CSBlockType.GrassBlock, "grass" },
         {CSBlockType.Dirt, "dirt" },

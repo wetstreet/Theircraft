@@ -40,6 +40,7 @@ public class SettingsPanel : MonoBehaviour {
             Instance = UISystem.InstantiateUI("SettingsPanel").GetComponent<SettingsPanel>();
         }
 
+        InputManager.enabled = false;
         PlayerController.LockCursor(false);
     }
 
@@ -50,6 +51,7 @@ public class SettingsPanel : MonoBehaviour {
 
     public static void Hide()
     {
+        InputManager.enabled = true;
         PlayerController.LockCursor(true);
         if (Instance != null)
         {
@@ -70,6 +72,11 @@ public class SettingsPanel : MonoBehaviour {
                 Show();
             }
         }
+    }
+
+    private void Update()
+    {
+        HandleInput();
     }
 
     void OnClickQuit()

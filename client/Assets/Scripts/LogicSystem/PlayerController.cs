@@ -57,7 +57,7 @@ public class PlayerController : MonoBehaviour
             instance = obj.GetComponent<PlayerController>();
             acceptInput = true;
 
-            Monster.CreateMonster(1, new Vector3(1, 20, 1));
+            //Monster.CreateMonster(1, new Vector3(1, 20, 1));
         }
     }
 

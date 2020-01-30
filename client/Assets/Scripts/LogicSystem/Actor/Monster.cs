@@ -47,32 +47,43 @@ public class Monster : MonoBehaviour
         Move();
     }
 
-    public Vector3 rotation;
     Vector3 realForward;
     void LookAt(Vector3 targetPosition)
     {
         realForward = -head.right;
         Vector2 forwardHorizontal = new Vector2(realForward.x, realForward.z).normalized;
-        Debug.DrawLine(head.position, head.position - head.right);
 
         Vector2 headHorizontal = new Vector2(head.position.x, head.position.z);
         Vector2 targetHorizontal = new Vector2(targetPosition.x, targetPosition.z);
-        Vector2 target2head = (targetHorizontal - headHorizontal).normalized;
+        Vector2 head2targetH = (targetHorizontal - headHorizontal).normalized;
 
-        float dot = Vector2.Dot(forwardHorizontal, target2head);
+        Vector3 head2target = (targetPosition - head.position).normalized;
+
+        float dot = Vector2.Dot(forwardHorizontal, head2targetH);
+
+        Debug.DrawLine(head.position, head.position + head.forward);
+
+        //if (transform.InverseTransformPoint(targetPosition).x < 0)
+        //{
+        //    head.localEulerAngles = new Vector3(0, (1 - dot) * -90, head2target.y * -90);
+        //}
+        //else
+        //{
+        //    head.localEulerAngles = new Vector3(0, (1 - dot) * 90, head2target.y * -90);
+        //}
 
 
-
-        //Debug.Log("dot=" + dot + ",forward = " + forwardHorizontal + ",target2head=" + target2head);
+        //Debug.Log("dot=" + dot + ",forward = " + forwardHorizontal + ",head2targetH=" + head2targetH);
 
         //Debug.Log(Vector3.Dot(realForward, target2head) + "," + Vector3.Angle(realForward, target2head));
         //Debug.DrawLine(head.position, targetPosition);
-        //head.eulerAngles = rotation;
+
     }
 
+    static Vector3 offset = new Vector3(0, 1.38f, 0);
     private void Update()
     {
-        LookAt(PlayerController.instance.position);
+        LookAt(PlayerController.instance.position + offset);
 
         Vector3 horizontalDir = Vector3.zero;
         if (path.corners.Length > 0 && currTargetIndex != path.corners.Length)
