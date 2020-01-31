@@ -166,6 +166,7 @@ public static class ToLuaExport
         "ParticleSystem.SetJob",
         "Light.SetLightDirty",
         "MeshRenderer.receiveGI",
+        "ParticleSystem.ClearJob",
     };
 
     class _MethodBase

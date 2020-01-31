@@ -10,6 +10,7 @@ public class UnityEngine_Texture2DWrap
 		L.RegFunction("Compress", Compress);
 		L.RegFunction("ClearRequestedMipmapLevel", ClearRequestedMipmapLevel);
 		L.RegFunction("IsRequestedMipmapLevelLoaded", IsRequestedMipmapLevelLoaded);
+		L.RegFunction("ClearMinimumMipmapLevel", ClearMinimumMipmapLevel);
 		L.RegFunction("UpdateExternalTexture", UpdateExternalTexture);
 		L.RegFunction("GetRawTextureData", GetRawTextureData);
 		L.RegFunction("GetPixels", GetPixels);
@@ -32,11 +33,16 @@ public class UnityEngine_Texture2DWrap
 		L.RegVar("format", get_format, null);
 		L.RegVar("whiteTexture", get_whiteTexture, null);
 		L.RegVar("blackTexture", get_blackTexture, null);
+		L.RegVar("redTexture", get_redTexture, null);
+		L.RegVar("grayTexture", get_grayTexture, null);
+		L.RegVar("linearGrayTexture", get_linearGrayTexture, null);
 		L.RegVar("normalTexture", get_normalTexture, null);
 		L.RegVar("isReadable", get_isReadable, null);
 		L.RegVar("streamingMipmaps", get_streamingMipmaps, null);
 		L.RegVar("streamingMipmapsPriority", get_streamingMipmapsPriority, null);
 		L.RegVar("requestedMipmapLevel", get_requestedMipmapLevel, set_requestedMipmapLevel);
+		L.RegVar("minimumMipmapLevel", get_minimumMipmapLevel, set_minimumMipmapLevel);
+		L.RegVar("calculatedMipmapLevel", get_calculatedMipmapLevel, null);
 		L.RegVar("desiredMipmapLevel", get_desiredMipmapLevel, null);
 		L.RegVar("loadingMipmapLevel", get_loadingMipmapLevel, null);
 		L.RegVar("loadedMipmapLevel", get_loadedMipmapLevel, null);
@@ -175,6 +181,22 @@ public class UnityEngine_Texture2DWrap
 			bool o = obj.IsRequestedMipmapLevelLoaded();
 			LuaDLL.lua_pushboolean(L, o);
 			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int ClearMinimumMipmapLevel(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 1);
+			UnityEngine.Texture2D obj = (UnityEngine.Texture2D)ToLua.CheckObject(L, 1, typeof(UnityEngine.Texture2D));
+			obj.ClearMinimumMipmapLevel();
+			return 0;
 		}
 		catch (Exception e)
 		{
@@ -831,6 +853,48 @@ public class UnityEngine_Texture2DWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_redTexture(IntPtr L)
+	{
+		try
+		{
+			ToLua.PushSealed(L, UnityEngine.Texture2D.redTexture);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_grayTexture(IntPtr L)
+	{
+		try
+		{
+			ToLua.PushSealed(L, UnityEngine.Texture2D.grayTexture);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_linearGrayTexture(IntPtr L)
+	{
+		try
+		{
+			ToLua.PushSealed(L, UnityEngine.Texture2D.linearGrayTexture);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int get_normalTexture(IntPtr L)
 	{
 		try
@@ -921,6 +985,44 @@ public class UnityEngine_Texture2DWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_minimumMipmapLevel(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			UnityEngine.Texture2D obj = (UnityEngine.Texture2D)o;
+			int ret = obj.minimumMipmapLevel;
+			LuaDLL.lua_pushinteger(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index minimumMipmapLevel on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_calculatedMipmapLevel(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			UnityEngine.Texture2D obj = (UnityEngine.Texture2D)o;
+			int ret = obj.calculatedMipmapLevel;
+			LuaDLL.lua_pushinteger(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index calculatedMipmapLevel on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int get_desiredMipmapLevel(IntPtr L)
 	{
 		object o = null;
@@ -993,6 +1095,25 @@ public class UnityEngine_Texture2DWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e, o, "attempt to index requestedMipmapLevel on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_minimumMipmapLevel(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			UnityEngine.Texture2D obj = (UnityEngine.Texture2D)o;
+			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+			obj.minimumMipmapLevel = arg0;
+			return 0;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index minimumMipmapLevel on a nil value");
 		}
 	}
 }

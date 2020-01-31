@@ -19,10 +19,12 @@ public class UnityEngine_LightWrap
 		L.RegFunction("__eq", op_Equality);
 		L.RegFunction("__tostring", ToLua.op_ToString);
 		L.RegVar("type", get_type, set_type);
+		L.RegVar("shape", get_shape, set_shape);
 		L.RegVar("spotAngle", get_spotAngle, set_spotAngle);
 		L.RegVar("innerSpotAngle", get_innerSpotAngle, set_innerSpotAngle);
 		L.RegVar("color", get_color, set_color);
 		L.RegVar("colorTemperature", get_colorTemperature, set_colorTemperature);
+		L.RegVar("useColorTemperature", get_useColorTemperature, set_useColorTemperature);
 		L.RegVar("intensity", get_intensity, set_intensity);
 		L.RegVar("bounceIntensity", get_bounceIntensity, set_bounceIntensity);
 		L.RegVar("useBoundingSphereOverride", get_useBoundingSphereOverride, set_useBoundingSphereOverride);
@@ -287,6 +289,25 @@ public class UnityEngine_LightWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_shape(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			UnityEngine.Light obj = (UnityEngine.Light)o;
+			UnityEngine.LightShape ret = obj.shape;
+			ToLua.Push(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index shape on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int get_spotAngle(IntPtr L)
 	{
 		object o = null;
@@ -359,6 +380,25 @@ public class UnityEngine_LightWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e, o, "attempt to index colorTemperature on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_useColorTemperature(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			UnityEngine.Light obj = (UnityEngine.Light)o;
+			bool ret = obj.useColorTemperature;
+			LuaDLL.lua_pushboolean(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index useColorTemperature on a nil value");
 		}
 	}
 
@@ -838,6 +878,25 @@ public class UnityEngine_LightWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_shape(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			UnityEngine.Light obj = (UnityEngine.Light)o;
+			UnityEngine.LightShape arg0 = (UnityEngine.LightShape)ToLua.CheckObject(L, 2, typeof(UnityEngine.LightShape));
+			obj.shape = arg0;
+			return 0;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index shape on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int set_spotAngle(IntPtr L)
 	{
 		object o = null;
@@ -910,6 +969,25 @@ public class UnityEngine_LightWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e, o, "attempt to index colorTemperature on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_useColorTemperature(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			UnityEngine.Light obj = (UnityEngine.Light)o;
+			bool arg0 = LuaDLL.luaL_checkboolean(L, 2);
+			obj.useColorTemperature = arg0;
+			return 0;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index useColorTemperature on a nil value");
 		}
 	}
 

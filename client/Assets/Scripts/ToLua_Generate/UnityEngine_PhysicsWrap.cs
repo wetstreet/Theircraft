@@ -38,6 +38,7 @@ public class UnityEngine_PhysicsWrap
 		L.RegFunction("BoxCastAll", BoxCastAll);
 		L.RegFunction("OverlapCapsuleNonAlloc", OverlapCapsuleNonAlloc);
 		L.RegFunction("RebuildBroadphaseRegions", RebuildBroadphaseRegions);
+		L.RegFunction("BakeMesh", BakeMesh);
 		L.RegConstant("IgnoreRaycastLayer", 4);
 		L.RegConstant("DefaultRaycastLayers", -5);
 		L.RegConstant("AllLayers", -1);
@@ -2045,6 +2046,23 @@ public class UnityEngine_PhysicsWrap
 			UnityEngine.Bounds arg0 = ToLua.ToBounds(L, 1);
 			int arg1 = (int)LuaDLL.luaL_checknumber(L, 2);
 			UnityEngine.Physics.RebuildBroadphaseRegions(arg0, arg1);
+			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int BakeMesh(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			int arg0 = (int)LuaDLL.luaL_checknumber(L, 1);
+			bool arg1 = LuaDLL.luaL_checkboolean(L, 2);
+			UnityEngine.Physics.BakeMesh(arg0, arg1);
 			return 0;
 		}
 		catch (Exception e)

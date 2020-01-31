@@ -10,6 +10,7 @@ public class UnityEngine_QualitySettingsWrap
 		L.RegFunction("IncreaseLevel", IncreaseLevel);
 		L.RegFunction("DecreaseLevel", DecreaseLevel);
 		L.RegFunction("SetQualityLevel", SetQualityLevel);
+		L.RegFunction("GetRenderPipelineAssetAt", GetRenderPipelineAssetAt);
 		L.RegFunction("GetQualityLevel", GetQualityLevel);
 		L.RegFunction("__eq", op_Equality);
 		L.RegVar("pixelLightCount", get_pixelLightCount, set_pixelLightCount);
@@ -37,6 +38,7 @@ public class UnityEngine_QualitySettingsWrap
 		L.RegVar("realtimeReflectionProbes", get_realtimeReflectionProbes, set_realtimeReflectionProbes);
 		L.RegVar("billboardsFaceCameraPosition", get_billboardsFaceCameraPosition, set_billboardsFaceCameraPosition);
 		L.RegVar("resolutionScalingFixedDPIFactor", get_resolutionScalingFixedDPIFactor, set_resolutionScalingFixedDPIFactor);
+		L.RegVar("renderPipeline", get_renderPipeline, set_renderPipeline);
 		L.RegVar("skinWeights", get_skinWeights, set_skinWeights);
 		L.RegVar("streamingMipmapsActive", get_streamingMipmapsActive, set_streamingMipmapsActive);
 		L.RegVar("streamingMipmapsMemoryBudget", get_streamingMipmapsMemoryBudget, set_streamingMipmapsMemoryBudget);
@@ -131,6 +133,23 @@ public class UnityEngine_QualitySettingsWrap
 			{
 				return LuaDLL.luaL_throw(L, "invalid arguments to method: UnityEngine.QualitySettings.SetQualityLevel");
 			}
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int GetRenderPipelineAssetAt(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 1);
+			int arg0 = (int)LuaDLL.luaL_checknumber(L, 1);
+			UnityEngine.Rendering.RenderPipelineAsset o = UnityEngine.QualitySettings.GetRenderPipelineAssetAt(arg0);
+			ToLua.Push(L, o);
+			return 1;
 		}
 		catch (Exception e)
 		{
@@ -514,6 +533,20 @@ public class UnityEngine_QualitySettingsWrap
 		try
 		{
 			LuaDLL.lua_pushnumber(L, UnityEngine.QualitySettings.resolutionScalingFixedDPIFactor);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_renderPipeline(IntPtr L)
+	{
+		try
+		{
+			ToLua.Push(L, UnityEngine.QualitySettings.renderPipeline);
 			return 1;
 		}
 		catch (Exception e)
@@ -1015,6 +1048,21 @@ public class UnityEngine_QualitySettingsWrap
 		{
 			float arg0 = (float)LuaDLL.luaL_checknumber(L, 2);
 			UnityEngine.QualitySettings.resolutionScalingFixedDPIFactor = arg0;
+			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_renderPipeline(IntPtr L)
+	{
+		try
+		{
+			UnityEngine.Rendering.RenderPipelineAsset arg0 = (UnityEngine.Rendering.RenderPipelineAsset)ToLua.CheckObject<UnityEngine.Rendering.RenderPipelineAsset>(L, 2);
+			UnityEngine.QualitySettings.renderPipeline = arg0;
 			return 0;
 		}
 		catch (Exception e)

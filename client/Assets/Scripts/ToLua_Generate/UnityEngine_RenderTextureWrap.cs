@@ -32,6 +32,7 @@ public class UnityEngine_RenderTextureWrap
 		L.RegVar("vrUsage", get_vrUsage, set_vrUsage);
 		L.RegVar("memorylessMode", get_memorylessMode, set_memorylessMode);
 		L.RegVar("format", get_format, set_format);
+		L.RegVar("stencilFormat", get_stencilFormat, set_stencilFormat);
 		L.RegVar("autoGenerateMips", get_autoGenerateMips, set_autoGenerateMips);
 		L.RegVar("volumeDepth", get_volumeDepth, set_volumeDepth);
 		L.RegVar("antiAliasing", get_antiAliasing, set_antiAliasing);
@@ -763,6 +764,25 @@ public class UnityEngine_RenderTextureWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_stencilFormat(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			UnityEngine.RenderTexture obj = (UnityEngine.RenderTexture)o;
+			UnityEngine.Experimental.Rendering.GraphicsFormat ret = obj.stencilFormat;
+			ToLua.Push(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index stencilFormat on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int get_autoGenerateMips(IntPtr L)
 	{
 		object o = null;
@@ -1134,6 +1154,25 @@ public class UnityEngine_RenderTextureWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e, o, "attempt to index format on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_stencilFormat(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			UnityEngine.RenderTexture obj = (UnityEngine.RenderTexture)o;
+			UnityEngine.Experimental.Rendering.GraphicsFormat arg0 = (UnityEngine.Experimental.Rendering.GraphicsFormat)ToLua.CheckObject(L, 2, typeof(UnityEngine.Experimental.Rendering.GraphicsFormat));
+			obj.stencilFormat = arg0;
+			return 0;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index stencilFormat on a nil value");
 		}
 	}
 
