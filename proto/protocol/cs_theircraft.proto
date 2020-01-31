@@ -15,11 +15,12 @@ enum CSBlockType
 	BedRock = 10;
 	Poppy = 11;
 	Dandelion = 12;
-	OakWood = 13;
+	OakLog = 13;
 	OakLeaves = 14;
 	BrickStairs = 15;
 	Torch = 16;
 	BrickWall = 17;
+	OakPlanks = 18;
 }
 
 enum CSBlockOrientation

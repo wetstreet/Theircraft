@@ -45,6 +45,8 @@ public class ItemSelectPanel : MonoBehaviour
         {CSBlockType.Stone, "stone" },
         {CSBlockType.Torch, "torch" },
         {CSBlockType.BrickWall, "Brick_Wall" },
+        {CSBlockType.OakLog, "Oak_Log" },
+        {CSBlockType.OakPlanks, "Oak_Planks" },
     };
 
     void Init()

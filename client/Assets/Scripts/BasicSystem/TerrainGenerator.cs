@@ -96,7 +96,7 @@ public class TerrainGenerator : MonoBehaviour
         }
         for (int i = 0; i < 3; i++)
         {
-            LocalServer.SetBlockType(x + chunk.x * 16, y + i, z + chunk.y * 16, CSBlockType.OakWood);
+            LocalServer.SetBlockType(x + chunk.x * 16, y + i, z + chunk.y * 16, CSBlockType.OakLog);
         }
     }
 }

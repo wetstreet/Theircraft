@@ -774,8 +774,8 @@ namespace protocol.cs_theircraft
       [global::ProtoBuf.ProtoEnum(Name=@"Dandelion", Value=12)]
       Dandelion = 12,
             
-      [global::ProtoBuf.ProtoEnum(Name=@"OakWood", Value=13)]
-      OakWood = 13,
+      [global::ProtoBuf.ProtoEnum(Name=@"OakLog", Value=13)]
+      OakLog = 13,
             
       [global::ProtoBuf.ProtoEnum(Name=@"OakLeaves", Value=14)]
       OakLeaves = 14,
@@ -787,7 +787,10 @@ namespace protocol.cs_theircraft
       Torch = 16,
             
       [global::ProtoBuf.ProtoEnum(Name=@"BrickWall", Value=17)]
-      BrickWall = 17
+      BrickWall = 17,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"OakPlanks", Value=18)]
+      OakPlanks = 18
     }
   
     [global::ProtoBuf.ProtoContract(Name=@"CSBlockOrientation")]

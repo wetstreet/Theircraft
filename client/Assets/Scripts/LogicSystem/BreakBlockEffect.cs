@@ -6,11 +6,11 @@ public class BreakBlockEffect : MonoBehaviour
 {
     static Dictionary<CSBlockType, Vector2Int> type2breakEffect = new Dictionary<CSBlockType, Vector2Int>
     {
-        {CSBlockType.GrassBlock, ChunkMeshGenerator.grass_bottom },
-        {CSBlockType.Dirt, ChunkMeshGenerator.grass_bottom },
-        {CSBlockType.Tnt, ChunkMeshGenerator.tnt_side },
-        {CSBlockType.Brick, ChunkMeshGenerator.brick },
-        {CSBlockType.Furnace, ChunkMeshGenerator.furnace_side },
+        {CSBlockType.GrassBlock, ChunkMeshGenerator.uv_dirt },
+        {CSBlockType.Dirt, ChunkMeshGenerator.uv_dirt },
+        {CSBlockType.Tnt, ChunkMeshGenerator.uv_tnt_side },
+        {CSBlockType.Brick, ChunkMeshGenerator.uv_bricks },
+        {CSBlockType.Furnace, ChunkMeshGenerator.uv_furnace_side },
         {CSBlockType.HayBlock, ChunkMeshGenerator.hay_side },
     };
 

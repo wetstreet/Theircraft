@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public class CreativeInventory : MonoBehaviour
 {
-    CSBlockType[] blocks = new CSBlockType[8]
+    CSBlockType[] blocks = new CSBlockType[10]
     {
         CSBlockType.Stone,
         CSBlockType.GrassBlock,
@@ -16,7 +16,9 @@ public class CreativeInventory : MonoBehaviour
         CSBlockType.BrickWall,
         CSBlockType.Furnace,
         CSBlockType.HayBlock,
-        CSBlockType.Torch
+        CSBlockType.Torch,
+        CSBlockType.OakPlanks,
+        CSBlockType.OakLog,
     };
 
     Transform grid;

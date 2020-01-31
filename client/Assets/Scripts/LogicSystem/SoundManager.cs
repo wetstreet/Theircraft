@@ -38,7 +38,8 @@ public class SoundManager : MonoBehaviour
         {CSBlockType.BrickWall, "Stone" },
         {CSBlockType.Stone, "Stone" },
         {CSBlockType.Torch, "Wood" },
-        {CSBlockType.OakWood, "Wood" },
+        {CSBlockType.OakLog, "Wood" },
+        {CSBlockType.OakPlanks, "Wood" },
     };
 
     public static void PlayDigSound(CSBlockType type, GameObject gameObject)
