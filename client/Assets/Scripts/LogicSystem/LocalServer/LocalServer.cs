@@ -10,6 +10,7 @@ public struct PlayerData
     public CSVector3 Position;
     public CSVector3 Rotation;
     public uint SelectIndex;
+    public CSBlockType[] SelectItems;
 }
 
 public class LocalServer : MonoBehaviour
@@ -24,6 +25,7 @@ public class LocalServer : MonoBehaviour
         [ENUM_CMD.CS_DELETE_BLOCK_REQ] = Single_OnDeleteBlockReq,
         [ENUM_CMD.CS_ADD_BLOCK_REQ] = Single_OnAddBlockReq,
         [ENUM_CMD.CS_HERO_CHANGE_SELECT_INDEX_REQ] = Single_OnHeroChangeSelectIndexReq,
+        [ENUM_CMD.CS_HERO_CHANGE_SELECT_ITEM_REQ] = Single_OnHeroChangeSelectItemReq,
     };
 
     public static bool ProcessRequest<T>(ENUM_CMD cmdID, T obj, Action<object> callback = null)
@@ -55,6 +57,11 @@ public class LocalServer : MonoBehaviour
             }
         };
 
+        for(int i = 0; i < 9; i++)
+        {
+            rsp.PlayerData.SelectItems.Add(playerData.SelectItems[i]);
+        }
+        
         foreach (KeyValuePair<Vector3Int, Vector3Int> kvPair in dependenceDict)
         {
             rsp.BlockAttrs.Add(new CSBlockAttrs {
@@ -88,6 +95,7 @@ public class LocalServer : MonoBehaviour
     static Dictionary<Vector3Int, Vector3Int> dependenceDict;
     static HashSet<Vector2Int> chunkGenerateFlagSet;
     static Dictionary<Vector2Int, byte[]> chunkDataDict;
+    static List<CSBlockType> selectItems;
 
     public static void SaveData()
     {
@@ -116,6 +124,7 @@ public class LocalServer : MonoBehaviour
                 Position = new CSVector3 { x = 0, y = 20, z = 0 },
                 Rotation = new CSVector3 { x = 0, y = 0, z = 0 },
                 SelectIndex = 0,
+                SelectItems = new CSBlockType[9],
             };
         }
     }
@@ -211,5 +220,11 @@ public class LocalServer : MonoBehaviour
     {
         CSHeroChangeSelectIndexReq req = obj as CSHeroChangeSelectIndexReq;
         playerData.SelectIndex = req.Index;
+    }
+
+    static void Single_OnHeroChangeSelectItemReq(object obj, Action<object> callback)
+    {
+        CSHeroChangeSelectItemReq req = obj as CSHeroChangeSelectItemReq;
+        playerData.SelectItems[req.Index] = req.Item;
     }
 }

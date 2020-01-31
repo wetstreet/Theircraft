@@ -192,8 +192,7 @@ public class CreativeInventory : MonoBehaviour
             }
             else
             {
-                string iconPath = ItemSelectPanel.type2icon[type];
-                selectItems[i].icon.sprite = Resources.Load<Sprite>("GUI/CubeBlock/" + iconPath);
+                selectItems[i].icon.sprite = BlockIconHelper.GetIcon(type);
                 selectItems[i].icon.color = Color.white;
             }
         }
@@ -210,7 +209,6 @@ public class CreativeInventory : MonoBehaviour
         for(int i = 0; i < blocks.Length; i++)
         {
             CSBlockType blockType = blocks[i];
-            string iconPath = ItemSelectPanel.type2icon[blockType];
             if (i >= itemList.Count)
             {
                 Transform trans = Instantiate(unit);
@@ -238,7 +236,7 @@ public class CreativeInventory : MonoBehaviour
 
                 itemList.Add(item);
             }
-            itemList[i].icon.sprite = Resources.Load<Sprite>("GUI/CubeBlock/" + iconPath);
+            itemList[i].icon.sprite = BlockIconHelper.GetIcon(blockType);
         }
     }
 
@@ -286,7 +284,7 @@ public class CreativeInventory : MonoBehaviour
             holdItem = false;
             holdItemImage.gameObject.SetActive(false);
 
-            ItemSelectPanel.dataList[index] = blocks[showIndex];
+            ItemSelectPanel.SetSlotItem((uint)index, blocks[showIndex]);
             ItemSelectPanel.instance.RefreshUI();
             RefreshSelectPanel();
         }
@@ -294,8 +292,8 @@ public class CreativeInventory : MonoBehaviour
         {
             holdSelectItem = false;
             holdItemImage.gameObject.SetActive(false);
-
-            ItemSelectPanel.dataList[index] = showSelectType;
+            
+            ItemSelectPanel.SetSlotItem((uint)index, showSelectType);
             ItemSelectPanel.instance.RefreshUI();
             RefreshSelectPanel();
         }
@@ -305,8 +303,8 @@ public class CreativeInventory : MonoBehaviour
             showSelectType = ItemSelectPanel.dataList[index];
             holdItemImage.sprite = selectItems[showSelectIndex].icon.sprite;
             holdItemImage.gameObject.SetActive(true);
-
-            ItemSelectPanel.dataList[index] = CSBlockType.None;
+            
+            ItemSelectPanel.SetSlotItem((uint)index, CSBlockType.None);
             ItemSelectPanel.instance.RefreshUI();
             RefreshSelectPanel();
         }

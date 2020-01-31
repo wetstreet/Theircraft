@@ -32,7 +32,7 @@ public class LoginSystem
             DataCenter.name = rsp.PlayerData.Name;
             DataCenter.spawnPosition = rsp.PlayerData.Position.ToVector3();
             DataCenter.spawnRotation = rsp.PlayerData.Rotation.ToVector3();
-            ItemSelectPanel.curIndex = rsp.PlayerData.SelectIndex;
+            ItemSelectPanel.Init(rsp.PlayerData.SelectIndex, rsp.PlayerData.SelectItems);
             DataCenter.state = ClientState.InRoom;
             ChunkManager.blockAttrs = rsp.BlockAttrs;
             LoginPanel.Close();

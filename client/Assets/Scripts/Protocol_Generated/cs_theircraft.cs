@@ -175,7 +175,7 @@ namespace protocol.cs_theircraft
     public CSPlayer() {}
     
     private uint _PlayerID = default(uint);
-    [global::ProtoBuf.ProtoMember(2, IsRequired = false, Name=@"PlayerID", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    [global::ProtoBuf.ProtoMember(1, IsRequired = false, Name=@"PlayerID", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
     [global::System.ComponentModel.DefaultValue(default(uint))]
     public uint PlayerID
     {
@@ -183,7 +183,7 @@ namespace protocol.cs_theircraft
       set { _PlayerID = value; }
     }
     private string _Name = "";
-    [global::ProtoBuf.ProtoMember(3, IsRequired = false, Name=@"Name", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::ProtoBuf.ProtoMember(2, IsRequired = false, Name=@"Name", DataFormat = global::ProtoBuf.DataFormat.Default)]
     [global::System.ComponentModel.DefaultValue("")]
     public string Name
     {
@@ -191,7 +191,7 @@ namespace protocol.cs_theircraft
       set { _Name = value; }
     }
     private CSVector3 _Position = null;
-    [global::ProtoBuf.ProtoMember(4, IsRequired = false, Name=@"Position", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::ProtoBuf.ProtoMember(3, IsRequired = false, Name=@"Position", DataFormat = global::ProtoBuf.DataFormat.Default)]
     [global::System.ComponentModel.DefaultValue(null)]
     public CSVector3 Position
     {
@@ -199,7 +199,7 @@ namespace protocol.cs_theircraft
       set { _Position = value; }
     }
     private CSVector3 _Rotation = null;
-    [global::ProtoBuf.ProtoMember(5, IsRequired = false, Name=@"Rotation", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::ProtoBuf.ProtoMember(4, IsRequired = false, Name=@"Rotation", DataFormat = global::ProtoBuf.DataFormat.Default)]
     [global::System.ComponentModel.DefaultValue(null)]
     public CSVector3 Rotation
     {
@@ -207,13 +207,20 @@ namespace protocol.cs_theircraft
       set { _Rotation = value; }
     }
     private uint _SelectIndex = default(uint);
-    [global::ProtoBuf.ProtoMember(6, IsRequired = false, Name=@"SelectIndex", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    [global::ProtoBuf.ProtoMember(5, IsRequired = false, Name=@"SelectIndex", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
     [global::System.ComponentModel.DefaultValue(default(uint))]
     public uint SelectIndex
     {
       get { return _SelectIndex; }
       set { _SelectIndex = value; }
     }
+    private readonly global::System.Collections.Generic.List<CSBlockType> _SelectItems = new global::System.Collections.Generic.List<CSBlockType>();
+    [global::ProtoBuf.ProtoMember(6, Name=@"SelectItems", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public global::System.Collections.Generic.List<CSBlockType> SelectItems
+    {
+      get { return _SelectItems; }
+    }
+  
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
@@ -708,6 +715,30 @@ namespace protocol.cs_theircraft
     {
       get { return _Index; }
       set { _Index = value; }
+    }
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"CSHeroChangeSelectItemReq")]
+  public partial class CSHeroChangeSelectItemReq : global::ProtoBuf.IExtensible
+  {
+    public CSHeroChangeSelectItemReq() {}
+    
+    private uint _Index;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"Index", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public uint Index
+    {
+      get { return _Index; }
+      set { _Index = value; }
+    }
+    private CSBlockType _Item;
+    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"Item", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public CSBlockType Item
+    {
+      get { return _Item; }
+      set { _Item = value; }
     }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)

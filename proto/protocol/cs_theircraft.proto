@@ -72,11 +72,12 @@ message CSBlock
 
 message CSPlayer
 {
-	optional uint32 PlayerID = 2;
-	optional string Name = 3;
-	optional CSVector3 Position = 4;
-	optional CSVector3 Rotation = 5;
-	optional uint32 SelectIndex = 6;
+	optional uint32 PlayerID = 1;
+	optional string Name = 2;
+	optional CSVector3 Position = 3;
+	optional CSVector3 Rotation = 4;
+	optional uint32 SelectIndex = 5;
+	repeated CSBlockType SelectItems = 6;
 }
 
 message CSChunk
@@ -225,6 +226,13 @@ message CSPlayerLeaveViewNotify
 message CSHeroChangeSelectIndexReq
 {
 	required uint32 Index = 1;
+}
+
+//CS_HERO_CHANGE_SELECT_ITEM_REQ
+message CSHeroChangeSelectItemReq
+{
+	required uint32 Index = 1;
+	required CSBlockType Item = 2;
 }
 
 message BlobChunkData

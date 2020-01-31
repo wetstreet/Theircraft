@@ -2,25 +2,35 @@
 using UnityEngine.UI;
 using protocol.cs_theircraft;
 using System.Collections.Generic;
+using protocol.cs_enum;
 
 public class ItemSelectPanel : MonoBehaviour
 {
-    public static uint curIndex;
+    static uint curIndex;
     public static CSBlockType curBlockType { get { return dataList[curIndex]; } }
 
     static Item[] itemList = new Item[9];
-    public static CSBlockType[] dataList = new CSBlockType[9]
+    public static CSBlockType[] dataList = new CSBlockType[9];
+
+    public static void Init(uint index, List<CSBlockType> items)
     {
-        CSBlockType.GrassBlock,
-        CSBlockType.Brick,
-        CSBlockType.BrickStairs,
-        CSBlockType.BrickWall,
-        CSBlockType.Furnace,
-        CSBlockType.HayBlock,
-        CSBlockType.None,
-        CSBlockType.None,
-        CSBlockType.None
-    };
+        curIndex = index;
+        for (int i = 0; i < 9; i++)
+        {
+            dataList[i] = items[i];
+        }
+    }
+
+    public static void SetSlotItem(uint index, CSBlockType type)
+    {
+        dataList[index] = type;
+        CSHeroChangeSelectItemReq req = new CSHeroChangeSelectItemReq
+        {
+            Index = index,
+            Item = type
+        };
+        NetworkManager.SendPkgToServer(ENUM_CMD.CS_HERO_CHANGE_SELECT_ITEM_REQ, req);
+    }
 
     struct Item
     {
@@ -33,31 +43,18 @@ public class ItemSelectPanel : MonoBehaviour
     {
         instance = UISystem.InstantiateUI("ItemSelectPanel").GetComponent<ItemSelectPanel>();
     }
-
-    public static Dictionary<CSBlockType, string> type2icon = new Dictionary<CSBlockType, string>
-    {
-        {CSBlockType.GrassBlock, "grass" },
-        {CSBlockType.Dirt, "dirt" },
-        {CSBlockType.BrickStairs, "Brick_Stairs" },
-        {CSBlockType.Brick, "brick" },
-        {CSBlockType.Furnace, "furnace" },
-        {CSBlockType.HayBlock, "hayblock" },
-        {CSBlockType.Stone, "stone" },
-        {CSBlockType.Torch, "torch" },
-        {CSBlockType.BrickWall, "Brick_Wall" },
-        {CSBlockType.OakLog, "Oak_Log" },
-        {CSBlockType.OakPlanks, "Oak_Planks" },
-    };
-
+    
     void Init()
     {
         Transform grid = transform.Find("container/grid");
         for (int i = 0; i < grid.childCount; i++)
         {
             Transform trans = grid.GetChild(i);
-            Item item = new Item();
-            item.icon = trans.Find("icon").GetComponent<Image>();
-            item.select = trans.Find("select").gameObject;
+            Item item = new Item
+            {
+                icon = trans.Find("icon").GetComponent<Image>(),
+                select = trans.Find("select").gameObject
+            };
             item.icon.gameObject.SetActive(false);
             item.select.SetActive(false);
             itemList[i] = item;
@@ -76,8 +73,7 @@ public class ItemSelectPanel : MonoBehaviour
             }
             else
             {
-                string iconPath = type2icon[blockType];
-                itemList[i].icon.sprite = Resources.Load<Sprite>("GUI/CubeBlock/" + iconPath);
+                itemList[i].icon.sprite = BlockIconHelper.GetIcon(blockType);
                 itemList[i].icon.gameObject.SetActive(true);
             }
             itemList[i].select.SetActive(i == curIndex);
@@ -104,7 +100,7 @@ public class ItemSelectPanel : MonoBehaviour
         {
             Index = index
         };
-        NetworkManager.SendPkgToServer(protocol.cs_enum.ENUM_CMD.CS_HERO_CHANGE_SELECT_INDEX_REQ, req);
+        NetworkManager.SendPkgToServer(ENUM_CMD.CS_HERO_CHANGE_SELECT_INDEX_REQ, req);
     }
 
     // Use this for initialization
