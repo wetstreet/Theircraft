@@ -21,6 +21,10 @@ enum CSBlockType
 	Torch = 16;
 	BrickWall = 17;
 	OakPlanks = 18;
+	DoubleStoneSlab = 19;
+	Cobweb = 20;
+	RedSand = 21;
+	OakSapling = 22;
 }
 
 enum CSBlockOrientation

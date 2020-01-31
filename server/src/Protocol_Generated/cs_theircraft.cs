@@ -821,7 +821,19 @@ namespace protocol.cs_theircraft
       BrickWall = 17,
             
       [global::ProtoBuf.ProtoEnum(Name=@"OakPlanks", Value=18)]
-      OakPlanks = 18
+      OakPlanks = 18,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"DoubleStoneSlab", Value=19)]
+      DoubleStoneSlab = 19,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"Cobweb", Value=20)]
+      Cobweb = 20,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"RedSand", Value=21)]
+      RedSand = 21,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"OakSapling", Value=22)]
+      OakSapling = 22
     }
   
     [global::ProtoBuf.ProtoContract(Name=@"CSBlockOrientation")]

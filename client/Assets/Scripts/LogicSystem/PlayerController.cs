@@ -158,8 +158,7 @@ public class PlayerController : MonoBehaviour
                 handAnimator.SetTrigger("interactTrigger");
                 if (WireFrameHelper.render)
                 {
-                    CSBlockType type = ChunkManager.GetBlockType(WireFrameHelper.pos.x, WireFrameHelper.pos.y, WireFrameHelper.pos.z);
-                    if (type != CSBlockType.BedRock)
+                    if (WireFrameHelper.pos.y != 0)
                     {
                         DeleteBlockReq(WireFrameHelper.pos);
                     }

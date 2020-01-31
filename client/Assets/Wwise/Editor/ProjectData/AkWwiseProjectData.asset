@@ -17,21 +17,21 @@ MonoBehaviour:
     ParentPhysicalPath: 
     guid: fd6a2ae968917c47ad8030b9739acdcd
     GuidInternal: 
-    m_lastTime: -8586453175797437679
+    m_lastTime: -8586226860746589431
     List: []
   AuxBusWwu:
   - PhysicalPath: Master-Mixer Hierarchy\Default Work Unit.wwu
     ParentPhysicalPath: 
     guid: 4634eac59ee89d49b686418636aa991a
     GuidInternal: 
-    m_lastTime: -8586453175797958127
+    m_lastTime: -8586226860757348693
     List: []
   BankWwu:
   - PhysicalPath: SoundBanks\Default Work Unit.wwu
     ParentPhysicalPath: 
     guid: 6ebb4863498b7b4f90119187c813242b
     GuidInternal: 
-    m_lastTime: -8586453167659272510
+    m_lastTime: -8586226860746799588
     List:
     - name: Main
       guid: 94fd25c3640b4446a87bc7db7c99c861
@@ -47,17 +47,53 @@ MonoBehaviour:
     ParentPhysicalPath: 
     guid: 6fb2fc64e7ee2f47bb490cea237e0901
     GuidInternal: 
-    m_lastTime: -8586453167786476502
+    m_lastTime: -8586226860757949210
+    List: []
+  - PhysicalPath: Events\Player.wwu
+    ParentPhysicalPath: 
+    guid: bb0a8b8491c4b34aa832e5e2c7b675ea
+    GuidInternal: 
+    m_lastTime: -8586226860757934196
     List:
-    - name: Footstep
-      guid: 4e4ad69a5eb2a3489b9785d0b49fbc80
-      id: 1866025847
+    - name: Player_Dig
+      guid: 8d553db382e75846ab985e458bf61f64
+      id: 1542330067
       PathAndIcons:
-      - ElementName: Default Work Unit
+      - ElementName: Player
         ObjectType: 12
-      - ElementName: Footstep
+      - ElementName: Player_Dig
         ObjectType: 3
-      Path: Default Work Unit\Footstep
+      Path: Player\Player_Dig
+      maxAttenuation: 0
+      maxDuration: 0
+      minDuration: 0
+    - name: Player_Footstep
+      guid: 4e4ad69a5eb2a3489b9785d0b49fbc80
+      id: 2453392179
+      PathAndIcons:
+      - ElementName: Player
+        ObjectType: 12
+      - ElementName: Player_Footstep
+        ObjectType: 3
+      Path: Player\Player_Footstep
+      maxAttenuation: 0
+      maxDuration: 0
+      minDuration: 0
+  - PhysicalPath: Events\UI.wwu
+    ParentPhysicalPath: 
+    guid: 0e17751e7d0f5448b39c6e2da6476971
+    GuidInternal: 
+    m_lastTime: -8586226860757924189
+    List:
+    - name: UI_Click
+      guid: b4678c5253d109449e263503085437be
+      id: 2249769530
+      PathAndIcons:
+      - ElementName: UI
+        ObjectType: 12
+      - ElementName: UI_Click
+        ObjectType: 3
+      Path: UI\UI_Click
       maxAttenuation: 0
       maxDuration: 0
       minDuration: 0
@@ -66,21 +102,30 @@ MonoBehaviour:
     ParentPhysicalPath: 
     guid: 6fd5403f4a5e074bbb470ef948690112
     GuidInternal: 
-    m_lastTime: -8586453175798028177
-    List: []
+    m_lastTime: -8586226860757909176
+    List:
+    - name: MainVolume
+      guid: cd58140841ddff4dae3a8ac5673ef2e6
+      id: 1843561328
+      PathAndIcons:
+      - ElementName: Default Work Unit
+        ObjectType: 12
+      - ElementName: MainVolume
+        ObjectType: 13
+      Path: Default Work Unit\MainVolume
   StateWwu:
   - PhysicalPath: States\Default Work Unit.wwu
     ParentPhysicalPath: 
     guid: 0c59cad13f3e4d40b36e05a337c2ba13
     GuidInternal: 
-    m_lastTime: -8586453175797557783
+    m_lastTime: -8586226860746729552
     List: []
   SwitchWwu:
   - PhysicalPath: Switches\Default Work Unit.wwu
     ParentPhysicalPath: 
     guid: 4e280bb4803129448004898159ddf4fc
     GuidInternal: 
-    m_lastTime: -8586453167786416450
+    m_lastTime: -8586226860746709534
     List:
     - name: Materials
       guid: 3a997c255a213c4b87ea952c97f816ff
@@ -92,17 +137,41 @@ MonoBehaviour:
         ObjectType: 11
       Path: Default Work Unit\Materials
       values:
+      - name: Cloth
+        guid: 667b2c02cb7df54b9055261b24a6f9b8
+        id: 1367384683
+        PathAndIcons:
+        - ElementName: Cloth
+          ObjectType: 10
       - name: Grass
         guid: 0ff3eb6a36bc7044b2b7cbb8a4bf1122
         id: 4248645337
         PathAndIcons:
         - ElementName: Grass
           ObjectType: 10
+      - name: Gravel
+        guid: da65cb2e050d964cb470e8fd3436970d
+        id: 2185786256
+        PathAndIcons:
+        - ElementName: Gravel
+          ObjectType: 10
+      - name: Ladder
+        guid: e109720647dd2543b16ec6945a131a29
+        id: 1407130077
+        PathAndIcons:
+        - ElementName: Ladder
+          ObjectType: 10
       - name: Sand
         guid: 39a73e4da2f1464e82b15682efc3a6d1
         id: 803837735
         PathAndIcons:
         - ElementName: Sand
+          ObjectType: 10
+      - name: Snow
+        guid: bf9546da98dfcb45ad3a4c23df7fbf14
+        id: 787898836
+        PathAndIcons:
+        - ElementName: Snow
           ObjectType: 10
       - name: Stone
         guid: 4772af5112027b4aa8f7442af4f3412c
@@ -124,15 +193,15 @@ MonoBehaviour:
     ParentPhysicalPath: 
     guid: 0a0ef3c072ecf34c9cc24aaf7763f2a3
     GuidInternal: 
-    m_lastTime: -8586453175797457681
+    m_lastTime: -8586226860746624462
     List: []
   ExpandedItems:
   - /Theircraft_WwiseProject
   - /Theircraft_WwiseProject/Events
-  - /Theircraft_WwiseProject/Events/Default Work Unit
   - /Theircraft_WwiseProject/SoundBanks
   - /Theircraft_WwiseProject/SoundBanks/Default Work Unit
   - /Theircraft_WwiseProject/Switches
   - /Theircraft_WwiseProject/Switches/Default Work Unit
+  - /Theircraft_WwiseProject/Switches/Default Work Unit/Materials
   autoPopulateEnabled: 1
   CurrentPluginConfig: 

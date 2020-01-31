@@ -4,6 +4,27 @@ using UnityEngine;
 
 public class SoundManager : MonoBehaviour
 {
+    static readonly string Material_Grass = "Grass";
+    static readonly string Material_Gravel = "Gravel";
+    static readonly string Material_Sand = "Sand";
+    static readonly string Material_Stone = "Stone";
+    static readonly string Material_Wood = "Wood";
+
+    static Dictionary<CSBlockType, string> type2material = new Dictionary<CSBlockType, string>
+    {
+        {CSBlockType.Dirt, Material_Gravel },
+        {CSBlockType.Brick, Material_Stone },
+        {CSBlockType.BrickStairs, Material_Stone },
+        {CSBlockType.Furnace, Material_Stone },
+        {CSBlockType.BrickWall, Material_Stone },
+        {CSBlockType.Stone, Material_Stone },
+        {CSBlockType.DoubleStoneSlab, Material_Stone },
+        {CSBlockType.Torch, Material_Wood },
+        {CSBlockType.OakLog, Material_Wood },
+        {CSBlockType.OakPlanks, Material_Wood },
+        {CSBlockType.RedSand, Material_Sand },
+    };
+
     static SoundManager instance;
 
     public static void Init()
@@ -25,26 +46,10 @@ public class SoundManager : MonoBehaviour
     {
         AkSoundEngine.PostEvent("UI_Click", Camera.main.gameObject);
     }
-    
-    static Dictionary<CSBlockType, string> type2material = new Dictionary<CSBlockType, string>
-    {
-        {CSBlockType.Grass, "Grass" },
-        {CSBlockType.Dirt, "Gravel" },
-        {CSBlockType.Tnt, "Grass" },
-        {CSBlockType.Brick, "Stone" },
-        {CSBlockType.BrickStairs, "Stone" },
-        {CSBlockType.Furnace, "Stone" },
-        {CSBlockType.HayBlock, "Grass" },
-        {CSBlockType.BrickWall, "Stone" },
-        {CSBlockType.Stone, "Stone" },
-        {CSBlockType.Torch, "Wood" },
-        {CSBlockType.OakLog, "Wood" },
-        {CSBlockType.OakPlanks, "Wood" },
-    };
 
     public static void PlayDigSound(CSBlockType type, GameObject gameObject)
     {
-        string material = type2material[CSBlockType.Grass];
+        string material = Material_Grass;
         if (type2material.ContainsKey(type))
         {
             material = type2material[type];
@@ -55,7 +60,7 @@ public class SoundManager : MonoBehaviour
 
     public static void PlayFootstepSound(CSBlockType type, GameObject gameObject)
     {
-        string material = type2material[CSBlockType.Grass];
+        string material = Material_Grass;
         if (type2material.ContainsKey(type))
         {
             material = type2material[type];
