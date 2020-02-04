@@ -232,8 +232,11 @@ public class CreativeInventory : MonoBehaviour
                 callbacks.index = i;
                 callbacks.pointerEnterCallback = (int index) =>
                 {
-                    showDesc = true;
-                    showIndex = index;
+                    if (!holdItem)
+                    {
+                        showDesc = true;
+                        showIndex = index;
+                    }
                 };
                 callbacks.pointerExitCallback = (int index) =>
                 {

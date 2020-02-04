@@ -55,7 +55,7 @@ public class PlayerController : MonoBehaviour
             Object prefab = Resources.Load("Prefabs/Character");
             GameObject obj = Instantiate(prefab) as GameObject;
             instance = obj.GetComponent<PlayerController>();
-            acceptInput = true;
+            LockCursor(true);
 
             //Monster.CreateMonster(1, new Vector3(1, 20, 1));
         }
