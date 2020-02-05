@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 4484568803546820}
   - component: {fileID: 114198372670496420}
   - component: {fileID: 143223878412349064}
-  m_Layer: 2
+  m_Layer: 14
   m_Name: Character
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -145,7 +145,7 @@ GameObject:
   - component: {fileID: 6450725213235418167}
   - component: {fileID: 2130252853627224944}
   - component: {fileID: 1886352223166160669}
-  m_Layer: 2
+  m_Layer: 14
   m_Name: Main Camera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
@@ -199,7 +199,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 7959
+    m_Bits: 16151
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -390,6 +390,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -444,7 +445,7 @@ GameObject:
   - component: {fileID: 9006409391126836163}
   - component: {fileID: 4428377097392255008}
   - component: {fileID: 8714137382518776946}
-  m_Layer: 2
+  m_Layer: 14
   m_Name: Camera
   m_TagString: HandCamera
   m_Icon: {fileID: 0}

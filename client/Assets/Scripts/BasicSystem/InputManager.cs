@@ -53,4 +53,12 @@ public class InputManager : MonoBehaviour {
     {
         callbacks.Add(callback);
     }
+
+    private void OnApplicationFocus(bool focus)
+    {
+        if (!focus && enabled)
+        {
+            SettingsPanel.Show();
+        }
+    }
 }

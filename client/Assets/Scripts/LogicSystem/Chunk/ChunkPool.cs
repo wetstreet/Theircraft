@@ -26,6 +26,7 @@ public class ChunkPool
         Chunk chunk = chunks.Dequeue();
         chunk.transform.parent = chunkParent;
         chunk.transform.localPosition = Vector3.zero;
+        chunk.gameObject.SetActive(true);
         return chunk;
     }
 
@@ -33,6 +34,7 @@ public class ChunkPool
     {
         chunk.transform.parent = instance.transform;
         chunk.transform.localPosition = Vector3.zero;
+        chunk.gameObject.SetActive(false);
         chunks.Enqueue(chunk);
     }
 

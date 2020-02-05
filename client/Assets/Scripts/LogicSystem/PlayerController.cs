@@ -8,10 +8,10 @@ public class PlayerController : MonoBehaviour
     public Vector3 forward = new Vector3();
     public float horizontalScale = 1;
     public float verticalScale = 1;
+    public new Camera camera;
 
     private Vector3 verticalSpeed;
     private Vector3 horizontalSpeed;
-    private new Camera camera;
     private CharacterController cc;
     static private Camera handCam;
     Animator handAnimator;

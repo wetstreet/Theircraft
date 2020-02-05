@@ -3,6 +3,15 @@ using UnityEngine;
 using protocol.cs_theircraft;
 using UnityEngine.UI;
 
+public struct Tag {
+    public static string Player = "Player";
+}
+
+public struct Layer
+{
+    public static string Chunk = "Chunk";
+}
+
 public static class Utilities {
 
     public static Vector3 ToVector3(this CSVector3 csv)
