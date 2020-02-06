@@ -25,6 +25,17 @@
 						</Action>
 					</ChildrenList>
 				</Event>
+				<Event Name="Player_Pop" ID="{81E63486-5BC2-47FD-8EEF-D1D5DA68D85B}">
+					<ChildrenList>
+						<Action Name="" ID="{522A64F0-7A92-4BB0-A744-A647EABA90B9}" ShortID="927761033">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="pop" ID="{1FEBEC80-2349-4841-8167-ED52CD57791A}" WorkUnitID="{46F87971-A1D3-4A91-B075-34A79D3FACDF}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
 			</ChildrenList>
 		</WorkUnit>
 	</Events>

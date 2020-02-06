@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class ItemTrigger : MonoBehaviour
 {
@@ -15,10 +13,9 @@ public class ItemTrigger : MonoBehaviour
 
     void CheckShouldMove(Collider other)
     {
-        if (other.tag == Tag.Player && Time.time - createTime > 2)
+        if (other.tag == Tag.Player && Time.time - createTime > item.coolDownTime)
         {
-            item.GetComponent<Rigidbody>().useGravity = false;
-            item.move2player = true;
+            item.StartMove();
         }
     }
 

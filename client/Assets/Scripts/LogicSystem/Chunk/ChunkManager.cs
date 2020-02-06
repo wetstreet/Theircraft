@@ -219,8 +219,9 @@ public class ChunkManager
                     nearbyChunk.RebuildMesh();
                 }
             }
-            
-            BreakBlockEffect.Create(type, x, y, z);
+
+            Item.CreateBlockDropItem(type, pos);
+            BreakBlockEffect.Create(type, pos);
             PlayerController.instance.PlayDigSound(type);
         }
     }

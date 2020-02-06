@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="11" SoundbankVersion="134">
 	<RootPaths>
-		<ProjectRoot>C:\Users\陈奕润\Documents\Theircraft\Theircraft_WwiseProject\</ProjectRoot>
-		<SourceFilesRoot>C:\Users\陈奕润\Documents\Theircraft\Theircraft_WwiseProject\.cache\Windows\</SourceFilesRoot>
-		<SoundBanksRoot>C:\Users\陈奕润\Documents\Theircraft\Theircraft_WwiseProject\GeneratedSoundBanks\Windows\</SoundBanksRoot>
+		<ProjectRoot>C:\Users\陈奕润\Documents\Theircraft\client\Theircraft_WwiseProject\</ProjectRoot>
+		<SourceFilesRoot>C:\Users\陈奕润\Documents\Theircraft\client\Theircraft_WwiseProject\.cache\Windows\</SourceFilesRoot>
+		<SoundBanksRoot>C:\Users\陈奕润\Documents\Theircraft\client\Theircraft_WwiseProject\GeneratedSoundBanks\Windows\</SoundBanksRoot>
 		<ExternalSourcesInputFile></ExternalSourcesInputFile>
-		<ExternalSourcesOutputRoot>C:\Users\陈奕润\Documents\Theircraft\Theircraft_WwiseProject\GeneratedSoundBanks\Windows</ExternalSourcesOutputRoot>
+		<ExternalSourcesOutputRoot>C:\Users\陈奕润\Documents\Theircraft\client\Theircraft_WwiseProject\GeneratedSoundBanks\Windows</ExternalSourcesOutputRoot>
 	</RootPaths>
 	<DialogueEvents/>
 	<StreamedFiles/>
@@ -23,6 +23,7 @@
 			<IncludedEvents>
 				<Event Id="1542330067" Name="Player_Dig" ObjectPath="\Events\Player\Player_Dig"/>
 				<Event Id="2453392179" Name="Player_Footstep" ObjectPath="\Events\Player\Player_Footstep"/>
+				<Event Id="1505523378" Name="Player_Pop" ObjectPath="\Events\Player\Player_Pop"/>
 				<Event Id="2249769530" Name="UI_Click" ObjectPath="\Events\UI\UI_Click"/>
 			</IncludedEvents>
 			<IncludedMemoryFiles>
@@ -173,6 +174,10 @@
 				<File Id="589057368" Language="SFX">
 					<ShortName>sand4.wav</ShortName>
 					<Path>SFX\sand4_10C4C929.wem</Path>
+				</File>
+				<File Id="595277447" Language="SFX">
+					<ShortName>36_wav_files (online-audio-converter.com)\pop.wav</ShortName>
+					<Path>SFX\36_wav_files (online-audio-converter.com)\pop_10C4C929.wem</Path>
 				</File>
 				<File Id="602040375" Language="SFX">
 					<ShortName>6_wav_files (online-audio-converter.com)\grass1.wav</ShortName>

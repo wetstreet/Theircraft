@@ -7,6 +7,7 @@
 					<ObjectInclusionList>
 						<ObjectRef Name="UI_Click" ID="{528C67B4-D153-4409-9E26-3503085437BE}" WorkUnitID="{1E75170E-0F7D-4854-B39C-6E2DA6476971}" Filter="7" Origin="Manual"/>
 						<ObjectRef Name="Player_Dig" ID="{B33D558D-E782-4658-AB98-5E458BF61F64}" WorkUnitID="{848B0ABB-C491-4AB3-A832-E5E2C7B675EA}" Filter="7" Origin="Manual"/>
+						<ObjectRef Name="Player_Pop" ID="{81E63486-5BC2-47FD-8EEF-D1D5DA68D85B}" WorkUnitID="{848B0ABB-C491-4AB3-A832-E5E2C7B675EA}" Filter="7" Origin="Manual"/>
 						<ObjectRef Name="Player_Footstep" ID="{9AD64A4E-B25E-48A3-9B97-85D0B49FBC80}" WorkUnitID="{848B0ABB-C491-4AB3-A832-E5E2C7B675EA}" Filter="7" Origin="Manual"/>
 					</ObjectInclusionList>
 					<ObjectExclusionList/>

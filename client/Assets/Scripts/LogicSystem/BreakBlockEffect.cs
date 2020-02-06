@@ -10,11 +10,11 @@ public class BreakBlockEffect : MonoBehaviour
         {CSBlockType.GrassBlock, ChunkMeshGenerator.uv_dirt },
     };
 
-    public static void Create(CSBlockType type, int x, int y, int z)
+    public static void Create(CSBlockType type, Vector3 pos)
     {
         GameObject prefab = Resources.Load("Prefabs/BreakBlockEffect") as GameObject;
         GameObject go = Instantiate(prefab);
-        go.transform.localPosition = new Vector3(x, y, z);
+        go.transform.localPosition = pos;
         Destroy(go, 1);
 
         BreakBlockEffect effect = go.AddComponent<BreakBlockEffect>();

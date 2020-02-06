@@ -68,4 +68,9 @@ public class SoundManager : MonoBehaviour
         AkSoundEngine.SetSwitch("Materials", material, gameObject);
         AkSoundEngine.PostEvent("Player_Footstep", gameObject);
     }
+
+    public static void PlayPopSound()
+    {
+        AkSoundEngine.PostEvent("Player_Pop", Camera.main.gameObject);
+    }
 }

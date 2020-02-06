@@ -43,12 +43,13 @@ public class ItemSelectPanel : MonoBehaviour
         }
     }
 
+    public static Vector3 dropOffset = new Vector3(0, 1.1f, 0);
     public static void DropCurItem()
     {
         if (dataList[curIndex] != CSBlockType.None)
         {
             SetSlotItem(curIndex, CSBlockType.None);
-            Item.Create(CSBlockType.Dandelion, PlayerController.instance.camera.transform.position, PlayerController.instance.transform.forward * 10);
+            Item.Create(CSBlockType.Dandelion, PlayerController.instance.position + dropOffset, PlayerController.instance.camera.transform.forward * 3);
         }
     }
 
@@ -143,8 +144,8 @@ public class ItemSelectPanel : MonoBehaviour
     }
 	
 	// Update is called once per frame
-	void Update () {
-
+	void Update ()
+    {
         if (Input.GetKeyDown(KeyCode.Alpha1)) { curIndex = 0; }
         else if (Input.GetKeyDown(KeyCode.Alpha2)) { curIndex = 1; }
         else if (Input.GetKeyDown(KeyCode.Alpha3)) { curIndex = 2; }
