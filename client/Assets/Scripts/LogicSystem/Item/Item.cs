@@ -1,11 +1,29 @@
-﻿using System.Collections;
+﻿using protocol.cs_theircraft;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Item : MonoBehaviour
 {
+    public bool move2player;
+
     Transform shadowTrans;
     Material shadow;
+
+    static GameObject prefab;
+    public static Item Create(CSBlockType type, Vector3 pos, Vector3 dir)
+    {
+        if (prefab == null)
+        {
+            prefab = Resources.Load<GameObject>("Prefabs/Item");
+        }
+        GameObject obj = Instantiate(prefab);
+        obj.transform.position = pos;
+        obj.GetComponent<Rigidbody>().AddForce(dir);
+        return obj.GetComponent<Item>();
+    }
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -36,18 +54,8 @@ public class Item : MonoBehaviour
             if (distance < minDistance)
             {
                 Destroy(gameObject);
+                ItemSelectPanel.AddItem(CSBlockType.Dandelion);
             }
-        }
-    }
-
-    bool move2player = false;
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.tag == Tag.Player)
-        {
-            GetComponent<Rigidbody>().useGravity = false;
-            GetComponent<BoxCollider>().enabled = false;
-            move2player = true;
         }
     }
 }

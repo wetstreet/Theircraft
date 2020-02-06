@@ -193,6 +193,10 @@ public class PlayerController : MonoBehaviour
             {
                 Jump();
             }
+            if (Input.GetKeyDown(KeyCode.Q))
+            {
+                ItemSelectPanel.DropCurItem();
+            }
         }
 
         if (needUpdate && Time.realtimeSinceStartup - lastUpdateTime > timeInterval)

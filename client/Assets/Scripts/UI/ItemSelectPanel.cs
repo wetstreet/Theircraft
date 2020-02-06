@@ -9,7 +9,7 @@ public class ItemSelectPanel : MonoBehaviour
     static uint curIndex;
     public static CSBlockType curBlockType { get { return dataList[curIndex]; } }
 
-    static Item[] itemList = new Item[9];
+    static SlotItem[] itemList = new SlotItem[9];
     public static CSBlockType[] dataList = new CSBlockType[9];
 
     public static void Init(uint index, List<CSBlockType> items)
@@ -18,6 +18,37 @@ public class ItemSelectPanel : MonoBehaviour
         for (int i = 0; i < 9; i++)
         {
             dataList[i] = items[i];
+        }
+    }
+
+    public static void AddItem(CSBlockType type)
+    {
+        uint firstEmpty = 0;
+        bool hasEmpty = false;
+        for (uint i = 0; i < 9; i++)
+        {
+            if (dataList[i] == type)
+            {
+                return;
+            }
+            else if (dataList[i] == CSBlockType.None && !hasEmpty)
+            {
+                hasEmpty = true;
+                firstEmpty = i;
+            }
+        }
+        if (hasEmpty)
+        {
+            SetSlotItem(firstEmpty, type);
+        }
+    }
+
+    public static void DropCurItem()
+    {
+        if (dataList[curIndex] != CSBlockType.None)
+        {
+            SetSlotItem(curIndex, CSBlockType.None);
+            Item.Create(CSBlockType.Dandelion, PlayerController.instance.camera.transform.position, PlayerController.instance.transform.forward * 10);
         }
     }
 
@@ -30,9 +61,10 @@ public class ItemSelectPanel : MonoBehaviour
             Item = type
         };
         NetworkManager.SendPkgToServer(ENUM_CMD.CS_HERO_CHANGE_SELECT_ITEM_REQ, req);
+        instance.RefreshUI();
     }
 
-    struct Item
+    struct SlotItem
     {
         public Image icon;
         public GameObject select;
@@ -50,7 +82,7 @@ public class ItemSelectPanel : MonoBehaviour
         for (int i = 0; i < grid.childCount; i++)
         {
             Transform trans = grid.GetChild(i);
-            Item item = new Item
+            SlotItem item = new SlotItem
             {
                 icon = trans.Find("icon").GetComponent<Image>(),
                 select = trans.Find("select").gameObject
@@ -62,7 +94,7 @@ public class ItemSelectPanel : MonoBehaviour
     }
 
     uint lastIndex = 0;
-    public void RefreshUI()
+    void RefreshUI()
     {
         for (int i = 0; i < 9; i++)
         {

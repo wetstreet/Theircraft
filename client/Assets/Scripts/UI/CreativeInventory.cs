@@ -298,7 +298,6 @@ public class CreativeInventory : MonoBehaviour
             holdItemImage.gameObject.SetActive(false);
 
             ItemSelectPanel.SetSlotItem((uint)index, blocks[showIndex]);
-            ItemSelectPanel.instance.RefreshUI();
             RefreshSelectPanel();
         }
         else if (holdSelectItem)
@@ -307,7 +306,6 @@ public class CreativeInventory : MonoBehaviour
             holdItemImage.gameObject.SetActive(false);
             
             ItemSelectPanel.SetSlotItem((uint)index, showSelectType);
-            ItemSelectPanel.instance.RefreshUI();
             RefreshSelectPanel();
         }
         else if (ItemSelectPanel.dataList[index] != CSBlockType.None)
@@ -318,7 +316,6 @@ public class CreativeInventory : MonoBehaviour
             holdItemImage.gameObject.SetActive(true);
             
             ItemSelectPanel.SetSlotItem((uint)index, CSBlockType.None);
-            ItemSelectPanel.instance.RefreshUI();
             RefreshSelectPanel();
         }
     }
