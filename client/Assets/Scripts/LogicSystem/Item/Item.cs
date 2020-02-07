@@ -1,4 +1,5 @@
 ﻿using protocol.cs_theircraft;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Item : MonoBehaviour
@@ -10,6 +11,8 @@ public class Item : MonoBehaviour
     Color shadowColor = Color.white;
     bool move2player;
     Vector3 startPosition;
+    float time;
+    CSBlockType type;
 
     static GameObject prefab;
     static Vector3 offset = new Vector3(0, 0.01f, 0);
@@ -17,8 +20,7 @@ public class Item : MonoBehaviour
     static float maxDistance = 2f;
     static float maxAlpha = 0.6f;
     static float minDistance = 0.2f;
-    static float moveTime = 0.3f;
-    float time;
+    static float moveTime = 0.2f;
 
     public static Item CreateBlockDropItem(CSBlockType type, Vector3 pos)
     {
@@ -39,14 +41,58 @@ public class Item : MonoBehaviour
         GameObject obj = Instantiate(prefab);
         obj.transform.position = pos;
         obj.GetComponent<Rigidbody>().AddForce(dir);
-        return obj.GetComponent<Item>();
+        Item item = obj.GetComponent<Item>();
+        item.type = type;
+        return item;
     }
+
+    static Dictionary<CSBlockType, Mesh> type2mesh = new Dictionary<CSBlockType, Mesh>();
+
+    static Dictionary<CSBlockType, string> type2path = new Dictionary<CSBlockType, string>
+    {
+        { CSBlockType.Dandelion, "dandelion" },
+        { CSBlockType.Poppy, "poppy" },
+        { CSBlockType.Grass, "grass" },
+        { CSBlockType.Cobweb, "cobweb" },
+        { CSBlockType.Torch, "torch" },
+    };
 
     // Start is called before the first frame update
     void Start()
     {
         shadowTrans = transform.Find("shadow");
         shadow = shadowTrans.GetComponent<Renderer>().material;
+
+        Transform meshTrans = transform.Find("mesh_parent/mesh");
+        MeshFilter meshFilter = meshTrans.GetComponent<MeshFilter>();
+
+        TexCoords coords = ChunkMeshGenerator.type2texcoords[(byte)type];
+        if (!type2mesh.ContainsKey(type))
+        {
+            if (coords.isPlant || type == CSBlockType.Torch)
+            {
+                string path = type2path[type];
+                type2mesh[type] = Resources.Load<Mesh>("Meshes/items/" + path + "/" + path);
+            }
+            else
+            {
+                type2mesh[type] = ChunkMeshGenerator.GetCubeMesh(type);
+            }
+        }
+
+        meshFilter.sharedMesh = type2mesh[type];
+
+        MeshRenderer renderer = meshTrans.GetComponent<MeshRenderer>();
+        if (coords.isPlant || type == CSBlockType.Torch)
+        {
+            string path = type2path[type];
+            renderer.material.mainTexture = Resources.Load<Texture2D>("Meshes/items/" + path + "/" + path);
+        }
+        else
+        {
+            renderer.material = Resources.Load<Material>("Materials/block");
+            meshFilter.transform.localScale = Vector3.one / 2;
+        }
     }
 
     public void StartMove()
@@ -73,7 +119,7 @@ public class Item : MonoBehaviour
             {
                 Destroy(gameObject);
                 SoundManager.PlayPopSound();
-                ItemSelectPanel.AddItem(CSBlockType.Dandelion);
+                ItemSelectPanel.AddItem(type);
             }
         }
     }

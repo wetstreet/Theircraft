@@ -48,8 +48,8 @@ public class ItemSelectPanel : MonoBehaviour
     {
         if (dataList[curIndex] != CSBlockType.None)
         {
+            Item.Create(dataList[curIndex], PlayerController.instance.position + dropOffset, PlayerController.instance.camera.transform.forward * 3);
             SetSlotItem(curIndex, CSBlockType.None);
-            Item.Create(CSBlockType.Dandelion, PlayerController.instance.position + dropOffset, PlayerController.instance.camera.transform.forward * 3);
         }
     }
 

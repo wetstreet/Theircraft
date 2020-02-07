@@ -13,15 +13,19 @@ public class SoundManager : MonoBehaviour
     static Dictionary<CSBlockType, string> type2material = new Dictionary<CSBlockType, string>
     {
         {CSBlockType.Dirt, Material_Gravel },
+
         {CSBlockType.Brick, Material_Stone },
         {CSBlockType.BrickStairs, Material_Stone },
         {CSBlockType.Furnace, Material_Stone },
         {CSBlockType.BrickWall, Material_Stone },
         {CSBlockType.Stone, Material_Stone },
         {CSBlockType.DoubleStoneSlab, Material_Stone },
+        {CSBlockType.BedRock, Material_Stone },
+
         {CSBlockType.Torch, Material_Wood },
         {CSBlockType.OakLog, Material_Wood },
         {CSBlockType.OakPlanks, Material_Wood },
+
         {CSBlockType.RedSand, Material_Sand },
     };
 
