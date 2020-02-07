@@ -16,6 +16,7 @@ public class PlayerController : MonoBehaviour
     static private Camera handCam;
     Animator handAnimator;
     MeshFilter blockMeshFilter;
+    MeshRenderer blockMeshRenderer;
     MeshRenderer handMeshRenderer;
 
     [SerializeField] [Range(0f, 1f)] private float m_RunstepLenghten = 0.7f;
@@ -91,6 +92,7 @@ public class PlayerController : MonoBehaviour
         Hand.Show();
 
         blockMeshFilter = camera.transform.Find("hand/block").GetComponent<MeshFilter>();
+        blockMeshRenderer = camera.transform.Find("hand/block").GetComponent<MeshRenderer>();
         handMeshRenderer = camera.transform.Find("hand").GetComponent<MeshRenderer>();
 
         position = transform.position;
@@ -139,6 +141,7 @@ public class PlayerController : MonoBehaviour
     {
         instance.handMeshRenderer.enabled = false;
         instance.blockMeshFilter.mesh = ChunkMeshGenerator.GetCubeMesh(type);
+        instance.blockMeshRenderer.sharedMaterial.mainTexture = ChunkMeshGenerator.GetCubeTexture(type);
         instance.blockMeshFilter.transform.gameObject.SetActive(true);
     }
 

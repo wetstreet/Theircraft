@@ -51,14 +51,14 @@ public class PlantMeshGenerator : IMeshGenerator
         //上下翻转
         texPos.y = (atlas_row - 1) - texPos.y;
 
-        // bottom left
-        uv.Add(new Vector2(texPos.x / atlas_column + compensation_x, texPos.y / atlas_row + compensation_y));
-        // top left
-        uv.Add(new Vector2(texPos.x / atlas_column + compensation_x, (texPos.y + 1) / atlas_row - compensation_y));
-        // top right
-        uv.Add(new Vector2((texPos.x + 1) / atlas_column - compensation_x, (texPos.y + 1) / atlas_row - compensation_y));
         // bottom right
         uv.Add(new Vector2((texPos.x + 1) / atlas_column - compensation_x, texPos.y / atlas_row + compensation_y));
+        // top right
+        uv.Add(new Vector2((texPos.x + 1) / atlas_column - compensation_x, (texPos.y + 1) / atlas_row - compensation_y));
+        // top left
+        uv.Add(new Vector2(texPos.x / atlas_column + compensation_x, (texPos.y + 1) / atlas_row - compensation_y));
+        // bottom left
+        uv.Add(new Vector2(texPos.x / atlas_column + compensation_x, texPos.y / atlas_row + compensation_y));
 
         int verticesCount = vertices.Count;
         triangles.Add(verticesCount - 4);

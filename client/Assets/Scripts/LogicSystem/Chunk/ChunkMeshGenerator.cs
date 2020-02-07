@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using protocol.cs_theircraft;
+using System.Collections.Generic;
 
 public static class ChunkMeshGenerator
 {
@@ -150,33 +151,60 @@ public static class ChunkMeshGenerator
         TexCoords.Plant(uv_oak_sapling),
     };
 
-    public static Mesh GetCubeMesh(CSBlockType type)
+    static Dictionary<CSBlockType, Mesh> type2mesh = new Dictionary<CSBlockType, Mesh>();
+
+    static Dictionary<CSBlockType, string> type2path = new Dictionary<CSBlockType, string>
+    {
+        { CSBlockType.Dandelion, "dandelion" },
+        { CSBlockType.Poppy, "poppy" },
+        { CSBlockType.Grass, "grass" },
+        { CSBlockType.Cobweb, "cobweb" },
+        { CSBlockType.Torch, "torch" },
+        { CSBlockType.OakSapling, "oak_sapling" },
+    };
+
+    public static Texture GetCubeTexture(CSBlockType type)
     {
         TexCoords texCoords = type2texcoords[(byte)type];
-
-        if (texCoords.isPlant)
+        if (texCoords.isPlant || type == CSBlockType.Torch)
         {
-            return PlantMeshGenerator.Instance.GenerateSingleMesh(type);
+            string path = type2path[type];
+            return Resources.Load<Texture2D>("Meshes/items/" + path + "/" + path);
         }
         else
         {
-            if (type == CSBlockType.BrickStairs)
+            return Resources.Load<Material>("Materials/block").mainTexture;
+        }
+    }
+
+    public static Mesh GetCubeMesh(CSBlockType type)
+    {
+        TexCoords texCoords = type2texcoords[(byte)type];
+        
+        if (!type2mesh.ContainsKey(type))
+        {
+            if (texCoords.isPlant || type == CSBlockType.Torch)
             {
-                return StairMeshGenerator.Instance.GenerateSingleMesh(type);
-            }
-            else if (type == CSBlockType.BrickWall)
-            {
-                return WallMeshGenerator.Instance.GenerateSingleMesh(type);
-            }
-            else if (type == CSBlockType.Torch)
-            {
-                return TorchMeshGenerator.Instance.GenerateSingleMesh(type);
+                string path = type2path[type];
+                type2mesh[type] = Resources.Load<Mesh>("Meshes/items/" + path + "/" + path);
             }
             else
             {
-                return BlockMeshGenerator.Instance.GenerateSingleMesh(type);
+                if (type == CSBlockType.BrickStairs)
+                {
+                    type2mesh[type] = StairMeshGenerator.Instance.GenerateSingleMesh(type);
+                }
+                else if (type == CSBlockType.BrickWall)
+                {
+                    type2mesh[type] = WallMeshGenerator.Instance.GenerateSingleMesh(type);
+                }
+                else
+                {
+                    type2mesh[type] = BlockMeshGenerator.Instance.GenerateSingleMesh(type);
+                }
             }
         }
+        return type2mesh[type];
     }
 
     public static void RefreshMeshData(this Chunk chunk)

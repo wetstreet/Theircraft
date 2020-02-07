@@ -46,17 +46,6 @@ public class Item : MonoBehaviour
         return item;
     }
 
-    static Dictionary<CSBlockType, Mesh> type2mesh = new Dictionary<CSBlockType, Mesh>();
-
-    static Dictionary<CSBlockType, string> type2path = new Dictionary<CSBlockType, string>
-    {
-        { CSBlockType.Dandelion, "dandelion" },
-        { CSBlockType.Poppy, "poppy" },
-        { CSBlockType.Grass, "grass" },
-        { CSBlockType.Cobweb, "cobweb" },
-        { CSBlockType.Torch, "torch" },
-    };
-
     // Start is called before the first frame update
     void Start()
     {
@@ -66,33 +55,15 @@ public class Item : MonoBehaviour
         Transform meshTrans = transform.Find("mesh_parent/mesh");
         MeshFilter meshFilter = meshTrans.GetComponent<MeshFilter>();
 
+        meshFilter.sharedMesh = ChunkMeshGenerator.GetCubeMesh(type);
+
         TexCoords coords = ChunkMeshGenerator.type2texcoords[(byte)type];
-        if (!type2mesh.ContainsKey(type))
+        if (!coords.isPlant && type != CSBlockType.Torch)
         {
-            if (coords.isPlant || type == CSBlockType.Torch)
-            {
-                string path = type2path[type];
-                type2mesh[type] = Resources.Load<Mesh>("Meshes/items/" + path + "/" + path);
-            }
-            else
-            {
-                type2mesh[type] = ChunkMeshGenerator.GetCubeMesh(type);
-            }
-        }
-
-        meshFilter.sharedMesh = type2mesh[type];
-
-        MeshRenderer renderer = meshTrans.GetComponent<MeshRenderer>();
-        if (coords.isPlant || type == CSBlockType.Torch)
-        {
-            string path = type2path[type];
-            renderer.material.mainTexture = Resources.Load<Texture2D>("Meshes/items/" + path + "/" + path);
-        }
-        else
-        {
-            renderer.material = Resources.Load<Material>("Materials/block");
             meshFilter.transform.localScale = Vector3.one / 2;
         }
+
+        meshTrans.GetComponent<MeshRenderer>().material.mainTexture = ChunkMeshGenerator.GetCubeTexture(type);
     }
 
     public void StartMove()

@@ -350,6 +350,9 @@
 						<Sound Name="pop" ID="{1FEBEC80-2349-4841-8167-ED52CD57791A}" ShortID="526753446">
 							<PropertyList>
 								<Property Name="Pitch" Type="int32">
+									<ValueList>
+										<Value>1060</Value>
+									</ValueList>
 									<ModifierList>
 										<ModifierInfo>
 											<Modifier Name="" ID="{829B6E73-29AD-4187-9EBB-F894BEA7AB24}">
