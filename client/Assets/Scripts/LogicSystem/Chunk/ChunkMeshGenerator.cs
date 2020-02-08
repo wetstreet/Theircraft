@@ -97,9 +97,12 @@ public static class ChunkMeshGenerator
 
     public static Vector2Int uv_torch = new Vector2Int(0, 5);
 
+    public static Vector2Int uv_emerald_ore = new Vector2Int(11, 10);
+
     public static Vector2Int leaves_side = new Vector2Int(4, 12);
     public static Vector2Int hay_side = new Vector2Int(16, 13);
     public static Vector2Int hay_top = new Vector2Int(17, 13);
+    public static Vector2Int uv_coal_block = new Vector2Int(19, 13);
 
     public static TexCoords[] type2texcoords = new TexCoords[]
     {
@@ -114,7 +117,7 @@ public static class ChunkMeshGenerator
         // Brick
         TexCoords.Block_1(uv_bricks),
         // Furnace
-        TexCoords.Block_front_polar_side(uv_furnace_front, uv_furnace_top, uv_furnace_side),
+        TexCoords.Block_front_polar_side(uv_furnace_front, uv_furnace_top, uv_furnace_side, true),
         // HayBlock
         TexCoords.Block_polar_side(hay_top, hay_side),
         // Leaves
@@ -149,6 +152,34 @@ public static class ChunkMeshGenerator
         TexCoords.Block_1(uv_red_sand),
         // OakSapling
         TexCoords.Plant(uv_oak_sapling),
+        // CoalOre
+        TexCoords.Block_1(uv_coal_ore),
+        // IronOre
+        TexCoords.Block_1(uv_iron_ore),
+        // GoldOre
+        TexCoords.Block_1(uv_gold_ore),
+        // DiamondOre
+        TexCoords.Block_1(uv_diamond_ore),
+        // EmeraldOre
+        TexCoords.Block_1(uv_emerald_ore),
+        // RedstoneOre
+        TexCoords.Block_1(uv_redstone_ore),
+        // CoalBlock
+        TexCoords.Block_1(uv_coal_block),
+        // IronBlock
+        TexCoords.Block_1(uv_iron_block),
+        // GoldBlock
+        TexCoords.Block_1(uv_gold_block),
+        // DiamondBlock
+        TexCoords.Block_1(uv_diamond_block),
+        // EmeraldBlock
+        TexCoords.Block_1(uv_emerald_block),
+        // RedstoneBlock
+        TexCoords.Block_1(uv_redstone_block),
+        // Sand
+        TexCoords.Block_1(uv_sand),
+        // Gravel
+        TexCoords.Block_1(uv_gravel),
     };
 
     static Dictionary<CSBlockType, Mesh> type2mesh = new Dictionary<CSBlockType, Mesh>();

@@ -28,7 +28,21 @@ public class CreativeInventory : MonoBehaviour
         CSBlockType.Grass,
         CSBlockType.BedRock,
         CSBlockType.Tnt,
-        CSBlockType.OakLeaves
+        CSBlockType.OakLeaves,
+        CSBlockType.CoalOre,
+        CSBlockType.IronOre,
+        CSBlockType.GoldOre,
+        CSBlockType.DiamondOre,
+        CSBlockType.EmeraldOre,
+        CSBlockType.RedstoneOre,
+        CSBlockType.CoalBlock,
+        CSBlockType.IronBlock,
+        CSBlockType.GoldBlock,
+        CSBlockType.DiamondBlock,
+        CSBlockType.EmeraldBlock,
+        CSBlockType.RedstoneBlock,
+        CSBlockType.Sand,
+        CSBlockType.Gravel,
     };
 
     Transform grid;
@@ -53,6 +67,7 @@ public class CreativeInventory : MonoBehaviour
         {
             Instance.gameObject.SetActive(true);
             Instance.RefreshUI();
+            Instance.RefreshSelectPanel();
         }
         else
         {

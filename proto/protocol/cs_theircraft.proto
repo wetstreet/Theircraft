@@ -25,6 +25,20 @@ enum CSBlockType
 	Cobweb = 20;
 	RedSand = 21;
 	OakSapling = 22;
+	CoalOre = 23;
+	IronOre = 24;
+	GoldOre = 25;
+	DiamondOre = 26;
+	EmeraldOre = 27;
+	RedstoneOre = 28;
+	CoalBlock = 29;
+	IronBlock = 30;
+	GoldBlock = 31;
+	DiamondBlock = 32;
+	EmeraldBlock = 33;
+	RedstoneBlock = 34;
+	Sand = 35;
+	Gravel = 36;
 }
 
 enum CSBlockOrientation

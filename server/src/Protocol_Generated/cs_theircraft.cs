@@ -833,7 +833,49 @@ namespace protocol.cs_theircraft
       RedSand = 21,
             
       [global::ProtoBuf.ProtoEnum(Name=@"OakSapling", Value=22)]
-      OakSapling = 22
+      OakSapling = 22,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"CoalOre", Value=23)]
+      CoalOre = 23,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"IronOre", Value=24)]
+      IronOre = 24,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"GoldOre", Value=25)]
+      GoldOre = 25,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"DiamondOre", Value=26)]
+      DiamondOre = 26,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"EmeraldOre", Value=27)]
+      EmeraldOre = 27,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"RedstoneOre", Value=28)]
+      RedstoneOre = 28,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"CoalBlock", Value=29)]
+      CoalBlock = 29,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"IronBlock", Value=30)]
+      IronBlock = 30,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"GoldBlock", Value=31)]
+      GoldBlock = 31,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"DiamondBlock", Value=32)]
+      DiamondBlock = 32,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"EmeraldBlock", Value=33)]
+      EmeraldBlock = 33,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"RedstoneBlock", Value=34)]
+      RedstoneBlock = 34,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"Sand", Value=35)]
+      Sand = 35,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"Gravel", Value=36)]
+      Gravel = 36
     }
   
     [global::ProtoBuf.ProtoContract(Name=@"CSBlockOrientation")]

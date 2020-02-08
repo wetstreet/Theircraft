@@ -56,13 +56,13 @@ public class TexCoords
         };
     }
 
-    public static TexCoords Block_front_polar_side(Vector2Int front, Vector2Int polar, Vector2Int side)
+    public static TexCoords Block_front_polar_side(Vector2Int front, Vector2Int polar, Vector2Int side, bool isRotatable = false)
     {
         return new TexCoords
         {
             isTransparent = false,
             isPlant = false,
-            isRotatable = false,
+            isRotatable = isRotatable,
             isCollidable = true,
             front = front,
             right = side,
@@ -73,13 +73,13 @@ public class TexCoords
         };
     }
 
-    public static TexCoords Block_polar_side(Vector2Int polar, Vector2Int side)
+    public static TexCoords Block_polar_side(Vector2Int polar, Vector2Int side, bool isRotatable = false)
     {
         return new TexCoords
         {
             isTransparent = false,
             isPlant = false,
-            isRotatable = false,
+            isRotatable = isRotatable,
             isCollidable = true,
             front = side,
             right = side,
