@@ -141,7 +141,7 @@ public class PlayerController : MonoBehaviour
     {
         instance.handMeshRenderer.enabled = false;
         instance.blockMeshFilter.mesh = ChunkMeshGenerator.GetBlockMesh(type);
-        instance.blockMeshRenderer.sharedMaterial.mainTexture = ChunkMeshGenerator.GetBlockTexture(type);
+        instance.blockMeshRenderer.material.mainTexture = ChunkMeshGenerator.GetBlockTexture(type);
         instance.blockMeshFilter.transform.gameObject.SetActive(true);
     }
 

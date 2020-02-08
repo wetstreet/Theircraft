@@ -74,6 +74,16 @@ public class SettingsPanel : MonoBehaviour {
         }
     }
 
+    private void OnEnable()
+    {
+        Time.timeScale = 0;
+    }
+
+    private void OnDisable()
+    {
+        Time.timeScale = 1;
+    }
+
     private void Update()
     {
         HandleInput();
