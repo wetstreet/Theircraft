@@ -11,11 +11,43 @@ public class ItemTrigger : MonoBehaviour
         item = transform.parent.GetComponent<Item>();
     }
 
+    public bool CoolDownFinish()
+    {
+        return Time.time - createTime > item.coolDownTime;
+    }
+
+    public bool MergeCoolDownFinish()
+    {
+        return Time.time - createTime > 1;
+    }
+
     void CheckShouldMove(Collider other)
     {
-        if (other.tag == Tag.Player && Time.time - createTime > item.coolDownTime)
+        if (CoolDownFinish())
         {
-            item.StartMove();
+            if (other.tag == Tag.Player)
+            {
+                item.StartMove();
+            }
+        }
+        if (other.gameObject.layer == LayerMask.NameToLayer(Layer.ItemTrigger))
+        {
+            Item otherItem = other.transform.parent.GetComponent<Item>();
+            if (otherItem.type == item.type &&
+                MergeCoolDownFinish() && other.GetComponent<ItemTrigger>().MergeCoolDownFinish() &&
+                Vector3.Distance(other.transform.position, transform.position) < 1f)
+            {
+                if (otherItem.Count > item.Count)
+                {
+                    otherItem.AddCount(item.Count);
+                    Destroy(item.gameObject);
+                }
+                else
+                {
+                    item.AddCount(otherItem.Count);
+                    Destroy(otherItem.gameObject);
+                }
+            }
         }
     }
 

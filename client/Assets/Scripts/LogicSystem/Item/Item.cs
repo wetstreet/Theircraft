@@ -4,15 +4,23 @@ using UnityEngine;
 
 public class Item : MonoBehaviour
 {
-    [HideInInspector] public float coolDownTime = 2f;
+    public int Count
+    {
+        get;
+        private set;
+    }
 
+    [HideInInspector] public float coolDownTime = 2f;
+    [HideInInspector] public CSBlockType type;
+
+    bool singleMesh = true;
     Transform shadowTrans;
     Material shadow;
     Color shadowColor = Color.white;
     bool move2player;
     Vector3 startPosition;
     float time;
-    CSBlockType type;
+    Transform meshTrans;
 
     static GameObject prefab;
     static Vector3 offset = new Vector3(0, 0.01f, 0);
@@ -46,24 +54,40 @@ public class Item : MonoBehaviour
         return item;
     }
 
+    static Vector3 plantOffset = new Vector3(0.0625f, 0.0625f, 0.1f);
+    static Vector3 cubeOffset = new Vector3(0.5f, 0.2f, 0.2f);
+    public void AddCount(int count)
+    {
+        Count += count;
+        if (Count > 1 && singleMesh)
+        {
+            singleMesh = false;
+            Transform mesh = Instantiate(meshTrans);
+            Destroy(mesh.GetComponent<Animator>());
+            mesh.parent = meshTrans;
+            mesh.localPosition = ChunkMeshGenerator.IsCubeType(type) ? cubeOffset : plantOffset;
+            mesh.localEulerAngles = Vector3.zero;
+            mesh.localScale = Vector3.one;
+        }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
+        Count = 1;
         shadowTrans = transform.Find("shadow");
         shadow = shadowTrans.GetComponent<Renderer>().material;
 
-        Transform meshTrans = transform.Find("mesh_parent/mesh");
+        meshTrans = transform.Find("mesh_parent/mesh");
         MeshFilter meshFilter = meshTrans.GetComponent<MeshFilter>();
 
-        meshFilter.sharedMesh = ChunkMeshGenerator.GetCubeMesh(type);
-
-        TexCoords coords = ChunkMeshGenerator.type2texcoords[(byte)type];
-        if (!coords.isPlant && type != CSBlockType.Torch)
+        meshFilter.sharedMesh = ChunkMeshGenerator.GetBlockMesh(type);
+        if (ChunkMeshGenerator.IsCubeType(type))
         {
             meshFilter.transform.localScale = Vector3.one / 2;
         }
 
-        meshTrans.GetComponent<MeshRenderer>().material.mainTexture = ChunkMeshGenerator.GetCubeTexture(type);
+        meshTrans.GetComponent<MeshRenderer>().material.mainTexture = ChunkMeshGenerator.GetBlockTexture(type);
     }
 
     public void StartMove()

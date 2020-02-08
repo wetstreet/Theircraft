@@ -163,32 +163,29 @@ public static class ChunkMeshGenerator
         { CSBlockType.OakSapling, "oak_sapling" },
     };
 
-    public static Texture GetCubeTexture(CSBlockType type)
+    public static bool IsCubeType(CSBlockType type)
     {
-        TexCoords texCoords = type2texcoords[(byte)type];
-        if (texCoords.isPlant || type == CSBlockType.Torch)
+        return !type2texcoords[(byte)type].isPlant && type != CSBlockType.Torch;
+    }
+
+    public static Texture GetBlockTexture(CSBlockType type)
+    {
+        if (IsCubeType(type))
+        {
+            return Resources.Load<Material>("Materials/block").mainTexture;
+        }
+        else
         {
             string path = type2path[type];
             return Resources.Load<Texture2D>("Meshes/items/" + path + "/" + path);
         }
-        else
-        {
-            return Resources.Load<Material>("Materials/block").mainTexture;
-        }
     }
 
-    public static Mesh GetCubeMesh(CSBlockType type)
+    public static Mesh GetBlockMesh(CSBlockType type)
     {
-        TexCoords texCoords = type2texcoords[(byte)type];
-        
         if (!type2mesh.ContainsKey(type))
         {
-            if (texCoords.isPlant || type == CSBlockType.Torch)
-            {
-                string path = type2path[type];
-                type2mesh[type] = Resources.Load<Mesh>("Meshes/items/" + path + "/" + path);
-            }
-            else
+            if (IsCubeType(type))
             {
                 if (type == CSBlockType.BrickStairs)
                 {
@@ -202,6 +199,11 @@ public static class ChunkMeshGenerator
                 {
                     type2mesh[type] = BlockMeshGenerator.Instance.GenerateSingleMesh(type);
                 }
+            }
+            else
+            {
+                string path = type2path[type];
+                type2mesh[type] = Resources.Load<Mesh>("Meshes/items/" + path + "/" + path);
             }
         }
         return type2mesh[type];

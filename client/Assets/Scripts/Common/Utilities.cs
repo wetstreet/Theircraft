@@ -10,6 +10,7 @@ public struct Tag {
 public struct Layer
 {
     public static string Chunk = "Chunk";
+    public static string ItemTrigger = "ItemTrigger";
 }
 
 public static class Utilities {

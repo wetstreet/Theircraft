@@ -140,8 +140,8 @@ public class PlayerController : MonoBehaviour
     public static void ShowBlock(CSBlockType type)
     {
         instance.handMeshRenderer.enabled = false;
-        instance.blockMeshFilter.mesh = ChunkMeshGenerator.GetCubeMesh(type);
-        instance.blockMeshRenderer.sharedMaterial.mainTexture = ChunkMeshGenerator.GetCubeTexture(type);
+        instance.blockMeshFilter.mesh = ChunkMeshGenerator.GetBlockMesh(type);
+        instance.blockMeshRenderer.sharedMaterial.mainTexture = ChunkMeshGenerator.GetBlockTexture(type);
         instance.blockMeshFilter.transform.gameObject.SetActive(true);
     }
 
