@@ -88,6 +88,12 @@ message CSBlock
 	optional CSVector3Int depentPos = 4;
 }
 
+message CSItem
+{
+	required CSBlockType Type = 1;
+	required uint32 Count = 2;
+}
+
 message CSPlayer
 {
 	optional uint32 PlayerID = 1;
@@ -95,7 +101,8 @@ message CSPlayer
 	optional CSVector3 Position = 3;
 	optional CSVector3 Rotation = 4;
 	optional uint32 SelectIndex = 5;
-	repeated CSBlockType SelectItems = 6;
+	repeated CSItem SelectItems = 6;
+	repeated CSItem BagItems = 7;
 }
 
 message CSChunk
@@ -251,6 +258,7 @@ message CSHeroChangeSelectItemReq
 {
 	required uint32 Index = 1;
 	required CSBlockType Item = 2;
+	required uint32 Count = 3;
 }
 
 message BlobChunkData

@@ -12,6 +12,7 @@ public class Item : MonoBehaviour
 
     [HideInInspector] public float coolDownTime = 2f;
     [HideInInspector] public CSBlockType type;
+    [HideInInspector] public bool destroyed;
 
     bool singleMesh = true;
     Transform shadowTrans;
@@ -40,7 +41,13 @@ public class Item : MonoBehaviour
         return item;
     }
 
-    public static Item Create(CSBlockType type, Vector3 pos, Vector3 dir)
+    public static Vector3 dropOffset = new Vector3(0, 1.1f, 0);
+    public static Item CreatePlayerDropItem(CSBlockType type, int count = 1)
+    {
+        return Create(type, PlayerController.instance.position + dropOffset, PlayerController.instance.camera.transform.forward * 3, count);
+    }
+
+    public static Item Create(CSBlockType type, Vector3 pos, Vector3 dir, int count = 1)
     {
         if (prefab == null)
         {
@@ -51,14 +58,12 @@ public class Item : MonoBehaviour
         obj.GetComponent<Rigidbody>().AddForce(dir);
         Item item = obj.GetComponent<Item>();
         item.type = type;
+        item.Count = count;
         return item;
     }
 
-    static Vector3 plantOffset = new Vector3(0.0625f, 0.0625f, 0.1f);
-    static Vector3 cubeOffset = new Vector3(0.5f, 0.2f, 0.2f);
-    public void AddCount(int count)
+    void RefreshMesh()
     {
-        Count += count;
         if (Count > 1 && singleMesh)
         {
             singleMesh = false;
@@ -71,10 +76,17 @@ public class Item : MonoBehaviour
         }
     }
 
+    static Vector3 plantOffset = new Vector3(0.0625f, 0.0625f, 0.1f);
+    static Vector3 cubeOffset = new Vector3(0.5f, 0.2f, 0.2f);
+    public void AddCount(int count)
+    {
+        Count += count;
+        RefreshMesh();
+    }
+
     // Start is called before the first frame update
     void Start()
     {
-        Count = 1;
         shadowTrans = transform.Find("shadow");
         shadow = shadowTrans.GetComponent<Renderer>().material;
 
@@ -88,6 +100,8 @@ public class Item : MonoBehaviour
         }
 
         meshTrans.GetComponent<MeshRenderer>().material.mainTexture = ChunkMeshGenerator.GetBlockTexture(type);
+
+        RefreshMesh();
     }
 
     public void StartMove()
@@ -114,7 +128,7 @@ public class Item : MonoBehaviour
             {
                 Destroy(gameObject);
                 SoundManager.PlayPopSound();
-                ItemSelectPanel.AddItem(type);
+                ItemSelectPanel.AddItem(type, Count);
             }
         }
     }

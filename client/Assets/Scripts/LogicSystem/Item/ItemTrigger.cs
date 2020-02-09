@@ -33,18 +33,21 @@ public class ItemTrigger : MonoBehaviour
         if (other.gameObject.layer == LayerMask.NameToLayer(Layer.ItemTrigger))
         {
             Item otherItem = other.transform.parent.GetComponent<Item>();
-            if (otherItem.type == item.type &&
+            if (!item.destroyed && !otherItem.destroyed &&
+                otherItem.type == item.type &&
                 MergeCoolDownFinish() && other.GetComponent<ItemTrigger>().MergeCoolDownFinish() &&
                 Vector3.Distance(other.transform.position, transform.position) < 1f)
             {
                 if (otherItem.Count > item.Count)
                 {
                     otherItem.AddCount(item.Count);
+                    item.destroyed = true;
                     Destroy(item.gameObject);
                 }
                 else
                 {
                     item.AddCount(otherItem.Count);
+                    otherItem.destroyed = true;
                     Destroy(otherItem.gameObject);
                 }
             }

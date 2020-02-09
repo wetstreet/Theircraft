@@ -56,11 +56,21 @@ public class CreativeInventory : MonoBehaviour
     bool showSelectDesc;
     int showIndex;
     int showSelectIndex;
-    CSBlockType showSelectType;
+    CSBlockType holdItemType;
+    int holdItemCount;
 
-    Item[] selectItems = new Item[9];
+    struct SlotItem
+    {
+        public Image icon;
+        public GameObject select;
+        public TextMeshProUGUI count;
+    }
+
+    List<SlotItem> itemList = new List<SlotItem>();
+    SlotItem[] selectItems = new SlotItem[9];
 
     static CreativeInventory Instance;
+
     public static void Show()
     {
         if (Instance != null)
@@ -136,9 +146,10 @@ public class CreativeInventory : MonoBehaviour
         Transform selectPanel = transform.Find("selectPanel");
         for (int i = 0; i < 9; i++)
         {
-            Item item = new Item();
+            SlotItem item = new SlotItem();
             Transform trans = selectPanel.GetChild(i);
             item.icon = trans.GetComponent<Image>();
+            item.count = trans.GetComponentInChildren<TextMeshProUGUI>();
             OnPointerCallback callbacks = trans.GetComponent<OnPointerCallback>();
             callbacks.index = i;
             callbacks.pointerEnterCallback = (int index) =>
@@ -214,21 +225,25 @@ public class CreativeInventory : MonoBehaviour
             if (type == CSBlockType.None)
             {
                 selectItems[i].icon.color = Color.clear;
+                selectItems[i].count.gameObject.SetActive(false);
             }
             else
             {
                 selectItems[i].icon.sprite = BlockIconHelper.GetIcon(type);
                 selectItems[i].icon.color = Color.white;
+                if (ItemSelectPanel.countList[i] > 1)
+                {
+                    selectItems[i].count.gameObject.SetActive(true);
+                    selectItems[i].count.text = ItemSelectPanel.countList[i].ToString();
+                }
+                else
+                {
+                    selectItems[i].count.gameObject.SetActive(false);
+                }
             }
         }
     }
 
-    struct Item
-    {
-        public Image icon;
-        public GameObject select;
-    }
-    List<Item> itemList = new List<Item>();
     void RefreshUI()
     {
         for(int i = 0; i < blocks.Length; i++)
@@ -241,7 +256,7 @@ public class CreativeInventory : MonoBehaviour
                 trans.localScale = Vector3.one;
                 trans.gameObject.SetActive(true);
 
-                Item item = new Item();
+                SlotItem item = new SlotItem();
                 item.icon = trans.GetComponent<Image>();
                 OnPointerCallback callbacks = trans.GetComponent<OnPointerCallback>();
                 callbacks.index = i;
@@ -284,6 +299,7 @@ public class CreativeInventory : MonoBehaviour
         else
         {
             holdItem = true;
+            holdItemType = blocks[index];
             holdItemImage.sprite = itemList[showIndex].icon.sprite;
             holdItemImage.gameObject.SetActive(true);
         }
@@ -295,11 +311,13 @@ public class CreativeInventory : MonoBehaviour
         if (holdItem)
         {
             holdItem = false;
+            Item.CreatePlayerDropItem(holdItemType, 1);
             holdItemImage.gameObject.SetActive(false);
         }
         else if (holdSelectItem)
         {
             holdSelectItem = false;
+            Item.CreatePlayerDropItem(holdItemType, holdItemCount);
             holdItemImage.gameObject.SetActive(false);
         }
     }
@@ -319,14 +337,15 @@ public class CreativeInventory : MonoBehaviour
         {
             holdSelectItem = false;
             holdItemImage.gameObject.SetActive(false);
-            
-            ItemSelectPanel.SetSlotItem((uint)index, showSelectType);
+
+            ItemSelectPanel.SetSlotItem((uint)index, holdItemType, holdItemCount);
             RefreshSelectPanel();
         }
         else if (ItemSelectPanel.dataList[index] != CSBlockType.None)
         {
             holdSelectItem = true;
-            showSelectType = ItemSelectPanel.dataList[index];
+            holdItemType = ItemSelectPanel.dataList[index];
+            holdItemCount = ItemSelectPanel.countList[index];
             holdItemImage.sprite = selectItems[showSelectIndex].icon.sprite;
             holdItemImage.gameObject.SetActive(true);
             

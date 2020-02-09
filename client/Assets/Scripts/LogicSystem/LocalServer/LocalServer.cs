@@ -10,7 +10,15 @@ public struct PlayerData
     public CSVector3 Position;
     public CSVector3 Rotation;
     public uint SelectIndex;
-    public CSBlockType[] SelectItems;
+    public ServerItem[] SelectItems;
+    public ServerItem[] BagItems;
+}
+
+[Serializable]
+public struct ServerItem
+{
+    public CSBlockType type;
+    public uint count;
 }
 
 public class LocalServer : MonoBehaviour
@@ -57,9 +65,21 @@ public class LocalServer : MonoBehaviour
             }
         };
 
-        for(int i = 0; i < 9; i++)
+        for (int i = 0; i < 18; i++)
         {
-            rsp.PlayerData.SelectItems.Add(playerData.SelectItems[i]);
+            rsp.PlayerData.BagItems.Add(new CSItem {
+                Type = playerData.BagItems[i].type,
+                Count = playerData.BagItems[i].count
+            });
+        }
+
+        for (int i = 0; i < 9; i++)
+        {
+            rsp.PlayerData.SelectItems.Add(new CSItem
+            {
+                Type = playerData.SelectItems[i].type,
+                Count = playerData.SelectItems[i].count
+            });
         }
         
         foreach (KeyValuePair<Vector3Int, Vector3Int> kvPair in dependenceDict)
@@ -124,7 +144,8 @@ public class LocalServer : MonoBehaviour
                 Position = new CSVector3 { x = 0, y = 20, z = 0 },
                 Rotation = new CSVector3 { x = 0, y = 0, z = 0 },
                 SelectIndex = 0,
-                SelectItems = new CSBlockType[9],
+                BagItems = new ServerItem[18],
+                SelectItems = new ServerItem[9],
             };
         }
     }
@@ -225,6 +246,7 @@ public class LocalServer : MonoBehaviour
     static void Single_OnHeroChangeSelectItemReq(object obj, Action<object> callback)
     {
         CSHeroChangeSelectItemReq req = obj as CSHeroChangeSelectItemReq;
-        playerData.SelectItems[req.Index] = req.Item;
+        playerData.SelectItems[req.Index].type = req.Item;
+        playerData.SelectItems[req.Index].count = req.Count;
     }
 }

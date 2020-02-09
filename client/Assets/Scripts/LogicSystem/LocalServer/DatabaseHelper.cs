@@ -25,7 +25,7 @@ public class DatabaseHelper
     public static T Load<T>(string prefKey)
     {
         if (!PlayerPrefs.HasKey(prefKey))
-            return default(T);
+            return default;
 
         string serializedData = PlayerPrefs.GetString(prefKey);
         MemoryStream dataStream = new MemoryStream(Convert.FromBase64String(serializedData));

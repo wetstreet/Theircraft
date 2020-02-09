@@ -169,6 +169,30 @@ namespace protocol.cs_theircraft
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
   }
   
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"CSItem")]
+  public partial class CSItem : global::ProtoBuf.IExtensible
+  {
+    public CSItem() {}
+    
+    private CSBlockType _Type;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"Type", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public CSBlockType Type
+    {
+      get { return _Type; }
+      set { _Type = value; }
+    }
+    private uint _Count;
+    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"Count", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public uint Count
+    {
+      get { return _Count; }
+      set { _Count = value; }
+    }
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
   [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"CSPlayer")]
   public partial class CSPlayer : global::ProtoBuf.IExtensible
   {
@@ -214,11 +238,18 @@ namespace protocol.cs_theircraft
       get { return _SelectIndex; }
       set { _SelectIndex = value; }
     }
-    private readonly global::System.Collections.Generic.List<CSBlockType> _SelectItems = new global::System.Collections.Generic.List<CSBlockType>();
-    [global::ProtoBuf.ProtoMember(6, Name=@"SelectItems", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public global::System.Collections.Generic.List<CSBlockType> SelectItems
+    private readonly global::System.Collections.Generic.List<CSItem> _SelectItems = new global::System.Collections.Generic.List<CSItem>();
+    [global::ProtoBuf.ProtoMember(6, Name=@"SelectItems", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public global::System.Collections.Generic.List<CSItem> SelectItems
     {
       get { return _SelectItems; }
+    }
+  
+    private readonly global::System.Collections.Generic.List<CSItem> _BagItems = new global::System.Collections.Generic.List<CSItem>();
+    [global::ProtoBuf.ProtoMember(7, Name=@"BagItems", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public global::System.Collections.Generic.List<CSItem> BagItems
+    {
+      get { return _BagItems; }
     }
   
     private global::ProtoBuf.IExtension extensionObject;
@@ -739,6 +770,13 @@ namespace protocol.cs_theircraft
     {
       get { return _Item; }
       set { _Item = value; }
+    }
+    private uint _Count;
+    [global::ProtoBuf.ProtoMember(3, IsRequired = true, Name=@"Count", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public uint Count
+    {
+      get { return _Count; }
+      set { _Count = value; }
     }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
