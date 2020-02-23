@@ -18,9 +18,7 @@ public abstract class IMeshGenerator
     protected static Vector3 farTopRight = new Vector3(0.5f, 0.5f, 0.5f);
 
     // because we pack textures so tightly, we need to manipulate uv coords slightly when sampling the texture.
-    protected static readonly float compensation = 0.01f;
-    protected static readonly float compensation_x = compensation / atlas_column;
-    protected static readonly float compensation_y = compensation / atlas_row;
+    protected static readonly float compensation = 0.005f;
     
     abstract public Mesh GenerateSingleMesh(CSBlockType type);
     abstract public void GenerateMeshInChunk(CSBlockType type, Vector3Int posInChunk, Vector3Int globalPos, List<Vector3> vertices, List<Vector2> uv, List<int> triangles);
@@ -31,13 +29,13 @@ public abstract class IMeshGenerator
         texPos.y = (atlas_row - 1) - texPos.y;
 
         // bottom left
-        uv.Add(new Vector2(texPos.x / atlas_column + compensation_x, texPos.y / atlas_row + compensation_y));
+        uv.Add(new Vector2((texPos.x + compensation) / atlas_column, (texPos.y + compensation) / atlas_row));
         // top left
-        uv.Add(new Vector2(texPos.x / atlas_column + compensation_x, (texPos.y + 1) / atlas_row - compensation_y));
+        uv.Add(new Vector2((texPos.x + compensation) / atlas_column, (texPos.y + 1 - compensation) / atlas_row));
         // top right
-        uv.Add(new Vector2((texPos.x + 1) / atlas_column - compensation_x, (texPos.y + 1) / atlas_row - compensation_y));
+        uv.Add(new Vector2((texPos.x + 1 - compensation) / atlas_column, (texPos.y + 1 - compensation) / atlas_row));
         // bottom right
-        uv.Add(new Vector2((texPos.x + 1) / atlas_column - compensation_x, texPos.y / atlas_row + compensation_y));
+        uv.Add(new Vector2((texPos.x + 1 - compensation) / atlas_column, (texPos.y + compensation) / atlas_row));
 
         int verticesCount = vertices.Count;
         triangles.Add(verticesCount - 4);

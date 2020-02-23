@@ -38,6 +38,7 @@ public class StairMeshGenerator : IMeshGenerator
         mesh.vertices = stairMesh.vertices;
         mesh.uv = uv.ToArray();
         mesh.triangles = stairMesh.triangles;
+        mesh.normals = stairMesh.normals;
 
         return mesh;
     }

@@ -131,5 +131,9 @@ public class Item : MonoBehaviour
                 ItemSelectPanel.AddItem(type, Count);
             }
         }
+        if (transform.position.y < 0)
+        {
+            Destroy(gameObject);
+        }
     }
 }

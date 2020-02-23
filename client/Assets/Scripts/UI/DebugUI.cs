@@ -1,4 +1,5 @@
-﻿using TMPro;
+﻿using protocol.cs_theircraft;
+using TMPro;
 using UnityEngine;
 
 public class DebugUI : MonoBehaviour
@@ -65,6 +66,14 @@ public class DebugUI : MonoBehaviour
         if (WireFrameHelper.render)
         {
             text += string.Format("\nLooking at: {0} {1} {2}", WireFrameHelper.pos.x, WireFrameHelper.pos.y, WireFrameHelper.pos.z);
+
+            CSBlockType type = ChunkManager.GetBlockType(WireFrameHelper.pos);
+            text += string.Format("\nType: {0}", type);
+            if (type == CSBlockType.BrickStairs)
+            {
+                CSBlockOrientation orient = ChunkManager.GetBlockOrientation(WireFrameHelper.pos);
+                text += string.Format("\nOrient: {0}", orient);
+            }
         }
         label.text = text;
     }
