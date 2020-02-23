@@ -25,18 +25,44 @@ public class BlockMeshGenerator : IMeshGenerator
         List<Vector3> vertices = new List<Vector3>();
         List<Vector2> uv = new List<Vector2>();
         List<int> triangles = new List<int>();
+        List<Vector3> normals = new List<Vector3>();
 
         TexCoords texCoords = ChunkMeshGenerator.type2texcoords[(byte)type];
         AddFrontFace(Matrix4x4.identity, vertices, uv, triangles, Vector3.zero, texCoords.front);
+        for (int i = 0; i < 4; i++)
+        {
+            normals.Add(Vector3.back);
+        }
         AddRightFace(Matrix4x4.identity, vertices, uv, triangles, Vector3.zero, texCoords.right);
+        for (int i = 0; i < 4; i++)
+        {
+            normals.Add(Vector3.right);
+        }
         AddLeftFace(Matrix4x4.identity, vertices, uv, triangles, Vector3.zero, texCoords.left);
+        for (int i = 0; i < 4; i++)
+        {
+            normals.Add(Vector3.left);
+        }
         AddBackFace(Matrix4x4.identity, vertices, uv, triangles, Vector3.zero, texCoords.back);
+        for (int i = 0; i < 4; i++)
+        {
+            normals.Add(Vector3.forward);
+        }
         AddTopFace(Matrix4x4.identity, vertices, uv, triangles, Vector3.zero, texCoords.top);
+        for (int i = 0; i < 4; i++)
+        {
+            normals.Add(Vector3.up);
+        }
         AddBottomFace(Matrix4x4.identity, vertices, uv, triangles, Vector3.zero, texCoords.bottom);
+        for (int i = 0; i < 4; i++)
+        {
+            normals.Add(Vector3.down);
+        }
 
-        mesh.vertices = vertices.ToArray();
-        mesh.uv = uv.ToArray();
-        mesh.triangles = triangles.ToArray();
+        mesh.SetVertices(vertices);
+        mesh.SetUVs(0, uv);
+        mesh.SetTriangles(triangles, 0);
+        mesh.SetNormals(normals);
 
         return mesh;
     }
