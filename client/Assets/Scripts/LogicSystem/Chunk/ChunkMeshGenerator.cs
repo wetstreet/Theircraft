@@ -99,10 +99,17 @@ public static class ChunkMeshGenerator
 
     public static Vector2Int uv_emerald_ore = new Vector2Int(11, 10);
 
+    public static Vector2Int uv_sandstone = new Vector2Int(0, 12);
+    public static Vector2Int uv_spruce_wood = new Vector2Int(6, 12);
+    public static Vector2Int uv_jungle_wood = new Vector2Int(7, 12);
     public static Vector2Int leaves_side = new Vector2Int(4, 12);
+    public static Vector2Int uv_birch_wood = new Vector2Int(6, 13);
     public static Vector2Int hay_side = new Vector2Int(16, 13);
     public static Vector2Int hay_top = new Vector2Int(17, 13);
     public static Vector2Int uv_coal_block = new Vector2Int(19, 13);
+
+    public static Vector2Int uv_nether_brick = new Vector2Int(0, 14);
+    public static Vector2Int uv_quartz = new Vector2Int(10, 14);
 
     public static TexCoords[] type2texcoords = new TexCoords[]
     {
@@ -180,6 +187,24 @@ public static class ChunkMeshGenerator
         TexCoords.Block_1(uv_sand),
         // Gravel
         TexCoords.Block_1(uv_gravel),
+        // OakWoodStairs
+        TexCoords.Stair(uv_oak_planks),
+        // CobblestoneStairs
+        TexCoords.Stair(uv_cobblestone),
+        // StoneBrickStairs
+        TexCoords.Stair(uv_stonebrick),
+        // NetherBrickStairs
+        TexCoords.Stair(uv_nether_brick),
+        // SandstoneStairs
+        TexCoords.Stair(uv_sandstone),
+        // SpruceWoodStairs
+        TexCoords.Stair(uv_spruce_wood),
+        // BirchWoodStairs
+        TexCoords.Stair(uv_birch_wood),
+        // JungleWoodStairs
+        TexCoords.Stair(uv_jungle_wood),
+        // QuartzStairs
+        TexCoords.Stair(uv_quartz),
     };
 
     static Dictionary<CSBlockType, Mesh> type2mesh = new Dictionary<CSBlockType, Mesh>();
@@ -197,6 +222,11 @@ public static class ChunkMeshGenerator
     public static bool IsCubeType(CSBlockType type)
     {
         return !type2texcoords[(byte)type].isPlant && type != CSBlockType.Torch;
+    }
+
+    public static bool IsStair(CSBlockType type)
+    {
+        return type2texcoords[(byte)type].isStair;
     }
 
     public static Texture GetBlockTexture(CSBlockType type)
@@ -218,7 +248,7 @@ public static class ChunkMeshGenerator
         {
             if (IsCubeType(type))
             {
-                if (type == CSBlockType.BrickStairs)
+                if (IsStair(type))
                 {
                     type2mesh[type] = StairMeshGenerator.Instance.GenerateSingleMesh(type);
                 }
@@ -274,7 +304,7 @@ public static class ChunkMeshGenerator
                         }
                         else
                         {
-                            if (type == CSBlockType.BrickStairs)
+                            if (IsStair(type))
                             {
                                 StairMeshGenerator.Instance.GenerateMeshInChunk(type, pos, globalPos, chunk.vertices1, chunk.uv1, chunk.triangles1);
                             }

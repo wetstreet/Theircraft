@@ -913,7 +913,34 @@ namespace protocol.cs_theircraft
       Sand = 35,
             
       [global::ProtoBuf.ProtoEnum(Name=@"Gravel", Value=36)]
-      Gravel = 36
+      Gravel = 36,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"OakWoodStairs", Value=37)]
+      OakWoodStairs = 37,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"CobblestoneStairs", Value=38)]
+      CobblestoneStairs = 38,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"StoneBrickStairs", Value=39)]
+      StoneBrickStairs = 39,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"NetherBrickStairs", Value=40)]
+      NetherBrickStairs = 40,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"SandstoneStairs", Value=41)]
+      SandstoneStairs = 41,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"SpruceWoodStairs", Value=42)]
+      SpruceWoodStairs = 42,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"BirchWoodStairs", Value=43)]
+      BirchWoodStairs = 43,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"JungleWoodStairs", Value=44)]
+      JungleWoodStairs = 44,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"QuartzStairs", Value=45)]
+      QuartzStairs = 45
     }
   
     [global::ProtoBuf.ProtoContract(Name=@"CSBlockOrientation")]

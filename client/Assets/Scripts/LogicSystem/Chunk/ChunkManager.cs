@@ -89,6 +89,13 @@ public class ChunkManager
     }
 
     // intput is global position
+    public static bool IsStairs(Vector3Int position)
+    {
+        CSBlockType type = GetBlockType(position);
+        return ChunkMeshGenerator.IsStair(type);
+    }
+
+    // intput is global position
     public static CSBlockType GetBlockType(Vector3Int position)
     {
         return GetBlockType(position.x, position.y, position.z);

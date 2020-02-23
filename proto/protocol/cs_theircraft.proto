@@ -39,6 +39,15 @@ enum CSBlockType
 	RedstoneBlock = 34;
 	Sand = 35;
 	Gravel = 36;
+	OakWoodStairs = 37;
+	CobblestoneStairs = 38;
+	StoneBrickStairs = 39;
+	NetherBrickStairs = 40;
+	SandstoneStairs = 41;
+	SpruceWoodStairs = 42;
+	BirchWoodStairs = 43;
+	JungleWoodStairs = 44;
+	QuartzStairs = 45;
 }
 
 enum CSBlockOrientation

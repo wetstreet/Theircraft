@@ -43,6 +43,14 @@ public class CreativeInventory : MonoBehaviour
         CSBlockType.RedstoneBlock,
         CSBlockType.Sand,
         CSBlockType.Gravel,
+        CSBlockType.OakWoodStairs,
+        CSBlockType.CobblestoneStairs,
+        CSBlockType.StoneBrickStairs,
+        CSBlockType.NetherBrickStairs,
+        CSBlockType.SpruceWoodStairs,
+        CSBlockType.BirchWoodStairs,
+        CSBlockType.JungleWoodStairs,
+        CSBlockType.QuartzStairs,
     };
 
     Transform grid;
