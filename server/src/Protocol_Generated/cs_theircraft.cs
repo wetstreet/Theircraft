@@ -940,7 +940,28 @@ namespace protocol.cs_theircraft
       JungleWoodStairs = 44,
             
       [global::ProtoBuf.ProtoEnum(Name=@"QuartzStairs", Value=45)]
-      QuartzStairs = 45
+      QuartzStairs = 45,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"SpruceWoodPlanks", Value=46)]
+      SpruceWoodPlanks = 46,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"BirchWoodPlanks", Value=47)]
+      BirchWoodPlanks = 47,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"JungleWoodPlanks", Value=48)]
+      JungleWoodPlanks = 48,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"AcaciaWoodPlanks", Value=49)]
+      AcaciaWoodPlanks = 49,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"DarkOakWoodPlanks", Value=50)]
+      DarkOakWoodPlanks = 50,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"Cobblestone", Value=51)]
+      Cobblestone = 51,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"StoneBricks", Value=52)]
+      StoneBricks = 52
     }
   
     [global::ProtoBuf.ProtoContract(Name=@"CSBlockOrientation")]

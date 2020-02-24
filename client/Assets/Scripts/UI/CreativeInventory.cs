@@ -9,29 +9,37 @@ public class CreativeInventory : MonoBehaviour
 {
     CSBlockType[] blocks = new CSBlockType[]
     {
-        CSBlockType.Dirt,
         CSBlockType.Stone,
         CSBlockType.GrassBlock,
+        CSBlockType.Dirt,
+        CSBlockType.Cobblestone,
+        CSBlockType.OakPlanks,
+        CSBlockType.SpruceWoodPlanks,
+        CSBlockType.BirchWoodPlanks,
+        CSBlockType.JungleWoodPlanks,
+        CSBlockType.AcaciaWoodPlanks,
+        CSBlockType.DarkOakWoodPlanks,
+        CSBlockType.BedRock,
+        CSBlockType.Sand,
+        CSBlockType.RedSand,
+        CSBlockType.GoldOre,
+        CSBlockType.IronOre,
+        CSBlockType.CoalOre,
+        CSBlockType.OakLog,
         CSBlockType.Brick,
         CSBlockType.BrickStairs,
         CSBlockType.BrickWall,
+        CSBlockType.StoneBricks,
         CSBlockType.Furnace,
         CSBlockType.HayBlock,
         CSBlockType.Torch,
-        CSBlockType.OakPlanks,
-        CSBlockType.OakLog,
         CSBlockType.Cobweb,
-        CSBlockType.RedSand,
         CSBlockType.OakSapling,
         CSBlockType.Poppy,
         CSBlockType.Dandelion,
         CSBlockType.Grass,
-        CSBlockType.BedRock,
         CSBlockType.Tnt,
         CSBlockType.OakLeaves,
-        CSBlockType.CoalOre,
-        CSBlockType.IronOre,
-        CSBlockType.GoldOre,
         CSBlockType.DiamondOre,
         CSBlockType.EmeraldOre,
         CSBlockType.RedstoneOre,
@@ -41,7 +49,6 @@ public class CreativeInventory : MonoBehaviour
         CSBlockType.DiamondBlock,
         CSBlockType.EmeraldBlock,
         CSBlockType.RedstoneBlock,
-        CSBlockType.Sand,
         CSBlockType.Gravel,
         CSBlockType.OakWoodStairs,
         CSBlockType.CobblestoneStairs,
@@ -66,12 +73,14 @@ public class CreativeInventory : MonoBehaviour
     int showSelectIndex;
     CSBlockType holdItemType;
     int holdItemCount;
+    Slider slider;
 
     struct SlotItem
     {
         public Image icon;
         public GameObject select;
         public TextMeshProUGUI count;
+        public OnPointerCallback callbacks;
     }
 
     List<SlotItem> itemList = new List<SlotItem>();
@@ -84,6 +93,8 @@ public class CreativeInventory : MonoBehaviour
         if (Instance != null)
         {
             Instance.gameObject.SetActive(true);
+            Instance.lastStep = 0;
+            Instance.slider.value = 0;
             Instance.RefreshUI();
             Instance.RefreshSelectPanel();
         }
@@ -132,6 +143,54 @@ public class CreativeInventory : MonoBehaviour
         showSelectDesc = false;
     }
 
+    int steps;
+    int lastStep;
+    void OnValueChanged(float value)
+    {
+        float interval = 1f / steps;
+        int step = Mathf.Min(Mathf.FloorToInt(value / interval), steps - 1);
+        if (step != lastStep)
+        {
+            RefreshUI(step);
+            lastStep = step;
+        }
+    }
+
+    void InitGrid()
+    {
+        for (int i = 0; i < 45; i++)
+        {
+            Transform trans = Instantiate(unit);
+            trans.parent = grid;
+            trans.localScale = Vector3.one;
+            trans.gameObject.SetActive(true);
+
+            SlotItem item = new SlotItem();
+            item.icon = trans.GetComponent<Image>();
+            OnPointerCallback callbacks = trans.GetComponent<OnPointerCallback>();
+            callbacks.index = i;
+            callbacks.pointerEnterCallback = (int index) =>
+            {
+                if (!holdItem)
+                {
+                    showDesc = true;
+                    showIndex = index;
+                }
+            };
+            callbacks.pointerExitCallback = (int index) =>
+            {
+                showDesc = false;
+            };
+            callbacks.pointerDownCallback = (int index) =>
+            {
+                OnItemClick(index);
+            };
+            item.callbacks = callbacks;
+
+            itemList.Add(item);
+        }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -139,11 +198,18 @@ public class CreativeInventory : MonoBehaviour
         descLabel = descTrans.Find("text").GetComponent<TextMeshProUGUI>();
         transform.Find("mask").GetComponent<OnPointerCallback>().pointerDownCallback = OnClickMask;
 
-        grid = transform.Find("Scroll View/Viewport/Content");
+        slider = transform.Find("Slider").GetComponent<Slider>();
+        slider.onValueChanged.AddListener(OnValueChanged);
+
+        lastStep = 0;
+        steps = 1 + Mathf.CeilToInt((blocks.Length - 45) / 9f);
+
+        grid = transform.Find("Content");
         unit = grid.Find("unit");
         holdItemImage = transform.Find("holdItem").GetComponent<Image>();
         unit.gameObject.SetActive(false);
-
+        
+        InitGrid();
         RefreshUI();
         InitSelectPanel();
         RefreshSelectPanel();
@@ -252,42 +318,23 @@ public class CreativeInventory : MonoBehaviour
         }
     }
 
-    void RefreshUI()
+    void RefreshUI(int step = 0)
     {
-        for(int i = 0; i < blocks.Length; i++)
+        for (int i = 0; i < 45; i++)
         {
-            CSBlockType blockType = blocks[i];
-            if (i >= itemList.Count)
+            int realIndex = i + step * 9;
+            if (realIndex < blocks.Length)
             {
-                Transform trans = Instantiate(unit);
-                trans.parent = grid;
-                trans.localScale = Vector3.one;
-                trans.gameObject.SetActive(true);
-
-                SlotItem item = new SlotItem();
-                item.icon = trans.GetComponent<Image>();
-                OnPointerCallback callbacks = trans.GetComponent<OnPointerCallback>();
-                callbacks.index = i;
-                callbacks.pointerEnterCallback = (int index) =>
-                {
-                    if (!holdItem)
-                    {
-                        showDesc = true;
-                        showIndex = index;
-                    }
-                };
-                callbacks.pointerExitCallback = (int index) =>
-                {
-                    showDesc = false;
-                };
-                callbacks.pointerDownCallback = (int index) =>
-                {
-                    OnItemClick(index);
-                };
-
-                itemList.Add(item);
+                itemList[i].callbacks.enabled = true;
+                itemList[i].callbacks.index = realIndex;
+                itemList[i].icon.enabled = true;
+                itemList[i].icon.sprite = BlockIconHelper.GetIcon(blocks[realIndex]);
             }
-            itemList[i].icon.sprite = BlockIconHelper.GetIcon(blockType);
+            else
+            {
+                itemList[i].callbacks.enabled = false;
+                itemList[i].icon.enabled = false;
+            }
         }
     }
 
@@ -308,7 +355,7 @@ public class CreativeInventory : MonoBehaviour
         {
             holdItem = true;
             holdItemType = blocks[index];
-            holdItemImage.sprite = itemList[showIndex].icon.sprite;
+            holdItemImage.sprite = BlockIconHelper.GetIcon(holdItemType);
             holdItemImage.gameObject.SetActive(true);
         }
     }

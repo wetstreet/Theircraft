@@ -43,6 +43,13 @@ public class BlockIconHelper
         {CSBlockType.BirchWoodStairs, "Birch_Stairs" },
         {CSBlockType.JungleWoodStairs, "Jungle_Stairs" },
         {CSBlockType.QuartzStairs, "Quartz_Stairs" },
+        {CSBlockType.SpruceWoodPlanks, "Spruce_Planks_JE4_BE2" },
+        {CSBlockType.BirchWoodPlanks, "Birch_Planks_JE3_BE2" },
+        {CSBlockType.JungleWoodPlanks, "Jungle_Planks_JE3_BE2" },
+        {CSBlockType.AcaciaWoodPlanks, "Acacia_Planks_JE3_BE2" },
+        {CSBlockType.DarkOakWoodPlanks, "Dark_Oak_Planks_JE3_BE2" },
+        {CSBlockType.Cobblestone, "Cobblestone_JE6_BE3" },
+        {CSBlockType.StoneBricks, "Stone_Bricks_JE3_BE2" },
 
         {CSBlockType.Torch, "torch" },
         {CSBlockType.Cobweb, "web" },

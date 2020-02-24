@@ -111,6 +111,9 @@ public static class ChunkMeshGenerator
     public static Vector2Int uv_nether_brick = new Vector2Int(0, 14);
     public static Vector2Int uv_quartz = new Vector2Int(10, 14);
 
+    public static Vector2Int uv_acacia_wood = new Vector2Int(1, 17);
+    public static Vector2Int uv_dark_oak_wood = new Vector2Int(2, 17);
+
     public static TexCoords[] type2texcoords = new TexCoords[]
     {
         // None
@@ -205,6 +208,20 @@ public static class ChunkMeshGenerator
         TexCoords.Stair(uv_jungle_wood),
         // QuartzStairs
         TexCoords.Stair(uv_quartz),
+        // SpruceWoodPlanks
+        TexCoords.Block_1(uv_spruce_wood),
+        // BirchWoodPlanks
+        TexCoords.Block_1(uv_birch_wood),
+        // JungleWoodPlanks
+        TexCoords.Block_1(uv_jungle_wood),
+        // AcaciaWoodPlanks
+        TexCoords.Block_1(uv_acacia_wood),
+        // DarkOakWoodPlanks
+        TexCoords.Block_1(uv_dark_oak_wood),
+        // Cobblestone
+        TexCoords.Block_1(uv_cobblestone),
+        // StoneBricks
+        TexCoords.Block_1(uv_stonebrick),
     };
 
     static Dictionary<CSBlockType, Mesh> type2mesh = new Dictionary<CSBlockType, Mesh>();

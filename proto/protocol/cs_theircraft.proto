@@ -48,6 +48,13 @@ enum CSBlockType
 	BirchWoodStairs = 43;
 	JungleWoodStairs = 44;
 	QuartzStairs = 45;
+	SpruceWoodPlanks = 46;
+	BirchWoodPlanks = 47;
+	JungleWoodPlanks = 48;
+	AcaciaWoodPlanks = 49;
+	DarkOakWoodPlanks = 50;
+	Cobblestone = 51;
+	StoneBricks = 52;
 }
 
 enum CSBlockOrientation
