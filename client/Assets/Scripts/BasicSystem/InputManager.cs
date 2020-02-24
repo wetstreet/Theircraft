@@ -15,11 +15,12 @@ public class InputManager : MonoBehaviour {
         RegisterCallback(SettingsPanel.HandleInput);
         RegisterCallback(DebugUI.HandleInput);
         RegisterCallback(CreativeInventory.HandleInput);
+        RegisterCallback(ItemSelectPanel.instance.HandleInput);
     }
 	
 	// Update is called once per frame
 	void Update () {
-        if (enabled && Input.anyKeyDown)
+        if (enabled)
         {
             foreach (Action callback in callbacks)
             {

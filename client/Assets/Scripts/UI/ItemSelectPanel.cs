@@ -171,9 +171,8 @@ public class ItemSelectPanel : MonoBehaviour
 
         RefreshUI();
     }
-	
-	// Update is called once per frame
-	void Update ()
+
+    public void HandleInput()
     {
         if (Input.GetKeyDown(KeyCode.Alpha1)) { curIndex = 0; }
         else if (Input.GetKeyDown(KeyCode.Alpha2)) { curIndex = 1; }
@@ -213,5 +212,10 @@ public class ItemSelectPanel : MonoBehaviour
         {
             RefreshUI();
         }
+    }
+	
+	// Update is called once per frame
+	void Update ()
+    {
     }
 }

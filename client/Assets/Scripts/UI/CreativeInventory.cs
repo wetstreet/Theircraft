@@ -126,14 +126,25 @@ public class CreativeInventory : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.E))
         {
-            if (Instance != null && Instance.gameObject.activeSelf)
-            {
-                Hide();
-            }
-            else
-            {
-                Show();
-            }
+            Show();
+        }
+    }
+
+    void HandleInputUpdate()
+    {
+        float mouseMove = Input.GetAxis("Mouse ScrollWheel");
+        if (mouseMove != 0)
+        {
+            int sign = (int)Mathf.Sign(mouseMove);
+            lastStep = Mathf.Clamp(lastStep - sign, 0, steps - 1);
+
+            RefreshUI(lastStep);
+            slider.value = lastStep / (steps - 1f);
+        }
+
+        if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.E))
+        {
+            Hide();
         }
     }
 
@@ -144,10 +155,10 @@ public class CreativeInventory : MonoBehaviour
     }
 
     int steps;
+    float interval;
     int lastStep;
     void OnValueChanged(float value)
     {
-        float interval = 1f / steps;
         int step = Mathf.Min(Mathf.FloorToInt(value / interval), steps - 1);
         if (step != lastStep)
         {
@@ -203,6 +214,7 @@ public class CreativeInventory : MonoBehaviour
 
         lastStep = 0;
         steps = 1 + Mathf.CeilToInt((blocks.Length - 45) / 9f);
+        interval = 1f / steps;
 
         grid = transform.Find("Content");
         unit = grid.Find("unit");
@@ -247,11 +259,7 @@ public class CreativeInventory : MonoBehaviour
     static Vector3 offset = new Vector3(16, 0, 0);
     void Update()
     {
-        HandleInput();
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            Hide();
-        }
+        HandleInputUpdate();
         UpdateDesc();
 
         if (holdItem || holdSelectItem)
