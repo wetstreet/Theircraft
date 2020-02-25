@@ -41,6 +41,12 @@ public class SoundManager : MonoBehaviour
         {CSBlockType.QuartzStairs, Material_Stone },
         {CSBlockType.Cobblestone, Material_Stone },
         {CSBlockType.StoneBricks, Material_Stone },
+        {CSBlockType.CobblestoneWall, Material_Stone },
+        {CSBlockType.MossyCobblestone, Material_Stone },
+        {CSBlockType.MossyCobblestoneWall, Material_Stone },
+        {CSBlockType.MossyStoneBricks, Material_Stone },
+        {CSBlockType.MossyStoneBrickStairs, Material_Stone },
+        {CSBlockType.MossyStoneBrickWall, Material_Stone },
 
         {CSBlockType.Torch, Material_Wood },
         {CSBlockType.OakLog, Material_Wood },
@@ -54,6 +60,7 @@ public class SoundManager : MonoBehaviour
         {CSBlockType.JungleWoodPlanks, Material_Wood },
         {CSBlockType.AcaciaWoodPlanks, Material_Wood },
         {CSBlockType.DarkOakWoodPlanks, Material_Wood },
+        {CSBlockType.Bookshelf, Material_Wood },
 
         {CSBlockType.RedSand, Material_Sand },
         {CSBlockType.Sand, Material_Sand },

@@ -55,6 +55,14 @@ enum CSBlockType
 	DarkOakWoodPlanks = 50;
 	Cobblestone = 51;
 	StoneBricks = 52;
+	CobblestoneWall = 53;
+	Bookshelf = 54;
+	MossyCobblestoneWall = 55;
+	MossyCobblestone = 56;
+	MossyCobblestoneStairs = 57;
+	MossyStoneBricks = 58;
+	MossyStoneBrickStairs = 59;
+	MossyStoneBrickWall = 60;
 }
 
 enum CSBlockOrientation

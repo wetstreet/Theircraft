@@ -38,6 +38,7 @@ public class WallMeshGenerator : IMeshGenerator
         mesh.vertices = wallMesh.vertices;
         mesh.uv = uv.ToArray();
         mesh.triangles = wallMesh.triangles;
+        mesh.normals = wallMesh.normals;
 
         return mesh;
     }
@@ -45,7 +46,7 @@ public class WallMeshGenerator : IMeshGenerator
     static bool IsCanLink(Vector3Int pos)
     {
         CSBlockType type = ChunkManager.GetBlockType(pos);
-        if (type == CSBlockType.BrickWall)
+        if (ChunkMeshGenerator.IsWall(type))
         {
             return true;
         }

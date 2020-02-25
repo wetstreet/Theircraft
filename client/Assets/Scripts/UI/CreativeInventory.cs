@@ -58,6 +58,13 @@ public class CreativeInventory : MonoBehaviour
         CSBlockType.BirchWoodStairs,
         CSBlockType.JungleWoodStairs,
         CSBlockType.QuartzStairs,
+        CSBlockType.CobblestoneWall,
+        CSBlockType.Bookshelf,
+        CSBlockType.MossyCobblestone,
+        CSBlockType.MossyCobblestoneWall,
+        CSBlockType.MossyStoneBricks,
+        CSBlockType.MossyStoneBrickStairs,
+        CSBlockType.MossyStoneBrickWall,
     };
 
     Transform grid;

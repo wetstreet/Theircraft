@@ -961,7 +961,31 @@ namespace protocol.cs_theircraft
       Cobblestone = 51,
             
       [global::ProtoBuf.ProtoEnum(Name=@"StoneBricks", Value=52)]
-      StoneBricks = 52
+      StoneBricks = 52,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"CobblestoneWall", Value=53)]
+      CobblestoneWall = 53,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"Bookshelf", Value=54)]
+      Bookshelf = 54,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"MossyCobblestoneWall", Value=55)]
+      MossyCobblestoneWall = 55,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"MossyCobblestone", Value=56)]
+      MossyCobblestone = 56,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"MossyCobblestoneStairs", Value=57)]
+      MossyCobblestoneStairs = 57,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"MossyStoneBricks", Value=58)]
+      MossyStoneBricks = 58,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"MossyStoneBrickStairs", Value=59)]
+      MossyStoneBrickStairs = 59,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"MossyStoneBrickWall", Value=60)]
+      MossyStoneBrickWall = 60
     }
   
     [global::ProtoBuf.ProtoContract(Name=@"CSBlockOrientation")]

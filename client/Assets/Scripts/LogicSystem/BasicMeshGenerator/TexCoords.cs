@@ -7,6 +7,7 @@ public class TexCoords
     public bool isRotatable = false;    // stores orientation
     public bool isPlant = false;        // uses plant mesh generator
     public bool isStair = false;        // uses stair mesh generator
+    public bool isWall = false;        // uses wall mesh generator
 
     public Vector2Int front;
     public Vector2Int right;
@@ -133,7 +134,8 @@ public class TexCoords
         return new TexCoords
         {
             isTransparent = true,
-            front = uv
+            isWall = true,
+            front = uv,
         };
     }
 

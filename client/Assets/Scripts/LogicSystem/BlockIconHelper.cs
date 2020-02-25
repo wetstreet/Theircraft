@@ -50,6 +50,13 @@ public class BlockIconHelper
         {CSBlockType.DarkOakWoodPlanks, "Dark_Oak_Planks_JE3_BE2" },
         {CSBlockType.Cobblestone, "Cobblestone_JE6_BE3" },
         {CSBlockType.StoneBricks, "Stone_Bricks_JE3_BE2" },
+        {CSBlockType.CobblestoneWall, "Cobblestone_Wall" },
+        {CSBlockType.Bookshelf, "Bookshelf_JE4_BE2" },
+        {CSBlockType.MossyCobblestone, "Mossy_Cobblestone_JE4_BE2" },
+        {CSBlockType.MossyCobblestoneWall, "Mossy_Cobblestone_Wall" },
+        {CSBlockType.MossyStoneBricks, "Mossy_Stone_Bricks_JE3_BE2" },
+        {CSBlockType.MossyStoneBrickStairs, "Mossy_Stone_Brick_Stairs" },
+        {CSBlockType.MossyStoneBrickWall, "Mossy_Stone_Brick_Wall" },
 
         {CSBlockType.Torch, "torch" },
         {CSBlockType.Cobweb, "web" },

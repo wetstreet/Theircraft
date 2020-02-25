@@ -97,6 +97,8 @@ public static class ChunkMeshGenerator
 
     public static Vector2Int uv_torch = new Vector2Int(0, 5);
 
+    public static Vector2Int uv_mossy_stone = new Vector2Int(4, 6);
+
     public static Vector2Int uv_emerald_ore = new Vector2Int(11, 10);
 
     public static Vector2Int uv_sandstone = new Vector2Int(0, 12);
@@ -113,6 +115,7 @@ public static class ChunkMeshGenerator
 
     public static Vector2Int uv_acacia_wood = new Vector2Int(1, 17);
     public static Vector2Int uv_dark_oak_wood = new Vector2Int(2, 17);
+    public static Vector2Int uv_purpur = new Vector2Int(13, 17);
 
     public static TexCoords[] type2texcoords = new TexCoords[]
     {
@@ -222,6 +225,22 @@ public static class ChunkMeshGenerator
         TexCoords.Block_1(uv_cobblestone),
         // StoneBricks
         TexCoords.Block_1(uv_stonebrick),
+        // CobblestoneWall
+        TexCoords.Wall(uv_cobblestone),
+        // Bookshelf
+        TexCoords.Block_polar_side(uv_oak_planks, uv_bookshelf),
+        // MossyCobblestoneWall
+        TexCoords.Wall(uv_mossy_cobblestone),
+        // MossyCobblestone
+        TexCoords.Block_1(uv_mossy_cobblestone),
+        // MossyCobblestoneStairs
+        TexCoords.Stair(uv_mossy_cobblestone),
+        // MossyStoneBricks
+        TexCoords.Block_1(uv_mossy_stone),
+        // MossyStoneBrickStairs
+        TexCoords.Stair(uv_mossy_stone),
+        // MossyStoneBrickWall
+        TexCoords.Wall(uv_mossy_stone),
     };
 
     static Dictionary<CSBlockType, Mesh> type2mesh = new Dictionary<CSBlockType, Mesh>();
@@ -244,6 +263,11 @@ public static class ChunkMeshGenerator
     public static bool IsStair(CSBlockType type)
     {
         return type2texcoords[(byte)type].isStair;
+    }
+
+    public static bool IsWall(CSBlockType type)
+    {
+        return type2texcoords[(byte)type].isWall;
     }
 
     public static Texture GetBlockTexture(CSBlockType type)
@@ -269,7 +293,7 @@ public static class ChunkMeshGenerator
                 {
                     type2mesh[type] = StairMeshGenerator.Instance.GenerateSingleMesh(type);
                 }
-                else if (type == CSBlockType.BrickWall)
+                else if (IsWall(type))
                 {
                     type2mesh[type] = WallMeshGenerator.Instance.GenerateSingleMesh(type);
                 }
@@ -325,7 +349,7 @@ public static class ChunkMeshGenerator
                             {
                                 StairMeshGenerator.Instance.GenerateMeshInChunk(type, pos, globalPos, chunk.vertices1, chunk.uv1, chunk.triangles1);
                             }
-                            else if (type == CSBlockType.BrickWall)
+                            else if (IsWall(type))
                             {
                                 WallMeshGenerator.Instance.GenerateMeshInChunk(type, pos, globalPos, chunk.vertices1, chunk.uv1, chunk.triangles1);
                             }
