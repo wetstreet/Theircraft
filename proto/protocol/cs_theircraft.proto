@@ -63,6 +63,21 @@ enum CSBlockType
 	MossyStoneBricks = 58;
 	MossyStoneBrickStairs = 59;
 	MossyStoneBrickWall = 60;
+	OakSlab = 61;
+	SpruceSlab = 62;
+	BirchSlab = 63;
+	JungleSlab = 64;
+	AcaciaSlab = 65;
+	DarkOakSlab = 66;
+	StoneSlab = 67;
+	SmoothStoneSlab = 68;
+	CobblestoneSlab = 69;
+	MossyCobblestoneSlab = 70;
+	StoneBrickSlab = 71;
+	MossyStoneBrickSlab = 72;
+	BrickSlab = 73;
+	NetherBrickSlab = 74;
+	QuartzSlab = 75;
 }
 
 enum CSBlockOrientation

@@ -985,7 +985,52 @@ namespace protocol.cs_theircraft
       MossyStoneBrickStairs = 59,
             
       [global::ProtoBuf.ProtoEnum(Name=@"MossyStoneBrickWall", Value=60)]
-      MossyStoneBrickWall = 60
+      MossyStoneBrickWall = 60,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"OakSlab", Value=61)]
+      OakSlab = 61,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"SpruceSlab", Value=62)]
+      SpruceSlab = 62,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"BirchSlab", Value=63)]
+      BirchSlab = 63,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"JungleSlab", Value=64)]
+      JungleSlab = 64,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"AcaciaSlab", Value=65)]
+      AcaciaSlab = 65,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"DarkOakSlab", Value=66)]
+      DarkOakSlab = 66,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"StoneSlab", Value=67)]
+      StoneSlab = 67,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"SmoothStoneSlab", Value=68)]
+      SmoothStoneSlab = 68,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"CobblestoneSlab", Value=69)]
+      CobblestoneSlab = 69,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"MossyCobblestoneSlab", Value=70)]
+      MossyCobblestoneSlab = 70,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"StoneBrickSlab", Value=71)]
+      StoneBrickSlab = 71,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"MossyStoneBrickSlab", Value=72)]
+      MossyStoneBrickSlab = 72,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"BrickSlab", Value=73)]
+      BrickSlab = 73,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"NetherBrickSlab", Value=74)]
+      NetherBrickSlab = 74,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"QuartzSlab", Value=75)]
+      QuartzSlab = 75
     }
   
     [global::ProtoBuf.ProtoContract(Name=@"CSBlockOrientation")]

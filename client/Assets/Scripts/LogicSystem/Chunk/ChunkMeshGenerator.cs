@@ -241,6 +241,36 @@ public static class ChunkMeshGenerator
         TexCoords.Stair(uv_mossy_stone),
         // MossyStoneBrickWall
         TexCoords.Wall(uv_mossy_stone),
+        // OakSlab
+        TexCoords.Slab(uv_oak_planks),
+        // SpruceSlab
+        TexCoords.Slab(uv_spruce_wood),
+        // BirchSlab
+        TexCoords.Slab(uv_birch_wood),
+        // JungleSlab
+        TexCoords.Slab(uv_jungle_wood),
+        // AcaciaSlab
+        TexCoords.Slab(uv_acacia_wood),
+        // DarkOakSlab
+        TexCoords.Slab(uv_dark_oak_wood),
+        // StoneSlab
+        TexCoords.Slab(uv_stone),
+        // SmoothStoneSlab
+        TexCoords.Slab(uv_double_stone_slab_top),
+        // CobbleStoneSlab
+        TexCoords.Slab(uv_cobblestone),
+        // MossyCobbleStoneSlab
+        TexCoords.Slab(uv_mossy_cobblestone),
+        // StoneBrickSlab
+        TexCoords.Slab(uv_stonebrick),
+        // MossyStoneBrickSlab
+        TexCoords.Slab(uv_mossy_stone),
+        // BrickSlab
+        TexCoords.Slab(uv_bricks),
+        // NetherBrickSlab
+        TexCoords.Slab(uv_nether_brick),
+        // QuartzSlab
+        TexCoords.Slab(uv_quartz),
     };
 
     static Dictionary<CSBlockType, Mesh> type2mesh = new Dictionary<CSBlockType, Mesh>();
@@ -270,6 +300,11 @@ public static class ChunkMeshGenerator
         return type2texcoords[(byte)type].isWall;
     }
 
+    public static bool IsSlab(CSBlockType type)
+    {
+        return type2texcoords[(byte)type].isSlab;
+    }
+
     public static Texture GetBlockTexture(CSBlockType type)
     {
         if (IsCubeType(type))
@@ -296,6 +331,10 @@ public static class ChunkMeshGenerator
                 else if (IsWall(type))
                 {
                     type2mesh[type] = WallMeshGenerator.Instance.GenerateSingleMesh(type);
+                }
+                else if (IsSlab(type))
+                {
+                    type2mesh[type] = SlabMeshGenerator.Instance.GenerateSingleMesh(type);
                 }
                 else
                 {
@@ -352,6 +391,10 @@ public static class ChunkMeshGenerator
                             else if (IsWall(type))
                             {
                                 WallMeshGenerator.Instance.GenerateMeshInChunk(type, pos, globalPos, chunk.vertices1, chunk.uv1, chunk.triangles1);
+                            }
+                            else if (IsSlab(type))
+                            {
+                                SlabMeshGenerator.Instance.GenerateMeshInChunk(type, pos, globalPos, chunk.vertices1, chunk.uv1, chunk.triangles1);
                             }
                             else if (type == CSBlockType.Torch)
                             {

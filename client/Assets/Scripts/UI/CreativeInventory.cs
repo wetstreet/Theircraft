@@ -65,6 +65,20 @@ public class CreativeInventory : MonoBehaviour
         CSBlockType.MossyStoneBricks,
         CSBlockType.MossyStoneBrickStairs,
         CSBlockType.MossyStoneBrickWall,
+        CSBlockType.OakSlab,
+        CSBlockType.SpruceSlab,
+        CSBlockType.BirchSlab,
+        CSBlockType.JungleSlab,
+        CSBlockType.AcaciaSlab,
+        CSBlockType.DarkOakSlab,
+        CSBlockType.StoneSlab,
+        CSBlockType.SmoothStoneSlab,
+        CSBlockType.CobblestoneSlab,
+        CSBlockType.MossyCobblestoneSlab,
+        CSBlockType.StoneBrickSlab,
+        CSBlockType.BrickSlab,
+        CSBlockType.NetherBrickSlab,
+        CSBlockType.QuartzSlab,
     };
 
     Transform grid;

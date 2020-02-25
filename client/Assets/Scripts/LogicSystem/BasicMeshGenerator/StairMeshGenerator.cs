@@ -19,7 +19,7 @@ public class StairMeshGenerator : IMeshGenerator
 
     override public Mesh GenerateSingleMesh(CSBlockType type)
     {
-        Mesh stairMesh = LoadMesh("stair_+y-z"); ;
+        Mesh stairMesh = LoadMesh("stair_+y-z");
 
         Mesh mesh = new Mesh();
         mesh.name = "CubeMesh";
