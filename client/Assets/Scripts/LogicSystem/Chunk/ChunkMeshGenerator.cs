@@ -96,15 +96,25 @@ public static class ChunkMeshGenerator
     public static Vector2Int uv_piston_n = new Vector2Int(19, 4);
 
     public static Vector2Int uv_torch = new Vector2Int(0, 5);
+    public static Vector2Int uv_birch_leaves = new Vector2Int(19, 5);
 
     public static Vector2Int uv_mossy_stone = new Vector2Int(4, 6);
+
+    public static Vector2Int uv_spruce_log = new Vector2Int(4, 7);
+    public static Vector2Int uv_birch_log = new Vector2Int(5, 7);
+
+    public static Vector2Int uv_spruce_leaves = new Vector2Int(4, 8);
+
+    public static Vector2Int uv_jungle_log = new Vector2Int(9, 9);
 
     public static Vector2Int uv_emerald_ore = new Vector2Int(11, 10);
 
     public static Vector2Int uv_sandstone = new Vector2Int(0, 12);
     public static Vector2Int uv_spruce_wood = new Vector2Int(6, 12);
     public static Vector2Int uv_jungle_wood = new Vector2Int(7, 12);
-    public static Vector2Int leaves_side = new Vector2Int(4, 12);
+    public static Vector2Int uv_jungle_leaves = new Vector2Int(4, 12);
+    public static Vector2Int uv_purpur = new Vector2Int(13, 12);
+
     public static Vector2Int uv_birch_wood = new Vector2Int(6, 13);
     public static Vector2Int hay_side = new Vector2Int(16, 13);
     public static Vector2Int hay_top = new Vector2Int(17, 13);
@@ -113,9 +123,19 @@ public static class ChunkMeshGenerator
     public static Vector2Int uv_nether_brick = new Vector2Int(0, 14);
     public static Vector2Int uv_quartz = new Vector2Int(10, 14);
 
+    public static Vector2Int uv_acacia_sapling = new Vector2Int(20, 15);
+    public static Vector2Int uv_dark_oak_sapling = new Vector2Int(21, 15);
+
+    public static Vector2Int uv_spruce_log_top = new Vector2Int(18, 16);
+    public static Vector2Int uv_birch_log_top = new Vector2Int(19, 16);
+    public static Vector2Int uv_jungle_log_top = new Vector2Int(20, 16);
+    public static Vector2Int uv_acacia_log = new Vector2Int(21, 16);
+    public static Vector2Int uv_acacia_log_top = new Vector2Int(22, 16);
+    public static Vector2Int uv_dark_oak_log = new Vector2Int(23, 16);
+
+    public static Vector2Int uv_dark_oak_log_top = new Vector2Int(0, 17);
     public static Vector2Int uv_acacia_wood = new Vector2Int(1, 17);
     public static Vector2Int uv_dark_oak_wood = new Vector2Int(2, 17);
-    public static Vector2Int uv_purpur = new Vector2Int(13, 17);
 
     public static TexCoords[] type2texcoords = new TexCoords[]
     {
@@ -133,8 +153,8 @@ public static class ChunkMeshGenerator
         TexCoords.Block_front_polar_side(uv_furnace_front, uv_furnace_top, uv_furnace_side, true),
         // HayBlock
         TexCoords.Block_polar_side(hay_top, hay_side),
-        // Leaves
-        TexCoords.Block_1_transparent(leaves_side),
+        // JungleLeaves
+        TexCoords.Block_1_transparent(uv_jungle_leaves),
         // Grass
         TexCoords.Plant(uv_grass),
         // Stone
@@ -273,6 +293,36 @@ public static class ChunkMeshGenerator
         TexCoords.Slab(uv_quartz),
         // Glass
         TexCoords.Block_1_transparent(uv_glass),
+        // GlassPane
+        TexCoords.Block_1_transparent(uv_glass),
+        // SpruceLeaves
+        TexCoords.Block_1_transparent(uv_spruce_leaves),
+        // BirchLeaves
+        TexCoords.Block_1_transparent(uv_birch_leaves),
+        // AcaciaLeaves
+        TexCoords.Block_1_transparent(uv_oakleaves),
+        // DarkOakLeaves
+        TexCoords.Block_1_transparent(uv_oakleaves),
+        // BirchLog
+        TexCoords.Block_polar_side(uv_birch_log_top, uv_birch_log),
+        // SpruceLog
+        TexCoords.Block_polar_side(uv_spruce_log_top, uv_spruce_log),
+        // JungleLog
+        TexCoords.Block_polar_side(uv_jungle_log_top, uv_jungle_log),
+        // AcaciaLog
+        TexCoords.Block_polar_side(uv_acacia_log_top, uv_acacia_log),
+        // DarkOakLog
+        TexCoords.Block_polar_side(uv_dark_oak_log_top, uv_dark_oak_log),
+        // SpruceSapling
+        TexCoords.Plant(uv_spruce_sapling),
+        // BirchSapling
+        TexCoords.Plant(uv_birch_sapling),
+        // JungleSapling
+        TexCoords.Plant(uv_jungle_sapling),
+        // AcaciaSapling
+        TexCoords.Plant(uv_acacia_sapling),
+        // DarkOakSapling
+        TexCoords.Plant(uv_dark_oak_sapling),
     };
 
     static Dictionary<CSBlockType, Mesh> type2mesh = new Dictionary<CSBlockType, Mesh>();
@@ -285,6 +335,11 @@ public static class ChunkMeshGenerator
         { CSBlockType.Cobweb, "cobweb" },
         { CSBlockType.Torch, "torch" },
         { CSBlockType.OakSapling, "oak_sapling" },
+        { CSBlockType.SpruceSapling, "spruce_sapling" },
+        { CSBlockType.BirchSapling, "birch_sapling" },
+        { CSBlockType.JungleSapling, "jungle_sapling" },
+        { CSBlockType.AcaciaSapling, "acacia_sapling" },
+        { CSBlockType.DarkOakSapling, "dark_oak_sapling" },
     };
 
     public static bool IsCubeType(CSBlockType type)

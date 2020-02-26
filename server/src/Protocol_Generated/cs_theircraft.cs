@@ -825,8 +825,8 @@ namespace protocol.cs_theircraft
       [global::ProtoBuf.ProtoEnum(Name=@"HayBlock", Value=6)]
       HayBlock = 6,
             
-      [global::ProtoBuf.ProtoEnum(Name=@"Leaves", Value=7)]
-      Leaves = 7,
+      [global::ProtoBuf.ProtoEnum(Name=@"JungleLeaves", Value=7)]
+      JungleLeaves = 7,
             
       [global::ProtoBuf.ProtoEnum(Name=@"Grass", Value=8)]
       Grass = 8,
@@ -1036,7 +1036,49 @@ namespace protocol.cs_theircraft
       Glass = 76,
             
       [global::ProtoBuf.ProtoEnum(Name=@"GlassPane", Value=77)]
-      GlassPane = 77
+      GlassPane = 77,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"SpruceLeaves", Value=78)]
+      SpruceLeaves = 78,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"BirchLeaves", Value=79)]
+      BirchLeaves = 79,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"AcaciaLeaves", Value=80)]
+      AcaciaLeaves = 80,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"DarkOakLeaves", Value=81)]
+      DarkOakLeaves = 81,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"BirchLog", Value=82)]
+      BirchLog = 82,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"SpruceLog", Value=83)]
+      SpruceLog = 83,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"JungleLog", Value=84)]
+      JungleLog = 84,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"AcaciaLog", Value=85)]
+      AcaciaLog = 85,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"DarkOakLog", Value=86)]
+      DarkOakLog = 86,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"SpruceSapling", Value=87)]
+      SpruceSapling = 87,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"BirchSapling", Value=88)]
+      BirchSapling = 88,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"JungleSapling", Value=89)]
+      JungleSapling = 89,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"AcaciaSapling", Value=90)]
+      AcaciaSapling = 90,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"DarkOakSapling", Value=91)]
+      DarkOakSapling = 91
     }
   
     [global::ProtoBuf.ProtoContract(Name=@"CSBlockOrientation")]

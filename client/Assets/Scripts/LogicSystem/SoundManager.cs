@@ -62,6 +62,11 @@ public class SoundManager : MonoBehaviour
 
         {CSBlockType.Torch, Material_Wood },
         {CSBlockType.OakLog, Material_Wood },
+        {CSBlockType.SpruceLog, Material_Wood },
+        {CSBlockType.BirchLog, Material_Wood },
+        {CSBlockType.JungleLog, Material_Wood },
+        {CSBlockType.AcaciaLog, Material_Wood },
+        {CSBlockType.DarkOakLog, Material_Wood },
         {CSBlockType.OakPlanks, Material_Wood },
         {CSBlockType.OakWoodStairs, Material_Wood },
         {CSBlockType.SpruceWoodStairs, Material_Wood },

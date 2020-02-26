@@ -9,7 +9,7 @@ enum CSBlockType
 	Brick = 4;
 	Furnace = 5;
 	HayBlock = 6;
-	Leaves = 7;
+	JungleLeaves = 7;
 	Grass = 8;
 	Stone = 9;
 	BedRock = 10;
@@ -80,6 +80,20 @@ enum CSBlockType
 	QuartzSlab = 75;
 	Glass = 76;
 	GlassPane = 77;
+	SpruceLeaves = 78;
+	BirchLeaves = 79;
+	AcaciaLeaves = 80;
+	DarkOakLeaves = 81;
+	BirchLog = 82;
+	SpruceLog = 83;
+	JungleLog = 84;
+	AcaciaLog = 85;
+	DarkOakLog = 86;
+	SpruceSapling = 87;
+	BirchSapling = 88;
+	JungleSapling = 89;
+	AcaciaSapling = 90;
+	DarkOakSapling = 91;
 }
 
 enum CSBlockOrientation

@@ -38,6 +38,21 @@ TextureImporter:
   - first:
       213: 8121505033671620420
     second: web
+  - first:
+      213: -2217638906192892890
+    second: birch_sapling
+  - first:
+      213: -731162151908756296
+    second: spruce_sapling
+  - first:
+      213: -7869637619963332195
+    second: acacia_sapling
+  - first:
+      213: 1724197931976780274
+    second: dark_oak_sapling
+  - first:
+      213: -2217638906192892890
+    second: birch_sapling
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -373,7 +388,7 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -381,6 +396,90 @@ TextureImporter:
       bones: []
       spriteID: b30f165d628f8524d9c4707c6d4bcf4b
       internalID: 8121505033671620420
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spruce_sapling
+      rect:
+        serializedVersion: 2
+        x: 240
+        y: 864
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8b4b44e85e36ad5f0800000000000000
+      internalID: -731162151908756296
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: acacia_sapling
+      rect:
+        serializedVersion: 2
+        x: 320
+        y: 672
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d99f80f974e69c290800000000000000
+      internalID: -7869637619963332195
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: dark_oak_sapling
+      rect:
+        serializedVersion: 2
+        x: 336
+        y: 672
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2f960f942e49de710800000000000000
+      internalID: 1724197931976780274
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: birch_sapling
+      rect:
+        serializedVersion: 2
+        x: 240
+        y: 849
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 62c69441a2d5931e0800000000000000
+      internalID: -2217638906192892890
       vertices: []
       indices: 
       edges: []
