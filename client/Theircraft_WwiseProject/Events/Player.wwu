@@ -14,12 +14,12 @@
 						</Action>
 					</ChildrenList>
 				</Event>
-				<Event Name="Player_Dig" ID="{B33D558D-E782-4658-AB98-5E458BF61F64}">
+				<Event Name="Player_Break" ID="{B33D558D-E782-4658-AB98-5E458BF61F64}">
 					<ChildrenList>
 						<Action Name="" ID="{C9C31031-111F-4817-A84C-F28FB0C41421}" ShortID="58678031">
 							<ReferenceList>
 								<Reference Name="Target">
-									<ObjectRef Name="Dig" ID="{257B2CE7-4550-4A2B-9171-94C5E13F75ED}" WorkUnitID="{85FFC83D-636B-4D75-AA57-E58140A12C83}"/>
+									<ObjectRef Name="Break" ID="{257B2CE7-4550-4A2B-9171-94C5E13F75ED}" WorkUnitID="{85FFC83D-636B-4D75-AA57-E58140A12C83}"/>
 								</Reference>
 							</ReferenceList>
 						</Action>
@@ -31,6 +31,17 @@
 							<ReferenceList>
 								<Reference Name="Target">
 									<ObjectRef Name="pop" ID="{1FEBEC80-2349-4841-8167-ED52CD57791A}" WorkUnitID="{46F87971-A1D3-4A91-B075-34A79D3FACDF}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Player_Place" ID="{024D871E-A846-4356-80F4-18942A480026}">
+					<ChildrenList>
+						<Action Name="" ID="{34456584-269C-4629-ABF7-C131974A9884}" ShortID="94792494">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="Place" ID="{941089A2-45E7-4ED3-BBC9-3C6907520974}" WorkUnitID="{85FFC83D-636B-4D75-AA57-E58140A12C83}"/>
 								</Reference>
 							</ReferenceList>
 						</Action>

@@ -1030,7 +1030,13 @@ namespace protocol.cs_theircraft
       NetherBrickSlab = 74,
             
       [global::ProtoBuf.ProtoEnum(Name=@"QuartzSlab", Value=75)]
-      QuartzSlab = 75
+      QuartzSlab = 75,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"Glass", Value=76)]
+      Glass = 76,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"GlassPane", Value=77)]
+      GlassPane = 77
     }
   
     [global::ProtoBuf.ProtoContract(Name=@"CSBlockOrientation")]

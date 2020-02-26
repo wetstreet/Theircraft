@@ -13,6 +13,7 @@
 						<Switch Name="Snow" ID="{DA4695BF-DF98-45CB-AD3A-4C23DF7FBF14}"/>
 						<Switch Name="Ladder" ID="{067209E1-DD47-4325-B16E-C6945A131A29}"/>
 						<Switch Name="Cloth" ID="{022C7B66-7DCB-4BF5-9055-261B24A6F9B8}"/>
+						<Switch Name="Glass" ID="{43032A72-92FC-455D-B776-B53A7C7914A9}"/>
 					</ChildrenList>
 				</SwitchGroup>
 			</ChildrenList>

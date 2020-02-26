@@ -271,6 +271,8 @@ public static class ChunkMeshGenerator
         TexCoords.Slab(uv_nether_brick),
         // QuartzSlab
         TexCoords.Slab(uv_quartz),
+        // Glass
+        TexCoords.Block_1_transparent(uv_glass),
     };
 
     static Dictionary<CSBlockType, Mesh> type2mesh = new Dictionary<CSBlockType, Mesh>();

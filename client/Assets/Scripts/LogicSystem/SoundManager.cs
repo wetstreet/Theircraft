@@ -9,9 +9,12 @@ public class SoundManager : MonoBehaviour
     static readonly string Material_Sand = "Sand";
     static readonly string Material_Stone = "Stone";
     static readonly string Material_Wood = "Wood";
+    static readonly string Material_Glass = "Glass";
 
     static Dictionary<CSBlockType, string> type2material = new Dictionary<CSBlockType, string>
     {
+        {CSBlockType.GrassBlock, Material_Grass },
+
         {CSBlockType.Dirt, Material_Gravel },
         {CSBlockType.Gravel, Material_Gravel },
 
@@ -79,6 +82,8 @@ public class SoundManager : MonoBehaviour
 
         {CSBlockType.RedSand, Material_Sand },
         {CSBlockType.Sand, Material_Sand },
+        
+        {CSBlockType.Glass, Material_Glass },
     };
 
     static SoundManager instance;
@@ -103,7 +108,7 @@ public class SoundManager : MonoBehaviour
         AkSoundEngine.PostEvent("UI_Click", Camera.main.gameObject);
     }
 
-    public static void PlayDigSound(CSBlockType type, GameObject gameObject)
+    public static void PlayPlaceSound(CSBlockType type, GameObject gameObject)
     {
         string material = Material_Grass;
         if (type2material.ContainsKey(type))
@@ -111,7 +116,18 @@ public class SoundManager : MonoBehaviour
             material = type2material[type];
         }
         AkSoundEngine.SetSwitch("Materials", material, gameObject);
-        AkSoundEngine.PostEvent("Player_Dig", gameObject);
+        AkSoundEngine.PostEvent("Player_Place", gameObject);
+    }
+
+    public static void PlayBreakSound(CSBlockType type, GameObject gameObject)
+    {
+        string material = Material_Grass;
+        if (type2material.ContainsKey(type))
+        {
+            material = type2material[type];
+        }
+        AkSoundEngine.SetSwitch("Materials", material, gameObject);
+        AkSoundEngine.PostEvent("Player_Break", gameObject);
     }
 
     public static void PlayFootstepSound(CSBlockType type, GameObject gameObject)

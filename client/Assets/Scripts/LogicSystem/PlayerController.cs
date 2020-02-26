@@ -455,7 +455,7 @@ public class PlayerController : MonoBehaviour
         if (rsp.RetCode == 0)
         {
             ChunkManager.AddBlock(rsp.block);
-            SoundManager.PlayDigSound(rsp.block.type, gameObject);
+            SoundManager.PlayPlaceSound(rsp.block.type, gameObject);
         }
         else
         {
@@ -482,11 +482,6 @@ public class PlayerController : MonoBehaviour
             }
         };
         NetworkManager.SendPkgToServer(ENUM_CMD.CS_DELETE_BLOCK_REQ, req, DeleteBlockRes);
-    }
-
-    public void PlayDigSound(CSBlockType type)
-    {
-        SoundManager.PlayDigSound(type, gameObject);
     }
 
     void DeleteBlockRes(object data)

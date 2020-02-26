@@ -229,7 +229,7 @@ public class ChunkManager
 
             Item.CreateBlockDropItem(type, pos);
             BreakBlockEffect.Create(type, pos);
-            PlayerController.instance.PlayDigSound(type);
+            SoundManager.PlayBreakSound(type, PlayerController.instance.gameObject);
         }
     }
 

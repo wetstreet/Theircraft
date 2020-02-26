@@ -72,6 +72,7 @@ public class BlockIconHelper
         {CSBlockType.BrickSlab, "Brick_Slab_Revision_3" },
         {CSBlockType.NetherBrickSlab, "Nether_Brick_Slab_Revision_3" },
         {CSBlockType.QuartzSlab, "Quartz_Slab_Revision_3" },
+        {CSBlockType.Glass, "Glass" },
 
         {CSBlockType.Torch, "torch" },
         {CSBlockType.Cobweb, "web" },

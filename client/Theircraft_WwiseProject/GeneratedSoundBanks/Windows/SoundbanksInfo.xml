@@ -21,8 +21,9 @@
 			<ShortName>Main</ShortName>
 			<Path>Main.bnk</Path>
 			<IncludedEvents>
-				<Event Id="1542330067" Name="Player_Dig" ObjectPath="\Events\Player\Player_Dig"/>
+				<Event Id="1114612066" Name="Player_Break" ObjectPath="\Events\Player\Player_Break"/>
 				<Event Id="2453392179" Name="Player_Footstep" ObjectPath="\Events\Player\Player_Footstep"/>
+				<Event Id="2463044974" Name="Player_Place" ObjectPath="\Events\Player\Player_Place"/>
 				<Event Id="1505523378" Name="Player_Pop" ObjectPath="\Events\Player\Player_Pop"/>
 				<Event Id="2249769530" Name="UI_Click" ObjectPath="\Events\UI\UI_Click"/>
 			</IncludedEvents>
@@ -46,6 +47,10 @@
 				<File Id="85187482" Language="SFX">
 					<ShortName>28_wav_files (online-audio-converter.com)\stone2.wav</ShortName>
 					<Path>SFX\28_wav_files (online-audio-converter.com)\stone2_10C4C929.wem</Path>
+				</File>
+				<File Id="91654645" Language="SFX">
+					<ShortName>36_wav_files (online-audio-converter.com)\glass1.wav</ShortName>
+					<Path>SFX\36_wav_files (online-audio-converter.com)\glass1_10C4C929.wem</Path>
 				</File>
 				<File Id="99794793" Language="SFX">
 					<ShortName>stone4.wav</ShortName>
@@ -90,6 +95,10 @@
 				<File Id="229338788" Language="SFX">
 					<ShortName>cloth3.wav</ShortName>
 					<Path>SFX\cloth3_10C4C929.wem</Path>
+				</File>
+				<File Id="251972730" Language="SFX">
+					<ShortName>36_wav_files (online-audio-converter.com)\glass2.wav</ShortName>
+					<Path>SFX\36_wav_files (online-audio-converter.com)\glass2_10C4C929.wem</Path>
 				</File>
 				<File Id="255125468" Language="SFX">
 					<ShortName>28_wav_files (online-audio-converter.com)\gravel2.wav</ShortName>
@@ -234,6 +243,10 @@
 				<File Id="778271378" Language="SFX">
 					<ShortName>6_wav_files (online-audio-converter.com)\grass4.wav</ShortName>
 					<Path>SFX\6_wav_files (online-audio-converter.com)\grass4_10C4C929.wem</Path>
+				</File>
+				<File Id="778737111" Language="SFX">
+					<ShortName>36_wav_files (online-audio-converter.com)\glass3.wav</ShortName>
+					<Path>SFX\36_wav_files (online-audio-converter.com)\glass3_10C4C929.wem</Path>
 				</File>
 				<File Id="792206481" Language="SFX">
 					<ShortName>28_wav_files (online-audio-converter.com)\grass3.wav</ShortName>

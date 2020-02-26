@@ -78,6 +78,8 @@ enum CSBlockType
 	BrickSlab = 73;
 	NetherBrickSlab = 74;
 	QuartzSlab = 75;
+	Glass = 76;
+	GlassPane = 77;
 }
 
 enum CSBlockOrientation
