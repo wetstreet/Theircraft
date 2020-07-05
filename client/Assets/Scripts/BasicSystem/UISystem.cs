@@ -47,6 +47,7 @@ public class UISystem : MonoBehaviour
         }
         canvas = GameObject.Find("Canvas");
         canvasScaler = canvas.GetComponent<CanvasScaler>();
+        canvasScaler.scaleFactor = scale;
     }
 
     public static void DestroyUIRoot()

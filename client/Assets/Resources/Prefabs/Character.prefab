@@ -49,6 +49,7 @@ MonoBehaviour:
   forward: {x: 0, y: 0, z: 0}
   horizontalScale: 4
   verticalScale: 1
+  camera: {fileID: 0}
   m_RunstepLenghten: 0.7
   m_HeadBob:
     HorizontalBobRange: 0.1
@@ -277,7 +278,7 @@ MonoBehaviour:
     m_Bits: 4
   stopNaNPropagation: 1
   finalBlitToCameraTarget: 0
-  antialiasingMode: 2
+  antialiasingMode: 3
   temporalAntialiasing:
     jitterSpread: 0.75
     sharpness: 0.25

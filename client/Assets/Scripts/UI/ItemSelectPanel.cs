@@ -103,6 +103,8 @@ public class ItemSelectPanel : MonoBehaviour
         for (int i = 0; i < 9; i++)
         {
             Transform trans = Instantiate(unit);
+            trans.parent = grid;
+            trans.localScale = Vector3.one;
             trans.gameObject.SetActive(true);
             SlotItem item = new SlotItem
             {
