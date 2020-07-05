@@ -1,19 +1,52 @@
 ﻿using UnityEngine;
 using UnityEditor;
+using UnityEngine.UI;
 
 public class UISystem : MonoBehaviour
 {
     static GameObject canvas;
+    static CanvasScaler canvasScaler;
+
+    int lastScale;
+    static int scale
+    {
+        get
+        {
+            if (Screen.width > 962 && Screen.height > 758)
+            {
+                return 3;
+            }
+            else if (Screen.width > 640 && Screen.height > 520)
+            {
+                return 2;
+            }
+            else
+            {
+                return 1;
+            }
+        }
+    }
+
+    private void Update()
+    {
+        if (lastScale != scale)
+        {
+            lastScale = scale;
+            canvasScaler.scaleFactor = scale;
+        }
+    }
 
     static void InitializeCanvas()
     {
         GameObject prefab = Resources.Load("Prefabs/UI/ui_root") as GameObject;
         GameObject uiroot = Instantiate(prefab);
+        uiroot.AddComponent<UISystem>();
         if (Application.isPlaying)
         {
             DontDestroyOnLoad(uiroot);
         }
         canvas = GameObject.Find("Canvas");
+        canvasScaler = canvas.GetComponent<CanvasScaler>();
     }
 
     public static void DestroyUIRoot()

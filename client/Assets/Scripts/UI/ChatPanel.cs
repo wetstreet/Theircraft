@@ -115,13 +115,16 @@ public class ChatPanel : MonoBehaviour
             }
         }
     }
+
+    int width = 300;
+    int height = 9;
     
     void Update()
     {
         ProcessInput();
-        if (floatingScrollview.sizeDelta.y != 30 * floatingGrid.transform.childCount)
+        if (floatingScrollview.sizeDelta.y != height * floatingGrid.transform.childCount)
         {
-            floatingScrollview.sizeDelta = new Vector2(1000, 30 * floatingGrid.transform.childCount);
+            floatingScrollview.sizeDelta = new Vector2(width, height * floatingGrid.transform.childCount);
         }
     }
 
@@ -142,12 +145,12 @@ public class ChatPanel : MonoBehaviour
         text.text = content;
 
         ItemList.Add(item);
-        scrollview.sizeDelta = new Vector2(1000, 30 * ItemList.Count);
+        scrollview.sizeDelta = new Vector2(width, height * ItemList.Count);
 
         Transform floatingItem = Instantiate(item);
         floatingItem.SetParent(floatingGrid.transform);
         floatingItem.localScale = Vector3.one;
-        floatingScrollview.sizeDelta = new Vector2(1000, 30 * floatingGrid.transform.childCount);
+        floatingScrollview.sizeDelta = new Vector2(width, height * floatingGrid.transform.childCount);
         Destroy(floatingItem.gameObject, 10);
     }
 

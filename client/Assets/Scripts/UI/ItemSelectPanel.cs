@@ -98,9 +98,12 @@ public class ItemSelectPanel : MonoBehaviour
     void Init()
     {
         Transform grid = transform.Find("container/grid");
-        for (int i = 0; i < grid.childCount; i++)
+        Transform unit = grid.Find("item");
+        unit.gameObject.SetActive(false);
+        for (int i = 0; i < 9; i++)
         {
-            Transform trans = grid.GetChild(i);
+            Transform trans = Instantiate(unit);
+            trans.gameObject.SetActive(true);
             SlotItem item = new SlotItem
             {
                 icon = trans.Find("icon").GetComponent<Image>(),

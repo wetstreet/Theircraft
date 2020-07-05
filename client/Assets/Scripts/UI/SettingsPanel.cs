@@ -25,7 +25,7 @@ public class SettingsPanel : MonoBehaviour {
 
     public static int RenderDistance
     {
-        get { return Mathf.Clamp(PlayerPrefs.GetInt(RENDER_DISTANCE_KEY, 3), MinChunkView, MaxChunkView); }
+        get { return Mathf.Clamp(PlayerPrefs.GetInt(RENDER_DISTANCE_KEY, 8), MinChunkView, MaxChunkView); }
         set { PlayerPrefs.SetInt(RENDER_DISTANCE_KEY, value); }
     }
 
@@ -148,6 +148,27 @@ public class SettingsPanel : MonoBehaviour {
         else
         {
             masterVolumeLabel.text = $"Master Volume: {MasterVolume}%";
+        }
+    }
+
+    string KEY_WINDOWED_WIDTH = "KEY_WINDOWED_WIDTH";
+    string KEY_WINDOWED_HEIGHT = "KEY_WINDOWED_HEIGHT";
+    private void OnGUI()
+    {
+        if (GUILayout.Button("fullscreen"))
+        {
+            if (!Screen.fullScreen)
+            {
+                PlayerPrefs.SetInt(KEY_WINDOWED_WIDTH, Screen.width);
+                PlayerPrefs.SetInt(KEY_WINDOWED_HEIGHT, Screen.height);
+                Screen.SetResolution(Screen.currentResolution.width, Screen.currentResolution.height, true);
+            }
+            else
+            {
+                int width = PlayerPrefs.GetInt(KEY_WINDOWED_WIDTH, 800);
+                int height = PlayerPrefs.GetInt(KEY_WINDOWED_HEIGHT, 600);
+                Screen.SetResolution(width, height, false);
+            }
         }
     }
 }
