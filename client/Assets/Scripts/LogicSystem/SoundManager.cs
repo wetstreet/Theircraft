@@ -89,6 +89,8 @@ public class SoundManager : MonoBehaviour
         {CSBlockType.Sand, Material_Sand },
         
         {CSBlockType.Glass, Material_Glass },
+        {CSBlockType.Ice, Material_Glass },
+        {CSBlockType.PackedIce, Material_Glass },
     };
 
     static SoundManager instance;

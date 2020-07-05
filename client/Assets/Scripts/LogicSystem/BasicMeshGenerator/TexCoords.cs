@@ -159,4 +159,12 @@ public class TexCoords
             front = uv,
         };
     }
+
+    public static TexCoords Chest()
+    {
+        return new TexCoords
+        {
+            isTransparent = true,
+        };
+    }
 }

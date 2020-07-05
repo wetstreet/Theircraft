@@ -1078,7 +1078,16 @@ namespace protocol.cs_theircraft
       AcaciaSapling = 90,
             
       [global::ProtoBuf.ProtoEnum(Name=@"DarkOakSapling", Value=91)]
-      DarkOakSapling = 91
+      DarkOakSapling = 91,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"Ice", Value=92)]
+      Ice = 92,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"PackedIce", Value=93)]
+      PackedIce = 93,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"Chest", Value=94)]
+      Chest = 94
     }
   
     [global::ProtoBuf.ProtoContract(Name=@"CSBlockOrientation")]

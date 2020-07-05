@@ -94,6 +94,9 @@ enum CSBlockType
 	JungleSapling = 89;
 	AcaciaSapling = 90;
 	DarkOakSapling = 91;
+	Ice = 92;
+	PackedIce = 93;
+	Chest = 94;
 }
 
 enum CSBlockOrientation

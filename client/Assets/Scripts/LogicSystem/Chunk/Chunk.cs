@@ -100,6 +100,14 @@ public class Chunk
     }
 
     //input is local position
+    public void SetBlockTypeByGlobalPosition(int _x, int _y, int _z, CSBlockType type)
+    {
+        int xInChunk = GetXInChunkByGlobalX(_x);
+        int zInChunk = GetZInChunkByGlobalZ(_z);
+        blocksInByte[256 * _y + 16 * xInChunk + zInChunk] = (byte)type;
+    }
+
+    //input is local position
     public void SetBlockType(int xInChunk, int _y, int zInChunk, CSBlockType type)
     {
         blocksInByte[256 * _y + 16 * xInChunk + zInChunk] = (byte)type;

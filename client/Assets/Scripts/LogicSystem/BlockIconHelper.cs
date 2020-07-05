@@ -84,6 +84,9 @@ public class BlockIconHelper
         {CSBlockType.JungleLog, "Jungle_Log_Axis_Y_JE6_BE3" },
         {CSBlockType.AcaciaLog, "Acacia_Log_Axis_Y_JE5_BE3" },
         {CSBlockType.DarkOakLog, "Dark_Oak_Log_Axis_Y_JE5_BE3" },
+        {CSBlockType.Ice, "Ice_JE1_BE3" },
+        {CSBlockType.PackedIce, "Packed_Ice_JE1_BE2" },
+        {CSBlockType.Chest, "Chest" },
 
         {CSBlockType.Torch, "torch" },
         {CSBlockType.Cobweb, "web" },

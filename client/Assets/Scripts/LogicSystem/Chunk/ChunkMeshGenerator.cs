@@ -126,6 +126,9 @@ public static class ChunkMeshGenerator
     public static Vector2Int uv_acacia_sapling = new Vector2Int(20, 15);
     public static Vector2Int uv_dark_oak_sapling = new Vector2Int(21, 15);
 
+    public static Vector2Int uv_podzol_top = new Vector2Int(15, 16);
+    public static Vector2Int uv_podzol_side = new Vector2Int(16, 16);
+    public static Vector2Int uv_packed_ice = new Vector2Int(17, 16);
     public static Vector2Int uv_spruce_log_top = new Vector2Int(18, 16);
     public static Vector2Int uv_birch_log_top = new Vector2Int(19, 16);
     public static Vector2Int uv_jungle_log_top = new Vector2Int(20, 16);
@@ -323,6 +326,12 @@ public static class ChunkMeshGenerator
         TexCoords.Plant(uv_acacia_sapling),
         // DarkOakSapling
         TexCoords.Plant(uv_dark_oak_sapling),
+        // Ice
+        TexCoords.Block_1_transparent(uv_ice),
+        // PackedIce
+        TexCoords.Block_1(uv_packed_ice),
+        // Chest
+        TexCoords.Chest(),
     };
 
     static Dictionary<CSBlockType, Mesh> type2mesh = new Dictionary<CSBlockType, Mesh>();
@@ -344,7 +353,7 @@ public static class ChunkMeshGenerator
 
     public static bool IsCubeType(CSBlockType type)
     {
-        return !type2texcoords[(byte)type].isPlant && type != CSBlockType.Torch;
+        return !type2texcoords[(byte)type].isPlant && type != CSBlockType.Torch && type != CSBlockType.Chest;
     }
 
     public static bool IsStair(CSBlockType type)
