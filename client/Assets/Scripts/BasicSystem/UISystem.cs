@@ -36,6 +36,14 @@ public class UISystem : MonoBehaviour
         }
     }
 
+    private void Awake()
+    {
+        lastScale = 0;
+        canvas = GameObject.Find("Canvas");
+        canvasScaler = canvas.GetComponent<CanvasScaler>();
+        UpdateScale();
+    }
+
     private void Update()
     {
         UpdateScale();
@@ -50,9 +58,6 @@ public class UISystem : MonoBehaviour
         {
             DontDestroyOnLoad(uiroot);
         }
-        canvas = GameObject.Find("Canvas");
-        canvasScaler = canvas.GetComponent<CanvasScaler>();
-        UpdateScale();
     }
 
     public static void DestroyUIRoot()

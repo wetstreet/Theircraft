@@ -96,9 +96,9 @@ public class CreativeInventory : MonoBehaviour
         CSBlockType.NetherBrickSlab,
         CSBlockType.QuartzSlab,
         CSBlockType.Glass,
-        CSBlockType.Ice,
+        //CSBlockType.Ice,
         CSBlockType.PackedIce,
-        CSBlockType.Chest,
+        //CSBlockType.Chest,
     };
 
     Transform grid;
