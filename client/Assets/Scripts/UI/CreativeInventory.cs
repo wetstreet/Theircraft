@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class CreativeInventory : MonoBehaviour
@@ -120,7 +121,6 @@ public class CreativeInventory : MonoBehaviour
         public Image icon;
         public GameObject select;
         public TextMeshProUGUI count;
-        public OnPointerCallback callbacks;
     }
 
     List<SlotItem> itemList = new List<SlotItem>();
@@ -133,7 +133,7 @@ public class CreativeInventory : MonoBehaviour
         if (Instance != null)
         {
             Instance.gameObject.SetActive(true);
-            Instance.lastStep = 0;
+            Instance.step = 0;
             Instance.slider.value = 0;
             Instance.RefreshUI();
             Instance.RefreshSelectPanel();
@@ -176,10 +176,10 @@ public class CreativeInventory : MonoBehaviour
         if (mouseMove != 0)
         {
             int sign = (int)Mathf.Sign(mouseMove);
-            lastStep = Mathf.Clamp(lastStep - sign, 0, steps - 1);
+            step = Mathf.Clamp(step - sign, 0, steps - 1);
 
-            RefreshUI(lastStep);
-            slider.value = lastStep / (steps - 1f);
+            RefreshUI();
+            slider.value = step / (steps - 1f);
         }
 
         if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.E))
@@ -196,14 +196,14 @@ public class CreativeInventory : MonoBehaviour
 
     int steps;
     float interval;
-    int lastStep;
+    int step;
     void OnValueChanged(float value)
     {
-        int step = Mathf.Min(Mathf.FloorToInt(value / interval), steps - 1);
-        if (step != lastStep)
+        int newStep = Mathf.Min(Mathf.FloorToInt(value / interval), steps - 1);
+        if (newStep != step)
         {
-            RefreshUI(step);
-            lastStep = step;
+            step = newStep;
+            RefreshUI();
         }
     }
 
@@ -212,51 +212,35 @@ public class CreativeInventory : MonoBehaviour
         for (int i = 0; i < 45; i++)
         {
             Transform trans = Instantiate(unit);
+            trans.name = i.ToString();
             trans.parent = grid;
             trans.localScale = Vector3.one;
             trans.gameObject.SetActive(true);
 
             SlotItem item = new SlotItem();
             item.icon = trans.GetComponent<Image>();
-            OnPointerCallback callbacks = trans.GetComponent<OnPointerCallback>();
-            callbacks.index = i;
-            callbacks.pointerEnterCallback = (int index) =>
-            {
-                if (!holdItem)
-                {
-                    showDesc = true;
-                    showIndex = index;
-                }
-            };
-            callbacks.pointerExitCallback = (int index) =>
-            {
-                showDesc = false;
-            };
-            callbacks.pointerDownCallback = (int index) =>
-            {
-                OnItemClick(index);
-            };
-            item.callbacks = callbacks;
-
             itemList.Add(item);
         }
     }
 
+    GraphicRaycaster gr;
+    GameObject mask;
     // Start is called before the first frame update
     void Start()
     {
+        mask = transform.Find("mask").gameObject;
+        gr = gameObject.AddComponent<GraphicRaycaster>();
         descTrans = transform.Find("desc").GetComponent<RectTransform>();
         descLabel = descTrans.Find("text").GetComponent<TextMeshProUGUI>();
-        transform.Find("mask").GetComponent<OnPointerCallback>().pointerDownCallback = OnClickMask;
 
         slider = transform.Find("Slider").GetComponent<Slider>();
         slider.onValueChanged.AddListener(OnValueChanged);
 
-        lastStep = 0;
+        step = 0;
         steps = 1 + Mathf.CeilToInt((blocks.Length - 45) / 9f);
         interval = 1f / steps;
 
-        grid = transform.Find("Content");
+        grid = transform.Find("BagGrid");
         unit = grid.Find("unit");
         holdItemImage = transform.Find("holdItem").GetComponent<Image>();
         unit.gameObject.SetActive(false);
@@ -267,47 +251,91 @@ public class CreativeInventory : MonoBehaviour
         RefreshSelectPanel();
     }
 
+    Transform selectPanel;
     void InitSelectPanel()
     {
-        Transform selectPanel = transform.Find("selectPanel");
+        selectPanel = transform.Find("SelectGrid");
+        Transform unit = selectPanel.Find("unit");
+        unit.gameObject.SetActive(false);
         for (int i = 0; i < 9; i++)
         {
+            Transform trans = Instantiate(unit);
+            trans.name = i.ToString();
+            trans.gameObject.SetActive(true);
+            trans.parent = selectPanel;
+            trans.localScale = Vector3.one;
+
             SlotItem item = new SlotItem();
-            Transform trans = selectPanel.GetChild(i);
             item.icon = trans.GetComponent<Image>();
             item.count = trans.GetComponentInChildren<TextMeshProUGUI>();
-            OnPointerCallback callbacks = trans.GetComponent<OnPointerCallback>();
-            callbacks.index = i;
-            callbacks.pointerEnterCallback = (int index) =>
-            {
-                showSelectDesc = true;
-                showSelectIndex = index;
-            };
-            callbacks.pointerExitCallback = (int index) =>
-            {
-                showSelectDesc = false;
-            };
-            callbacks.pointerDownCallback = (int index) =>
-            {
-                OnClickSelectItem(index);
-            };
             selectItems[i] = item;
         }
     }
 
+    void HandleMouseOperation()
+    {
+        PointerEventData ped = new PointerEventData(null) { position = Input.mousePosition };
+        List<RaycastResult> results = new List<RaycastResult>();
+        gr.Raycast(ped, results);
+        showDesc = false;
+        showSelectDesc = false;
+        foreach (RaycastResult result in results)
+        {
+            if (result.gameObject.transform.parent == grid.transform)
+            {
+                int curIndex = int.Parse(result.gameObject.name) + step * 9;
+                if (curIndex < blocks.Length)
+                {
+                    showDesc = true;
+                    if (showIndex != curIndex && !holdItem)
+                    {
+                        showIndex = curIndex;
+                    }
+                    if (Input.GetKeyDown(KeyCode.Mouse0))
+                    {
+                        OnItemClick(curIndex);
+                    }
+                }
+                break;
+            }
+            else if (result.gameObject.transform.parent == selectPanel)
+            {
+                showSelectDesc = true;
+                int curIndex = int.Parse(result.gameObject.name);
+                if (showSelectIndex != curIndex)
+                {
+                    showSelectIndex = curIndex;
+                }
+                if (Input.GetKeyDown(KeyCode.Mouse0))
+                {
+                    OnClickSelectItem(curIndex);
+                }
+                break;
+            }
+            else if (result.gameObject == mask)
+            {
+                if (Input.GetKeyDown(KeyCode.Mouse0))
+                {
+                    OnClickMask();
+                }
+            }
+        }
+    }
+    
     // Update is called once per frame
-    static Vector3 offset = new Vector3(16, 0, 0);
     void Update()
     {
+        HandleMouseOperation();
         HandleInputUpdate();
         UpdateDesc();
 
         if (holdItem || holdSelectItem)
         {
-            holdItemImage.rectTransform.anchoredPosition = Input.mousePosition;
+            holdItemImage.rectTransform.anchoredPosition = Input.mousePosition / UISystem.scale;
         }
     }
-    
+
+    static Vector3 offset = new Vector3(8, 0, 0);
     void UpdateDesc()
     {
         if ((showDesc || (showSelectDesc && ItemSelectPanel.dataList[showSelectIndex] != CSBlockType.None)) && !holdItem && !holdSelectItem)
@@ -316,7 +344,7 @@ public class CreativeInventory : MonoBehaviour
             {
                 descTrans.gameObject.SetActive(true);
             }
-            descTrans.anchoredPosition = Input.mousePosition + offset;
+            descTrans.anchoredPosition = Input.mousePosition / UISystem.scale + offset;
 
             string name = "";
             if (showDesc)
@@ -328,7 +356,7 @@ public class CreativeInventory : MonoBehaviour
                 name = ItemSelectPanel.dataList[showSelectIndex].ToString();
             }
             descLabel.text = name;
-            descTrans.sizeDelta = new Vector2(Mathf.CeilToInt(descLabel.renderedWidth) + 16, 32);
+            descTrans.sizeDelta = new Vector2(Mathf.CeilToInt(descLabel.renderedWidth) + 10, 16);
         }
         else
         {
@@ -366,24 +394,22 @@ public class CreativeInventory : MonoBehaviour
         }
     }
 
-    void RefreshUI(int step = 0)
+    void RefreshUI()
     {
         for (int i = 0; i < 45; i++)
         {
             int realIndex = i + step * 9;
             if (realIndex < blocks.Length)
             {
-                itemList[i].callbacks.enabled = true;
-                itemList[i].callbacks.index = realIndex;
                 itemList[i].icon.enabled = true;
                 itemList[i].icon.sprite = BlockIconHelper.GetIcon(blocks[realIndex]);
             }
             else
             {
-                itemList[i].callbacks.enabled = false;
                 itemList[i].icon.enabled = false;
             }
         }
+        UpdateDesc();
     }
 
     void OnItemClick(int index)
@@ -408,7 +434,7 @@ public class CreativeInventory : MonoBehaviour
         }
     }
 
-    void OnClickMask(int index)
+    void OnClickMask()
     {
         //Debug.Log("onclickmask");
         if (holdItem)

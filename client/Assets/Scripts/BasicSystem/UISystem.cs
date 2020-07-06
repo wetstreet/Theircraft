@@ -7,8 +7,7 @@ public class UISystem : MonoBehaviour
     static GameObject canvas;
     static CanvasScaler canvasScaler;
 
-    int lastScale;
-    static int scale
+    public static int scale
     {
         get
         {
@@ -27,13 +26,19 @@ public class UISystem : MonoBehaviour
         }
     }
 
-    private void Update()
+    static int lastScale;
+    static void UpdateScale()
     {
         if (lastScale != scale)
         {
             lastScale = scale;
             canvasScaler.scaleFactor = scale;
         }
+    }
+
+    private void Update()
+    {
+        UpdateScale();
     }
 
     static void InitializeCanvas()
@@ -47,7 +52,7 @@ public class UISystem : MonoBehaviour
         }
         canvas = GameObject.Find("Canvas");
         canvasScaler = canvas.GetComponent<CanvasScaler>();
-        canvasScaler.scaleFactor = scale;
+        UpdateScale();
     }
 
     public static void DestroyUIRoot()
