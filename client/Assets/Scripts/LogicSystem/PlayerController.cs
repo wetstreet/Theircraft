@@ -192,7 +192,7 @@ public class PlayerController : MonoBehaviour
                     }
                 }
             }
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (Input.GetKey(KeyCode.Space))
             {
                 Jump();
             }
@@ -288,6 +288,23 @@ public class PlayerController : MonoBehaviour
             //newCameraPosition.y = m_OriginalCameraPosition.y - m_JumpBob.Offset();
         }
         camera.transform.localPosition = newCameraPosition;
+    }
+
+    private void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        if (hit.normal != Vector3.up)
+        {
+            //非地面
+            float diff = hit.point.y - transform.localPosition.y;
+            if (diff > 0 && diff <= 0.5f)
+            {
+                cc.stepOffset = 0.5f;
+            }
+            else
+            {
+                cc.stepOffset = 0f;
+            }
+        }
     }
 
     public float inAirSpeed = 0.1f;
