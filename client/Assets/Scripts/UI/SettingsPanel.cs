@@ -10,6 +10,7 @@ public class SettingsPanel : MonoBehaviour {
     TextMeshProUGUI sliderLabel;
     Slider masterVolumeSlider;
     TextMeshProUGUI masterVolumeLabel;
+    TextMeshProUGUI fullscreenLabel;
 
     static readonly string MASTER_VOLUME_KEY = "MASTER_VOLUME_KEY";
     static readonly string RENDER_DISTANCE_KEY = "RENDER_DISTANCE_KEY";
@@ -34,6 +35,7 @@ public class SettingsPanel : MonoBehaviour {
         if (Instance != null)
         {
             Instance.gameObject.SetActive(true);
+            Instance.RefreshFullscreenLabel();
         }
         else
         {
@@ -98,22 +100,59 @@ public class SettingsPanel : MonoBehaviour {
     // Use this for initialization
     void Start ()
     {
-        transform.Find("btn_quit").GetComponent<Button>().onClick.AddListener(OnClickQuit);
-        Utilities.SetClickCallback(transform, "btn_close", OnClickClose);
-        renderDistanceSlider = transform.Find("slider_chunkview").GetComponent<Slider>();
+        transform.Find("grid/btn_quit").GetComponent<Button>().onClick.AddListener(OnClickQuit);
+        Utilities.SetClickCallback(transform, "grid/btn_close", OnClickClose);
+        Utilities.SetClickCallback(transform, "grid/btn_fullscreen", OnClickFullscreen);
+        renderDistanceSlider = transform.Find("grid/slider_chunkview").GetComponent<Slider>();
         renderDistanceSlider.minValue = MinChunkView;
         renderDistanceSlider.maxValue = MaxChunkView;
         renderDistanceSlider.onValueChanged.AddListener(OnRenderDistanceChange);
-        sliderLabel = transform.Find("slider_chunkview/slider_label").GetComponent<TextMeshProUGUI>();
-        masterVolumeSlider = transform.Find("slider_master_volume").GetComponent<Slider>();
+        sliderLabel = transform.Find("grid/slider_chunkview/slider_label").GetComponent<TextMeshProUGUI>();
+        masterVolumeSlider = transform.Find("grid/slider_master_volume").GetComponent<Slider>();
         masterVolumeSlider.onValueChanged.AddListener(OnMasterVolumeChange);
-        masterVolumeLabel = transform.Find("slider_master_volume/label_master_volume").GetComponent<TextMeshProUGUI>();
+        masterVolumeLabel = transform.Find("grid/slider_master_volume/label_master_volume").GetComponent<TextMeshProUGUI>();
+        fullscreenLabel = transform.Find("grid/btn_fullscreen/label").GetComponent<TextMeshProUGUI>();
+        RefreshFullscreenLabel();
 
         RefreshRenderDistanceLabel();
         renderDistanceSlider.value = RenderDistance;
 
         RefreshMasterVolumeLabel();
         masterVolumeSlider.value = MasterVolume;
+    }
+
+    void RefreshFullscreenLabel()
+    {
+        if (Screen.fullScreen)
+        {
+            fullscreenLabel.text = "Fullscreen: On";
+        }
+        else
+        {
+            fullscreenLabel.text = "Fullscreen: Off";
+        }
+    }
+    
+    string KEY_WINDOWED_WIDTH = "KEY_WINDOWED_WIDTH";
+    string KEY_WINDOWED_HEIGHT = "KEY_WINDOWED_HEIGHT";
+    void OnClickFullscreen()
+    {
+#if !UNITY_EDITOR
+        if (!Screen.fullScreen)
+        {
+            PlayerPrefs.SetInt(KEY_WINDOWED_WIDTH, Screen.width);
+            PlayerPrefs.SetInt(KEY_WINDOWED_HEIGHT, Screen.height);
+            Screen.SetResolution(Screen.currentResolution.width, Screen.currentResolution.height, true);
+            fullscreenLabel.text = "Fullscreen: On";
+        }
+        else
+        {
+            int width = PlayerPrefs.GetInt(KEY_WINDOWED_WIDTH, 800);
+            int height = PlayerPrefs.GetInt(KEY_WINDOWED_HEIGHT, 600);
+            Screen.SetResolution(width, height, false);
+            fullscreenLabel.text = "Fullscreen: Off";
+        }
+#endif
     }
 
     private void OnDestroy()
@@ -148,27 +187,6 @@ public class SettingsPanel : MonoBehaviour {
         else
         {
             masterVolumeLabel.text = $"Master Volume: {MasterVolume}%";
-        }
-    }
-
-    string KEY_WINDOWED_WIDTH = "KEY_WINDOWED_WIDTH";
-    string KEY_WINDOWED_HEIGHT = "KEY_WINDOWED_HEIGHT";
-    private void OnGUI()
-    {
-        if (GUILayout.Button("fullscreen"))
-        {
-            if (!Screen.fullScreen)
-            {
-                PlayerPrefs.SetInt(KEY_WINDOWED_WIDTH, Screen.width);
-                PlayerPrefs.SetInt(KEY_WINDOWED_HEIGHT, Screen.height);
-                Screen.SetResolution(Screen.currentResolution.width, Screen.currentResolution.height, true);
-            }
-            else
-            {
-                int width = PlayerPrefs.GetInt(KEY_WINDOWED_WIDTH, 800);
-                int height = PlayerPrefs.GetInt(KEY_WINDOWED_HEIGHT, 600);
-                Screen.SetResolution(width, height, false);
-            }
         }
     }
 }
