@@ -31,6 +31,10 @@ public class Chunk
     public Mesh collidableMesh;
     public Mesh nonCollidableMesh;
 
+    public bool hasBuiltMesh = false;
+
+    public List<Vector3Int> torchList = new List<Vector3Int>();
+
     public Chunk()
     {
         gameObject = new GameObject("chunk (" + x + "," + z + ")");
@@ -158,7 +162,19 @@ public class Chunk
 
     public void ClearData()
     {
+        hasBuiltMesh = false;
+        foreach (Vector3Int torchPos in torchList)
+        {
+            TorchMeshGenerator.Instance.RemoveTorchAt(torchPos);
+        }
+        torchList.Clear();
         collidableGO.GetComponent<MeshFilter>().sharedMesh = null;
         nonCollidableGO.GetComponent<MeshFilter>().sharedMesh = null;
+    }
+
+    public void AddTorch(Vector3Int globalPos)
+    {
+        TorchMeshGenerator.Instance.AddTorchAt(globalPos);
+        torchList.Add(globalPos);
     }
 }

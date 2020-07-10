@@ -17,8 +17,23 @@ public class ChunkComparer : IComparer<Chunk>
         }
     }
 
-    int IComparer<Chunk>.Compare(Chunk x, Chunk y)
+    int IComparer<Chunk>.Compare(Chunk a, Chunk b)
     {
-        return -PlayerController.GetChunkToFrontDot(x).CompareTo(PlayerController.GetChunkToFrontDot(y));
+        bool isNearByA = PlayerController.IsNearByChunk(a);
+        bool isNearByB = PlayerController.IsNearByChunk(b);
+        if (isNearByA && !isNearByB)
+        {
+            return -1;
+        }
+        else if (isNearByB && !isNearByA)
+        {
+            return 1;
+        }
+        else
+        {
+            float dotA = PlayerController.GetChunkToFrontDot(a);
+            float dotB = PlayerController.GetChunkToFrontDot(b);
+            return -dotA.CompareTo(dotB);
+        }
     }
 }

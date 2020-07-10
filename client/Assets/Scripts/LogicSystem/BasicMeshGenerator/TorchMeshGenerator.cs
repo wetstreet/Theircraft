@@ -75,28 +75,57 @@ public class TorchMeshGenerator : IMeshGenerator
         return mesh;
     }
 
+    Dictionary<Vector3Int, GameObject> pos2objDict = new Dictionary<Vector3Int, GameObject>();
+
+    public void AddTorchAt(Vector3Int globalPos)
+    {
+        Mesh mesh = GetTorchMesh(globalPos);
+        GameObject obj = new GameObject("torch");
+        obj.transform.position = globalPos;
+        obj.AddComponent<MeshFilter>().mesh = mesh;
+        obj.AddComponent<MeshRenderer>().material = Resources.Load<Material>("Materials/torch");
+        GameObject prefab = Resources.Load<GameObject>("Prefabs/TorchEffect");
+        GameObject effect = Object.Instantiate(prefab);
+        effect.transform.parent = obj.transform;
+        effect.transform.localPosition = Vector3.zero;
+        obj.AddComponent<MeshCollider>();
+        obj.layer = LayerMask.NameToLayer("Chunk");
+
+        pos2objDict.Add(globalPos, obj);
+    }
+
+    public void RemoveTorchAt(Vector3Int globalPos)
+    {
+        if (pos2objDict.ContainsKey(globalPos))
+        {
+            GameObject obj = pos2objDict[globalPos];
+            pos2objDict.Remove(globalPos);
+            Object.Destroy(obj);
+        }
+    }
+
     override public void GenerateMeshInChunk(CSBlockType type, Vector3Int posInChunk, Vector3Int globalPos, List<Vector3> vertices, List<Vector2> uv, List<int> triangles)
     {
-        TexCoords texCoords = ChunkMeshGenerator.type2texcoords[(byte)type];
-        Vector2Int texPos = texCoords.front;
-        texPos.y = (atlas_row - 1) - texPos.y;
+        //TexCoords texCoords = ChunkMeshGenerator.type2texcoords[(byte)type];
+        //Vector2Int texPos = texCoords.front;
+        //texPos.y = (atlas_row - 1) - texPos.y;
 
-        Mesh torchMesh = GetTorchMesh(globalPos);
-        int length = vertices.Count;
-        foreach (Vector3 singleVertex in torchMesh.vertices)
-        {
-            Vector3 pos = singleVertex + posInChunk;
-            vertices.Add(pos);
-        }
+        //Mesh torchMesh = GetTorchMesh(globalPos);
+        //int length = vertices.Count;
+        //foreach (Vector3 singleVertex in torchMesh.vertices)
+        //{
+        //    Vector3 pos = singleVertex + posInChunk;
+        //    vertices.Add(pos);
+        //}
 
-        foreach (Vector2 singleUV in torchMesh.uv)
-        {
-            uv.Add(new Vector2((texPos.x + singleUV.x) / atlas_column, (texPos.y + singleUV.y) / atlas_row));
-        }
+        //foreach (Vector2 singleUV in torchMesh.uv)
+        //{
+        //    uv.Add(new Vector2((texPos.x + singleUV.x) / atlas_column, (texPos.y + singleUV.y) / atlas_row));
+        //}
 
-        foreach (int index in torchMesh.triangles)
-        {
-            triangles.Add(index + length);
-        }
+        //foreach (int index in torchMesh.triangles)
+        //{
+        //    triangles.Add(index + length);
+        //}
     }
 }

@@ -137,6 +137,16 @@ public class PlayerController : MonoBehaviour
         instance.blockMeshFilter.transform.gameObject.SetActive(false);
     }
 
+    public static bool IsNearByChunk(Chunk chunk)
+    {
+        return Mathf.Abs(chunk.pos.x - chunkPos.x) <= 1 && Mathf.Abs(chunk.pos.y - chunkPos.y) <= 1;
+    }
+    
+    public static int GetChunkDistance(Chunk chunk)
+    {
+        return Mathf.Max(Mathf.Abs(chunk.pos.x - chunkPos.x), Mathf.Abs(chunk.pos.y - chunkPos.y));
+    }
+
     public static void ShowBlock(CSBlockType type)
     {
         instance.handMeshRenderer.enabled = false;

@@ -16,9 +16,7 @@ public class ChunkRefresher
         {
             refreshChunkList.Sort(ChunkComparer.instance);
             Chunk chunk = refreshChunkList[0];
-
-            // do not refresh if chunk is not in front
-            if (PlayerController.GetChunkToFrontDot(chunk) > 0)
+            if (PlayerController.GetChunkToFrontDot(chunk) > 0 || PlayerController.IsNearByChunk(chunk))
             {
                 chunk.RebuildMesh();
                 refreshChunkList.RemoveAt(0);

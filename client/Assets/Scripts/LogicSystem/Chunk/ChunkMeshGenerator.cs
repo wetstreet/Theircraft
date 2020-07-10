@@ -464,7 +464,11 @@ public static class ChunkMeshGenerator
                             }
                             else if (type == CSBlockType.Torch)
                             {
-                                TorchMeshGenerator.Instance.GenerateMeshInChunk(type, pos, globalPos, chunk.vertices2, chunk.uv2, chunk.triangles2);
+                                if (!chunk.hasBuiltMesh)
+                                {
+                                    //加载完第一次build
+                                    chunk.AddTorch(globalPos);
+                                }
                             }
                             else
                             {
@@ -475,6 +479,7 @@ public static class ChunkMeshGenerator
                 }
             }
         }
+        chunk.hasBuiltMesh = true;
     }
 
     public static CSBlockOrientation GetBlockOrientation(Vector3 playerPos, Vector3 blockPos, Vector3 hitPos)

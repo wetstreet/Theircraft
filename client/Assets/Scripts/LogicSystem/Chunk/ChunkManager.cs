@@ -167,6 +167,11 @@ public class ChunkManager
             {
                 nearbyChunk.RebuildMesh();
             }
+
+            if (block.type == CSBlockType.Torch)
+            {
+                chunk.AddTorch(pos);
+            }
         }
     }
 
@@ -230,6 +235,11 @@ public class ChunkManager
             Item.CreateBlockDropItem(type, pos);
             BreakBlockEffect.Create(type, pos);
             SoundManager.PlayBreakSound(type, PlayerController.instance.gameObject);
+
+            if (type == CSBlockType.Torch)
+            {
+                TorchMeshGenerator.Instance.RemoveTorchAt(pos);
+            }
         }
     }
 
