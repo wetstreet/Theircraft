@@ -2,15 +2,10 @@ Library
 obj
 Temp
 .vs
-Assembly-CSharp.csproj
-Assembly-CSharp-Editor-firstpass.csproj
-Assembly-CSharp-firstpass.csproj
-Theircraft-unity.sln
-client.sln
-Theircraft.sln
+*.sln
+*.csproj
 .idea/
 Theircraft-unity.sln.DotSettings.user
 ProjectSettings/ProjectVersion.txt
-Assembly-CSharp-Editor.csproj
 Assets/test.cs
 Flatbuffers/python/excel2fbs.pyc
