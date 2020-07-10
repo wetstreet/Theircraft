@@ -39,7 +39,7 @@ public class DebugUI : MonoBehaviour
     int GetFPS()
     {
         frameCount++;
-        float curTime = Time.time;
+        float curTime = Time.unscaledTime;
         if (curTime - timeStamp >= 1)
         {
             fps = frameCount;

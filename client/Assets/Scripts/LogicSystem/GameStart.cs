@@ -7,6 +7,7 @@ public class GameStart : MonoBehaviour
 {
     void Start()
     {
+        SettingsPanel.Init();
         ChunkChecker.Init();
         ChunkRefresher.Init();
         ChunkManager.Init();
