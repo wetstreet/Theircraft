@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Main Camera Profile
   m_EditorClassIdentifier: 
   settings:
-  - {fileID: 114851722061952250}
---- !u!114 &114851722061952250
+  - {fileID: 267184176148417761}
+--- !u!114 &267184176148417761
 MonoBehaviour:
   m_ObjectHideFlags: 3
   m_CorrespondingSourceObject: {fileID: 0}
@@ -32,13 +32,13 @@ MonoBehaviour:
     value: 1
   focusDistance:
     overrideState: 1
-    value: 2.46
+    value: 1.2
   aperture:
     overrideState: 0
-    value: 2.4
+    value: 3.3
   focalLength:
-    overrideState: 0
-    value: 24
+    overrideState: 1
+    value: 56
   kernelSize:
     overrideState: 1
-    value: 0
+    value: 3
