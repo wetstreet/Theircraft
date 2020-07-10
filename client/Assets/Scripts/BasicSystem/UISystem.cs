@@ -11,11 +11,23 @@ public class UISystem : MonoBehaviour
     {
         get
         {
-            if (Screen.width > 962 && Screen.height > 758)
+            if (Screen.width >= 1920 && Screen.height >= 1440)
+            {
+                return 6;
+            }
+            else if (Screen.width >= 1600 && Screen.height >= 1200)
+            {
+                return 5;
+            }
+            else if (Screen.width >= 1280 && Screen.height >= 960)
+            {
+                return 4;
+            }
+            else if (Screen.width >= 960 && Screen.height >= 720)
             {
                 return 3;
             }
-            else if (Screen.width > 640 && Screen.height > 520)
+            else if (Screen.width >= 640 && Screen.height >= 480)
             {
                 return 2;
             }
