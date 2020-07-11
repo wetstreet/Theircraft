@@ -51,45 +51,40 @@ public class TorchMeshGenerator : IMeshGenerator
 
     static Vector3Int forward = new Vector3Int(0, 0, -1);
     static Vector3Int back = new Vector3Int(0, 0, 1);
-    static Mesh GetTorchMesh(Vector3Int globalPosition)
+
+    static GameObject GetTorchPrefab(Vector3Int globalPosition)
     {
-        Mesh mesh = LoadMesh("Meshes/blocks/torch/torch");
         Vector3Int dependPos = ChunkManager.GetBlockDependence(globalPosition);
         Vector3Int diff = dependPos - globalPosition;
         if (diff == Vector3Int.left)
         {
-            mesh = LoadMesh("Meshes/blocks/torch/torch_+x");
+            return Resources.Load<GameObject>("Prefabs/Blocks/torch_+x");
         }
         else if (diff == Vector3Int.right)
         {
-            mesh = LoadMesh("Meshes/blocks/torch/torch_-x");
+            return Resources.Load<GameObject>("Prefabs/Blocks/torch_-x");
         }
         else if (diff == forward)
         {
-            mesh = LoadMesh("Meshes/blocks/torch/torch_+z");
+            return Resources.Load<GameObject>("Prefabs/Blocks/torch_+z");
         }
         else if (diff == back)
         {
-            mesh = LoadMesh("Meshes/blocks/torch/torch_-z");
+            return Resources.Load<GameObject>("Prefabs/Blocks/torch_-z");
         }
-        return mesh;
+        else
+        {
+            return Resources.Load<GameObject>("Prefabs/Blocks/torch");
+        }
     }
 
     Dictionary<Vector3Int, GameObject> pos2objDict = new Dictionary<Vector3Int, GameObject>();
 
     public void AddTorchAt(Vector3Int globalPos)
     {
-        Mesh mesh = GetTorchMesh(globalPos);
-        GameObject obj = new GameObject("torch");
+        GameObject prefab = GetTorchPrefab(globalPos);
+        GameObject obj = Object.Instantiate(prefab);
         obj.transform.position = globalPos;
-        obj.AddComponent<MeshFilter>().mesh = mesh;
-        obj.AddComponent<MeshRenderer>().material = Resources.Load<Material>("Materials/torch");
-        GameObject prefab = Resources.Load<GameObject>("Prefabs/TorchEffect");
-        GameObject effect = Object.Instantiate(prefab);
-        effect.transform.parent = obj.transform;
-        effect.transform.localPosition = Vector3.zero;
-        obj.AddComponent<MeshCollider>();
-        obj.layer = LayerMask.NameToLayer("Chunk");
 
         pos2objDict.Add(globalPos, obj);
     }
