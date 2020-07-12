@@ -36,6 +36,7 @@ public class ChunkManager
         chunkDict = null;
         orientationDict = null;
         dependenceDict = null;
+        TorchMeshGenerator.Instance.Clear();
     }
 
     static void AddToChunkDict(Chunk chunk)

@@ -102,23 +102,32 @@ public class PlayerController : MonoBehaviour
     }
 
     static Vector3 compensation = new Vector3(0, 0.0001f, 0);
+
+    public static Vector3Int GetCurrentBlock(Vector3 pos)
+    {
+        return Vector3Int.RoundToInt(pos + compensation);
+    }
+
     public static Vector3Int GetCurrentBlock()
     {
-        return Vector3Int.RoundToInt(instance.transform.position + compensation);
+        return GetCurrentBlock(instance.transform.position);
     }
 
     static Vector2Int chunkPos = new Vector2Int();
 
     public static Vector2Int GetCurrentChunkPos()
     {
+        Vector3Int block;
         if (instance != null)
         {
-            Utilities.GetChunk(ref chunkPos, instance.transform.localPosition);
+            block = GetCurrentBlock();
         }
         else
         {
-            Utilities.GetChunk(ref chunkPos, DataCenter.spawnPosition);
+            block = GetCurrentBlock(DataCenter.spawnPosition);
         }
+        chunkPos.x = Mathf.FloorToInt(block.x / 16f);
+        chunkPos.y = Mathf.FloorToInt(block.z / 16f);
         return chunkPos;
     }
 
@@ -331,6 +340,11 @@ public class PlayerController : MonoBehaviour
                 cc.stepOffset = 0f;
             }
         }
+        //if ((cc.collisionFlags & CollisionFlags.Above) > 0)
+        //{
+        //    Debug.Log("hit top");
+        //    //verticalSpeed = new Vector3(0, -Mathf.Abs(verticalSpeed.y), 0);
+        //}
     }
 
     public float inAirSpeed = 0.1f;

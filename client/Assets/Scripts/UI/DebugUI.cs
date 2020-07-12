@@ -59,10 +59,15 @@ public class DebugUI : MonoBehaviour
 
         Vector3 pos = PlayerController.instance.transform.position;
         text += string.Format("\nXYZ: {0:0.000} / {1:0.000} / {2:0.000}", pos.x, pos.y, pos.z);
+
         Vector3Int curBlock = PlayerController.GetCurrentBlock();
         text += string.Format("\nBlock: {0} {1} {2}", curBlock.x, curBlock.y, curBlock.z);
-        Vector2Int curChunk = PlayerController.GetCurrentChunkPos();
-        text += string.Format("\nChunk: {0} {1}", curChunk.x, curChunk.y); 
+
+        Chunk chunk = PlayerController.GetCurrentChunk();
+        int xInChunk = chunk.GetXInChunkByGlobalX(curBlock.x);
+        int zInChunk = chunk.GetZInChunkByGlobalZ(curBlock.z);
+        text += string.Format("\nChunk: {0} {1} {2} in {3} {4}", xInChunk, curBlock.y, zInChunk, chunk.x, chunk.z); 
+
         if (WireFrameHelper.render)
         {
             text += string.Format("\nLooking at: {0} {1} {2}", WireFrameHelper.pos.x, WireFrameHelper.pos.y, WireFrameHelper.pos.z);
@@ -75,8 +80,7 @@ public class DebugUI : MonoBehaviour
                 text += string.Format("\nOrient: {0}", orient);
             }
         }
-        Chunk chunk = ChunkManager.GetChunk(curChunk);
-        text += string.Format("\nLight: {0}", chunk.GetLightAtPos(curBlock));
+        text += string.Format("\nLight: {0}", chunk.GetLightAtPos(new Vector3Int(xInChunk, curBlock.y, zInChunk)));
 
         label.text = text;
     }
@@ -101,7 +105,7 @@ public class DebugUI : MonoBehaviour
         if (GUILayout.Button("floodfill"))
         {
             Chunk chunk = PlayerController.GetCurrentChunk();
-            chunk.FloodFill(new Vector3Int(0, 255, 0), 15);
+            chunk.UpdateLighting();
         }
     }
 }

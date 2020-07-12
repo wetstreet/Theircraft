@@ -35,12 +35,6 @@ public static class Utilities {
         return new CSVector3Int { x = v.x, y = v.y, z = v.z };
     }
 
-    public static void GetChunk(ref Vector2Int chunkPos, Vector3 position)
-    {
-        chunkPos.x = Mathf.FloorToInt(position.x / 16f);
-        chunkPos.y = Mathf.FloorToInt(position.z / 16f);
-    }
-
     public static List<Vector2Int> GetSurroudingChunks(Vector2Int chunk)
     {
         int chunkRange = SettingsPanel.RenderDistance;

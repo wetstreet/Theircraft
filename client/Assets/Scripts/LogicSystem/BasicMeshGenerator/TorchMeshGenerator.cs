@@ -80,6 +80,11 @@ public class TorchMeshGenerator : IMeshGenerator
 
     Dictionary<Vector3Int, GameObject> pos2objDict = new Dictionary<Vector3Int, GameObject>();
 
+    public void Clear()
+    {
+        pos2objDict.Clear();
+    }
+
     public void AddTorchAt(Vector3Int globalPos)
     {
         GameObject prefab = GetTorchPrefab(globalPos);

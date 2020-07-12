@@ -183,8 +183,15 @@ public class Chunk
         torchList.Add(globalPos);
     }
 
-
     byte[] lights = new byte[65536];
+
+    void ClearLights()
+    {
+        for (int i = 0; i < 65536; i++)
+        {
+            lights[i] = 0;
+        }
+    }
 
     public int GetLightAtPos(Vector3Int pos)
     {
@@ -192,27 +199,86 @@ public class Chunk
         return lights[index];
     }
 
+    int count;
     string log = "";
     void SetLightAtPos(Vector3Int pos, int light)
     {
-        log += "\nSetLightAtPos,pos=" + pos + ",light=" + light;
+        count++;
+        //Debug.Log("SetLightAtPos,pos=" + pos + ",light=" + light);
+        //log += "\nSetLightAtPos,pos=" + pos + ",light=" + light;
         int index = 256 * pos.y + 16 * pos.x + pos.z;
         lights[index] = (byte)light;
     }
 
     public void UpdateLighting()
     {
+        ClearLights();
         log = "";
-        FloodFill(new Vector3Int(0, 255, 0), 15);
-        Debug.Log("log=" + log);
+        count = 0;
+
+        List<Vector3Int> skyLightList = new List<Vector3Int>();
+
+        //设置天光
+        for (int x = 0; x < 16; x++)
+        {
+            for (int z = 0; z < 16; z++)
+            {
+                for (int y = 255; y >= 0; y--)
+                {
+                    Vector3Int pos = new Vector3Int(x, y, z);
+                    if (HasOpaqueBlock(pos))
+                    {
+                        break;
+                    }
+                    SetLightAtPos(pos, 15);
+                    skyLightList.Add(pos);
+                }
+            }
+        }
+
+        //扩散
+        foreach (Vector3Int pos in skyLightList)
+        {
+            if (pos.x > 0 && GetLightAtPos(pos + Utilities.vector3Int.left) < 14)
+            {
+                FloodFill(pos + Utilities.vector3Int.left, 14);
+            }
+            if (pos.x < 15 && GetLightAtPos(pos + Utilities.vector3Int.right) < 14)
+            {
+                FloodFill(pos + Utilities.vector3Int.right, 14);
+            }
+            if (pos.z < 15 && GetLightAtPos(pos + Utilities.vector3Int.forward) < 14)
+            {
+                FloodFill(pos + Utilities.vector3Int.forward, 14);
+            }
+            if (pos.z > 0 && GetLightAtPos(pos + Utilities.vector3Int.back) < 14)
+            {
+                FloodFill(pos + Utilities.vector3Int.back, 14);
+            }
+        }
+
+        //FloodFill(new Vector3Int(0, 2, 0), 15);
+        Debug.Log("count=" + count + ",log=\n" + log);
+        //for (int y = 0; y < 256; y++)
+        //{
+        //    for (int x = 0; x < 16; x++)
+        //        for (int z = 0; z < 16; z++)
+        //            Debug.Log("x=" + x + ",y=" + y + ",z=" + z + ",light=" + GetLightAtPos(new Vector3Int(x, y, z)));
+        //}
     }
 
     public void FloodFill(Vector3Int node, int targetLight)
     {
+        if (node == new Vector3Int(13, 3, 12))
+        {
+            Debug.Log("light=" + targetLight);
+        }
         int nodeLight = GetLightAtPos(node);
 
         //如果当前亮度比目标亮度大，则不更新
         if (nodeLight >= targetLight) { return; }
+
+        if (HasOpaqueBlock(node)) return;
 
         //否则更新当前节点亮度
         SetLightAtPos(node, targetLight);
@@ -225,12 +291,158 @@ public class Chunk
             FloodFill(node + Utilities.vector3Int.back, targetLight - 1);
         if (node.z < 15)
             FloodFill(node + Utilities.vector3Int.forward, targetLight - 1);
-
-
+        if (node.y > 0)
+            FloodFill(node + Utilities.vector3Int.down, targetLight - 1);
         if (node.y < 255)
-            FloodFill(node + Utilities.vector3Int.up, targetLight);
-        //如果当前节点是不透明节点，则不往下更新
-        if (node.y > 0 && !HasOpaqueBlock(node))
-            FloodFill(node + Utilities.vector3Int.down, targetLight);
+            FloodFill(node + Utilities.vector3Int.up, targetLight - 1);
     }
+
+    //byte[] lights = new byte[64];
+
+    //void ClearLights()
+    //{
+    //    for (int i = 0; i < 27; i++)
+    //    {
+    //        lights[i] = 0;
+    //    }
+    //}
+
+    //public int GetLightAtPos(Vector3Int pos)
+    //{
+    //    int index = 16 * pos.y + 4 * pos.x + pos.z;
+    //    return lights[index];
+    //}
+
+    //int count;
+    //string log = "";
+    //void SetLightAtPos(Vector3Int pos, int light)
+    //{
+    //    count++;
+    //    Debug.Log("SetLightAtPos,pos=" + pos + ",light=" + light);
+    //    //log += "\nSetLightAtPos,pos=" + pos + ",light=" + light;
+    //    int index = 16 * pos.y + 4 * pos.x + pos.z;
+    //    lights[index] = (byte)light;
+    //}
+
+    //public void UpdateLighting()
+    //{
+    //    ClearLights();
+    //    log = "";
+    //    count = 0;
+
+    //    List<Vector3Int> skyLightList = new List<Vector3Int>();
+
+    //    //设置天光
+    //    for (int x = 0; x < 4; x++)
+    //    {
+    //        for (int z = 0; z < 4; z++)
+    //        {
+    //            for (int y = 3; y >= 0; y--)
+    //            {
+    //                Vector3Int pos = new Vector3Int(x, y, z);
+    //                if (HasOpaqueBlockLight(pos))
+    //                {
+    //                    break;
+    //                }
+    //                SetLightAtPos(pos, 15);
+    //                skyLightList.Add(pos);
+    //            }
+    //        }
+    //    }
+
+    //    //扩散
+    //    foreach (Vector3Int pos in skyLightList)
+    //    {
+    //        if (pos.x > 0 && GetLightAtPos(pos + Utilities.vector3Int.left) < 14)
+    //        {
+    //            FloodFill(pos + Utilities.vector3Int.left, 14);
+    //        }
+    //        if (pos.x < 3 && GetLightAtPos(pos + Utilities.vector3Int.right) < 14)
+    //        {
+    //            FloodFill(pos + Utilities.vector3Int.right, 14);
+    //        }
+    //        if (pos.z < 3 && GetLightAtPos(pos + Utilities.vector3Int.forward) < 14)
+    //        {
+    //            FloodFill(pos + Utilities.vector3Int.forward, 14);
+    //        }
+    //        if (pos.z > 0 && GetLightAtPos(pos + Utilities.vector3Int.back) < 14)
+    //        {
+    //            FloodFill(pos + Utilities.vector3Int.back, 14);
+    //        }
+    //    }
+
+    //    //FloodFill(new Vector3Int(0, 2, 0), 15);
+    //    Debug.Log("count=" + count + ",log=\n" + log);
+    //    for (int y = 0; y < 4; y++)
+    //    {
+    //        for (int x = 0; x < 4; x++)
+    //            for (int z = 0; z < 4; z++)
+    //                Debug.Log("x=" + x + ",y=" + y + ",z=" + z + ",light=" + GetLightAtPos(new Vector3Int(x,y,z)));
+    //    }
+    //}
+
+    //int[,,] block = new int[4,4,4]
+    //{
+    //    {
+    //        { 0,0,0,0 },
+    //        { 0,0,0,0 },
+    //        { 0,0,0,0 },
+    //        { 0,0,0,0 },
+    //    },
+    //    {
+    //        { 0,1,1,1 },
+    //        { 1,0,1,1 },
+    //        { 1,1,1,1 },
+    //        { 1,1,1,1 },
+    //    },
+    //    {
+    //        { 0,1,1,1 },
+    //        { 1,1,1,1 },
+    //        { 1,1,1,1 },
+    //        { 1,1,1,1 },
+    //    },
+    //    {
+    //        { 0,0,0,0 },
+    //        { 0,0,0,0 },
+    //        { 0,0,0,0 },
+    //        { 0,0,0,0 },
+    //    }
+    //};
+
+
+    //bool HasOpaqueBlockLight(Vector3Int pos)
+    //{
+    //    if (block[pos.y, pos.x, pos.z] == 1)
+    //    {
+    //        return true;
+    //    }
+    //    return false;
+    //}
+
+    //public void FloodFill(Vector3Int node, int targetLight)
+    //{
+    //    int nodeLight = GetLightAtPos(node);
+
+    //    //如果当前亮度比目标亮度大，则不更新
+    //    if (nodeLight >= targetLight) { return; }
+
+    //    if (HasOpaqueBlockLight(node)) return;
+
+    //    //否则更新当前节点亮度
+    //    SetLightAtPos(node, targetLight);
+
+    //    //天光在竖直方向上不衰减
+    //    if (node.y > 0)
+    //        FloodFill(node + Utilities.vector3Int.down, targetLight - 1);
+    //    if (node.y < 3)
+    //        FloodFill(node + Utilities.vector3Int.up, targetLight - 1);
+    //    if (node.x > 0)
+    //        FloodFill(node + Utilities.vector3Int.left, targetLight - 1);
+    //    if (node.x < 3)
+    //        FloodFill(node + Utilities.vector3Int.right, targetLight - 1);
+    //    if (node.z > 0)
+    //        FloodFill(node + Utilities.vector3Int.back, targetLight - 1);
+    //    if (node.z < 3)
+    //        FloodFill(node + Utilities.vector3Int.forward, targetLight - 1);
+    //}
 }

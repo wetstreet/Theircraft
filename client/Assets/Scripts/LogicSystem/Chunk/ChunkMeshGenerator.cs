@@ -426,6 +426,8 @@ public static class ChunkMeshGenerator
         chunk.uv2.Clear();
         chunk.triangles2.Clear();
 
+        List<Color> colors = new List<Color>();
+
         Vector3Int pos = new Vector3Int();
         Vector3Int globalPos = new Vector3Int();
         //压缩后的数据结构
@@ -480,6 +482,8 @@ public static class ChunkMeshGenerator
             }
         }
         chunk.hasBuiltMesh = true;
+
+        chunk.UpdateLighting();
     }
 
     public static CSBlockOrientation GetBlockOrientation(Vector3 playerPos, Vector3 blockPos, Vector3 hitPos)
