@@ -31,7 +31,7 @@ public static class ChunkChecker
             return;
         }
 
-        Vector2Int curChunk = PlayerController.GetCurrentChunk();
+        Vector2Int curChunk = PlayerController.GetCurrentChunkPos();
 
         // if player moved to another chunk or render distance is changed, then try to refresh chunks data.
         if (lastChunk != curChunk || lastRenderDistance != SettingsPanel.RenderDistance)

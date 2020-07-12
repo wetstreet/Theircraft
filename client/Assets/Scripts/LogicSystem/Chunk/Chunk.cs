@@ -138,6 +138,11 @@ public class Chunk
         return type > 0 && !ChunkMeshGenerator.type2texcoords[type].isTransparent;
     }
 
+    public bool HasOpaqueBlock(Vector3Int pos)
+    {
+        return HasOpaqueBlock(pos.x, pos.y, pos.z);
+    }
+
     public void RebuildMesh(bool forceRefreshMeshData = true)
     {
         if (forceRefreshMeshData)
@@ -176,5 +181,56 @@ public class Chunk
     {
         TorchMeshGenerator.Instance.AddTorchAt(globalPos);
         torchList.Add(globalPos);
+    }
+
+
+    byte[] lights = new byte[65536];
+
+    public int GetLightAtPos(Vector3Int pos)
+    {
+        int index = 256 * pos.y + 16 * pos.x + pos.z;
+        return lights[index];
+    }
+
+    string log = "";
+    void SetLightAtPos(Vector3Int pos, int light)
+    {
+        log += "\nSetLightAtPos,pos=" + pos + ",light=" + light;
+        int index = 256 * pos.y + 16 * pos.x + pos.z;
+        lights[index] = (byte)light;
+    }
+
+    public void UpdateLighting()
+    {
+        log = "";
+        FloodFill(new Vector3Int(0, 255, 0), 15);
+        Debug.Log("log=" + log);
+    }
+
+    public void FloodFill(Vector3Int node, int targetLight)
+    {
+        int nodeLight = GetLightAtPos(node);
+
+        //如果当前亮度比目标亮度大，则不更新
+        if (nodeLight >= targetLight) { return; }
+
+        //否则更新当前节点亮度
+        SetLightAtPos(node, targetLight);
+
+        if (node.x > 0)
+            FloodFill(node + Utilities.vector3Int.left, targetLight - 1);
+        if (node.x < 15)
+            FloodFill(node + Utilities.vector3Int.right, targetLight - 1);
+        if (node.z > 0)
+            FloodFill(node + Utilities.vector3Int.back, targetLight - 1);
+        if (node.z < 15)
+            FloodFill(node + Utilities.vector3Int.forward, targetLight - 1);
+
+
+        if (node.y < 255)
+            FloodFill(node + Utilities.vector3Int.up, targetLight);
+        //如果当前节点是不透明节点，则不往下更新
+        if (node.y > 0 && !HasOpaqueBlock(node))
+            FloodFill(node + Utilities.vector3Int.down, targetLight);
     }
 }

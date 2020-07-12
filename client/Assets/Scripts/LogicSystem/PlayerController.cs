@@ -109,7 +109,7 @@ public class PlayerController : MonoBehaviour
 
     static Vector2Int chunkPos = new Vector2Int();
 
-    public static Vector2Int GetCurrentChunk()
+    public static Vector2Int GetCurrentChunkPos()
     {
         if (instance != null)
         {
@@ -120,6 +120,11 @@ public class PlayerController : MonoBehaviour
             Utilities.GetChunk(ref chunkPos, DataCenter.spawnPosition);
         }
         return chunkPos;
+    }
+
+    public static Chunk GetCurrentChunk()
+    {
+        return ChunkManager.GetChunk(GetCurrentChunkPos());
     }
 
     static Vector3 _chunkPos = new Vector3();
@@ -155,12 +160,23 @@ public class PlayerController : MonoBehaviour
         instance.blockMeshFilter.transform.gameObject.SetActive(true);
     }
 
+    void PositionCorrection()
+    {
+        if (transform.localPosition.y < -100)
+        {
+            Vector3 pos = transform.localPosition;
+            transform.localPosition = new Vector3(pos.x, 100, pos.z);
+            FastTips.Show("Position has been corrected!");
+        }
+    }
+
     float timeInterval = 0.2f;
     bool needUpdate;
     float lastUpdateTime;
     void Update()
     {
         DrawWireFrame();
+        PositionCorrection();
 
         if (acceptInput)
         {

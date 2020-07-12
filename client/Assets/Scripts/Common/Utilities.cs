@@ -76,4 +76,35 @@ public static class Utilities {
             call();
         });
     }
+
+    public class Vector3IntHelper
+    {
+        public Vector3Int up;
+        public Vector3Int down;
+        public Vector3Int left;
+        public Vector3Int right;
+        public Vector3Int forward;
+        public Vector3Int back;
+    }
+
+    static Vector3IntHelper _Vector3Int;
+    public static Vector3IntHelper vector3Int
+    {
+        get
+        {
+            if (_Vector3Int == null)
+            {
+                _Vector3Int = new Vector3IntHelper
+                {
+                    up = Vector3Int.up,
+                    down = Vector3Int.down,
+                    left = Vector3Int.left,
+                    right = Vector3Int.right,
+                    forward = new Vector3Int(0, 0, 1),
+                    back = new Vector3Int(0, 0, -1),
+                };
+            }
+            return _Vector3Int;
+        }
+    }
 }

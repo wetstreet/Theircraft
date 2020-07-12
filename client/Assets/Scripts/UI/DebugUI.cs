@@ -61,7 +61,7 @@ public class DebugUI : MonoBehaviour
         text += string.Format("\nXYZ: {0:0.000} / {1:0.000} / {2:0.000}", pos.x, pos.y, pos.z);
         Vector3Int curBlock = PlayerController.GetCurrentBlock();
         text += string.Format("\nBlock: {0} {1} {2}", curBlock.x, curBlock.y, curBlock.z);
-        Vector2Int curChunk = PlayerController.GetCurrentChunk();
+        Vector2Int curChunk = PlayerController.GetCurrentChunkPos();
         text += string.Format("\nChunk: {0} {1}", curChunk.x, curChunk.y); 
         if (WireFrameHelper.render)
         {
@@ -75,6 +75,9 @@ public class DebugUI : MonoBehaviour
                 text += string.Format("\nOrient: {0}", orient);
             }
         }
+        Chunk chunk = ChunkManager.GetChunk(curChunk);
+        text += string.Format("\nLight: {0}", chunk.GetLightAtPos(curBlock));
+
         label.text = text;
     }
 
@@ -90,6 +93,15 @@ public class DebugUI : MonoBehaviour
             {
                 Show();
             }
+        }
+    }
+
+    private void OnGUI()
+    {
+        if (GUILayout.Button("floodfill"))
+        {
+            Chunk chunk = PlayerController.GetCurrentChunk();
+            chunk.FloodFill(new Vector3Int(0, 255, 0), 15);
         }
     }
 }

@@ -60,6 +60,11 @@ public class ChunkManager
         return null;
     }
 
+    public static Chunk GetChunk(Vector2Int pos)
+    {
+        return GetChunk(pos.x, pos.y);
+    }
+
     // intput is global position
     public static Chunk GetChunk(int x, int y, int z)
     {
