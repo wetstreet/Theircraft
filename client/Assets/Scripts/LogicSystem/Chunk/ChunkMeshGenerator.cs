@@ -419,7 +419,9 @@ public static class ChunkMeshGenerator
     public static void RefreshMeshData(this Chunk chunk)
     {
         chunk.vertices1.Clear();
+        chunk.colors1.Clear();
         chunk.uv1.Clear();
+        chunk.normals1.Clear();
         chunk.triangles1.Clear();
 
         chunk.vertices2.Clear();
@@ -474,7 +476,8 @@ public static class ChunkMeshGenerator
                             }
                             else
                             {
-                                BlockMeshGenerator.Instance.GenerateMeshInChunk(type, pos, globalPos, chunk.vertices1, chunk.uv1, chunk.triangles1);
+                                //BlockMeshGenerator.Instance.GenerateMeshInChunk(type, pos, globalPos, chunk.vertices1, chunk.uv1, chunk.triangles1);
+                                BlockMeshGenerator.Instance.GenerateMeshInChunk(type, pos, globalPos, chunk.vertices1, chunk.colors1, chunk.uv1, chunk.normals1, chunk.triangles1);
                             }
                         }
                     }

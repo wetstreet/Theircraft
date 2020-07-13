@@ -20,6 +20,7 @@
             struct appdata
             {
                 float4 vertex : POSITION;
+                float4 color : COLOR;
                 float3 normal : NORMAL;
                 float2 uv : TEXCOORD0;
             };

@@ -94,6 +94,38 @@ public class ChunkManager
         return 0;
     }
 
+    public static int GetBlockLight(Vector3Int pos)
+    {
+        return GetBlockLight(pos.x, pos.y, pos.z);
+    }
+
+    public static Color GetBlockLightColor(Vector3Int pos)
+    {
+        int light = GetBlockLight(pos.x, pos.y, pos.z);
+        float c = light / 15f;
+        return new Color(c, c, c);
+    }
+
+    // intput is global position
+    public static int GetBlockLight(int x, int y, int z)
+    {
+        if (y < 0 || y > 255)
+        {
+            return 0;
+        }
+        // get chunk position first
+        Chunk chunk = GetChunk(x, y, z);
+        if (chunk != null)
+        {
+            //calculate block position in chunk
+            int xInChunk = chunk.GetXInChunkByGlobalX(x);
+            int zInChunk = chunk.GetZInChunkByGlobalZ(z);
+            //Debug.Log("GetBlockType,globalblockpos=(" + x + "," + y + "," + z + "),chunkpos=(" + chunk.x + "," + chunk.z + "),blockposinchunk=(" + xInChunk + "," + y + "," + zInChunk + ")");
+            return chunk.GetLightAtPos(xInChunk, y, zInChunk);
+        }
+        return 0;
+    }
+
     // intput is global position
     public static bool IsStairs(Vector3Int position)
     {

@@ -20,7 +20,9 @@ public class Chunk
 
     static int capacity1 = 8192;
     public List<Vector3> vertices1 = new List<Vector3>(capacity1);
+    public List<Color> colors1 = new List<Color>(capacity1);
     public List<Vector2> uv1 = new List<Vector2>(capacity1);
+    public List<Vector3> normals1 = new List<Vector3>(capacity1);
     public List<int> triangles1 = new List<int>(capacity1);
 
     static int capacity2 = 1024;
@@ -152,7 +154,9 @@ public class Chunk
 
         collidableMesh.Clear();
         collidableMesh.SetVertices(vertices1);
+        collidableMesh.SetColors(colors1);
         collidableMesh.SetUVs(0, uv1);
+        collidableMesh.SetNormals(normals1);
         collidableMesh.SetTriangles(triangles1, 0);
         collidableGO.GetComponent<MeshFilter>().sharedMesh = collidableMesh;
         collidableGO.GetComponent<MeshCollider>().sharedMesh = collidableMesh;
@@ -193,10 +197,15 @@ public class Chunk
         }
     }
 
+    public int GetLightAtPos(int x, int y, int z)
+    {
+        int index = 256 * y + 16 * x + z;
+        return lights[index];
+    }
+
     public int GetLightAtPos(Vector3Int pos)
     {
-        int index = 256 * pos.y + 16 * pos.x + pos.z;
-        return lights[index];
+        return GetLightAtPos(pos.x, pos.y, pos.z);
     }
 
     int count;
