@@ -432,6 +432,7 @@ public static class ChunkMeshGenerator
 
         Vector3Int pos = new Vector3Int();
         Vector3Int globalPos = new Vector3Int();
+
         //压缩后的数据结构
         for (int k = 0; k < 256; k++)
         {
@@ -485,8 +486,6 @@ public static class ChunkMeshGenerator
             }
         }
         chunk.hasBuiltMesh = true;
-
-        chunk.UpdateLighting();
     }
 
     public static CSBlockOrientation GetBlockOrientation(Vector3 playerPos, Vector3 blockPos, Vector3 hitPos)

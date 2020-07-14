@@ -123,7 +123,7 @@ public class ChunkManager
             //Debug.Log("GetBlockType,globalblockpos=(" + x + "," + y + "," + z + "),chunkpos=(" + chunk.x + "," + chunk.z + "),blockposinchunk=(" + xInChunk + "," + y + "," + zInChunk + ")");
             return chunk.GetLightAtPos(xInChunk, y, zInChunk);
         }
-        return 0;
+        return 15;
     }
 
     // intput is global position

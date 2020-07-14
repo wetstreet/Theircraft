@@ -99,13 +99,4 @@ public class DebugUI : MonoBehaviour
             }
         }
     }
-
-    private void OnGUI()
-    {
-        if (GUILayout.Button("floodfill"))
-        {
-            Chunk chunk = PlayerController.GetCurrentChunk();
-            chunk.UpdateLighting();
-        }
-    }
 }

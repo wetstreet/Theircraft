@@ -34,6 +34,8 @@ public class Chunk
     public Mesh nonCollidableMesh;
 
     public bool hasBuiltMesh = false;
+    public int lightGenerationCount = 0;
+    public int meshBuildCount = 0;
 
     public List<Vector3Int> torchList = new List<Vector3Int>();
 
@@ -149,6 +151,7 @@ public class Chunk
     {
         if (forceRefreshMeshData)
         {
+            UpdateLighting();
             this.RefreshMeshData();
         }
 
@@ -172,6 +175,8 @@ public class Chunk
     public void ClearData()
     {
         hasBuiltMesh = false;
+        lightGenerationCount = 0;
+        meshBuildCount = 0;
         foreach (Vector3Int torchPos in torchList)
         {
             TorchMeshGenerator.Instance.RemoveTorchAt(torchPos);
@@ -199,6 +204,10 @@ public class Chunk
 
     public int GetLightAtPos(int x, int y, int z)
     {
+        //if (lightGenerationCount == 0)
+        //{
+        //    return 1;
+        //}
         int index = 256 * y + 16 * x + z;
         return lights[index];
     }
@@ -227,6 +236,8 @@ public class Chunk
 
         List<Vector3Int> skyLightList = new List<Vector3Int>();
 
+        int maxOpaqueHeight = 0;
+
         //设置天光
         for (int x = 0; x < 16; x++)
         {
@@ -237,6 +248,10 @@ public class Chunk
                     Vector3Int pos = new Vector3Int(x, y, z);
                     if (HasOpaqueBlock(pos))
                     {
+                        if (pos.y > maxOpaqueHeight)
+                        {
+                            maxOpaqueHeight = pos.y;
+                        }
                         break;
                     }
                     SetLightAtPos(pos, 15);
@@ -248,6 +263,11 @@ public class Chunk
         //扩散
         foreach (Vector3Int pos in skyLightList)
         {
+            if (pos.y > maxOpaqueHeight)
+            {
+                //性能优化，顶部的天光无法扩散，跳过计算
+                continue;
+            }
             if (pos.x > 0 && GetLightAtPos(pos + Utilities.vector3Int.left) < 14)
             {
                 FloodFill(pos + Utilities.vector3Int.left, 14);
@@ -265,9 +285,10 @@ public class Chunk
                 FloodFill(pos + Utilities.vector3Int.back, 14);
             }
         }
+        lightGenerationCount++;
 
         //FloodFill(new Vector3Int(0, 2, 0), 15);
-        Debug.Log("count=" + count + ",log=\n" + log);
+        Debug.Log("count=" + count + ",maxOpaqueHeight="+ maxOpaqueHeight + ",log=\n" + log);
         //for (int y = 0; y < 256; y++)
         //{
         //    for (int x = 0; x < 16; x++)
