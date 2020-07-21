@@ -60,6 +60,7 @@
 
             fixed4 frag (v2f i) : SV_Target
             {
+                return 1;
                 float3 light = tex2D(_LUT, i.color.xy).rgb;
                 // return fixed4(light, 1);
                 fixed4 col = tex2D(_MainTex, i.uv);

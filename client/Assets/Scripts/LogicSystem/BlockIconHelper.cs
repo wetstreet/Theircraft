@@ -87,6 +87,7 @@ public class BlockIconHelper
         {CSBlockType.Ice, "Ice_JE1_BE3" },
         {CSBlockType.PackedIce, "Packed_Ice_JE1_BE2" },
         {CSBlockType.Chest, "Chest" },
+        {CSBlockType.VerticalBrickSlab, "Chest" },
 
         {CSBlockType.Torch, "torch" },
         {CSBlockType.Cobweb, "web" },

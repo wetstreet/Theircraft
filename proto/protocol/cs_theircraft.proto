@@ -97,6 +97,7 @@ enum CSBlockType
 	Ice = 92;
 	PackedIce = 93;
 	Chest = 94;
+	VerticalBrickSlab = 95;
 }
 
 enum CSBlockOrientation

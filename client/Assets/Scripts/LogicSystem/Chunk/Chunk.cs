@@ -151,7 +151,7 @@ public class Chunk
     {
         if (forceRefreshMeshData)
         {
-            UpdateLighting();
+            //UpdateLighting();
             this.RefreshMeshData();
         }
 
@@ -206,7 +206,7 @@ public class Chunk
     {
         //if (lightGenerationCount == 0)
         //{
-        //    return 1;
+        //    return 15;
         //}
         int index = 256 * y + 16 * x + z;
         return lights[index];

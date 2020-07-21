@@ -99,6 +99,7 @@ public class CreativeInventory : MonoBehaviour
         //CSBlockType.Ice,
         CSBlockType.PackedIce,
         //CSBlockType.Chest,
+        CSBlockType.VerticalBrickSlab,
     };
 
     Transform grid;

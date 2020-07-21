@@ -332,6 +332,8 @@ public static class ChunkMeshGenerator
         TexCoords.Block_1(uv_packed_ice),
         // Chest
         TexCoords.Chest(),
+        // VerticalSlab
+        TexCoords.VerticalSlab(uv_bricks),
     };
 
     static Dictionary<CSBlockType, Mesh> type2mesh = new Dictionary<CSBlockType, Mesh>();
@@ -375,7 +377,7 @@ public static class ChunkMeshGenerator
     {
         if (IsCubeType(type))
         {
-            return Resources.Load<Material>("Materials/block").mainTexture;
+            return Resources.Load<Texture2D>("GUI/blocks");
         }
         else
         {
@@ -401,6 +403,10 @@ public static class ChunkMeshGenerator
                 else if (IsSlab(type))
                 {
                     type2mesh[type] = SlabMeshGenerator.Instance.GenerateSingleMesh(type);
+                }
+                else if (type == CSBlockType.VerticalBrickSlab)
+                {
+                    type2mesh[type] = VerticalSlabMeshGenerator.Instance.GenerateSingleMesh(type);
                 }
                 else
                 {
@@ -474,6 +480,10 @@ public static class ChunkMeshGenerator
                                     //加载完第一次build
                                     chunk.AddTorch(globalPos);
                                 }
+                            }
+                            else if (type == CSBlockType.VerticalBrickSlab)
+                            {
+                                VerticalSlabMeshGenerator.Instance.GenerateMeshInChunk(type, pos, globalPos, chunk.vertices1, chunk.colors1, chunk.uv1, chunk.normals1, chunk.triangles1);
                             }
                             else
                             {

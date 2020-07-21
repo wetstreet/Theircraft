@@ -1087,7 +1087,10 @@ namespace protocol.cs_theircraft
       PackedIce = 93,
             
       [global::ProtoBuf.ProtoEnum(Name=@"Chest", Value=94)]
-      Chest = 94
+      Chest = 94,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"VerticalBrickSlab", Value=95)]
+      VerticalBrickSlab = 95
     }
   
     [global::ProtoBuf.ProtoContract(Name=@"CSBlockOrientation")]

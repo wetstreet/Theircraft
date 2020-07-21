@@ -59,6 +59,7 @@ public class SoundManager : MonoBehaviour
         {CSBlockType.BrickSlab, Material_Stone },
         {CSBlockType.NetherBrickSlab, Material_Stone },
         {CSBlockType.QuartzSlab, Material_Stone },
+        {CSBlockType.VerticalBrickSlab, Material_Stone },
 
         {CSBlockType.Torch, Material_Wood },
         {CSBlockType.OakLog, Material_Wood },

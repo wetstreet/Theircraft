@@ -9,6 +9,7 @@ public class TexCoords
     public bool isStair = false;        // uses stair mesh generator
     public bool isWall = false;         // uses wall mesh generator
     public bool isSlab = false;         // uses slab mesh generator
+    public bool isVerticalSlab = false; // uses vertical slab mesh generator
 
     public Vector2Int front;
     public Vector2Int right;
@@ -156,6 +157,16 @@ public class TexCoords
         {
             isTransparent = true,
             isSlab = true,
+            front = uv,
+        };
+    }
+    
+    public static TexCoords VerticalSlab(Vector2Int uv)
+    {
+        return new TexCoords
+        {
+            isTransparent = true,
+            isVerticalSlab = true,
             front = uv,
         };
     }

@@ -21,7 +21,10 @@ public abstract class IMeshGenerator
     protected static readonly float compensation = 0.005f;
     
     abstract public Mesh GenerateSingleMesh(CSBlockType type);
-    abstract public void GenerateMeshInChunk(CSBlockType type, Vector3Int posInChunk, Vector3Int globalPos, List<Vector3> vertices, List<Vector2> uv, List<int> triangles);
+    virtual public void GenerateMeshInChunk(CSBlockType type, Vector3Int posInChunk, Vector3Int globalPos, List<Vector3> vertices, List<Vector2> uv, List<int> triangles)
+    {
+
+    }
 
     protected static void AddUV(List<Vector3> vertices, List<Vector2> uv, List<int> triangles, Vector2 texPos)
     {
