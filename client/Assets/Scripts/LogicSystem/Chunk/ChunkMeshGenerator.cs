@@ -379,6 +379,10 @@ public static class ChunkMeshGenerator
         {
             return Resources.Load<Texture2D>("GUI/blocks");
         }
+        else if (type == CSBlockType.Chest)
+        {
+            return Resources.Load<Texture2D>("Meshes/entity/chest/chest");
+        }
         else
         {
             string path = type2path[type];

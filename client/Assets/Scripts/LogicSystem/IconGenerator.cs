@@ -8,6 +8,8 @@ using UnityEngine;
 public class IconGenerator : ScriptableWizard
 {
     public CSBlockType type = CSBlockType.Dirt;
+    public int TypeInt = 1;
+    public bool UseInt = false;
 
     [MenuItem("GameObject/Create Icon Wizard")]
     static void CreateWizard()
@@ -17,41 +19,50 @@ public class IconGenerator : ScriptableWizard
 
     public int size = 128;
 
-    void Render(CSBlockType type, string dir = null)
+    string Render(CSBlockType type, string dir = null)
     {
-        GameObject go = new GameObject();
-        go.AddComponent<MeshFilter>().sharedMesh = ChunkMeshGenerator.GetBlockMesh(type);
-        go.AddComponent<MeshRenderer>().sharedMaterial = new Material(Shader.Find("Legacy Shaders/Diffuse"));
-        go.GetComponent<MeshRenderer>().sharedMaterial.mainTexture = ChunkMeshGenerator.GetBlockTexture(type);
-
-        if (Camera.main.targetTexture == null)
+        GameObject go = null;
+        if (type != CSBlockType.Chest)
         {
-            Camera.main.targetTexture = new RenderTexture(512, 512, 24, RenderTextureFormat.ARGB32);
+            go = new GameObject();
+            go.AddComponent<MeshFilter>().sharedMesh = ChunkMeshGenerator.GetBlockMesh(type);
+            go.AddComponent<MeshRenderer>().sharedMaterial = new Material(Shader.Find("Legacy Shaders/Diffuse"));
+            go.GetComponent<MeshRenderer>().sharedMaterial.mainTexture = ChunkMeshGenerator.GetBlockTexture(type);
         }
-        Camera.main.Render();
+        else
+        {
+            GameObject prefab = Resources.Load<GameObject>("Prefabs/Entity/Chest");
+            go = Instantiate(prefab);
+        }
 
-        RenderTexture rt = Camera.main.targetTexture;
+        RenderTexture rt = RenderTexture.GetTemporary(512, 512, 24, RenderTextureFormat.ARGB32);
+        Camera.main.targetTexture = rt;
+        Camera.main.Render();
+        Camera.main.targetTexture = null;
+        
         Texture2D tex = new Texture2D(size, size, TextureFormat.ARGB32, true);
-        tex.filterMode = FilterMode.Point;
 
         //降分辨率
-        RenderTexture tempRt = new RenderTexture(tex.width, tex.height, 0, RenderTextureFormat.ARGB32);
+        RenderTexture tempRt = RenderTexture.GetTemporary(tex.width, tex.height, 24, RenderTextureFormat.ARGB32);
         Graphics.Blit(rt, tempRt);
 
         RenderTexture.active = tempRt;
         tex.ReadPixels(new Rect(0, 0, rt.width, rt.height), 0, 0);
         tex.Apply();
         RenderTexture.active = null;
+
+        rt.Release();
         tempRt.Release();
-        tempRt = null;
 
         string path = "";
         if (dir == null)
         {
-            path = EditorUtility.SaveFilePanel("保存", "", "icon", "png");
+            path = EditorUtility.SaveFilePanel("保存", "", type.ToString(), "png");
             if (path.Length == 0)
             {
-                return;
+                DestroyImmediate(tex);
+                DestroyImmediate(go);
+                return null;
             }
             path = path.Substring(path.IndexOf("Assets"));
         }
@@ -75,11 +86,28 @@ public class IconGenerator : ScriptableWizard
 
         DestroyImmediate(tex);
         DestroyImmediate(go);
+
+        return path;
     }
 
     void OnWizardCreate()
     {
-        Render(type);
+        string path = null;
+
+        if (UseInt)
+        {
+            path = Render((CSBlockType)TypeInt);
+        }
+        else
+        {
+            path = Render(type);
+        }
+
+        if (path != null)
+        {
+            Texture2D tex = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+            Selection.activeObject = tex;
+        }
     }
 
     private void OnWizardOtherButton()
