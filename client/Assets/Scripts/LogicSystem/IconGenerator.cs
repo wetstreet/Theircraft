@@ -11,6 +11,8 @@ public class IconGenerator : ScriptableWizard
     public int TypeInt = 1;
     public bool UseInt = false;
 
+    public bool DestroyAfterFinish = true;
+
     [MenuItem("GameObject/Create Icon Wizard")]
     static void CreateWizard()
     {
@@ -26,7 +28,7 @@ public class IconGenerator : ScriptableWizard
         {
             go = new GameObject();
             go.AddComponent<MeshFilter>().sharedMesh = ChunkMeshGenerator.GetBlockMesh(type);
-            go.AddComponent<MeshRenderer>().sharedMaterial = new Material(Shader.Find("Legacy Shaders/Diffuse"));
+            go.AddComponent<MeshRenderer>().sharedMaterial = new Material(Shader.Find("Custom/CutoutDiffuse"));
             go.GetComponent<MeshRenderer>().sharedMaterial.mainTexture = ChunkMeshGenerator.GetBlockTexture(type);
         }
         else
@@ -35,7 +37,7 @@ public class IconGenerator : ScriptableWizard
             go = Instantiate(prefab);
         }
 
-        RenderTexture rt = RenderTexture.GetTemporary(512, 512, 24, RenderTextureFormat.ARGB32);
+        RenderTexture rt = RenderTexture.GetTemporary(size * 2, size * 2, 24, RenderTextureFormat.ARGB32);
         Camera.main.targetTexture = rt;
         Camera.main.Render();
         Camera.main.targetTexture = null;
@@ -85,7 +87,10 @@ public class IconGenerator : ScriptableWizard
         AssetDatabase.Refresh();
 
         DestroyImmediate(tex);
-        DestroyImmediate(go);
+        if (DestroyAfterFinish)
+        {
+            DestroyImmediate(go);
+        }
 
         return path;
     }
