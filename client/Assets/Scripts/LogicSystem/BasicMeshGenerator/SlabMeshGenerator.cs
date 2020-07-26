@@ -65,7 +65,7 @@ public class SlabMeshGenerator : IMeshGenerator
         return singleMesh;
     }
 
-    override public void GenerateMeshInChunk(CSBlockType type, Vector3Int posInChunk, Vector3Int globalPos, List<Vector3> vertices, List<Vector2> uv, List<int> triangles)
+    public void GenerateMeshInChunk(CSBlockType type, Vector3Int posInChunk, Vector3Int globalPos, List<Vector3> vertices, List<Vector2> uv, List<Vector3> normals, List<int> triangles)
     {
         TexCoords texCoords = ChunkMeshGenerator.type2texcoords[(byte)type];
         Vector2Int texPos = texCoords.front;
@@ -82,6 +82,11 @@ public class SlabMeshGenerator : IMeshGenerator
         foreach (Vector2 singleUV in mesh.uv)
         {
             uv.Add(new Vector2((texPos.x + singleUV.x) / atlas_column, (texPos.y + singleUV.y) / atlas_row));
+        }
+
+        foreach (Vector3 normal in mesh.normals)
+        {
+            normals.Add(normal);
         }
 
         foreach (int index in mesh.triangles)

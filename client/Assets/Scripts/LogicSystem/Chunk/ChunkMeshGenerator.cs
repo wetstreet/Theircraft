@@ -467,15 +467,15 @@ public static class ChunkMeshGenerator
                         {
                             if (IsStair(type))
                             {
-                                StairMeshGenerator.Instance.GenerateMeshInChunk(type, pos, globalPos, chunk.vertices1, chunk.uv1, chunk.triangles1);
+                                StairMeshGenerator.Instance.GenerateMeshInChunk(type, pos, globalPos, chunk.vertices1, chunk.uv1, chunk.normals1, chunk.triangles1);
                             }
                             else if (IsWall(type))
                             {
-                                WallMeshGenerator.Instance.GenerateMeshInChunk(type, pos, globalPos, chunk.vertices1, chunk.uv1, chunk.triangles1);
+                                WallMeshGenerator.Instance.GenerateMeshInChunk(type, pos, globalPos, chunk.vertices1, chunk.uv1, chunk.normals1, chunk.triangles1);
                             }
                             else if (IsSlab(type))
                             {
-                                SlabMeshGenerator.Instance.GenerateMeshInChunk(type, pos, globalPos, chunk.vertices1, chunk.uv1, chunk.triangles1);
+                                SlabMeshGenerator.Instance.GenerateMeshInChunk(type, pos, globalPos, chunk.vertices1, chunk.uv1, chunk.normals1, chunk.triangles1);
                             }
                             else if (type == CSBlockType.Torch)
                             {
@@ -505,8 +505,12 @@ public static class ChunkMeshGenerator
     public static CSBlockOrientation GetBlockOrientation(Vector3 playerPos, Vector3 blockPos, Vector3 hitPos)
     {
         float diff = hitPos.y - blockPos.y;
+        Vector3 diff3 = hitPos - blockPos;
 
         Vector2 dir = (new Vector2(playerPos.x, playerPos.z) - new Vector2(blockPos.x, blockPos.z)).normalized;
+
+        //Debug.Log("diff=" + diff3 + ",dir=" + dir);
+
         CSBlockOrientation orient = CSBlockOrientation.Default;
         if (dir.x > 0)
         {

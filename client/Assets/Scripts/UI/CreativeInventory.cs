@@ -50,7 +50,7 @@ public class CreativeInventory : MonoBehaviour
         CSBlockType.Poppy,
         CSBlockType.Dandelion,
         CSBlockType.Grass,
-        CSBlockType.Tnt,
+        //CSBlockType.Tnt,
         CSBlockType.OakLeaves,
         CSBlockType.SpruceLeaves,
         CSBlockType.BirchLeaves,

@@ -78,7 +78,7 @@ public class StairMeshGenerator : IMeshGenerator
         return mesh;
     }
 
-    override public void GenerateMeshInChunk(CSBlockType type, Vector3Int posInChunk, Vector3Int globalPos, List<Vector3> vertices, List<Vector2> uv, List<int> triangles)
+    public void GenerateMeshInChunk(CSBlockType type, Vector3Int posInChunk, Vector3Int globalPos, List<Vector3> vertices, List<Vector2> uv, List<Vector3> normals, List<int> triangles)
     {
         TexCoords texCoords = ChunkMeshGenerator.type2texcoords[(byte)type];
         Vector2Int texPos = texCoords.front;
@@ -86,20 +86,25 @@ public class StairMeshGenerator : IMeshGenerator
 
         CSBlockOrientation orient = ChunkManager.GetBlockOrientation(globalPos);
 
-        Mesh stairMesh = GetStairMesh(orient, globalPos);
+        Mesh mesh = GetStairMesh(orient, globalPos);
         int length = vertices.Count;
-        foreach (Vector3 singleVertex in stairMesh.vertices)
+        foreach (Vector3 singleVertex in mesh.vertices)
         {
             Vector3 pos = singleVertex + posInChunk;
             vertices.Add(pos);
         }
 
-        foreach (Vector2 singleUV in stairMesh.uv)
+        foreach (Vector2 singleUV in mesh.uv)
         {
             uv.Add(new Vector2((texPos.x + singleUV.x) / atlas_column, (texPos.y + singleUV.y) / atlas_row));
         }
 
-        foreach (int index in stairMesh.triangles)
+        foreach (Vector3 normal in mesh.normals)
+        {
+            normals.Add(normal);
+        }
+
+        foreach (int index in mesh.triangles)
         {
             triangles.Add(index + length);
         }

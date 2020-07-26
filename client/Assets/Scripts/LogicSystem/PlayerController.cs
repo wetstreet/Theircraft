@@ -221,8 +221,16 @@ public class PlayerController : MonoBehaviour
                         }
                         else
                         {
-                            CSBlockOrientation orientation = ChunkMeshGenerator.GetBlockOrientation(transform.position, pos, WireFrameHelper.hitPos);
-                            AddBlockReq(Vector3Int.RoundToInt(pos), ItemSelectPanel.curBlockType, orientation);
+                            if (ItemSelectPanel.curBlockType == CSBlockType.VerticalBrickSlab)
+                            {
+                                CSBlockOrientation orientation = VerticalSlabMeshGenerator.GetOrientation(transform.position, pos, WireFrameHelper.hitPos);
+                                AddBlockReq(Vector3Int.RoundToInt(pos), ItemSelectPanel.curBlockType, orientation);
+                            }
+                            else
+                            {
+                                CSBlockOrientation orientation = ChunkMeshGenerator.GetBlockOrientation(transform.position, pos, WireFrameHelper.hitPos);
+                                AddBlockReq(Vector3Int.RoundToInt(pos), ItemSelectPanel.curBlockType, orientation);
+                            }
                         }
                     }
                 }

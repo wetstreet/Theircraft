@@ -21,7 +21,7 @@ public class VerticalSlabMeshGenerator : IMeshGenerator
     static Mesh GetMesh()
     {
         Mesh mesh = null;
-        mesh = Resources.Load<Mesh>("Meshes/blocks/vertical_slab/Cube");
+        mesh = Resources.Load<Mesh>("Meshes/blocks/vertical_slab/vslab_-x");
         return mesh;
     }
 
@@ -51,13 +51,72 @@ public class VerticalSlabMeshGenerator : IMeshGenerator
         return singleMesh;
     }
 
+    public static CSBlockOrientation GetOrientation(Vector3 playerPos, Vector3 blockPos, Vector3 hitPos)
+    {
+        Vector2 dir = (new Vector2(playerPos.x, playerPos.z) - new Vector2(blockPos.x, blockPos.z)).normalized;
+        if (Mathf.Abs(dir.x) - Mathf.Abs(dir.y) > 0)
+        {
+            if (blockPos.z - hitPos.z > 0)
+            {
+                return CSBlockOrientation.PositiveY_PositiveZ;
+            }
+            else
+            {
+                return CSBlockOrientation.PositiveY_NegativeZ;
+            }
+        }
+        else
+        {
+            if (blockPos.x - hitPos.x > 0)
+            {
+                return CSBlockOrientation.PositiveY_PositiveX;
+            }
+            else
+            {
+                return CSBlockOrientation.PositiveY_NegativeX;
+            }
+        }
+    }
+
+
+    static Mesh GetMesh(CSBlockOrientation orientation = CSBlockOrientation.PositiveY_NegativeX)
+    {
+        Mesh mesh = null;
+        switch (orientation)
+        {
+            case CSBlockOrientation.PositiveY_PositiveX:
+            case CSBlockOrientation.NegativeY_PositiveX:
+                mesh = Resources.Load<Mesh>("Meshes/blocks/vertical_slab/vslab_+x");
+                break;
+            case CSBlockOrientation.PositiveY_NegativeX:
+            case CSBlockOrientation.NegativeY_NegativeX:
+                mesh = Resources.Load<Mesh>("Meshes/blocks/vertical_slab/vslab_-x");
+                break;
+            case CSBlockOrientation.PositiveY_PositiveZ:
+            case CSBlockOrientation.NegativeY_PositiveZ:
+                mesh = Resources.Load<Mesh>("Meshes/blocks/vertical_slab/vslab_+y");
+                break;
+            case CSBlockOrientation.PositiveY_NegativeZ:
+            case CSBlockOrientation.NegativeY_NegativeZ:
+                mesh = Resources.Load<Mesh>("Meshes/blocks/vertical_slab/vslab_-y");
+                break;
+        }
+
+        return mesh;
+    }
+
+
     public void GenerateMeshInChunk(CSBlockType type, Vector3Int posInChunk, Vector3Int globalPos, List<Vector3> vertices, List<Color> colors, List<Vector2> uv, List<Vector3> normals, List<int> triangles)
     {
         TexCoords texCoords = ChunkMeshGenerator.type2texcoords[(byte)type];
         Vector2Int texPos = texCoords.front;
         texPos.y = (atlas_row - 1) - texPos.y;
+
+        CSBlockOrientation orient = ChunkManager.GetBlockOrientation(globalPos);
+        Mesh mesh = GetMesh(orient);
         
-        Mesh mesh = GetMesh();
+        Debug.Log((globalPos.x - WireFrameHelper.hitPos.x > 0) + "," + mesh.name);
+
         int length = vertices.Count;
         foreach (Vector3 singleVertex in mesh.vertices)
         {

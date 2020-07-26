@@ -157,7 +157,7 @@ public class Chunk
 
         collidableMesh.Clear();
         collidableMesh.SetVertices(vertices1);
-        collidableMesh.SetColors(colors1);
+        //collidableMesh.SetColors(colors1);
         collidableMesh.SetUVs(0, uv1);
         collidableMesh.SetNormals(normals1);
         collidableMesh.SetTriangles(triangles1, 0);
