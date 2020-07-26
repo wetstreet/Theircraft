@@ -114,8 +114,6 @@ public class VerticalSlabMeshGenerator : IMeshGenerator
 
         CSBlockOrientation orient = ChunkManager.GetBlockOrientation(globalPos);
         Mesh mesh = GetMesh(orient);
-        
-        Debug.Log((globalPos.x - WireFrameHelper.hitPos.x > 0) + "," + mesh.name);
 
         int length = vertices.Count;
         foreach (Vector3 singleVertex in mesh.vertices)

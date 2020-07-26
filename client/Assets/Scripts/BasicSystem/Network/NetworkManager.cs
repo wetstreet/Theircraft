@@ -16,7 +16,7 @@ public static class NetworkManager
 
     struct NetworkCallback
     {
-        public Action<byte[]> func;
+        public Action<object> func;
         public bool isDelete;
     }
 
@@ -58,7 +58,7 @@ public static class NetworkManager
 
     static BinaryFormatter formatter = new BinaryFormatter();
 
-    public static void Register(ENUM_CMD type, Action<byte[]> _func)
+    public static void Register(ENUM_CMD type, Action<object> _func)
     {
         if (!callbackDict.ContainsKey(type))
         {
@@ -269,5 +269,23 @@ public static class NetworkManager
             tcpClient.Close();
         connected = false;
         Debug.Log("disconnected!");
+    }
+
+    public static void Notify(ENUM_CMD cmd, object data)
+    {
+        if (callbackDict.ContainsKey(cmd))
+        {
+            List<NetworkCallback> callbackList = callbackDict[cmd];
+
+            for (int i = callbackList.Count - 1; i >= 0; i--)
+            {
+                NetworkCallback callback = callbackList[i];
+                callback.func(data);
+                if (callback.isDelete)
+                {
+                    callbackList.RemoveAt(i);
+                }
+            }
+        }
     }
 }

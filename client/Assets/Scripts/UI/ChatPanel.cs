@@ -71,6 +71,7 @@ public class ChatPanel : MonoBehaviour
 
     void ShowInput()
     {
+        InputManager.enabled = false;
         scrollview.gameObject.SetActive(true);
         floatingScrollview.gameObject.SetActive(false);
         inputField.gameObject.SetActive(true);
@@ -80,6 +81,7 @@ public class ChatPanel : MonoBehaviour
 
     void HideInput()
     {
+        InputManager.enabled = true;
         inputField.DeactivateInputField();
         inputField.gameObject.SetActive(false);
         PlayerController.LockCursor(true);
@@ -116,7 +118,7 @@ public class ChatPanel : MonoBehaviour
         }
     }
 
-    int width = 300;
+    int width = 340;
     int height = 9;
     
     void Update()

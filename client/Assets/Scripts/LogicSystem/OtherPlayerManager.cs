@@ -17,7 +17,7 @@ public class OtherPlayerManager : MonoBehaviour
         NetworkManager.Register(ENUM_CMD.CS_PLAYER_MOVE_NOTIFY, OnPlayerMoveNotify);
     }
 
-    static void OnPlayerMoveNotify(byte[] data)
+    static void OnPlayerMoveNotify(object data)
     {
         CSPlayerMoveNotify notify = NetworkManager.Deserialize<CSPlayerMoveNotify>(data);
         //Debug.Log("CSPlayerMoveNotify,id=" + notify.PlayerID + ",(" + notify.Position.x + "," + notify.Position.y + "," + notify.Position.z + ")");

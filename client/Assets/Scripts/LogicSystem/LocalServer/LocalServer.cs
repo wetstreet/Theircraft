@@ -34,6 +34,7 @@ public class LocalServer : MonoBehaviour
         [ENUM_CMD.CS_ADD_BLOCK_REQ] = Single_OnAddBlockReq,
         [ENUM_CMD.CS_HERO_CHANGE_SELECT_INDEX_REQ] = Single_OnHeroChangeSelectIndexReq,
         [ENUM_CMD.CS_HERO_CHANGE_SELECT_ITEM_REQ] = Single_OnHeroChangeSelectItemReq,
+        [ENUM_CMD.CS_SEND_MESSAGE_REQ] = Single_OnSendMessageReq,
     };
 
     public static bool ProcessRequest<T>(ENUM_CMD cmdID, T obj, Action<object> callback = null)
@@ -50,7 +51,6 @@ public class LocalServer : MonoBehaviour
 
     static void Single_OnLoginReq(object obj, Action<object> callback)
     {
-        Debug.Log("OnSingleLoginReq");
         CSLoginReq req = obj as CSLoginReq;
         CSLoginRes rsp = new CSLoginRes()
         {
@@ -58,7 +58,7 @@ public class LocalServer : MonoBehaviour
             PlayerData = new CSPlayer
             {
                 PlayerID = 0,
-                Name = "Local Player",
+                Name = "Steve",
                 Position = playerData.Position,
                 Rotation = playerData.Rotation,
                 SelectIndex = playerData.SelectIndex,
@@ -248,5 +248,17 @@ public class LocalServer : MonoBehaviour
         CSHeroChangeSelectItemReq req = obj as CSHeroChangeSelectItemReq;
         playerData.SelectItems[req.Index].type = req.Item;
         playerData.SelectItems[req.Index].count = req.Count;
+    }
+
+    static void Single_OnSendMessageReq(object obj, Action<object> callback)
+    {
+        CSSendMessageReq req = obj as CSSendMessageReq;
+        CSSendMessageRes res = new CSSendMessageRes();
+        res.RetCode = 0;
+        callback(res);
+        CSMessageNotify notify = new CSMessageNotify();
+        notify.Name = DataCenter.name;
+        notify.Content = req.Content;
+        NetworkManager.Notify(ENUM_CMD.CS_MESSAGE_NOTIFY, notify);
     }
 }

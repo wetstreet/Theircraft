@@ -283,18 +283,18 @@ public class PlayerController : MonoBehaviour
                         WireFrameHelper.pos = pos;
                         WireFrameHelper.hitPos = hit.point;
 
-                        if (Input.GetKeyDown(KeyCode.F1))
-                        {
-                            SpruceTreeGenerator.Generate(pos.x, pos.y + 1, pos.z);
-                        }
-                        else if (Input.GetKeyDown(KeyCode.F2))
-                        {
-                            OakTreeGenerator.Generate(pos.x, pos.y + 1, pos.z);
-                        }
-                        else if (Input.GetKeyDown(KeyCode.F4))
-                        {
-                            BirchTreeGenerator.Generate(pos.x, pos.y + 1, pos.z);
-                        }
+                        //if (Input.GetKeyDown(KeyCode.F1))
+                        //{
+                        //    SpruceTreeGenerator.Generate(pos.x, pos.y + 1, pos.z);
+                        //}
+                        //else if (Input.GetKeyDown(KeyCode.F2))
+                        //{
+                        //    OakTreeGenerator.Generate(pos.x, pos.y + 1, pos.z);
+                        //}
+                        //else if (Input.GetKeyDown(KeyCode.F4))
+                        //{
+                        //    BirchTreeGenerator.Generate(pos.x, pos.y + 1, pos.z);
+                        //}
                     }
                 }
             }
