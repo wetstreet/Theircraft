@@ -8,7 +8,7 @@ public class PlayerController : MonoBehaviour
     public Vector3 forward = new Vector3();
     public float horizontalScale = 1;
     public float verticalScale = 1;
-    public new Camera camera;
+    public Transform camera;
 
     private Vector3 verticalSpeed;
     private Vector3 horizontalSpeed;
@@ -18,6 +18,7 @@ public class PlayerController : MonoBehaviour
     MeshFilter blockMeshFilter;
     MeshRenderer blockMeshRenderer;
     MeshRenderer handMeshRenderer;
+    GameObject vcamWide;
 
     [SerializeField] [Range(0f, 1f)] private float m_RunstepLenghten = 0.7f;
     [SerializeField] private CurveControlledBob m_HeadBob = new CurveControlledBob();
@@ -73,10 +74,11 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
-        camera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
+        camera = transform.Find("camera");
+        vcamWide = camera.Find("vcam_wide").gameObject;
         cc = GetComponent<CharacterController>();
-        handCam = camera.transform.Find("Camera").GetComponent<Camera>();
-        handAnimator = camera.transform.Find("hand").GetComponent<Animator>();
+        handCam = Camera.main.transform.Find("Camera").GetComponent<Camera>();
+        handAnimator = Camera.main.transform.Find("hand").GetComponent<Animator>();
 
         m_HeadBob.Setup(camera, 5);
 
@@ -91,9 +93,9 @@ public class PlayerController : MonoBehaviour
         CrossHair.Show();
         Hand.Show();
 
-        blockMeshFilter = camera.transform.Find("hand/block").GetComponent<MeshFilter>();
-        blockMeshRenderer = camera.transform.Find("hand/block").GetComponent<MeshRenderer>();
-        handMeshRenderer = camera.transform.Find("hand").GetComponent<MeshRenderer>();
+        blockMeshFilter = Camera.main.transform.Find("hand/block").GetComponent<MeshFilter>();
+        blockMeshRenderer = Camera.main.transform.Find("hand/block").GetComponent<MeshRenderer>();
+        handMeshRenderer = Camera.main.transform.Find("hand").GetComponent<MeshRenderer>();
 
         position = transform.position;
         forward = transform.forward;
@@ -182,6 +184,7 @@ public class PlayerController : MonoBehaviour
     float timeInterval = 0.2f;
     bool needUpdate;
     float lastUpdateTime;
+    float lastSpace;
     void Update()
     {
         DrawWireFrame();
@@ -236,7 +239,7 @@ public class PlayerController : MonoBehaviour
                     }
                 }
             }
-            if (Input.GetKey(KeyCode.Space))
+            if (Input.GetKeyDown(KeyCode.Space))
             {
                 Jump();
             }
@@ -295,24 +298,34 @@ public class PlayerController : MonoBehaviour
                         //else if (Input.GetKeyDown(KeyCode.F4))
                         //{
                         //    BirchTreeGenerator.Generate(pos.x, pos.y + 1, pos.z);
-                        //}
+                        //}s
                     }
                 }
             }
         }
     }
 
+    bool isFlying = false;
 
     public Vector3 jumpSpeed = new Vector3(0, 9f, 0);
     public Vector3 fallSpeed = new Vector3(0, -28f, 0);
     void Jump()
     {
-        if (!cc.isGrounded)
+        if (cc.isGrounded)
         {
-            return;
+            verticalSpeed = jumpSpeed;
         }
 
-        verticalSpeed = jumpSpeed;
+        if (Time.time - lastSpace <= 0.3f)
+        {
+            isFlying = !isFlying;
+            vcamWide.SetActive(isFlying);
+            lastSpace = 0;
+        }
+        else
+        {
+            lastSpace = Time.time;
+        }
     }
 
     [SerializeField] private float bobSpeed = 5f;
@@ -373,12 +386,27 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            horizontalSpeed = horizontalSpeed + (transform.forward * v + transform.right * h) * inAirSpeed;
+            if (isFlying)
+            {
+                horizontalSpeed += transform.forward * v + transform.right * h;
+                horizontalSpeed *= attenuation;
+            }
+            else
+            {
+                horizontalSpeed = horizontalSpeed + (transform.forward * v + transform.right * h) * inAirSpeed;
+            }
         }
         horizontalSpeed = Vector3.ClampMagnitude(horizontalSpeed, 1);
         Vector3 horizontalMovement = horizontalSpeed * Time.fixedDeltaTime;
 
-        verticalSpeed += fallSpeed * Time.fixedDeltaTime;
+        if (!isFlying)
+        {
+            verticalSpeed += fallSpeed * Time.fixedDeltaTime;
+        }
+        else
+        {
+            verticalSpeed = Vector3.zero;
+        }
         Vector3 verticalMovement = verticalSpeed * Time.fixedDeltaTime;
 
         //有移动则告诉服务器
