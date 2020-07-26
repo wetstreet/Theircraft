@@ -49,12 +49,10 @@ public class DebugUI : MonoBehaviour
         return fps;
     }
 
-    static readonly string version = "v0.1.0";
-
     // Update is called once per frame
     void Update()
     {
-        string text = "Theircraft " + version;
+        string text = "Theircraft " + Application.version;
         text += "\n" + GetFPS() + " fps";
 
         Vector3 pos = PlayerController.instance.transform.position;

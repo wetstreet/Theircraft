@@ -215,6 +215,7 @@ public class PlayerController : MonoBehaviour
 
                     if (!cc.bounds.Intersects(new Bounds(pos, Vector3.one)) && !ChunkManager.HasNotPlantBlock(pos))
                     {
+                        handAnimator.SetTrigger("interactTrigger");
                         if (ItemSelectPanel.curBlockType == CSBlockType.Torch)
                         {
                             AddBlockReq(Vector3Int.RoundToInt(pos), ItemSelectPanel.curBlockType, WireFrameHelper.pos);
