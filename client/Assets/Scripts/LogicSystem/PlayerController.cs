@@ -260,6 +260,11 @@ public class PlayerController : MonoBehaviour
             };
             NetworkManager.SendPkgToServer(ENUM_CMD.CS_HERO_MOVE_REQ, req);
         }
+
+        if (Input.GetKeyDown(KeyCode.F2))
+        {
+            Utilities.Capture();
+        }
     }
 
     RaycastHit hit;

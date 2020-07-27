@@ -145,6 +145,10 @@ public class ChatPanel : MonoBehaviour
         item.localScale = Vector3.one;
         TextMeshProUGUI text = item.GetComponent<TextMeshProUGUI>();
         text.text = content;
+        if (content.StartsWith("Saved screenshot as"))
+        {
+            item.gameObject.AddComponent<ScreenshotClickHelper>();
+        }
 
         ItemList.Add(item);
         scrollview.sizeDelta = new Vector2(width, height * ItemList.Count);

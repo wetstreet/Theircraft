@@ -5,6 +5,7 @@ using UnityEngine.UI;
 public class UISystem : MonoBehaviour
 {
     static GameObject canvas;
+    public static Camera camera;
     static CanvasScaler canvasScaler;
 
     public static int scale
@@ -51,7 +52,8 @@ public class UISystem : MonoBehaviour
     private void Awake()
     {
         lastScale = 0;
-        canvas = GameObject.Find("Canvas");
+        canvas = transform.Find("Canvas").gameObject;
+        camera = transform.Find("Camera").GetComponent<Camera>();
         canvasScaler = canvas.GetComponent<CanvasScaler>();
         UpdateScale();
     }

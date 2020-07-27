@@ -2,6 +2,7 @@
 using UnityEngine;
 using protocol.cs_theircraft;
 using UnityEngine.UI;
+using System;
 
 public struct Tag {
     public static string Player = "Player";
@@ -100,5 +101,29 @@ public static class Utilities {
             }
             return _Vector3Int;
         }
+    }
+
+    public static string screenshotDir
+    {
+        get
+        {
+            return Application.persistentDataPath + "/screenshots/";
+        }
+    }
+
+    public static void Capture()
+    {
+        DateTime time = DateTime.Now;
+        string file = string.Format("{0}-{1:00}-{2:00}_{3:00}.{4:00}.{5:00}.png", time.Year, time.Month, time.Day, time.Hour, time.Minute, time.Second);
+
+        string path = screenshotDir + file;
+        if (!System.IO.Directory.Exists(screenshotDir))
+        {
+            System.IO.Directory.CreateDirectory(screenshotDir);
+        }
+        ScreenCapture.CaptureScreenshot(path);
+        
+        string log = "Saved screenshot as <u>" + file + "</u>";
+        ChatPanel.AddLine(log);
     }
 }
