@@ -320,6 +320,7 @@ public class PlayerController : MonoBehaviour
         {
             isFlying = !isFlying;
             vcamWide.SetActive(isFlying);
+            //重置时间戳，防止连按三下
             lastSpace = 0;
         }
         else
@@ -371,41 +372,67 @@ public class PlayerController : MonoBehaviour
 
     public float inAirSpeed = 0.1f;
     public float attenuation = 0.75f;
+    public float flyVerticalSpeed = 5f;
+    public float flyHorizontalSpeed = 3f;
     void ProcessMovement(float v, float h)
     {
         if (cc.isGrounded)
         {
             if (v != 0 || h != 0)
             {
-                horizontalSpeed = horizontalSpeed + (transform.forward * v + transform.right * h);
+                horizontalSpeed += transform.forward * v + transform.right * h;
             }
             else
             {
                 horizontalSpeed *= attenuation;
             }
+            isFlying = false;
+            vcamWide.SetActive(false);
         }
         else
         {
             if (isFlying)
             {
-                horizontalSpeed += transform.forward * v + transform.right * h;
-                horizontalSpeed *= attenuation;
+                if (v != 0 || h != 0)
+                {
+                    horizontalSpeed += (transform.forward * v + transform.right * h) * 0.1f;
+                    horizontalSpeed = Vector3.ClampMagnitude(horizontalSpeed, flyHorizontalSpeed);
+                }
+                else
+                {
+                    horizontalSpeed *= 0.9f;
+                }
             }
             else
             {
                 horizontalSpeed = horizontalSpeed + (transform.forward * v + transform.right * h) * inAirSpeed;
             }
         }
-        horizontalSpeed = Vector3.ClampMagnitude(horizontalSpeed, 1);
-        Vector3 horizontalMovement = horizontalSpeed * Time.fixedDeltaTime;
-
         if (!isFlying)
         {
-            verticalSpeed += fallSpeed * Time.fixedDeltaTime;
+            horizontalSpeed = Vector3.ClampMagnitude(horizontalSpeed, 1);
+        }
+        Vector3 horizontalMovement = horizontalSpeed * Time.fixedDeltaTime;
+
+        if (isFlying)
+        {
+            if (Input.GetKey(KeyCode.Space))
+            {
+                verticalSpeed += Vector3.up;
+            }
+            else if (Input.GetKey(KeyCode.LeftShift))
+            {
+                verticalSpeed -= Vector3.up;
+            }
+            else
+            {
+                verticalSpeed *= attenuation;
+            }
+            verticalSpeed.y = Mathf.Clamp(verticalSpeed.y, -flyVerticalSpeed, flyVerticalSpeed);
         }
         else
         {
-            verticalSpeed = Vector3.zero;
+            verticalSpeed += fallSpeed * Time.fixedDeltaTime;
         }
         Vector3 verticalMovement = verticalSpeed * Time.fixedDeltaTime;
 

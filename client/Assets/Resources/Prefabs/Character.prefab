@@ -111,6 +111,8 @@ MonoBehaviour:
   bobSpeed: 5
   inAirSpeed: 0.05
   attenuation: 0.75
+  flyVerticalSpeed: 5
+  flyHorizontalSpeed: 3
   footstepInterval: 0.4
   accumulation: 0.025
 --- !u!143 &143223878412349064
