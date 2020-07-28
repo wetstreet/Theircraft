@@ -193,8 +193,8 @@ public class PlayerController : MonoBehaviour
         if (acceptInput)
         {
             RotateView();
-
-            if (Input.GetMouseButtonDown(0))
+            
+            if (Input.GetKeyDown(KeyCode.Mouse0))
             {
                 handAnimator.SetTrigger("interactTrigger");
                 if (WireFrameHelper.render)
@@ -206,12 +206,13 @@ public class PlayerController : MonoBehaviour
                 }
             }
 
-            if (Input.GetMouseButtonDown(1))
+            if (Input.GetKeyDown(KeyCode.Mouse1))
             {
                 if (WireFrameHelper.render && ItemSelectPanel.curBlockType != CSBlockType.None)
                 {
                     Vector3Int pos = WireFrameHelper.pos;
-                    if (ChunkManager.HasCollidableBlock(WireFrameHelper.pos.x, WireFrameHelper.pos.y, WireFrameHelper.pos.z))
+                    
+                    if (ChunkManager.HasNotPlantBlock(pos) && ChunkManager.HasCollidableBlock(WireFrameHelper.pos.x, WireFrameHelper.pos.y, WireFrameHelper.pos.z))
                     {
                         pos = WireFrameHelper.pos + Vector3Int.RoundToInt(hit.normal);
                     }
