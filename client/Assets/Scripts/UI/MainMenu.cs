@@ -53,7 +53,6 @@ public class MainMenu : MonoBehaviour
 
     void OnClickClear()
     {
-        LocalServer.ClearData();
-        FastTips.Show("Clear Map Data & Player Data Done!");
+        DeleteWorldUI.Show();
     }
 }
