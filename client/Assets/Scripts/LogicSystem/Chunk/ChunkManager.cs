@@ -283,12 +283,18 @@ public class ChunkManager
 
     public static void AddBlockOrientation(Vector3Int pos, CSBlockOrientation orientation)
     {
-        orientationDict.Add(pos, orientation);
+        if (orientation != CSBlockOrientation.Default)
+        {
+            orientationDict.Add(pos, orientation);
+        }
     }
 
     public static void RemoveBlockOrientation(Vector3Int pos)
     {
-        orientationDict.Remove(pos);
+        if (orientationDict.ContainsKey(pos))
+        {
+            orientationDict.Remove(pos);
+        }
     }
 
     public static CSBlockOrientation GetBlockOrientation(Vector3Int pos)

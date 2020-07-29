@@ -198,6 +198,11 @@ public class PlayerController : MonoBehaviour
         int type = (int)ItemSelectPanel.curBlockType;
         if (ChunkMeshGenerator.type2texcoords[type].isPlant)
         {
+            if (ItemSelectPanel.curBlockType == ChunkManager.GetBlockType(pos))
+            {
+                return false;
+            }
+
             //如果手上拿的是植物，则判断下方是否是否是实体
             return ChunkManager.HasNotPlantBlock(pos + Vector3Int.down);
         }
@@ -237,7 +242,7 @@ public class PlayerController : MonoBehaviour
                     {
                         orientation = SlabMeshGenerator.GetOrientation(transform.position, pos, WireFrameHelper.hitPos);
                     }
-                    else
+                    else if (ChunkMeshGenerator.type2texcoords[(byte)ItemSelectPanel.curBlockType].isRotatable)
                     {
                         orientation = ChunkMeshGenerator.GetBlockOrientation(transform.position, pos, WireFrameHelper.hitPos);
                     }
