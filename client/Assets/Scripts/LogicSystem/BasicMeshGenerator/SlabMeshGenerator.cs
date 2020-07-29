@@ -25,16 +25,24 @@ public class SlabMeshGenerator : IMeshGenerator
         }
     }
     
-    static Mesh GetMesh(bool isTop = false)
+    static Mesh GetMesh(CSBlockOrientation orientation = CSBlockOrientation.NegativeY_PositiveX)
     {
         Mesh mesh = null;
-        if (isTop)
+        switch (orientation)
         {
-            mesh = Resources.Load<Mesh>("Meshes/blocks/slab/top");
-        }
-        else
-        {
-            mesh = Resources.Load<Mesh>("Meshes/blocks/slab/bottom");
+            case CSBlockOrientation.PositiveY_NegativeX:
+            case CSBlockOrientation.PositiveY_NegativeZ:
+            case CSBlockOrientation.PositiveY_PositiveX:
+            case CSBlockOrientation.PositiveY_PositiveZ:
+                mesh = Resources.Load<Mesh>("Meshes/blocks/slab/top");
+                break;
+            case CSBlockOrientation.NegativeY_NegativeX:
+            case CSBlockOrientation.NegativeY_NegativeZ:
+            case CSBlockOrientation.NegativeY_PositiveX:
+            case CSBlockOrientation.NegativeY_PositiveZ:
+            default:
+                mesh = Resources.Load<Mesh>("Meshes/blocks/slab/bottom");
+                break;
         }
         return mesh;
     }
@@ -65,13 +73,26 @@ public class SlabMeshGenerator : IMeshGenerator
         return singleMesh;
     }
 
+    public static CSBlockOrientation GetOrientation(Vector3 playerPos, Vector3 blockPos, Vector3 hitPos)
+    {
+        if (hitPos.y - blockPos.y > 0)
+        {
+            return CSBlockOrientation.PositiveY_PositiveX;
+        }
+        else
+        {
+            return CSBlockOrientation.NegativeY_PositiveX;
+        }
+    }
+
     public void GenerateMeshInChunk(CSBlockType type, Vector3Int posInChunk, Vector3Int globalPos, List<Vector3> vertices, List<Vector2> uv, List<Vector3> normals, List<int> triangles)
     {
         TexCoords texCoords = ChunkMeshGenerator.type2texcoords[(byte)type];
         Vector2Int texPos = texCoords.front;
         texPos.y = (atlas_row - 1) - texPos.y;
-        
-        Mesh mesh = GetMesh();
+
+        CSBlockOrientation orient = ChunkManager.GetBlockOrientation(globalPos);
+        Mesh mesh = GetMesh(orient);
         int length = vertices.Count;
         foreach (Vector3 singleVertex in mesh.vertices)
         {

@@ -181,6 +181,72 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    void OnLeftClick()
+    {
+        handAnimator.SetTrigger("interactTrigger");
+        if (WireFrameHelper.render)
+        {
+            if (WireFrameHelper.pos.y != 0)
+            {
+                DeleteBlockReq(WireFrameHelper.pos);
+            }
+        }
+    }
+
+    bool CanAddBlock(Vector3Int pos)
+    {
+        int type = (int)ItemSelectPanel.curBlockType;
+        if (ChunkMeshGenerator.type2texcoords[type].isPlant)
+        {
+            //如果手上拿的是植物，则判断下方是否是否是实体
+            return ChunkManager.HasNotPlantBlock(pos + Vector3Int.down);
+        }
+        else
+        {
+            //如果手上拿的不是植物，则判断碰撞盒是否与玩家相交
+            return !cc.bounds.Intersects(new Bounds(pos, Vector3.one)) && !ChunkManager.HasNotPlantBlock(pos);
+        }
+    }
+
+    void OnRightClick()
+    {
+        if (WireFrameHelper.render && ItemSelectPanel.curBlockType != CSBlockType.None)
+        {
+            Vector3Int pos = WireFrameHelper.pos;
+
+            if (ChunkManager.HasNotPlantBlock(pos) && ChunkManager.HasCollidableBlock(WireFrameHelper.pos.x, WireFrameHelper.pos.y, WireFrameHelper.pos.z))
+            {
+                pos = WireFrameHelper.pos + Vector3Int.RoundToInt(hit.normal);
+            }
+
+            if (CanAddBlock(pos))
+            {
+                handAnimator.SetTrigger("interactTrigger");
+                if (ItemSelectPanel.curBlockType == CSBlockType.Torch)
+                {
+                    AddBlockReq(Vector3Int.RoundToInt(pos), ItemSelectPanel.curBlockType, WireFrameHelper.pos);
+                }
+                else
+                {
+                    CSBlockOrientation orientation = CSBlockOrientation.Default;
+                    if (ItemSelectPanel.curBlockType == CSBlockType.VerticalBrickSlab)
+                    {
+                        orientation = VerticalSlabMeshGenerator.GetOrientation(transform.position, pos, WireFrameHelper.hitPos);
+                    }
+                    else if (ChunkMeshGenerator.type2texcoords[(byte)ItemSelectPanel.curBlockType].isSlab)
+                    {
+                        orientation = SlabMeshGenerator.GetOrientation(transform.position, pos, WireFrameHelper.hitPos);
+                    }
+                    else
+                    {
+                        orientation = ChunkMeshGenerator.GetBlockOrientation(transform.position, pos, WireFrameHelper.hitPos);
+                    }
+                    AddBlockReq(Vector3Int.RoundToInt(pos), ItemSelectPanel.curBlockType, orientation);
+                }
+            }
+        }
+    }
+
     float timeInterval = 0.2f;
     bool needUpdate;
     float lastUpdateTime;
@@ -196,49 +262,11 @@ public class PlayerController : MonoBehaviour
             
             if (Input.GetKeyDown(KeyCode.Mouse0))
             {
-                handAnimator.SetTrigger("interactTrigger");
-                if (WireFrameHelper.render)
-                {
-                    if (WireFrameHelper.pos.y != 0)
-                    {
-                        DeleteBlockReq(WireFrameHelper.pos);
-                    }
-                }
+                OnLeftClick();
             }
-
             if (Input.GetKeyDown(KeyCode.Mouse1))
             {
-                if (WireFrameHelper.render && ItemSelectPanel.curBlockType != CSBlockType.None)
-                {
-                    Vector3Int pos = WireFrameHelper.pos;
-                    
-                    if (ChunkManager.HasNotPlantBlock(pos) && ChunkManager.HasCollidableBlock(WireFrameHelper.pos.x, WireFrameHelper.pos.y, WireFrameHelper.pos.z))
-                    {
-                        pos = WireFrameHelper.pos + Vector3Int.RoundToInt(hit.normal);
-                    }
-
-                    if (!cc.bounds.Intersects(new Bounds(pos, Vector3.one)) && !ChunkManager.HasNotPlantBlock(pos))
-                    {
-                        handAnimator.SetTrigger("interactTrigger");
-                        if (ItemSelectPanel.curBlockType == CSBlockType.Torch)
-                        {
-                            AddBlockReq(Vector3Int.RoundToInt(pos), ItemSelectPanel.curBlockType, WireFrameHelper.pos);
-                        }
-                        else
-                        {
-                            if (ItemSelectPanel.curBlockType == CSBlockType.VerticalBrickSlab)
-                            {
-                                CSBlockOrientation orientation = VerticalSlabMeshGenerator.GetOrientation(transform.position, pos, WireFrameHelper.hitPos);
-                                AddBlockReq(Vector3Int.RoundToInt(pos), ItemSelectPanel.curBlockType, orientation);
-                            }
-                            else
-                            {
-                                CSBlockOrientation orientation = ChunkMeshGenerator.GetBlockOrientation(transform.position, pos, WireFrameHelper.hitPos);
-                                AddBlockReq(Vector3Int.RoundToInt(pos), ItemSelectPanel.curBlockType, orientation);
-                            }
-                        }
-                    }
-                }
+                OnRightClick();
             }
             if (Input.GetKeyDown(KeyCode.Space))
             {
@@ -248,6 +276,10 @@ public class PlayerController : MonoBehaviour
             {
                 ItemSelectPanel.DropCurItem();
             }
+        }
+        if (Input.GetKeyDown(KeyCode.F2))
+        {
+            Utilities.Capture();
         }
 
         if (needUpdate && Time.realtimeSinceStartup - lastUpdateTime > timeInterval)
@@ -260,11 +292,6 @@ public class PlayerController : MonoBehaviour
                 Rotation = new CSVector3 { x = 0, y = transform.localEulerAngles.y, z = camera.transform.localEulerAngles.x }
             };
             NetworkManager.SendPkgToServer(ENUM_CMD.CS_HERO_MOVE_REQ, req);
-        }
-
-        if (Input.GetKeyDown(KeyCode.F2))
-        {
-            Utilities.Capture();
         }
     }
 
