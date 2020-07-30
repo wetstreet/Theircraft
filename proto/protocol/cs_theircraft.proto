@@ -264,13 +264,13 @@ message CSDeleteBlockReq
 message CSDeleteBlockRes
 {
 	required int32 RetCode = 1;
-	required CSVector3Int position = 2;
+	repeated CSVector3Int position = 2;
 }
 
 //CS_DELETE_BLOCK_NOTIFY
 message CSDeleteBlockNotify
 {
-	required CSVector3Int position = 1;
+	repeated CSVector3Int position = 1;
 }
 
 //CS_HERO_MOVE_REQ

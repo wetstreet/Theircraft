@@ -66,6 +66,11 @@ public class ChunkManager
         return GetChunk(pos.x, pos.y);
     }
 
+    public static Chunk GetChunk(Vector3Int pos)
+    {
+        return GetChunk(pos.x, pos.z);
+    }
+
     // intput is global position
     public static Chunk GetChunk(int x, int y, int z)
     {
@@ -201,10 +206,10 @@ public class ChunkManager
             chunk.RebuildMesh();
 
             // if this block is adjacent to other chunks, refresh nearby chunks
-            foreach (Chunk nearbyChunk in GetNearbyChunks(xInChunk, zInChunk, chunk))
-            {
-                nearbyChunk.RebuildMesh();
-            }
+            //foreach (Chunk nearbyChunk in GetNearbyChunks(xInChunk, zInChunk, chunk))
+            //{
+            //    nearbyChunk.RebuildMesh();
+            //}
 
             if (block.type == CSBlockType.Torch)
             {
@@ -213,26 +218,29 @@ public class ChunkManager
         }
     }
 
-    static List<Chunk> GetNearbyChunks(int xInChunk, int zInChunk, Chunk chunk)
+    public static void SetChunkDirty(int x, int y)
     {
-        List<Chunk> nearbyChunks = new List<Chunk>();
-        if (xInChunk == 0)
+        Chunk chunk = GetChunk(x, y);
+        if (chunk != null)
         {
-            nearbyChunks.Add(GetChunk(chunk.x - 1, chunk.z));
+            chunk.isDirty = true;
         }
-        else if (xInChunk == 15)
+    }
+
+    public static void RebuildChunks()
+    {
+        foreach (Chunk chunk in chunkDict.Values)
         {
-            nearbyChunks.Add(GetChunk(chunk.x + 1, chunk.z));
+            if (chunk.isDirty)
+            {
+                chunk.RebuildMesh();
+            }
         }
-        if (zInChunk == 0)
-        {
-            nearbyChunks.Add(GetChunk(chunk.x, chunk.z - 1));
-        }
-        else if (zInChunk == 15)
-        {
-            nearbyChunks.Add(GetChunk(chunk.x, chunk.z + 1));
-        }
-        return nearbyChunks;
+    }
+
+    public static void RemoveBlock(Vector3Int pos)
+    {
+        RemoveBlock(pos.x, pos.y, pos.z);
     }
 
     public static void RemoveBlock(int x, int y, int z, bool removeBeDependBlocks = true, bool refreshChunks = true)
@@ -243,31 +251,35 @@ public class ChunkManager
             int xInChunk = chunk.GetXInChunkByGlobalX(x);
             int zInChunk = chunk.GetZInChunkByGlobalZ(z);
             CSBlockType type = chunk.GetBlockType(xInChunk, y, zInChunk);
+            if (type == CSBlockType.Torch)
+            {
+                TorchMeshGenerator.Instance.RemoveTorchAt(x, y, z);
+            }
             chunk.SetBlockType(xInChunk, y, zInChunk, CSBlockType.None);
             Vector3Int pos = new Vector3Int(x, y, z);
             RemoveBlockOrientation(pos);
             RemoveBlockDependence(pos);
 
-            if (removeBeDependBlocks)
-            {
-                RemoveDependingBlocks(pos);
+            //if (removeBeDependBlocks)
+            //{
+            //    RemoveDependingBlocks(pos);
 
-                // removes block on top if exists
-                if (chunk.HasNotCollidableBlock(xInChunk, y + 1, zInChunk))
-                {
-                    RemoveBlock(x, y + 1, z, false, false);
-                }
-            }
+            //    // removes block on top if exists
+            //    if (chunk.HasNotCollidableBlock(xInChunk, y + 1, zInChunk))
+            //    {
+            //        RemoveBlock(x, y + 1, z, false, false);
+            //    }
+            //}
              
             if (refreshChunks)
             {
-                chunk.RebuildMesh();
+                //chunk.RebuildMesh();
 
                 // if this block is adjacent to other chunks, refresh nearby chunks
-                foreach (Chunk nearbyChunk in GetNearbyChunks(xInChunk, zInChunk, chunk))
-                {
-                    nearbyChunk.RebuildMesh();
-                }
+                //foreach (Chunk nearbyChunk in GetNearbyChunks(xInChunk, zInChunk, chunk))
+                //{
+                //    nearbyChunk.RebuildMesh();
+                //}
             }
 
             Item.CreateBlockDropItem(type, pos);
@@ -320,23 +332,23 @@ public class ChunkManager
     }
 
     static List<Vector3Int> removeList = new List<Vector3Int>();
-    public static void RemoveDependingBlocks(Vector3Int pos)
-    {
-        removeList.Clear();
-        foreach(KeyValuePair<Vector3Int, Vector3Int> kvPair in dependenceDict)
-        {
-            if (kvPair.Value == pos)
-            {
-                removeList.Add(kvPair.Key);
-            }
-        }
+    //public static void RemoveDependingBlocks(Vector3Int pos)
+    //{
+    //    removeList.Clear();
+    //    foreach(KeyValuePair<Vector3Int, Vector3Int> kvPair in dependenceDict)
+    //    {
+    //        if (kvPair.Value == pos)
+    //        {
+    //            removeList.Add(kvPair.Key);
+    //        }
+    //    }
 
-        for(int i = 0; i < removeList.Count; i++)
-        {
-            Vector3Int rmpos = removeList[i];
-            RemoveBlock(rmpos.x, rmpos.y, rmpos.z, false, false);
-        }
-    }
+    //    for(int i = 0; i < removeList.Count; i++)
+    //    {
+    //        Vector3Int rmpos = removeList[i];
+    //        RemoveBlock(rmpos.x, rmpos.y, rmpos.z, false, false);
+    //    }
+    //}
 
     public static Vector3Int GetBlockDependence(Vector3Int pos)
     {

@@ -600,13 +600,13 @@ namespace protocol.cs_theircraft
       get { return _RetCode; }
       set { _RetCode = value; }
     }
-    private CSVector3Int _position;
-    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"position", DataFormat = global::ProtoBuf.DataFormat.Default)]
-    public CSVector3Int position
+    private readonly global::System.Collections.Generic.List<CSVector3Int> _position = new global::System.Collections.Generic.List<CSVector3Int>();
+    [global::ProtoBuf.ProtoMember(2, Name=@"position", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public global::System.Collections.Generic.List<CSVector3Int> position
     {
       get { return _position; }
-      set { _position = value; }
     }
+  
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
@@ -617,13 +617,13 @@ namespace protocol.cs_theircraft
   {
     public CSDeleteBlockNotify() {}
     
-    private CSVector3Int _position;
-    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"position", DataFormat = global::ProtoBuf.DataFormat.Default)]
-    public CSVector3Int position
+    private readonly global::System.Collections.Generic.List<CSVector3Int> _position = new global::System.Collections.Generic.List<CSVector3Int>();
+    [global::ProtoBuf.ProtoMember(1, Name=@"position", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public global::System.Collections.Generic.List<CSVector3Int> position
     {
       get { return _position; }
-      set { _position = value; }
     }
+  
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }

@@ -404,7 +404,7 @@ public class PlayerController : MonoBehaviour
         //if ((cc.collisionFlags & CollisionFlags.Above) > 0)
         //{
         //    Debug.Log("hit top");
-        //    //verticalSpeed = new Vector3(0, -Mathf.Abs(verticalSpeed.y), 0);
+        //    verticalSpeed = new Vector3(0, -Mathf.Abs(verticalSpeed.y), 0);
         //}
     }
 
@@ -662,9 +662,11 @@ public class PlayerController : MonoBehaviour
         //Debug.Log("DeleteBlockRes,retCode=" + rsp.RetCode);
         if (rsp.RetCode == 0)
         {
-            Vector3Int pos = new Vector3Int(rsp.position.x, rsp.position.y, rsp.position.z);
-            CSBlockType type = ChunkManager.GetBlockType(rsp.position.x, rsp.position.y, rsp.position.z);
-            ChunkManager.RemoveBlock(rsp.position.x, rsp.position.y, rsp.position.z);
+            foreach (CSVector3Int pos in rsp.position)
+            {
+                ChunkManager.RemoveBlock(pos.ToVector3Int());
+            }
+            ChunkManager.RebuildChunks();
         }
         else
         {
@@ -676,6 +678,11 @@ public class PlayerController : MonoBehaviour
     {
         //Debug.Log("OnDeleteBlockNotify");
         CSDeleteBlockNotify notify = NetworkManager.Deserialize<CSDeleteBlockNotify>(data);
-        ChunkManager.RemoveBlock(notify.position.x, notify.position.y, notify.position.z);
+        foreach (CSVector3Int _pos in notify.position)
+        {
+            Vector3Int pos = _pos.ToVector3Int();
+            ChunkManager.RemoveBlock(pos);
+        }
+        ChunkManager.RebuildChunks();
     }
 }

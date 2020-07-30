@@ -428,6 +428,7 @@ public static class ChunkMeshGenerator
 
     public static void RefreshMeshData(this Chunk chunk)
     {
+        //Debug.Log("RefreshMeshData,chunk=" + chunk.pos);
         chunk.vertices1.Clear();
         chunk.colors1.Clear();
         chunk.uv1.Clear();
@@ -500,6 +501,7 @@ public static class ChunkMeshGenerator
             }
         }
         chunk.hasBuiltMesh = true;
+        chunk.isDirty = false;
     }
 
     public static CSBlockOrientation GetBlockOrientation(Vector3 playerPos, Vector3 blockPos, Vector3 hitPos)

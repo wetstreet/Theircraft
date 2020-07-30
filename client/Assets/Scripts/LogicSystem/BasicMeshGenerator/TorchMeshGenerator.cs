@@ -104,6 +104,11 @@ public class TorchMeshGenerator : IMeshGenerator
         }
     }
 
+    public void RemoveTorchAt(int x, int y, int z)
+    {
+        RemoveTorchAt(new Vector3Int(x, y, z));
+    }
+
     override public void GenerateMeshInChunk(CSBlockType type, Vector3Int posInChunk, Vector3Int globalPos, List<Vector3> vertices, List<Vector2> uv, List<int> triangles)
     {
         //TexCoords texCoords = ChunkMeshGenerator.type2texcoords[(byte)type];

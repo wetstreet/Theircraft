@@ -102,15 +102,6 @@ public class LocalServer : MonoBehaviour
         callback(rsp);
     }
 
-    static byte[] GetChunkData(Vector2Int pos)
-    {
-        if (!chunkDataDict.ContainsKey(pos))
-        {
-            chunkDataDict.Add(pos, new byte[65536]);
-        }
-        return chunkDataDict[pos];
-    }
-
     static Dictionary<Vector3Int, CSBlockOrientation> orientationDict;
     static Dictionary<Vector3Int, Vector3Int> dependenceDict;
     static HashSet<Vector2Int> chunkGenerateFlagSet;
@@ -155,6 +146,15 @@ public class LocalServer : MonoBehaviour
         DatabaseHelper.ClearAll();
     }
 
+    static byte[] GetChunkData(Vector2Int pos)
+    {
+        if (!chunkDataDict.ContainsKey(pos))
+        {
+            chunkDataDict.Add(pos, new byte[65536]);
+        }
+        return chunkDataDict[pos];
+    }
+
     static Vector2Int keyVector = new Vector2Int();
     public static void SetBlockType(int x, int y, int z, CSBlockType type)
     {
@@ -166,6 +166,24 @@ public class LocalServer : MonoBehaviour
         int zInChunk = z - keyVector.y * 16;
 
         chunkData[256 * y + 16 * xInChunk + zInChunk] = (byte)type;
+    }
+
+    public static byte GetBlockByte(Vector3Int pos)
+    {
+        return GetBlockByte(pos.x, pos.y, pos.z);
+    }
+
+
+    public static byte GetBlockByte(int x, int y, int z)
+    {
+        keyVector.x = Chunk.GetChunkPosByGlobalPos(x);
+        keyVector.y = Chunk.GetChunkPosByGlobalPos(z);
+        byte[] chunkData = GetChunkData(keyVector);
+
+        int xInChunk = x - keyVector.x * 16;
+        int zInChunk = z - keyVector.y * 16;
+
+        return chunkData[256 * y + 16 * xInChunk + zInChunk];
     }
 
     static void Single_OnChunksEnterLeaveViewReq(object obj, Action<object> callback)
@@ -185,7 +203,7 @@ public class LocalServer : MonoBehaviour
             }
             CSChunk c = new CSChunk();
             c.Position = chunk;
-            c.BlocksInBytes = blocks;
+            c.BlocksInBytes = (byte[])blocks.Clone();
             res.EnterViewChunks.Add(c);
         }
         foreach (CSVector2Int chunk in req.LeaveViewChunks)
@@ -203,20 +221,70 @@ public class LocalServer : MonoBehaviour
         playerData.Rotation = req.Rotation;
     }
 
+    static List<Vector3Int> GetBedependentList(Vector3Int pos)
+    {
+        List<Vector3Int> ret = new List<Vector3Int>();
+        foreach (KeyValuePair<Vector3Int, Vector3Int> pair in dependenceDict)
+        {
+            if (pair.Value == pos)
+            {
+                ret.Add(pair.Key);
+            }
+        }
+        return ret;
+    }
+
+    // intput is global position
+    public static void SetBlockByte(Vector3Int pos, CSBlockType type)
+    {
+        int chunkX = Chunk.GetChunkPosByGlobalPos(pos.x);
+        int chunkZ = Chunk.GetChunkPosByGlobalPos(pos.z);
+        Vector2Int key = new Vector2Int(chunkX, chunkZ);
+        if (chunkDataDict.ContainsKey(key))
+        {
+            int xInChunk = pos.x - chunkX * 16;
+            int zInChunk = pos.z - chunkZ * 16;
+            byte[] blocksInByte = chunkDataDict[key];
+            blocksInByte[256 * pos.y + 16 * xInChunk + zInChunk] = (byte)type;
+        }
+    }
+
+    static void DeleteBlock(Vector3Int pos, List<CSVector3Int> returnList)
+    {
+        //删除数据
+        SetBlockByte(pos, CSBlockType.None);
+        if (dependenceDict.ContainsKey(pos))
+        {
+            dependenceDict.Remove(pos);
+        }
+        if (orientationDict.ContainsKey(pos))
+        {
+            orientationDict.Remove(pos);
+        }
+
+        //告知客户端
+        returnList.Add(pos.ToCSVector3Int());
+
+        //删除上方的植物
+        if (ChunkMeshGenerator.type2texcoords[GetBlockByte(pos + Vector3Int.up)].isPlant)
+        {
+            DeleteBlock(pos + Vector3Int.up, returnList);
+        }
+
+        //递归删除依赖于这个方块的数据
+        List<Vector3Int> bedependents = GetBedependentList(pos);
+        foreach (Vector3Int bedependPos in bedependents)
+        {
+            DeleteBlock(bedependPos, returnList);
+        }
+    }
+
     static void Single_OnDeleteBlockReq(object obj, Action<object> callback)
     {
         CSDeleteBlockReq req = obj as CSDeleteBlockReq;
         CSDeleteBlockRes res = new CSDeleteBlockRes();
         res.RetCode = 0;
-        res.position = req.position;
-        if (dependenceDict.ContainsKey(req.position.ToVector3Int()))
-        {
-            dependenceDict.Remove(req.position.ToVector3Int());
-        }
-        if (orientationDict.ContainsKey(req.position.ToVector3Int()))
-        {
-            orientationDict.Remove(req.position.ToVector3Int());
-        }
+        DeleteBlock(req.position.ToVector3Int(), res.position);
         callback(res);
     }
 
@@ -226,13 +294,15 @@ public class LocalServer : MonoBehaviour
         CSAddBlockRes res = new CSAddBlockRes();
         res.RetCode = 0;
         res.block = req.block;
+        Vector3Int pos = req.block.position.ToVector3Int();
+        SetBlockByte(pos, req.block.type);
         if (req.block.depentPos != null)
         {
-            dependenceDict.Add(req.block.position.ToVector3Int(), req.block.depentPos.ToVector3Int());
+            dependenceDict.Add(pos, req.block.depentPos.ToVector3Int());
         }
         if (req.block.orient != CSBlockOrientation.Default)
         {
-            orientationDict.Add(req.block.position.ToVector3Int(), req.block.orient);
+            orientationDict.Add(pos, req.block.orient);
         }
         callback(res);
     }

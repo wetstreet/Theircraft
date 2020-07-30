@@ -12,6 +12,7 @@ public class Chunk
     public Transform transform;
     public GameObject gameObject;
     public byte[] blocksInByte;
+    public bool isDirty = false;
 
     static int capacity = 8192;
 
@@ -107,18 +108,47 @@ public class Chunk
         return (CSBlockType)GetBlockByte(xInChunk,_y,zInChunk);
     }
 
-    //input is local position
+    //input is global position
     public void SetBlockTypeByGlobalPosition(int _x, int _y, int _z, CSBlockType type)
     {
         int xInChunk = GetXInChunkByGlobalX(_x);
         int zInChunk = GetZInChunkByGlobalZ(_z);
-        blocksInByte[256 * _y + 16 * xInChunk + zInChunk] = (byte)type;
+        //blocksInByte[256 * _y + 16 * xInChunk + zInChunk] = (byte)type;
+        SetBlockType(xInChunk, _y, zInChunk, type);
     }
+
+    void SetNearbyChunkDirty(int xInChunk, int zInChunk)
+    {
+        if (xInChunk == 0)
+        {
+            ChunkManager.SetChunkDirty(x - 1, z);
+        }
+        else if (xInChunk == 15)
+        {
+            ChunkManager.SetChunkDirty(x + 1, z);
+        }
+        if (zInChunk == 0)
+        {
+            ChunkManager.SetChunkDirty(x, z - 1);
+        }
+        else if (zInChunk == 15)
+        {
+            ChunkManager.SetChunkDirty(x, z + 1);
+        }
+    }
+
+    //input is local position
+    //public void RemoveBlock(Vector3Int pos)
+    //{
+    //    SetBlockTypeByGlobalPosition(pos.x, pos.y, pos.z, CSBlockType.None);
+    //}
 
     //input is local position
     public void SetBlockType(int xInChunk, int _y, int zInChunk, CSBlockType type)
     {
         blocksInByte[256 * _y + 16 * xInChunk + zInChunk] = (byte)type;
+        isDirty = true;
+        SetNearbyChunkDirty(xInChunk, zInChunk);
     }
 
     public bool HasNotCollidableBlock(int x, int y, int z)
@@ -149,7 +179,7 @@ public class Chunk
 
     public void RebuildMesh(bool forceRefreshMeshData = true)
     {
-        if (forceRefreshMeshData)
+        if (forceRefreshMeshData || isDirty)
         {
             //UpdateLighting();
             this.RefreshMeshData();
