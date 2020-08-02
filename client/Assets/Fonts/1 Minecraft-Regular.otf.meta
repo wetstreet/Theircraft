@@ -8,10 +8,11 @@ TrueTypeFontImporter:
   characterSpacing: 0
   characterPadding: 1
   includeFontData: 1
-  fontName: Minecraft
   fontNames:
   - Minecraft
-  fallbackFontReferences: []
+  - Unifont
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 91331f1c2e563bd4eba7cd669ba7d529, type: 3}
   customCharacters: 
   fontRenderingMode: 0
   ascentCalculationMode: 1
