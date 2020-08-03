@@ -23,6 +23,7 @@ public class Main : MonoBehaviour {
     void Start ()
     {
         SoundManager.Init();
+        LocalizationManager.Init();
 
         SceneManager.LoadScene("LoginScene");
 

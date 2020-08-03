@@ -25,6 +25,7 @@ public class MainMenu : MonoBehaviour
         //Utilities.SetClickCallback(transform, "ButtonRegister", OnClickRegister);
         Utilities.SetClickCallback(transform, "ButtonQuit", OnClickQuit);
         Utilities.SetClickCallback(transform, "ButtonClear", OnClickClear);
+        Utilities.SetClickCallback(transform, "ButtonLanguage", OnClickLanguage);
     }
 
     void OnClickSingle()
@@ -54,5 +55,17 @@ public class MainMenu : MonoBehaviour
     void OnClickClear()
     {
         DeleteWorldUI.Show();
+    }
+
+    void OnClickLanguage()
+    {
+        if (LocalizationManager.currentLanguage == Language.English)
+        {
+            LocalizationManager.Init(Language.Chinese);
+        }
+        else
+        {
+            LocalizationManager.Init(Language.English);
+        }
     }
 }

@@ -51,7 +51,7 @@ public class SettingsPanel : MonoBehaviour {
 
     public static int GraphicsLevel
     {
-        get { return PlayerPrefs.GetInt(GRAPHICS_LEVEL_KEY, 2); }
+        get { return PlayerPrefs.GetInt(GRAPHICS_LEVEL_KEY, 1); }
         set { PlayerPrefs.SetInt(GRAPHICS_LEVEL_KEY, value); }
     }
 
@@ -180,11 +180,11 @@ public class SettingsPanel : MonoBehaviour {
     {
         if (Screen.fullScreen)
         {
-            fullscreenLabel.text = "Fullscreen: On";
+            fullscreenLabel.text = $"{LocalizationManager.GetText("options.fullscreen")}: {LocalizationManager.GetText("options.on")}";
         }
         else
         {
-            fullscreenLabel.text = "Fullscreen: Off";
+            fullscreenLabel.text = $"{LocalizationManager.GetText("options.fullscreen")}: {LocalizationManager.GetText("options.off")}";
         }
     }
 
@@ -215,15 +215,11 @@ public class SettingsPanel : MonoBehaviour {
         int quality = GraphicsLevel;
         if (quality == 0)
         {
-            graphicsLabel.text = "Graphics: Fast";
+            graphicsLabel.text = $"{LocalizationManager.GetText("options.graphics")}: {LocalizationManager.GetText("options.graphics.fast")}";
         }
-        else if (quality == 1)
+        else if (quality >= 1)
         {
-            graphicsLabel.text = "Graphics: Good";
-        }
-        else if (quality == 2)
-        {
-            graphicsLabel.text = "Graphics: Fancy";
+            graphicsLabel.text = $"{LocalizationManager.GetText("options.graphics")}: {LocalizationManager.GetText("options.graphics.fancy")}";
         }
     }
 
@@ -234,7 +230,7 @@ public class SettingsPanel : MonoBehaviour {
 
     void OnClickGraphics()
     {
-        GraphicsLevel = (GraphicsLevel + 1) % 3;
+        GraphicsLevel = (GraphicsLevel + 1) % 2;
         RefreshGraphicsLevel();
         RefreshGraphicsLabel();
         RefreshVSync();
@@ -256,11 +252,11 @@ public class SettingsPanel : MonoBehaviour {
     {
         if (FrameRate == -1)
         {
-            framerateLabel.text = $"Max Framerate: Unlimited";
+            framerateLabel.text = $"{LocalizationManager.GetText("options.framerateLimit")}: {LocalizationManager.GetText("options.framerateLimit.max")}";
         }
         else
         {
-            framerateLabel.text = $"Max Framerate: {FrameRate}";
+            framerateLabel.text = $"{LocalizationManager.GetText("options.framerateLimit")}: {FrameRate}";
         }
     }
 
@@ -279,11 +275,11 @@ public class SettingsPanel : MonoBehaviour {
         int vsync = VSync;
         if (vsync == 0)
         {
-            vsyncLabel.text = "Use VSync: Off";
+            vsyncLabel.text = $"{LocalizationManager.GetText("options.vsync")}: {LocalizationManager.GetText("options.off")}";
         }
         else
         {
-            vsyncLabel.text = "Use VSync: On";
+            vsyncLabel.text = $"{LocalizationManager.GetText("options.vsync")}: {LocalizationManager.GetText("options.on")}";
         }
     }
 
@@ -296,7 +292,8 @@ public class SettingsPanel : MonoBehaviour {
 
     void RefreshRenderDistanceLabel()
     {
-        sliderLabel.text = $"Render Distance: {RenderDistance} chunks";
+        string temp = $"{LocalizationManager.GetText("options.renderDistance")}: {LocalizationManager.GetText("options.chunks")}";
+        sliderLabel.text = string.Format(temp, RenderDistance);
     }
 
     void OnRenderDistanceChange(float value)
@@ -316,11 +313,11 @@ public class SettingsPanel : MonoBehaviour {
     {
         if (MasterVolume == 0)
         {
-            masterVolumeLabel.text = $"Master Volume: OFF";
+            masterVolumeLabel.text = $"{LocalizationManager.GetText("soundCategory.master")}: {LocalizationManager.GetText("options.off")}";
         }
         else
         {
-            masterVolumeLabel.text = $"Master Volume: {MasterVolume}%";
+            masterVolumeLabel.text = $"{LocalizationManager.GetText("soundCategory.master")}: {MasterVolume}%";
         }
     }
 }
