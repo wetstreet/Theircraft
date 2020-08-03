@@ -39,7 +39,7 @@ public class LoginSystem
             MainMenu.Close();
             LoadingUI.Show();
             SceneManager.LoadScene("GameScene");
-            ChatPanel.AddLine(DataCenter.name + ", welcome!");
+            //ChatPanel.AddLine(DataCenter.name + ", welcome!");
         }
         else
         {

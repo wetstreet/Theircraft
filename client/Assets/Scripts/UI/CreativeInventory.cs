@@ -350,11 +350,13 @@ public class CreativeInventory : MonoBehaviour
             string name = "";
             if (showDesc)
             {
-                name = blocks[showIndex].ToString();
+                CSBlockType type = blocks[showIndex];
+                name = LocalizationManager.GetBlockName(type);
             }
             else if (showSelectDesc)
             {
-                name = ItemSelectPanel.dataList[showSelectIndex].ToString();
+                CSBlockType type = ItemSelectPanel.dataList[showSelectIndex];
+                name = LocalizationManager.GetBlockName(type);
             }
             descLabel.text = name;
             descTrans.sizeDelta = new Vector2(Mathf.CeilToInt(descLabel.renderedWidth) + 10, 16);

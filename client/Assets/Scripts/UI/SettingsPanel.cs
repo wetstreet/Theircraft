@@ -21,6 +21,7 @@ public class SettingsPanel : MonoBehaviour {
     static readonly string FRAME_RATE_INDEX_KEY = "FRAME_RATE_INDEX_KEY";
     static readonly string VSYNC_KEY = "VSYNC_KEY";
     static readonly string GRAPHICS_LEVEL_KEY = "GRAPHICS_LEVEL_KEY";
+    static readonly string LANGUAGE_KEY = "LANGUAGE_KEY";
 
     public static int MasterVolume
     {
@@ -53,6 +54,12 @@ public class SettingsPanel : MonoBehaviour {
     {
         get { return PlayerPrefs.GetInt(GRAPHICS_LEVEL_KEY, 1); }
         set { PlayerPrefs.SetInt(GRAPHICS_LEVEL_KEY, value); }
+    }
+
+    public static Language Language
+    {
+        get { return (Language)PlayerPrefs.GetInt(LANGUAGE_KEY, 0); }
+        set { PlayerPrefs.SetInt(LANGUAGE_KEY, (int)value); }
     }
 
     public static int FrameRate

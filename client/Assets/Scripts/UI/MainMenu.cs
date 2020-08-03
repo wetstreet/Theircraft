@@ -59,13 +59,15 @@ public class MainMenu : MonoBehaviour
 
     void OnClickLanguage()
     {
-        if (LocalizationManager.currentLanguage == Language.English)
+        if (SettingsPanel.Language == Language.English)
         {
-            LocalizationManager.Init(Language.Chinese);
+            SettingsPanel.Language = Language.Chinese;
+            LocalizationManager.Init();
         }
         else
         {
-            LocalizationManager.Init(Language.English);
+            SettingsPanel.Language = Language.English;
+            LocalizationManager.Init();
         }
     }
 }
