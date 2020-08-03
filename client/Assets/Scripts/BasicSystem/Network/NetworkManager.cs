@@ -67,6 +67,11 @@ public static class NetworkManager
         callbackDict[type].Add(new NetworkCallback { func = _func, isDelete = false });
     }
 
+    public static void Clear()
+    {
+        callbackDict.Clear();
+    }
+
     static void Send()
     {
         while (connected)

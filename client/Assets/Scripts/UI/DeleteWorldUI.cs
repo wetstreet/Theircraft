@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class DeleteWorldUI : MonoBehaviour
@@ -11,6 +12,9 @@ public class DeleteWorldUI : MonoBehaviour
     {
         Utilities.SetClickCallback(transform, "btnGrid/ButtonDelete", OnClickDelete);
         Utilities.SetClickCallback(transform, "btnGrid/ButtonCancel", OnClickCancel);
+        
+        TextMeshProUGUI text = transform.Find("label").GetComponent<TextMeshProUGUI>();
+        text.text = "Local World " + LocalizationManager.GetText("selectWorld.deleteWarning");
     }
 
     public static void Show()
@@ -35,7 +39,7 @@ public class DeleteWorldUI : MonoBehaviour
     void OnClickDelete()
     {
         LocalServer.ClearData();
-        FastTips.Show("Clear Map Data & Player Data Done!");
+        //FastTips.Show("Clear Map Data & Player Data Done!");
         Close();
     }
 }

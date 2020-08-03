@@ -134,6 +134,7 @@ public class SettingsPanel : MonoBehaviour {
     void OnClickQuit()
     {
         LocalServer.SaveData();
+        NetworkManager.Clear();
         SceneManager.LoadScene("LoginScene");
     }
 

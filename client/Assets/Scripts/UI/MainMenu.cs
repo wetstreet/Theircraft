@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using TMPro;
+using UnityEngine;
 
 public class MainMenu : MonoBehaviour
 {
@@ -26,6 +27,9 @@ public class MainMenu : MonoBehaviour
         Utilities.SetClickCallback(transform, "ButtonQuit", OnClickQuit);
         Utilities.SetClickCallback(transform, "ButtonClear", OnClickClear);
         Utilities.SetClickCallback(transform, "ButtonLanguage", OnClickLanguage);
+        
+        TextMeshProUGUI text = transform.Find("version").GetComponent<TextMeshProUGUI>();
+        text.text = "Theircraft " + Application.version;
     }
 
     void OnClickSingle()
