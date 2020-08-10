@@ -10,6 +10,7 @@ public class TexCoords
     public bool isWall = false;         // uses wall mesh generator
     public bool isSlab = false;         // uses slab mesh generator
     public bool isVerticalSlab = false; // uses vertical slab mesh generator
+    public bool isLog = false;          // uses log mesh generator
 
     public Vector2Int front;
     public Vector2Int right;
@@ -176,6 +177,22 @@ public class TexCoords
         return new TexCoords
         {
             isTransparent = true,
+        };
+    }
+
+    public static TexCoords Log(Vector2Int top_bottom, Vector2Int side)
+    {
+        return new TexCoords
+        {
+            isCollidable = true,
+            isRotatable = true,
+            isLog = true,
+            front = side,
+            right = side,
+            left = side,
+            back = side,
+            top = top_bottom,
+            bottom = top_bottom
         };
     }
 }

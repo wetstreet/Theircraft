@@ -1122,7 +1122,16 @@ namespace protocol.cs_theircraft
       NegativeY_NegativeZ = 7,
             
       [global::ProtoBuf.ProtoEnum(Name=@"NegativeY_NegativeX", Value=8)]
-      NegativeY_NegativeX = 8
+      NegativeY_NegativeX = 8,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"X", Value=9)]
+      X = 9,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"Y", Value=10)]
+      Y = 10,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"Z", Value=11)]
+      Z = 11
     }
   
 }

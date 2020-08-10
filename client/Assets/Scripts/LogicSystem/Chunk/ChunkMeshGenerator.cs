@@ -169,7 +169,7 @@ public static class ChunkMeshGenerator
         // Dandelion
         TexCoords.Plant(uv_dandelion),
         // OakLog
-        TexCoords.Block_polar_side(uv_oaklog_top, uv_oaklog_side),
+        TexCoords.Log(uv_oaklog_top, uv_oaklog_side),
         // OakLeaves
         TexCoords.Block_1_transparent(uv_oakleaves),
         // BrickStairs
@@ -307,15 +307,15 @@ public static class ChunkMeshGenerator
         // DarkOakLeaves
         TexCoords.Block_1_transparent(uv_oakleaves),
         // BirchLog
-        TexCoords.Block_polar_side(uv_birch_log_top, uv_birch_log),
+        TexCoords.Log(uv_birch_log_top, uv_birch_log),
         // SpruceLog
-        TexCoords.Block_polar_side(uv_spruce_log_top, uv_spruce_log),
+        TexCoords.Log(uv_spruce_log_top, uv_spruce_log),
         // JungleLog
-        TexCoords.Block_polar_side(uv_jungle_log_top, uv_jungle_log),
+        TexCoords.Log(uv_jungle_log_top, uv_jungle_log),
         // AcaciaLog
-        TexCoords.Block_polar_side(uv_acacia_log_top, uv_acacia_log),
+        TexCoords.Log(uv_acacia_log_top, uv_acacia_log),
         // DarkOakLog
-        TexCoords.Block_polar_side(uv_dark_oak_log_top, uv_dark_oak_log),
+        TexCoords.Log(uv_dark_oak_log_top, uv_dark_oak_log),
         // SpruceSapling
         TexCoords.Plant(uv_spruce_sapling),
         // BirchSapling

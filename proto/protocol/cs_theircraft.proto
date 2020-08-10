@@ -111,6 +111,9 @@ enum CSBlockOrientation
 	NegativeY_PositiveX = 6;
 	NegativeY_NegativeZ = 7;
 	NegativeY_NegativeX = 8;
+	X = 9;
+	Y = 10;
+	Z = 11;
 }
 
 message CSBlockAttrs

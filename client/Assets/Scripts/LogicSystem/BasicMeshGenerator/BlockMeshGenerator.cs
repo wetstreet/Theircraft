@@ -145,6 +145,14 @@ public class BlockMeshGenerator : IMeshGenerator
                 {
                     rotationMatrix = Matrix4x4.Rotate(Quaternion.Euler(0, 270, 0));
                 }
+                else if (orient == CSBlockOrientation.X)
+                {
+                    rotationMatrix = Matrix4x4.Rotate(Quaternion.Euler(-90, 0, 0));
+                }
+                else if (orient == CSBlockOrientation.Z)
+                {
+                    rotationMatrix = Matrix4x4.Rotate(Quaternion.Euler(0, 0, 90));
+                }
             }
             AddFacesNoCull();
         }

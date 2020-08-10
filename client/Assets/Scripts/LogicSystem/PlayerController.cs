@@ -242,6 +242,10 @@ public class PlayerController : MonoBehaviour
                     {
                         orientation = SlabMeshGenerator.GetOrientation(transform.position, pos, WireFrameHelper.hitPos);
                     }
+                    else if (ChunkMeshGenerator.type2texcoords[(byte)ItemSelectPanel.curBlockType].isLog)
+                    {
+                        orientation = LogMeshGenerator.GetOrientation(hit.normal);
+                    }
                     else if (ChunkMeshGenerator.type2texcoords[(byte)ItemSelectPanel.curBlockType].isRotatable)
                     {
                         orientation = ChunkMeshGenerator.GetBlockOrientation(transform.position, pos, WireFrameHelper.hitPos);
