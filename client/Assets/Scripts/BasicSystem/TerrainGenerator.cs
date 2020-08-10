@@ -20,7 +20,7 @@ public class TerrainGenerator : MonoBehaviour
             {
                 float x = 0.5f + i + chunk.x * 16;
                 float z = 0.5f + j + chunk.y * 16;
-                float noise = (pr.perlin(x / scale, z / scale) + 1) * maxHeight / 2;
+                float noise = (GetHight(x / scale, z / scale) + 1) * maxHeight / 2;
                 int height = Mathf.RoundToInt(maxHeight * noise);
                 for (int k = height; k >= 0; k--)
                 {
@@ -103,6 +103,15 @@ public class TerrainGenerator : MonoBehaviour
         {
             LocalServer.SetBlockType(x + chunk.x * 16, y + i, z + chunk.y * 16, CSBlockType.OakLog);
         }
+    }
+
+
+    public int GetHight(int x, int z)
+    {
+        float h1 = perlin.perlin((x - scale * 8) / (48 * (float)Math.PI), (z - scale * 8) / (48 * (float)Math.PI));
+        float h2 = perlin.perlin((x - scale * 12) / (24 * (float)Math.E), (z - scale * 4) / (24 * (float)Math.E)) / 1.5f;
+        float h3 = perlin.perlin((x - scale * 4) / 32f, (z - size.y * 12) / 32f) / 3;
+        return (int)((h1 + h2 + h3) * maxHeight / 4) + maxHeight / 2;
     }
     static Perlin pr;
 }
