@@ -108,9 +108,9 @@ public class TerrainGenerator : MonoBehaviour
 
     public int GetHight(int x, int z)
     {
-        float h1 = perlin.perlin((x - scale * 8) / (48 * (float)Math.PI), (z - scale * 8) / (48 * (float)Math.PI));
-        float h2 = perlin.perlin((x - scale * 12) / (24 * (float)Math.E), (z - scale * 4) / (24 * (float)Math.E)) / 1.5f;
-        float h3 = perlin.perlin((x - scale * 4) / 32f, (z - size.y * 12) / 32f) / 3;
+        float h1 = pr.perlin((x - scale * 8) / (48 * (float)Math.PI), (z - scale * 8) / (48 * (float)Math.PI));
+        float h2 = pr.perlin((x - scale * 12) / (24 * (float)Math.E), (z - scale * 4) / (24 * (float)Math.E)) / 1.5f;
+        float h3 = pr.perlin((x - scale * 4) / 32f, (z - size.y * 12) / 32f) / 3;
         return (int)((h1 + h2 + h3) * maxHeight / 4) + maxHeight / 2;
     }
     static Perlin pr;
