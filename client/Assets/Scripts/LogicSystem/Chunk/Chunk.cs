@@ -189,8 +189,9 @@ public class Chunk
         collidableMesh.SetVertices(vertices1);
         //collidableMesh.SetColors(colors1);
         collidableMesh.SetUVs(0, uv1);
-        collidableMesh.SetNormals(normals1);
+        //collidableMesh.SetNormals(normals1);
         collidableMesh.SetTriangles(triangles1, 0);
+        collidableMesh.RecalculateNormals();
         collidableGO.GetComponent<MeshFilter>().sharedMesh = collidableMesh;
         collidableGO.GetComponent<MeshCollider>().sharedMesh = collidableMesh;
         

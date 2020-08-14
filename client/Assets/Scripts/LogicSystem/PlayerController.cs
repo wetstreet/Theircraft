@@ -437,7 +437,14 @@ public class PlayerController : MonoBehaviour
             {
                 if (v != 0 || h != 0)
                 {
-                    horizontalSpeed += (transform.forward * v + transform.right * h) * 0.1f;
+                    if (horizontalSpeed.magnitude > 1)
+                    {
+                        horizontalSpeed += (transform.forward * v + transform.right * h) * 0.1f;
+                    }
+                    else
+                    {
+                        horizontalSpeed += (transform.forward * v + transform.right * h);
+                    }
                     horizontalSpeed = Vector3.ClampMagnitude(horizontalSpeed, flyHorizontalSpeed);
                 }
                 else

@@ -263,7 +263,7 @@ public class CreativeInventory : MonoBehaviour
             Transform trans = Instantiate(unit);
             trans.name = i.ToString();
             trans.gameObject.SetActive(true);
-            trans.parent = selectPanel;
+            trans.SetParent(selectPanel, false);
             trans.localScale = Vector3.one;
 
             SlotItem item = new SlotItem();
