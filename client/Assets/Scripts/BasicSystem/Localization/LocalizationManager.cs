@@ -21,8 +21,7 @@ public class LocalizationManager
         { Language.English, "Languages/en_us"},
         { Language.Chinese, "Languages/zh_cn"},
     };
-
-    [MenuItem("GameObject/Init Language")]
+    
     public static void Init()
     {
         langDict.Clear();
