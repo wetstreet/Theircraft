@@ -140,4 +140,19 @@ public abstract class NBTMeshGenerator
         vertices.Add(farBottomRight + pos);
         AddUV_BackFace(vertices, uv, triangles);
     }
+
+    protected void CopyFromMesh(Mesh mesh, Vector3Int pos, List<Vector3> vertices, List<Vector2> uv, List<int> triangles)
+    {
+        int length = vertices.Count;
+        foreach (Vector3 vertex in mesh.vertices)
+        {
+            vertices.Add(vertex + pos);
+        }
+        uv.AddRange(mesh.uv);
+
+        foreach (int index in mesh.triangles)
+        {
+            triangles.Add(index + length);
+        }
+    }
 }
