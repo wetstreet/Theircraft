@@ -58,15 +58,15 @@ public class NBTChunk
         collidableGO.AddComponent<NavMeshSourceTag>();
         collidableGO.layer = LayerMask.NameToLayer("Chunk");
 
-        nonCollidableMesh = new Mesh();
-        nonCollidableMesh.name = "NonCollidableMesh";
+        //nonCollidableMesh = new Mesh();
+        //nonCollidableMesh.name = "NonCollidableMesh";
 
-        nonCollidableGO = new GameObject("NonCollidable");
-        nonCollidableGO.transform.parent = transform;
-        nonCollidableGO.AddComponent<MeshFilter>().sharedMesh = nonCollidableMesh;
-        nonCollidableGO.AddComponent<MeshRenderer>().sharedMaterial = Resources.Load<Material>("Materials/block");
-        nonCollidableGO.AddComponent<MeshCollider>().sharedMesh = nonCollidableMesh;
-        nonCollidableGO.layer = LayerMask.NameToLayer("Plant");
+        //nonCollidableGO = new GameObject("NonCollidable");
+        //nonCollidableGO.transform.parent = transform;
+        //nonCollidableGO.AddComponent<MeshFilter>().sharedMesh = nonCollidableMesh;
+        //nonCollidableGO.AddComponent<MeshRenderer>().sharedMaterial = Resources.Load<Material>("Materials/block");
+        //nonCollidableGO.AddComponent<MeshCollider>().sharedMesh = nonCollidableMesh;
+        //nonCollidableGO.layer = LayerMask.NameToLayer("Plant");
     }
 
     public void SetData(int _x, int _z, TagNodeList sections)
@@ -203,7 +203,7 @@ public class NBTChunk
                 type = blocks.Data[blockPos];
             }
         }
-        return type > 0 && type != 31;
+        return !NBTGeneratorManager.IsTransparent(type);
     }
 
     //public bool HasOpaqueBlock(Vector3Int pos)
@@ -326,6 +326,6 @@ public class NBTChunk
         meshBuildCount = 0;
         torchList.Clear();
         collidableGO.GetComponent<MeshFilter>().sharedMesh = null;
-        nonCollidableGO.GetComponent<MeshFilter>().sharedMesh = null;
+        //nonCollidableGO.GetComponent<MeshFilter>().sharedMesh = null;
     }
 }

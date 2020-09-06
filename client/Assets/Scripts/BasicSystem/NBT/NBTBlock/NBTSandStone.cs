@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NBTGrassBlock : NBTMeshGenerator
+public class NBTSandStone : NBTMeshGenerator
 {
     List<int> triangles_top = new List<int>();
     List<int> triangles_side = new List<int>();
@@ -42,17 +42,17 @@ public class NBTGrassBlock : NBTMeshGenerator
         if (triangles_top.Count > 0)
         {
             trianglesList.Add(triangles_top);
-            materialList.Add(Resources.Load<Material>("Materials/block/grass_top"));
+            materialList.Add(Resources.Load<Material>("Materials/block/sandstone_top"));
         }
         if (triangles_side.Count > 0)
         {
             trianglesList.Add(triangles_side);
-            materialList.Add(Resources.Load<Material>("Materials/block/grass_side"));
+            materialList.Add(Resources.Load<Material>("Materials/block/sandstone_normal"));
         }
         if (triangles_bot.Count > 0)
         {
             trianglesList.Add(triangles_bot);
-            materialList.Add(Resources.Load<Material>("Materials/block/grass_bottom"));
+            materialList.Add(Resources.Load<Material>("Materials/block/sandstone_bottom"));
         }
     }
 

@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NBTTallGrass : NBTMeshGenerator
+public class NBTDeadBush : NBTMeshGenerator
 {
     List<int> triangles = new List<int>();
 
@@ -16,7 +16,7 @@ public class NBTTallGrass : NBTMeshGenerator
     public override void AfterGenerateMesh(List<List<int>> trianglesList, List<Material> materialList)
     {
         trianglesList.Add(triangles);
-        materialList.Add(Resources.Load<Material>("Materials/block/tallgrass"));
+        materialList.Add(Resources.Load<Material>("Materials/block/deadbush"));
     }
 
     public override void ClearData()

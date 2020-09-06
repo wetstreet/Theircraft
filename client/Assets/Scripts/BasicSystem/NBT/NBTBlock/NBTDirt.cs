@@ -37,8 +37,11 @@ public class NBTDirt : NBTMeshGenerator
 
     public override void AfterGenerateMesh(List<List<int>> trianglesList, List<Material> materialList)
     {
-        trianglesList.Add(triangles);
-        materialList.Add(Resources.Load<Material>("Materials/block/dirt"));
+        if (triangles.Count > 0)
+        {
+            trianglesList.Add(triangles);
+            materialList.Add(Resources.Load<Material>("Materials/block/dirt"));
+        }
     }
 
     public override void ClearData()

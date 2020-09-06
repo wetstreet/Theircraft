@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NBTStone : NBTMeshGenerator
+public class NBTIronOre : NBTMeshGenerator
 {
     List<int> triangles = new List<int>();
 
@@ -40,7 +40,7 @@ public class NBTStone : NBTMeshGenerator
         if (triangles.Count > 0)
         {
             trianglesList.Add(triangles);
-            materialList.Add(Resources.Load<Material>("Materials/block/stone"));
+            materialList.Add(Resources.Load<Material>("Materials/block/iron_ore"));
         }
     }
 
