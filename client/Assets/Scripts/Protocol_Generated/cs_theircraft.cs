@@ -1090,7 +1090,13 @@ namespace protocol.cs_theircraft
       Chest = 94,
             
       [global::ProtoBuf.ProtoEnum(Name=@"VerticalBrickSlab", Value=95)]
-      VerticalBrickSlab = 95
+      VerticalBrickSlab = 95,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"DeadBush", Value=96)]
+      DeadBush = 96,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"Cactus", Value=97)]
+      Cactus = 97
     }
   
     [global::ProtoBuf.ProtoContract(Name=@"CSBlockOrientation")]

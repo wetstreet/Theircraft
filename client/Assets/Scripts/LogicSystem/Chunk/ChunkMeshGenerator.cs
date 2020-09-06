@@ -334,6 +334,10 @@ public static class ChunkMeshGenerator
         TexCoords.Chest(),
         // VerticalSlab
         TexCoords.VerticalSlab(uv_bricks),
+        // DeadBush
+        TexCoords.Plant(uv_deadbush),
+        // Cactus
+        TexCoords.Block_polar_side(uv_cactus_top, uv_cactus_side),
     };
 
     static Dictionary<CSBlockType, Mesh> type2mesh = new Dictionary<CSBlockType, Mesh>();
@@ -432,7 +436,6 @@ public static class ChunkMeshGenerator
         chunk.vertices1.Clear();
         chunk.colors1.Clear();
         chunk.uv1.Clear();
-        chunk.normals1.Clear();
         chunk.triangles1.Clear();
 
         chunk.vertices2.Clear();
@@ -468,15 +471,15 @@ public static class ChunkMeshGenerator
                         {
                             if (IsStair(type))
                             {
-                                StairMeshGenerator.Instance.GenerateMeshInChunk(type, pos, globalPos, chunk.vertices1, chunk.uv1, chunk.normals1, chunk.triangles1);
+                                StairMeshGenerator.Instance.GenerateMeshInChunk(type, pos, globalPos, chunk.vertices1, chunk.uv1, chunk.triangles1);
                             }
                             else if (IsWall(type))
                             {
-                                WallMeshGenerator.Instance.GenerateMeshInChunk(type, pos, globalPos, chunk.vertices1, chunk.uv1, chunk.normals1, chunk.triangles1);
+                                WallMeshGenerator.Instance.GenerateMeshInChunk(type, pos, globalPos, chunk.vertices1, chunk.uv1, chunk.triangles1);
                             }
                             else if (IsSlab(type))
                             {
-                                SlabMeshGenerator.Instance.GenerateMeshInChunk(type, pos, globalPos, chunk.vertices1, chunk.uv1, chunk.normals1, chunk.triangles1);
+                                SlabMeshGenerator.Instance.GenerateMeshInChunk(type, pos, globalPos, chunk.vertices1, chunk.uv1, chunk.triangles1);
                             }
                             else if (type == CSBlockType.Torch)
                             {
@@ -488,12 +491,12 @@ public static class ChunkMeshGenerator
                             }
                             else if (type == CSBlockType.VerticalBrickSlab)
                             {
-                                VerticalSlabMeshGenerator.Instance.GenerateMeshInChunk(type, pos, globalPos, chunk.vertices1, chunk.colors1, chunk.uv1, chunk.normals1, chunk.triangles1);
+                                VerticalSlabMeshGenerator.Instance.GenerateMeshInChunk(type, pos, globalPos, chunk.vertices1, chunk.colors1, chunk.uv1, chunk.triangles1);
                             }
                             else
                             {
                                 //BlockMeshGenerator.Instance.GenerateMeshInChunk(type, pos, globalPos, chunk.vertices1, chunk.uv1, chunk.triangles1);
-                                BlockMeshGenerator.Instance.GenerateMeshInChunk(type, pos, globalPos, chunk.vertices1, chunk.colors1, chunk.uv1, chunk.normals1, chunk.triangles1);
+                                BlockMeshGenerator.Instance.GenerateMeshInChunk(type, pos, globalPos, chunk.vertices1, chunk.colors1, chunk.uv1, chunk.triangles1);
                             }
                         }
                     }

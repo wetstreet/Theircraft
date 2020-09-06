@@ -10,7 +10,7 @@ public class ChunkManager
     static Dictionary<Vector3Int, CSBlockOrientation> orientationDict;
     static Dictionary<Vector3Int, Vector3Int> dependenceDict;
 
-    public static List<CSBlockAttrs> blockAttrs;
+    public static List<CSBlockAttrs> blockAttrs = new List<CSBlockAttrs>();
 
     public static void Init()
     {

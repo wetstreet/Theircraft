@@ -106,7 +106,7 @@ public class VerticalSlabMeshGenerator : IMeshGenerator
     }
 
 
-    public void GenerateMeshInChunk(CSBlockType type, Vector3Int posInChunk, Vector3Int globalPos, List<Vector3> vertices, List<Color> colors, List<Vector2> uv, List<Vector3> normals, List<int> triangles)
+    public void GenerateMeshInChunk(CSBlockType type, Vector3Int posInChunk, Vector3Int globalPos, List<Vector3> vertices, List<Color> colors, List<Vector2> uv, List<int> triangles)
     {
         TexCoords texCoords = ChunkMeshGenerator.type2texcoords[(byte)type];
         Vector2Int texPos = texCoords.front;
@@ -130,11 +130,6 @@ public class VerticalSlabMeshGenerator : IMeshGenerator
         foreach (int index in mesh.triangles)
         {
             triangles.Add(index + length);
-        }
-
-        foreach (Vector3 normal in mesh.normals)
-        {
-            normals.Add(normal);
         }
 
         foreach (Vector3 normal in mesh.normals)

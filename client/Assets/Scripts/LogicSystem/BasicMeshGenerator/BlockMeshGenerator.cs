@@ -112,7 +112,7 @@ public class BlockMeshGenerator : IMeshGenerator
         }
     }
 
-    public void GenerateMeshInChunk(CSBlockType type, Vector3Int _pos, Vector3Int _globalPos, List<Vector3> _vertices, List<Color> _colors, List<Vector2> _uv, List<Vector3> _normals, List<int> _triangles)
+    public void GenerateMeshInChunk(CSBlockType type, Vector3Int _pos, Vector3Int _globalPos, List<Vector3> _vertices, List<Color> _colors, List<Vector2> _uv, List<int> _triangles)
     {
         texCoords = ChunkMeshGenerator.type2texcoords[(byte)type];
         pos = _pos;
@@ -120,7 +120,6 @@ public class BlockMeshGenerator : IMeshGenerator
         vertices = _vertices;
         uv = _uv;
         triangles = _triangles;
-        normals = _normals;
         colors = _colors;
         rotationMatrix = Matrix4x4.identity;
 
