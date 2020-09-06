@@ -24,7 +24,7 @@ public class NBTChunk
     public List<Vector3> vertices1 = new List<Vector3>(capacity1);
     public List<Color> colors1 = new List<Color>(capacity1);
     public List<Vector2> uv1 = new List<Vector2>(capacity1);
-    public List<int> triangles1 = new List<int>(capacity1);
+    List<List<int>> trianglesList = new List<List<int>>();
 
     static int capacity2 = 1024;
     public List<Vector3> vertices2 = new List<Vector3>(capacity2);
@@ -40,6 +40,8 @@ public class NBTChunk
 
     public List<Vector3Int> torchList = new List<Vector3Int>();
 
+    List<Material> materialList = new List<Material>();
+
     public NBTChunk()
     {
         gameObject = new GameObject("chunk (" + x + "," + z + ")");
@@ -51,8 +53,8 @@ public class NBTChunk
         collidableGO = new GameObject("Collidable");
         collidableGO.transform.parent = transform;
         collidableGO.AddComponent<MeshFilter>().sharedMesh = collidableMesh;
-        collidableGO.AddComponent<MeshRenderer>().sharedMaterial = Resources.Load<Material>("Materials/block");
         collidableGO.AddComponent<MeshCollider>().sharedMesh = collidableMesh;
+        collidableGO.AddComponent<MeshRenderer>();
         collidableGO.AddComponent<NavMeshSourceTag>();
         collidableGO.layer = LayerMask.NameToLayer("Chunk");
 
@@ -201,7 +203,7 @@ public class NBTChunk
                 type = blocks.Data[blockPos];
             }
         }
-        return type > 0;
+        return type > 0 && type != 31;
     }
 
     //public bool HasOpaqueBlock(Vector3Int pos)
@@ -239,16 +241,16 @@ public class NBTChunk
         vertices1.Clear();
         colors1.Clear();
         uv1.Clear();
-        triangles1.Clear();
+        trianglesList.Clear();
 
         vertices2.Clear();
         uv2.Clear();
         triangles2.Clear();
 
-        List<Color> colors = new List<Color>();
-
         Vector3Int pos = new Vector3Int();
-        Vector3Int globalPos = new Vector3Int();
+
+        List<NBTMeshGenerator> generators = new List<NBTMeshGenerator>();
+        NBTGeneratorManager.ClearGeneratorData();
 
         for (int sectionIndex = 0; sectionIndex < 5; sectionIndex++)
         {
@@ -264,23 +266,27 @@ public class NBTChunk
                     {
                         int blockPos = yInSection * 16 * 16 + zInSection * 16 + xInSection;
                         byte rawType = Blocks.Data[blockPos];
-                        if (typeDict.ContainsKey(rawType) && typeDict[rawType] != CSBlockType.None)
+                        NBTMeshGenerator generator = NBTGeneratorManager.GetMeshGenerator(rawType);
+                        if (generator != null)
                         {
-                            CSBlockType type = typeDict[rawType];
-
                             int worldY = yInSection + sectionIndex * 16;
                             pos.Set(xInSection, worldY, zInSection);
-                            globalPos.Set(globalX + xInSection, worldY, globalZ + zInSection);
-
-
-                            TexCoords texCoords = ChunkMeshGenerator.type2texcoords[(byte)type];
-
-                            NBTBlockMeshGenerator.Instance.GenerateMeshInChunk(this, type, pos, globalPos, vertices1, uv1, triangles1);
+                            generator.GenerateMeshInChunk(this, CSBlockType.GrassBlock, pos, vertices1, uv1);
+                            if (!generators.Contains(generator))
+                            {
+                                generators.Add(generator);
+                            }
                         }
                     }
                 }
             }
         }
+
+        foreach (NBTMeshGenerator generator in generators)
+        {
+            generator.AfterGenerateMesh(trianglesList, materialList);
+        }
+
         hasBuiltMesh = true;
         isDirty = false;
     }
@@ -295,17 +301,22 @@ public class NBTChunk
         collidableMesh.Clear();
         collidableMesh.SetVertices(vertices1);
         collidableMesh.SetUVs(0, uv1);
-        collidableMesh.SetTriangles(triangles1, 0);
+        collidableMesh.subMeshCount = trianglesList.Count;
+        for (int i = 0; i < trianglesList.Count; i++)
+        {
+            collidableMesh.SetTriangles(trianglesList[i], i);
+        }
         collidableMesh.RecalculateNormals();
+        collidableGO.GetComponent<MeshRenderer>().sharedMaterials = materialList.ToArray();
         collidableGO.GetComponent<MeshFilter>().sharedMesh = collidableMesh;
         collidableGO.GetComponent<MeshCollider>().sharedMesh = collidableMesh;
 
-        nonCollidableMesh.Clear();
-        nonCollidableMesh.SetVertices(vertices2);
-        nonCollidableMesh.SetUVs(0, uv2);
-        nonCollidableMesh.SetTriangles(triangles2, 0);
-        nonCollidableGO.GetComponent<MeshFilter>().sharedMesh = nonCollidableMesh;
-        nonCollidableGO.GetComponent<MeshCollider>().sharedMesh = nonCollidableMesh;
+        //nonCollidableMesh.Clear();
+        //nonCollidableMesh.SetVertices(vertices2);
+        //nonCollidableMesh.SetUVs(0, uv2);
+        //nonCollidableMesh.SetTriangles(triangles2, 0);
+        //nonCollidableGO.GetComponent<MeshFilter>().sharedMesh = nonCollidableMesh;
+        //nonCollidableGO.GetComponent<MeshCollider>().sharedMesh = nonCollidableMesh;
     }
 
     public void ClearData()
@@ -313,10 +324,6 @@ public class NBTChunk
         hasBuiltMesh = false;
         lightGenerationCount = 0;
         meshBuildCount = 0;
-        foreach (Vector3Int torchPos in torchList)
-        {
-            TorchMeshGenerator.Instance.RemoveTorchAt(torchPos);
-        }
         torchList.Clear();
         collidableGO.GetComponent<MeshFilter>().sharedMesh = null;
         nonCollidableGO.GetComponent<MeshFilter>().sharedMesh = null;
