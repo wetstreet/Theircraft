@@ -190,7 +190,7 @@ public class NBTChunk
 
         byte type = 0;
         int sectionIndex = Mathf.FloorToInt(worldY / 16f);
-        if (sectionIndex >= 0 && sectionIndex <= Sections.Count)
+        if (sectionIndex >= 0 && sectionIndex < Sections.Count)
         {
             TagNodeCompound section = Sections[sectionIndex] as TagNodeCompound;
             TagNodeByteArray blocks = section["Blocks"] as TagNodeByteArray;
@@ -198,7 +198,7 @@ public class NBTChunk
             int yInSection = worldY - sectionIndex * 16;
             int blockPos = yInSection * 16 * 16 + zInChunk * 16 + xInChunk;
 
-            if (blockPos >= 0  && blockPos < 4096)
+            if (blockPos >= 0 && blockPos < 4096)
             {
                 type = blocks.Data[blockPos];
             }
@@ -252,11 +252,10 @@ public class NBTChunk
         List<NBTMeshGenerator> generators = new List<NBTMeshGenerator>();
         NBTGeneratorManager.ClearGeneratorData();
 
-        for (int sectionIndex = 0; sectionIndex < 5; sectionIndex++)
+        for (int sectionIndex = 0; sectionIndex < Sections.Count; sectionIndex++)
         {
             TagNodeCompound Section = Sections[sectionIndex] as TagNodeCompound;
             TagNodeByteArray Blocks = Section["Blocks"] as TagNodeByteArray;
-            byte[] data = Blocks.Data;
             TagNodeByteArray Data = Section["Data"] as TagNodeByteArray;
 
             for (int yInSection = 0; yInSection < 16; yInSection++)
