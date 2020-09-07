@@ -13,7 +13,7 @@ public abstract class NBTMeshGenerator
     protected static Vector3 farTopLeft = new Vector3(-0.5f, 0.5f, 0.5f);
     protected static Vector3 farTopRight = new Vector3(0.5f, 0.5f, 0.5f);
 
-    public abstract void GenerateMeshInChunk(NBTChunk chunk, CSBlockType type, Vector3Int pos, List<Vector3> vertices, List<Vector2> uv);
+    public abstract void GenerateMeshInChunk(NBTChunk chunk, byte blockData, Vector3Int pos, List<Vector3> vertices, List<Vector2> uv);
 
     public abstract void AfterGenerateMesh(List<List<int>> trianglesList, List<Material> materialList);
 

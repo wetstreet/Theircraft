@@ -7,7 +7,7 @@ public class NBTDeadBush : NBTMeshGenerator
 {
     List<int> triangles = new List<int>();
 
-    public override void GenerateMeshInChunk(NBTChunk chunk, CSBlockType type, Vector3Int pos, List<Vector3> vertices, List<Vector2> uv)
+    public override void GenerateMeshInChunk(NBTChunk chunk, byte blockData, Vector3Int pos, List<Vector3> vertices, List<Vector2> uv)
     {
         AddDiagonalFace(vertices, uv, triangles, pos);
         AddAntiDiagonalFace(vertices, uv, triangles, pos);

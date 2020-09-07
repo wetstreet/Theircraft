@@ -257,6 +257,7 @@ public class NBTChunk
             TagNodeCompound Section = Sections[sectionIndex] as TagNodeCompound;
             TagNodeByteArray Blocks = Section["Blocks"] as TagNodeByteArray;
             byte[] data = Blocks.Data;
+            TagNodeByteArray Data = Section["Data"] as TagNodeByteArray;
 
             for (int yInSection = 0; yInSection < 16; yInSection++)
             {
@@ -271,7 +272,8 @@ public class NBTChunk
                         {
                             int worldY = yInSection + sectionIndex * 16;
                             pos.Set(xInSection, worldY, zInSection);
-                            generator.GenerateMeshInChunk(this, CSBlockType.GrassBlock, pos, vertices1, uv1);
+                            byte blockData = NBTHelper.GetNibble(Data.Data, blockPos);
+                            generator.GenerateMeshInChunk(this, blockData, pos, vertices1, uv1);
                             if (!generators.Contains(generator))
                             {
                                 generators.Add(generator);

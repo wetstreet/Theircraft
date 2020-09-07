@@ -9,7 +9,7 @@ public class NBTCactus : NBTMeshGenerator
     List<int> triangles_side = new List<int>();
     List<int> triangles_bot = new List<int>();
 
-    public override void GenerateMeshInChunk(NBTChunk chunk, CSBlockType type, Vector3Int pos, List<Vector3> vertices, List<Vector2> uv)
+    public override void GenerateMeshInChunk(NBTChunk chunk, byte blockData, Vector3Int pos, List<Vector3> vertices, List<Vector2> uv)
     {
         Mesh top = Resources.Load<Mesh>("Meshes/blocks/cactus/top");
         CopyFromMesh(top, pos, vertices, uv, triangles_top);

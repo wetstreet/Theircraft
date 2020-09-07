@@ -5,54 +5,116 @@ using UnityEngine;
 
 public class NBTLog : NBTMeshGenerator
 {
-    List<int> triangles_top = new List<int>();
-    List<int> triangles_side = new List<int>();
+    List<int> triangles_oak_top = new List<int>();
+    List<int> triangles_oak_side = new List<int>();
+    List<int> triangles_spruce_top = new List<int>();
+    List<int> triangles_spruce_side = new List<int>();
+    List<int> triangles_birch_top = new List<int>();
+    List<int> triangles_birch_side = new List<int>();
+    List<int> triangles_jungle_top = new List<int>();
+    List<int> triangles_jungle_side = new List<int>();
 
-    public override void GenerateMeshInChunk(NBTChunk chunk, CSBlockType type, Vector3Int pos, List<Vector3> vertices, List<Vector2> uv)
+    public override void GenerateMeshInChunk(NBTChunk chunk, byte blockData, Vector3Int pos, List<Vector3> vertices, List<Vector2> uv)
     {
-        if (!chunk.HasOpaqueBlock(pos.x, pos.y, pos.z - 1))
+        Mesh top = null;
+        Mesh side = null;
+
+        List<int> triangles_top = null;
+        List<int> triangles_side = null;
+
+        switch (blockData % 4)
         {
-            AddFrontFace(vertices, uv, triangles_side, pos);
+            case 0:
+                triangles_top = triangles_oak_top;
+                triangles_side = triangles_oak_side;
+                break;
+            case 1:
+                triangles_top = triangles_spruce_top;
+                triangles_side = triangles_spruce_side;
+                break;
+            case 2:
+                triangles_top = triangles_birch_top;
+                triangles_side = triangles_birch_side;
+                break;
+            case 3:
+                triangles_top = triangles_jungle_top;
+                triangles_side = triangles_jungle_side;
+                break;
         }
-        if (!chunk.HasOpaqueBlock(pos.x + 1, pos.y, pos.z))
+
+        if (blockData >= 0 && blockData < 4)
         {
-            AddRightFace(vertices, uv, triangles_side, pos);
+            top = Resources.Load<Mesh>("Meshes/blocks/log/log_y_top");
+            side = Resources.Load<Mesh>("Meshes/blocks/log/log_y_side");
         }
-        if (!chunk.HasOpaqueBlock(pos.x - 1, pos.y, pos.z))
+        if (blockData >= 4 && blockData < 8)
         {
-            AddLeftFace(vertices, uv, triangles_side, pos);
+            top = Resources.Load<Mesh>("Meshes/blocks/log/log_x_top");
+            side = Resources.Load<Mesh>("Meshes/blocks/log/log_x_side");
         }
-        if (!chunk.HasOpaqueBlock(pos.x, pos.y, pos.z + 1))
+        else if (blockData >= 8 && blockData < 12)
         {
-            AddBackFace(vertices, uv, triangles_side, pos);
+            top = Resources.Load<Mesh>("Meshes/blocks/log/log_z_top");
+            side = Resources.Load<Mesh>("Meshes/blocks/log/log_z_side");
         }
-        if (!chunk.HasOpaqueBlock(pos.x, pos.y + 1, pos.z))
-        {
-            AddTopFace(vertices, uv, triangles_top, pos);
-        }
-        if (!chunk.HasOpaqueBlock(pos.x, pos.y - 1, pos.z))
-        {
-            AddBottomFace(vertices, uv, triangles_top, pos);
-        }
+
+        CopyFromMesh(top, pos, vertices, uv, triangles_top);
+        CopyFromMesh(side, pos, vertices, uv, triangles_side);
     }
 
     public override void AfterGenerateMesh(List<List<int>> trianglesList, List<Material> materialList)
     {
-        if (triangles_top.Count > 0)
+        if (triangles_oak_top.Count > 0)
         {
-            trianglesList.Add(triangles_top);
+            trianglesList.Add(triangles_oak_top);
             materialList.Add(Resources.Load<Material>("Materials/block/log_oak_top"));
         }
-        if (triangles_side.Count > 0)
+        if (triangles_oak_side.Count > 0)
         {
-            trianglesList.Add(triangles_side);
+            trianglesList.Add(triangles_oak_side);
             materialList.Add(Resources.Load<Material>("Materials/block/log_oak_side"));
+        }
+        if (triangles_spruce_top.Count > 0)
+        {
+            trianglesList.Add(triangles_spruce_top);
+            materialList.Add(Resources.Load<Material>("Materials/block/log_spruce_top"));
+        }
+        if (triangles_spruce_side.Count > 0)
+        {
+            trianglesList.Add(triangles_spruce_side);
+            materialList.Add(Resources.Load<Material>("Materials/block/log_spruce_side"));
+        }
+        if (triangles_birch_top.Count > 0)
+        {
+            trianglesList.Add(triangles_birch_top);
+            materialList.Add(Resources.Load<Material>("Materials/block/log_birch_top"));
+        }
+        if (triangles_birch_side.Count > 0)
+        {
+            trianglesList.Add(triangles_birch_side);
+            materialList.Add(Resources.Load<Material>("Materials/block/log_birch_side"));
+        }
+        if (triangles_jungle_top.Count > 0)
+        {
+            trianglesList.Add(triangles_jungle_top);
+            materialList.Add(Resources.Load<Material>("Materials/block/log_jungle_top"));
+        }
+        if (triangles_jungle_side.Count > 0)
+        {
+            trianglesList.Add(triangles_jungle_side);
+            materialList.Add(Resources.Load<Material>("Materials/block/log_jungle_side"));
         }
     }
 
     public override void ClearData()
     {
-        triangles_top.Clear();
-        triangles_side.Clear();
+        triangles_oak_top.Clear();
+        triangles_oak_side.Clear();
+        triangles_spruce_top.Clear();
+        triangles_spruce_side.Clear();
+        triangles_birch_top.Clear();
+        triangles_birch_side.Clear();
+        triangles_jungle_top.Clear();
+        triangles_jungle_side.Clear();
     }
 }
