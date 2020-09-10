@@ -98,11 +98,13 @@ public class NBTChunk
     //    return _z - z * 16;
     //}
 
-    ////input is local position
+    //input is local position
     public byte GetBlockByte(int xInChunk, int worldY, int zInChunk)
     {
+        if (xInChunk < 0 || xInChunk > 15 || worldY < 0 || worldY > 255 || zInChunk < 0 || zInChunk > 15) return 0;
+
         int sectionIndex = Mathf.FloorToInt(worldY / 16f);
-        if (sectionIndex <= Sections.Count)
+        if (sectionIndex >= 0 && sectionIndex < Sections.Count)
         {
             TagNodeCompound section = Sections[sectionIndex] as TagNodeCompound;
             TagNodeByteArray blocks = section["Blocks"] as TagNodeByteArray;
@@ -110,9 +112,37 @@ public class NBTChunk
             int yInSection = worldY - sectionIndex * 16;
             int blockPos = yInSection * 16 * 16 + zInChunk * 16 + xInChunk;
 
-            return blocks.Data[blockPos];
+            if (blockPos >= 0 && blockPos < 4096)
+            {
+                return blocks.Data[blockPos];
+            }
         }
         return 0;
+    }
+
+    //input is local position
+    public void GetBlockData(int xInChunk, int worldY, int zInChunk, ref byte blockType, ref byte blockData)
+    {
+        if (xInChunk < 0 || xInChunk > 15 || worldY < 0 || worldY > 255 || zInChunk < 0 || zInChunk > 15) return;
+
+        int sectionIndex = Mathf.FloorToInt(worldY / 16f);
+        if (sectionIndex >= 0 && sectionIndex < Sections.Count)
+        {
+            TagNodeCompound section = Sections[sectionIndex] as TagNodeCompound;
+            TagNodeByteArray blocks = section["Blocks"] as TagNodeByteArray;
+            TagNodeByteArray data = section["Data"] as TagNodeByteArray;
+
+            int yInSection = worldY - sectionIndex * 16;
+            int blockPos = yInSection * 16 * 16 + zInChunk * 16 + xInChunk;
+
+            if (blockPos >= 0 && blockPos < 4096)
+            {
+                blockType = blocks.Data[blockPos];
+                blockData = NBTHelper.GetNibble(data.Data, blockPos);
+                return;
+            }
+        }
+        return;
     }
 
     TagNodeCompound GetSection(int yInChunk)
@@ -186,23 +216,24 @@ public class NBTChunk
     ////input is local position
     public bool HasOpaqueBlock(int xInChunk, int worldY, int zInChunk)
     {
-        if (xInChunk < 0 || xInChunk > 15 || worldY < 0 || worldY > 255 || zInChunk < 0 || zInChunk > 15) return false;
+        //if (xInChunk < 0 || xInChunk > 15 || worldY < 0 || worldY > 255 || zInChunk < 0 || zInChunk > 15) return false;
 
-        byte type = 0;
-        int sectionIndex = Mathf.FloorToInt(worldY / 16f);
-        if (sectionIndex >= 0 && sectionIndex < Sections.Count)
-        {
-            TagNodeCompound section = Sections[sectionIndex] as TagNodeCompound;
-            TagNodeByteArray blocks = section["Blocks"] as TagNodeByteArray;
+        //byte type = 0;
+        //int sectionIndex = Mathf.FloorToInt(worldY / 16f);
+        //if (sectionIndex >= 0 && sectionIndex < Sections.Count)
+        //{
+        //    TagNodeCompound section = Sections[sectionIndex] as TagNodeCompound;
+        //    TagNodeByteArray blocks = section["Blocks"] as TagNodeByteArray;
 
-            int yInSection = worldY - sectionIndex * 16;
-            int blockPos = yInSection * 16 * 16 + zInChunk * 16 + xInChunk;
+        //    int yInSection = worldY - sectionIndex * 16;
+        //    int blockPos = yInSection * 16 * 16 + zInChunk * 16 + xInChunk;
 
-            if (blockPos >= 0 && blockPos < 4096)
-            {
-                type = blocks.Data[blockPos];
-            }
-        }
+        //    if (blockPos >= 0 && blockPos < 4096)
+        //    {
+        //        type = blocks.Data[blockPos];
+        //    }
+        //}
+        byte type = GetBlockByte(xInChunk, worldY, zInChunk);
         return !NBTGeneratorManager.IsTransparent(type);
     }
 
