@@ -30,6 +30,15 @@ public class NBTStationaryWater : NBTMeshGenerator
     static byte bottomType;
     static byte bottomData;
 
+    static byte frontLeftType;
+    static byte frontLeftData;
+    static byte frontRightType;
+    static byte frontRightData;
+    static byte backLeftType;
+    static byte backLeftData;
+    static byte backRightType;
+    static byte backRightData;
+
     public override void GenerateMeshInChunk(NBTChunk chunk, byte blockData, Vector3Int pos, List<Vector3> vertices, List<Vector2> uv)
     {
         height = blockData;
@@ -40,6 +49,10 @@ public class NBTStationaryWater : NBTMeshGenerator
         chunk.GetBlockData(pos.x, pos.y, pos.z + 1, ref backType, ref backData);
         chunk.GetBlockData(pos.x, pos.y + 1, pos.z, ref topType, ref topData);
         chunk.GetBlockData(pos.x, pos.y - 1, pos.z, ref bottomType, ref bottomData);
+        chunk.GetBlockData(pos.x - 1, pos.y, pos.z - 1, ref frontLeftType, ref frontLeftData);
+        chunk.GetBlockData(pos.x + 1, pos.y, pos.z - 1, ref frontRightType, ref frontRightData);
+        chunk.GetBlockData(pos.x - 1, pos.y, pos.z + 1, ref backLeftType, ref backLeftData);
+        chunk.GetBlockData(pos.x + 1, pos.y, pos.z + 1, ref backRightType, ref backRightData);
 
         if (ShouldAddFace(frontType))
         {
@@ -87,15 +100,24 @@ public class NBTStationaryWater : NBTMeshGenerator
     {
         get
         {
-            if (height > 0 && leftType == TYPE_WATER && leftData < height)
+            int modifiedHeight = height;
+            if (modifiedHeight > 0 && leftType == TYPE_WATER && leftData < height)
             {
-                return new Vector3(-0.5f, 0.375f - (height - 1) * step, -0.5f);
+                modifiedHeight--;
+                if (modifiedHeight > 0 && frontLeftType == TYPE_WATER && frontLeftData < leftData)
+                {
+                    modifiedHeight--;
+                }
             }
-            if (height > 0 && frontType == TYPE_WATER && frontData < height)
+            else if (modifiedHeight > 0 && frontType == TYPE_WATER && frontData < height)
             {
-                return new Vector3(-0.5f, 0.375f - (height - 1) * step, -0.5f);
+                modifiedHeight--;
+                if (modifiedHeight > 0 && frontLeftType == TYPE_WATER && frontLeftData < frontData)
+                {
+                    modifiedHeight--;
+                }
             }
-            return new Vector3(-0.5f, 0.375f - height * step, -0.5f);
+            return new Vector3(-0.5f, 0.375f - modifiedHeight * step, -0.5f);
         }
     }
 
@@ -103,15 +125,24 @@ public class NBTStationaryWater : NBTMeshGenerator
     {
         get
         {
-            if (height > 0 && rightType == TYPE_WATER && rightData < height)
+            int modifiedHeight = height;
+            if (modifiedHeight > 0 && rightType == TYPE_WATER && rightData < height)
             {
-                return new Vector3(0.5f, 0.375f - (height - 1) * step, -0.5f);
+                modifiedHeight--;
+                if (modifiedHeight > 0 && frontRightType == TYPE_WATER && frontRightData < rightData)
+                {
+                    modifiedHeight--;
+                }
             }
-            if (height > 0 && frontType == TYPE_WATER && frontData < height)
+            else if (modifiedHeight > 0 && frontType == TYPE_WATER && frontData < height)
             {
-                return new Vector3(0.5f, 0.375f - (height - 1) * step, -0.5f);
+                modifiedHeight--;
+                if (modifiedHeight > 0 && frontRightType == TYPE_WATER && frontRightData < frontData)
+                {
+                    modifiedHeight--;
+                }
             }
-            return new Vector3(0.5f, 0.375f - height * step, -0.5f);
+            return new Vector3(0.5f, 0.375f - modifiedHeight * step, -0.5f);
         }
     }
 
@@ -119,15 +150,24 @@ public class NBTStationaryWater : NBTMeshGenerator
     {
         get
         {
-            if (height > 0 && leftType == TYPE_WATER && leftData < height)
+            int modifiedHeight = height;
+            if (modifiedHeight > 0 && leftType == TYPE_WATER && leftData < height)
             {
-                return new Vector3(-0.5f, 0.375f - (height - 1) * step, 0.5f);
+                modifiedHeight--;
+                if (modifiedHeight > 0 && backLeftType == TYPE_WATER && backLeftData < leftData)
+                {
+                    modifiedHeight--;
+                }
             }
-            if (height > 0 && backType == TYPE_WATER && backData < height)
+            else if (modifiedHeight > 0 && backType == TYPE_WATER && backData < height)
             {
-                return new Vector3(-0.5f, 0.375f - (height - 1) * step, 0.5f);
+                modifiedHeight--;
+                if (modifiedHeight > 0 && backLeftType == TYPE_WATER && backLeftData < backData)
+                {
+                    modifiedHeight--;
+                }
             }
-            return new Vector3(-0.5f, 0.375f - height * step, 0.5f);
+            return new Vector3(-0.5f, 0.375f - modifiedHeight * step, 0.5f);
         }
     }
 
@@ -135,15 +175,24 @@ public class NBTStationaryWater : NBTMeshGenerator
     {
         get
         {
-            if (height > 0 && rightType == TYPE_WATER && rightData < height)
+            int modifiedHeight = height;
+            if (modifiedHeight > 0 && rightType == TYPE_WATER && rightData < height)
             {
-                return new Vector3(0.5f, 0.375f - (height - 1) * step, 0.5f);
+                modifiedHeight--;
+                if (modifiedHeight > 0 && backRightType == TYPE_WATER && backRightData < rightData)
+                {
+                    modifiedHeight--;
+                }
             }
-            if (height > 0 && backType == TYPE_WATER && backData < height)
+            else if (modifiedHeight > 0 && backType == TYPE_WATER && backData < height)
             {
-                return new Vector3(0.5f, 0.375f - (height - 1) * step, 0.5f);
+                modifiedHeight--;
+                if (modifiedHeight > 0 && backRightType == TYPE_WATER && backRightData < backData)
+                {
+                    modifiedHeight--;
+                }
             }
-            return new Vector3(0.5f, 0.375f - height * step, 0.5f);
+            return new Vector3(0.5f, 0.375f - modifiedHeight * step, 0.5f);
         }
     }
 
