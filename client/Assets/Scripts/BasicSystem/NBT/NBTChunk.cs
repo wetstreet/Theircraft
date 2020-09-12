@@ -101,7 +101,29 @@ public class NBTChunk
     //input is local position
     public byte GetBlockByte(int xInChunk, int worldY, int zInChunk)
     {
-        if (xInChunk < 0 || xInChunk > 15 || worldY < 0 || worldY > 255 || zInChunk < 0 || zInChunk > 15) return 0;
+        if (xInChunk < 0 || xInChunk > 15 || worldY < 0 || worldY > 255 || zInChunk < 0 || zInChunk > 15)
+        {
+            if (xInChunk < 0)
+            {
+                NBTChunk chunk = NBTHelper.GetChunk(x - 1, z);
+                return chunk.GetBlockByte(xInChunk + 16, worldY, zInChunk);
+            }
+            else if (xInChunk > 15)
+            {
+                NBTChunk chunk = NBTHelper.GetChunk(x + 1, z);
+                return chunk.GetBlockByte(xInChunk - 16, worldY, zInChunk);
+            }
+            else if (zInChunk < 0)
+            {
+                NBTChunk chunk = NBTHelper.GetChunk(x, z - 1);
+                return chunk.GetBlockByte(xInChunk, worldY, zInChunk + 16);
+            }
+            else if (zInChunk > 15)
+            {
+                NBTChunk chunk = NBTHelper.GetChunk(x, z + 1);
+                return chunk.GetBlockByte(xInChunk, worldY, zInChunk - 16);
+            }
+        }
 
         int sectionIndex = Mathf.FloorToInt(worldY / 16f);
         if (sectionIndex >= 0 && sectionIndex < Sections.Count)
@@ -123,7 +145,30 @@ public class NBTChunk
     //input is local position
     public void GetBlockData(int xInChunk, int worldY, int zInChunk, ref byte blockType, ref byte blockData)
     {
-        if (xInChunk < 0 || xInChunk > 15 || worldY < 0 || worldY > 255 || zInChunk < 0 || zInChunk > 15) return;
+        if (xInChunk < 0 || xInChunk > 15 || worldY < 0 || worldY > 255 || zInChunk < 0 || zInChunk > 15)
+        {
+            if (xInChunk < 0)
+            {
+                NBTChunk chunk = NBTHelper.GetChunk(x - 1, z);
+                chunk.GetBlockData(xInChunk + 16, worldY, zInChunk, ref blockType, ref blockData);
+            }
+            else if (xInChunk > 15)
+            {
+                NBTChunk chunk = NBTHelper.GetChunk(x + 1, z);
+                chunk.GetBlockData(xInChunk - 16, worldY, zInChunk, ref blockType, ref blockData);
+            }
+            else if (zInChunk < 0)
+            {
+                NBTChunk chunk = NBTHelper.GetChunk(x, z - 1);
+                chunk.GetBlockData(xInChunk, worldY, zInChunk + 16, ref blockType, ref blockData);
+            }
+            else if (zInChunk > 15)
+            {
+                NBTChunk chunk = NBTHelper.GetChunk(x, z + 1);
+                chunk.GetBlockData(xInChunk, worldY, zInChunk - 16, ref blockType, ref blockData);
+            }
+            return;
+        }
 
         int sectionIndex = Mathf.FloorToInt(worldY / 16f);
         if (sectionIndex >= 0 && sectionIndex < Sections.Count)

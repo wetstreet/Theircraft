@@ -54,6 +54,8 @@ public class NBTStationaryWater : NBTMeshGenerator
         chunk.GetBlockData(pos.x - 1, pos.y, pos.z + 1, ref backLeftType, ref backLeftData);
         chunk.GetBlockData(pos.x + 1, pos.y, pos.z + 1, ref backRightType, ref backRightData);
 
+        bool flowToLeft = leftType == TYPE_WATER && leftData > height;
+
         if (ShouldAddFace(frontType))
         {
             AddFrontFace(vertices, uv, triangles_still, pos);
@@ -72,7 +74,14 @@ public class NBTStationaryWater : NBTMeshGenerator
         }
         if (ShouldAddFace(topType))
         {
-            AddTopFace(vertices, uv, triangles_still, pos);
+            if (flowToLeft)
+            {
+                AddTopFace(vertices, uv, triangles_flow, pos);
+            }
+            else
+            {
+                AddTopFace(vertices, uv, triangles_still, pos);
+            }
         }
         if (ShouldAddFace(bottomType))
         {
@@ -87,11 +96,17 @@ public class NBTStationaryWater : NBTMeshGenerator
             trianglesList.Add(triangles_still);
             materialList.Add(Resources.Load<Material>("Materials/block/water_still"));
         }
+        if (triangles_flow.Count > 0)
+        {
+            trianglesList.Add(triangles_flow);
+            materialList.Add(Resources.Load<Material>("Materials/block/water_flow"));
+        }
     }
 
     public override void ClearData()
     {
         triangles_still.Clear();
+        triangles_flow.Clear();
     }
 
     static float step = 0.8f / 7;
