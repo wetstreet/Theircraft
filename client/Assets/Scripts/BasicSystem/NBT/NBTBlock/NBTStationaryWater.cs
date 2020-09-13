@@ -6,7 +6,10 @@ using UnityEngine;
 public class NBTStationaryWater : NBTMeshGenerator
 {
     List<int> triangles_still = new List<int>();
-    List<int> triangles_flow = new List<int>();
+    List<int> triangles_flow_east = new List<int>();
+    List<int> triangles_flow_west = new List<int>();
+    List<int> triangles_flow_south = new List<int>();
+    List<int> triangles_flow_north = new List<int>();
 
     static byte TYPE_WATER = 9;
 
@@ -39,7 +42,7 @@ public class NBTStationaryWater : NBTMeshGenerator
     static byte backRightType;
     static byte backRightData;
 
-    public override void GenerateMeshInChunk(NBTChunk chunk, byte blockData, Vector3Int pos, List<Vector3> vertices, List<Vector2> uv)
+    public override void GenerateMeshInChunk(NBTChunk chunk, byte blockData, Vector3Int pos, NBTGameObject nbtGO)
     {
         height = blockData;
 
@@ -55,58 +58,91 @@ public class NBTStationaryWater : NBTMeshGenerator
         chunk.GetBlockData(pos.x + 1, pos.y, pos.z + 1, ref backRightType, ref backRightData);
 
         bool flowToLeft = leftType == TYPE_WATER && leftData > height;
+        bool flowToRight = rightType == TYPE_WATER && rightData > height;
+        bool flowToFront = frontType == TYPE_WATER && frontData > height;
+        bool flowToBack = backType == TYPE_WATER && backData > height;
 
         if (ShouldAddFace(frontType))
         {
-            AddFrontFace(vertices, uv, triangles_still, pos);
+            AddFrontFace(nbtGO.vertices, nbtGO.uv1, triangles_still, pos);
         }
         if (ShouldAddFace(rightType))
         {
-            AddRightFace(vertices, uv, triangles_still, pos);
+            AddRightFace(nbtGO.vertices, nbtGO.uv1, triangles_still, pos);
         }
         if (ShouldAddFace(leftType))
         {
-            AddLeftFace(vertices, uv, triangles_still, pos);
+            AddLeftFace(nbtGO.vertices, nbtGO.uv1, triangles_still, pos);
         }
         if (ShouldAddFace(backType))
         {
-            AddBackFace(vertices, uv, triangles_still, pos);
+            AddBackFace(nbtGO.vertices, nbtGO.uv1, triangles_still, pos);
         }
         if (ShouldAddFace(topType))
         {
-            if (flowToLeft)
+            if (flowToRight)
             {
-                AddTopFace(vertices, uv, triangles_flow, pos);
+                AddTopFace(nbtGO.vertices, nbtGO.uv1, triangles_flow_east, pos);
+            }
+            else if (flowToLeft)
+            {
+                AddTopFace(nbtGO.vertices, nbtGO.uv1, triangles_flow_west, pos);
+            }
+            else if (flowToFront)
+            {
+                AddTopFace(nbtGO.vertices, nbtGO.uv1, triangles_flow_north, pos);
+            }
+            else if (flowToBack)
+            {
+                AddTopFace(nbtGO.vertices, nbtGO.uv1, triangles_flow_south, pos);
             }
             else
             {
-                AddTopFace(vertices, uv, triangles_still, pos);
+                AddTopFace(nbtGO.vertices, nbtGO.uv1, triangles_still, pos);
             }
         }
         if (ShouldAddFace(bottomType))
         {
-            AddBottomFace(vertices, uv, triangles_still, pos);
+            AddBottomFace(nbtGO.vertices, nbtGO.uv1, triangles_still, pos);
         }
     }
 
-    public override void AfterGenerateMesh(List<List<int>> trianglesList, List<Material> materialList)
+    public override void AfterGenerateMesh(NBTGameObject nbtGO)
     {
         if (triangles_still.Count > 0)
         {
-            trianglesList.Add(triangles_still);
-            materialList.Add(Resources.Load<Material>("Materials/block/water_still"));
+            nbtGO.trianglesList.Add(triangles_still);
+            nbtGO.materialList.Add(Resources.Load<Material>("Materials/block/water_still"));
         }
-        if (triangles_flow.Count > 0)
+        if (triangles_flow_east.Count > 0)
         {
-            trianglesList.Add(triangles_flow);
-            materialList.Add(Resources.Load<Material>("Materials/block/water_flow"));
+            nbtGO.trianglesList.Add(triangles_flow_east);
+            nbtGO.materialList.Add(Resources.Load<Material>("Materials/block/water_flow_east"));
+        }
+        if (triangles_flow_west.Count > 0)
+        {
+            nbtGO.trianglesList.Add(triangles_flow_west);
+            nbtGO.materialList.Add(Resources.Load<Material>("Materials/block/water_flow_west"));
+        }
+        if (triangles_flow_south.Count > 0)
+        {
+            nbtGO.trianglesList.Add(triangles_flow_south);
+            nbtGO.materialList.Add(Resources.Load<Material>("Materials/block/water_flow_south"));
+        }
+        if (triangles_flow_north.Count > 0)
+        {
+            nbtGO.trianglesList.Add(triangles_flow_north);
+            nbtGO.materialList.Add(Resources.Load<Material>("Materials/block/water_flow_north"));
         }
     }
 
     public override void ClearData()
     {
         triangles_still.Clear();
-        triangles_flow.Clear();
+        triangles_flow_east.Clear();
+        triangles_flow_west.Clear();
+        triangles_flow_south.Clear();
+        triangles_flow_north.Clear();
     }
 
     static float step = 0.8f / 7;

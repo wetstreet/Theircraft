@@ -19,6 +19,7 @@ public class NBTChunk
     public List<Vector3Int> torchList = new List<Vector3Int>();
 
     public NBTGameObject nbtGO;
+    public NBTGameObject water;
 
     public NBTChunk()
     {
@@ -26,6 +27,7 @@ public class NBTChunk
         transform = gameObject.transform;
 
         nbtGO = NBTGameObject.Create("Collidable", transform);
+        water = NBTGameObject.Create("Water", transform);
     }
 
     public void SetData(int _x, int _z, TagNodeList sections)
@@ -180,6 +182,7 @@ public class NBTChunk
     {
         //Debug.Log("RefreshMeshData,chunk=" + chunk.pos);
         nbtGO.Clear();
+        water.Clear();
 
         Vector3Int pos = new Vector3Int();
 
@@ -206,7 +209,14 @@ public class NBTChunk
                             int worldY = yInSection + sectionIndex * 16;
                             pos.Set(xInSection, worldY, zInSection);
                             byte blockData = NBTHelper.GetNibble(Data.Data, blockPos);
-                            generator.GenerateMeshInChunk(this, blockData, pos, nbtGO);
+                            if (generator is NBTStationaryWater)
+                            {
+                                generator.GenerateMeshInChunk(this, blockData, pos, water);
+                            }
+                            else
+                            {
+                                generator.GenerateMeshInChunk(this, blockData, pos, nbtGO);
+                            }
                             if (!generators.Contains(generator))
                             {
                                 generators.Add(generator);
@@ -219,7 +229,14 @@ public class NBTChunk
 
         foreach (NBTMeshGenerator generator in generators)
         {
-            generator.AfterGenerateMesh(nbtGO);
+            if (generator is NBTStationaryWater)
+            {
+                generator.AfterGenerateMesh(water);
+            }
+            else
+            {
+                generator.AfterGenerateMesh(nbtGO);
+            }
         }
 
         hasBuiltMesh = true;
@@ -233,6 +250,7 @@ public class NBTChunk
             RefreshMeshData();
         }
         nbtGO.Refresh();
+        water.Refresh();
     }
 
     public void ClearData()
@@ -241,6 +259,8 @@ public class NBTChunk
         lightGenerationCount = 0;
         meshBuildCount = 0;
         torchList.Clear();
+
         nbtGO.GetComponent<MeshFilter>().sharedMesh = null;
+        water.GetComponent<MeshFilter>().sharedMesh = null;
     }
 }

@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: water_flow
+  m_Name: water_flow_east
   m_Shader: {fileID: 4800000, guid: 8d766cb3a2995ad439d17ebe158f3ba5, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 0
@@ -57,7 +57,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - _AlphaBoost: 0.178
-    - _Angle: 0
+    - _Angle: -90
     - _BlendOp: 0
     - _BumpScale: 1
     - _CameraFadingEnabled: 0
@@ -94,7 +94,7 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _CameraFadeParams: {r: 0, g: Infinity, b: 0, a: 0}
-    - _Color: {r: 1, g: 1, b: 1, a: 0.9490196}
+    - _Color: {r: 1, g: 1, b: 1, a: 0.92156863}
     - _ColorAddSubDiff: {r: 0, g: 0, b: 0, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _SoftParticleFadeParams: {r: 0, g: 0, b: 0, a: 0}
