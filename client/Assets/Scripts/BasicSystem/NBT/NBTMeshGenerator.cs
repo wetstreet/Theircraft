@@ -15,7 +15,17 @@ public abstract class NBTMeshGenerator
 
     public abstract void GenerateMeshInChunk(NBTChunk chunk, byte blockData, Vector3Int pos, List<Vector3> vertices, List<Vector2> uv);
 
+    public virtual void GenerateMeshInChunk(NBTChunk chunk, byte blockData, Vector3Int pos, NBTGameObject nbtGO)
+    {
+        GenerateMeshInChunk(chunk, blockData, pos, nbtGO.vertices, nbtGO.uv1);
+    }
+
     public abstract void AfterGenerateMesh(List<List<int>> trianglesList, List<Material> materialList);
+
+    public virtual void AfterGenerateMesh(NBTGameObject nbtGO)
+    {
+        AfterGenerateMesh(nbtGO.trianglesList, nbtGO.materialList);
+    }
 
     public abstract void ClearData();
 
