@@ -7,6 +7,8 @@ public class NBTChunk
 {
     public int x;
     public int z;
+    public int globalX;
+    public int globalZ;
     public Transform transform;
     public GameObject gameObject;
     public bool isDirty = false;
@@ -42,6 +44,8 @@ public class NBTChunk
     {
         x = _x;
         z = _z;
+        globalX = x * 16;
+        globalZ = z * 16;
         Sections = sections;
         gameObject.name = "chunk (" + x + "," + z + ")";
         transform.localPosition = new Vector3(x * 16, 0, z * 16);
@@ -161,31 +165,7 @@ public class NBTChunk
         byte type = GetBlockByte(xInChunk, worldY, zInChunk);
         return !NBTGeneratorManager.IsTransparent(type);
     }
-
-    Dictionary<byte, CSBlockType> typeDict = new Dictionary<byte, CSBlockType>
-    {
-        { 0, CSBlockType.None },
-        { 1, CSBlockType.Stone },
-        { 2, CSBlockType.GrassBlock },
-        { 3, CSBlockType.Dirt },
-        { 4, CSBlockType.Cobblestone },
-        { 5, CSBlockType.OakPlanks },
-        { 6, CSBlockType.OakSapling },
-        { 7, CSBlockType.BedRock },
-        { 12, CSBlockType.Sand },
-        { 13, CSBlockType.Gravel },
-        { 14, CSBlockType.GoldOre },
-        { 15, CSBlockType.IronOre },
-        { 16, CSBlockType.CoalOre },
-        { 17, CSBlockType.OakLog },
-        { 18, CSBlockType.OakLeaves },
-        { 20, CSBlockType.Glass },
-        { 32, CSBlockType.DeadBush },
-        { 45, CSBlockType.Brick },
-        { 81, CSBlockType.Cactus },
-    };
-
-
+    
     public void RefreshMeshData()
     {
         //Debug.Log("RefreshMeshData,chunk=" + chunk.pos);

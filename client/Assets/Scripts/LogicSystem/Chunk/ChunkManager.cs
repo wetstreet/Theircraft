@@ -370,63 +370,78 @@ public class ChunkManager
             ).ToList();
     }
 
-    public static void LoadChunk(CSChunk csChunk)
-    {
-        //Debug.Log("loadChunk,x=" + csChunk.Position.x + ",z=" + csChunk.Position.y);
-        Chunk chunk = ChunkPool.GetChunk();
-        chunk.SetData(csChunk.Position.x, csChunk.Position.y, csChunk.BlocksInBytes);
-        AddToChunkDict(chunk);
-        ChunkRefresher.Add(chunk);
-    }
+    //public static void LoadChunk(CSChunk csChunk)
+    //{
+    //    //Debug.Log("loadChunk,x=" + csChunk.Position.x + ",z=" + csChunk.Position.y);
+    //    Chunk chunk = ChunkPool.GetChunk();
+    //    chunk.SetData(csChunk.Position.x, csChunk.Position.y, csChunk.BlocksInBytes);
+    //    AddToChunkDict(chunk);
+    //    ChunkRefresher.Add(chunk);
+    //}
 
     public static void UnloadChunk(int x, int z)
     {
         //Debug.Log("UnloadChunk,x=" + x + ",z=" + z);
-        Chunk chunk = GetChunk(x, z);
+        NBTChunk chunk = NBTHelper.GetChunk(x, z);
         if (chunk != null)
         {
             ChunkRefresher.Remove(chunk);
             chunk.ClearData();
-            RemoveFromChunkDict(chunk);
-            ChunkPool.Recover(chunk);
         }
+    }
+
+    public static void ChunksEnterLeaveViewReq(List<Vector2Int> enterViewChunks, List<Vector2Int> leaveViewChunks = null)
+    {
+        foreach (Vector2Int chunkPos in enterViewChunks)
+        {
+            NBTChunk chunk = NBTHelper.GetChunk(chunkPos.x, chunkPos.y);
+            ChunkRefresher.Add(chunk);
+        }
+        if (leaveViewChunks != null)
+        {
+            foreach (Vector2Int chunk in leaveViewChunks)
+            {
+                //UnloadChunk(chunk.x, chunk.y);
+            }
+        }
+        ChunkChecker.FinishRefresh();
     }
 
     #region enter/leave view
-    public static void ChunksEnterLeaveViewReq(List<Vector2Int> enterViewChunks, List<Vector2Int> leaveViewChunks = null)
-    {
-        CSChunksEnterLeaveViewReq req = new CSChunksEnterLeaveViewReq();
+    //public static void ChunksEnterLeaveViewReq(List<Vector2Int> enterViewChunks, List<Vector2Int> leaveViewChunks = null)
+    //{
+    //    CSChunksEnterLeaveViewReq req = new CSChunksEnterLeaveViewReq();
 
-        List<CSVector2Int> enter = new List<CSVector2Int>();
-        foreach (Vector2Int chunk in enterViewChunks)
-        {
-            CSVector2Int c = new CSVector2Int
-            {
-                x = chunk.x,
-                y = chunk.y
-            };
-            enter.Add(c);
-        }
-        req.EnterViewChunks.AddRange(enter);
+    //    List<CSVector2Int> enter = new List<CSVector2Int>();
+    //    foreach (Vector2Int chunk in enterViewChunks)
+    //    {
+    //        CSVector2Int c = new CSVector2Int
+    //        {
+    //            x = chunk.x,
+    //            y = chunk.y
+    //        };
+    //        enter.Add(c);
+    //    }
+    //    req.EnterViewChunks.AddRange(enter);
 
-        if (leaveViewChunks != null)
-        {
-            List<CSVector2Int> leave = new List<CSVector2Int>();
-            foreach (Vector2Int chunk in leaveViewChunks)
-            {
-                CSVector2Int c = new CSVector2Int
-                {
-                    x = chunk.x,
-                    y = chunk.y
-                };
-                leave.Add(c);
-            }
-            req.LeaveViewChunks.AddRange(leave);
-        }
+    //    if (leaveViewChunks != null)
+    //    {
+    //        List<CSVector2Int> leave = new List<CSVector2Int>();
+    //        foreach (Vector2Int chunk in leaveViewChunks)
+    //        {
+    //            CSVector2Int c = new CSVector2Int
+    //            {
+    //                x = chunk.x,
+    //                y = chunk.y
+    //            };
+    //            leave.Add(c);
+    //        }
+    //        req.LeaveViewChunks.AddRange(leave);
+    //    }
 
-        //Debug.Log("CS_CHUNKS_ENTER_LEVAE_VIEW_REQ," + req.EnterViewChunks.Count + "," + req.LeaveViewChunks.Count);
-        NetworkManager.SendPkgToServer(ENUM_CMD.CS_CHUNKS_ENTER_LEVAE_VIEW_REQ, req, ChunksEnterLeaveViewRes);
-    }
+    //    //Debug.Log("CS_CHUNKS_ENTER_LEVAE_VIEW_REQ," + req.EnterViewChunks.Count + "," + req.LeaveViewChunks.Count);
+    //    NetworkManager.SendPkgToServer(ENUM_CMD.CS_CHUNKS_ENTER_LEVAE_VIEW_REQ, req, ChunksEnterLeaveViewRes);
+    //}
 
     static void ChunksEnterLeaveViewRes(object data)
     {
@@ -437,11 +452,11 @@ public class ChunkManager
         {
             foreach (CSVector2Int csv in rsp.LeaveViewChunks)
             {
-                UnloadChunk(csv.x, csv.y);
+                //UnloadChunk(csv.x, csv.y);
             }
             foreach (CSChunk cschunk in rsp.EnterViewChunks)
             {
-                LoadChunk(cschunk);
+                //LoadChunk(cschunk);
             }
             if (!PlayerController.isInitialized)
             {

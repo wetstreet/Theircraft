@@ -140,7 +140,7 @@ public class PlayerController : MonoBehaviour
 
     static Vector3 _chunkPos = new Vector3();
     // get the dot product between the player front vector and chunk to player vector.
-    public static float GetChunkToFrontDot(Chunk chunk)
+    public static float GetChunkToFrontDot(NBTChunk chunk)
     {
         _chunkPos.Set(chunk.globalX, instance.position.y, chunk.globalZ);
         Vector3 chunk2player = _chunkPos - instance.position;
@@ -153,14 +153,14 @@ public class PlayerController : MonoBehaviour
         instance.blockMeshFilter.transform.gameObject.SetActive(false);
     }
 
-    public static bool IsNearByChunk(Chunk chunk)
+    public static bool IsNearByChunk(NBTChunk chunk)
     {
-        return Mathf.Abs(chunk.pos.x - chunkPos.x) <= 1 && Mathf.Abs(chunk.pos.y - chunkPos.y) <= 1;
+        return Mathf.Abs(chunk.x - chunkPos.x) <= 1 && Mathf.Abs(chunk.z - chunkPos.y) <= 1;
     }
     
-    public static int GetChunkDistance(Chunk chunk)
+    public static int GetChunkDistance(NBTChunk chunk)
     {
-        return Mathf.Max(Mathf.Abs(chunk.pos.x - chunkPos.x), Mathf.Abs(chunk.pos.y - chunkPos.y));
+        return Mathf.Max(Mathf.Abs(chunk.x - chunkPos.x), Mathf.Abs(chunk.z - chunkPos.y));
     }
 
     public static void ShowBlock(CSBlockType type)

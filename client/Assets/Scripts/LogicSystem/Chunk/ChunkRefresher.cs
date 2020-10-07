@@ -3,11 +3,11 @@
 // refresh chunk meshes based on priority
 public class ChunkRefresher
 {
-    static List<Chunk> refreshChunkList;
+    static List<NBTChunk> refreshChunkList;
 
     public static void Init()
     {
-        refreshChunkList = new List<Chunk>();
+        refreshChunkList = new List<NBTChunk>();
     }
 
     public static void Update()
@@ -15,7 +15,7 @@ public class ChunkRefresher
         if (PlayerController.isInitialized && refreshChunkList.Count > 0)
         {
             refreshChunkList.Sort(ChunkComparer.instance);
-            Chunk chunk = refreshChunkList[0];
+            NBTChunk chunk = refreshChunkList[0];
             if (PlayerController.GetChunkToFrontDot(chunk) > 0 || PlayerController.IsNearByChunk(chunk))
             {
                 chunk.RebuildMesh();
@@ -24,12 +24,12 @@ public class ChunkRefresher
         }
     }
 
-    public static void Add(Chunk chunk)
+    public static void Add(NBTChunk chunk)
     {
         refreshChunkList.Add(chunk);
     }
 
-    public static void Remove(Chunk chunk)
+    public static void Remove(NBTChunk chunk)
     {
         refreshChunkList.Remove(chunk);
     }
@@ -39,7 +39,7 @@ public class ChunkRefresher
 
         lock (refreshChunkList)
         {
-            foreach (Chunk chunk in refreshChunkList)
+            foreach (NBTChunk chunk in refreshChunkList)
             {
                 chunk.RebuildMesh();
             }

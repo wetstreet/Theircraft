@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ChunkComparer : IComparer<Chunk>
+public class ChunkComparer : IComparer<NBTChunk>
 {
     static ChunkComparer _instance;
     public static ChunkComparer instance
@@ -17,7 +17,7 @@ public class ChunkComparer : IComparer<Chunk>
         }
     }
 
-    int IComparer<Chunk>.Compare(Chunk a, Chunk b)
+    int IComparer<NBTChunk>.Compare(NBTChunk a, NBTChunk b)
     {
         bool isNearByA = PlayerController.IsNearByChunk(a);
         bool isNearByB = PlayerController.IsNearByChunk(b);
