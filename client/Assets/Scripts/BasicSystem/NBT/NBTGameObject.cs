@@ -14,19 +14,24 @@ public class NBTGameObject : MonoBehaviour
 
     public Mesh mesh;
 
-    public static NBTGameObject Create(string name, Transform parent)
-    {
+    bool isCollidable;
 
+    public static NBTGameObject Create(string name, Transform parent, bool isCollidable = true)
+    {
         GameObject go = new GameObject(name);
         go.transform.parent = parent;
         go.AddComponent<MeshFilter>();
-        go.AddComponent<MeshCollider>();
+        if (isCollidable)
+        {
+            go.AddComponent<MeshCollider>();
+        }
         go.AddComponent<MeshRenderer>();
         go.AddComponent<NavMeshSourceTag>();
         go.layer = LayerMask.NameToLayer("Chunk");
         NBTGameObject nbtGO = go.AddComponent<NBTGameObject>();
         nbtGO.mesh = new Mesh();
         nbtGO.mesh.name = name;
+        nbtGO.isCollidable = isCollidable;
         return nbtGO;
     }
 
@@ -37,6 +42,7 @@ public class NBTGameObject : MonoBehaviour
         uv1.Clear();
         uv2.Clear();
         trianglesList.Clear();
+        materialList.Clear();
     }
 
     public void Refresh()
@@ -52,7 +58,10 @@ public class NBTGameObject : MonoBehaviour
         mesh.RecalculateNormals();
         GetComponent<MeshRenderer>().sharedMaterials = materialList.ToArray();
         GetComponent<MeshFilter>().sharedMesh = mesh;
-        GetComponent<MeshCollider>().sharedMesh = mesh;
+        if (isCollidable)
+        {
+            GetComponent<MeshCollider>().sharedMesh = mesh;
+        }
     }
 
 }

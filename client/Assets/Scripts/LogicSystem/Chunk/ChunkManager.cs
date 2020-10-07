@@ -446,8 +446,8 @@ public class ChunkManager
             if (!PlayerController.isInitialized)
             {
                 PlayerController.Init();
-                LocalNavMeshBuilder.Init();
-                ChunkRefresher.ForceRefreshAll();
+                //LocalNavMeshBuilder.Init();
+                //ChunkRefresher.ForceRefreshAll();
             }
             ChunkChecker.FinishRefresh();
         }

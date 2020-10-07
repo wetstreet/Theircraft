@@ -52,6 +52,10 @@ public class LocalServer : MonoBehaviour
     static void Single_OnLoginReq(object obj, Action<object> callback)
     {
         CSLoginReq req = obj as CSLoginReq;
+
+        Vector3 pos = NBTHelper.GetPlayerPos();
+        Vector3 rot = NBTHelper.GetPlayerRot();
+
         CSLoginRes rsp = new CSLoginRes()
         {
             RetCode = 0,
@@ -59,8 +63,8 @@ public class LocalServer : MonoBehaviour
             {
                 PlayerID = 0,
                 Name = "Steve",
-                Position = playerData.Position,
-                Rotation = playerData.Rotation,
+                Position = pos.ToCSVector3(),
+                Rotation = rot.ToCSVector3(),
                 SelectIndex = playerData.SelectIndex,
             }
         };

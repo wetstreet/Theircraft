@@ -13,7 +13,7 @@
         Tags { "Queue"="Transparent" "RenderType"="Transparent" "LightMode"="ForwardBase" }
 
         Blend SrcAlpha OneMinusSrcAlpha
-        // Cull Off
+        Cull Off
 
         Pass
         {

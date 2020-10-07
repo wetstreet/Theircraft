@@ -8,9 +8,54 @@ using UnityEngine;
 
 public class NBTHelper : MonoBehaviour
 {
-    public static string save = "New World";
+    public static string save = "New World1";
 
     private static Dictionary<Vector2Int, NBTChunk> chunkDict = new Dictionary<Vector2Int, NBTChunk>();
+
+    public static TagNodeCompound GetPlayerData()
+    {
+        string path = Environment.ExpandEnvironmentVariables("%APPDATA%");
+        if (!Directory.Exists(path))
+        {
+            path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+        }
+
+        path = Path.Combine(path, ".minecraft");
+        path = Path.Combine(path, "saves");
+        path = Path.Combine(path, save);
+        path = Path.Combine(path, "playerdata");
+        string[] files = Directory.GetFiles(path);
+
+        if (files.Length > 0)
+        {
+            PlayerFile player = new PlayerFile(files[0]);
+            NbtTree _tree = new NbtTree();
+            _tree.ReadFrom(player.GetDataInputStream());
+            return _tree.Root;
+        }
+        return null;
+    }
+
+    public static Vector3 GetPlayerPos()
+    {
+        TagNodeCompound player = GetPlayerData();
+        TagNodeList Pos = player["Pos"] as TagNodeList;
+        TagNodeDouble x = Pos[0] as TagNodeDouble;
+        TagNodeDouble y = Pos[1] as TagNodeDouble;
+        TagNodeDouble z = Pos[2] as TagNodeDouble;
+        Vector3 pos = new Vector3((float)x, (float)y, (float)z);
+        return pos;
+    }
+
+    public static Vector3 GetPlayerRot()
+    {
+        TagNodeCompound player = GetPlayerData();
+        TagNodeList Pos = player["Rotation"] as TagNodeList;
+        TagNodeFloat y = Pos[0] as TagNodeFloat;
+        TagNodeFloat x = Pos[1] as TagNodeFloat;
+        Vector3 rot = new Vector3(0, y, x);
+        return rot;
+    }
 
     private static Vector2Int key = new Vector2Int();
     public static NBTChunk GetChunk(int chunkX, int chunkZ)

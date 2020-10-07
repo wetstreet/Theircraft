@@ -17,6 +17,7 @@ public class NBTGeneratorManager : MonoBehaviour
         { 15, new NBTIronOre() },
         { 16, new NBTCoalOre() },
         { 17, new NBTLog() },
+        { 18, new NBTLeaves() },
         { 20, new NBTGlass() },
         { 21, new NBTRedstoneOre() },
         { 24, new NBTSandStone() },

@@ -21,13 +21,21 @@ public class NBTChunk
     public NBTGameObject nbtGO;
     public NBTGameObject water;
 
+    static Transform root;
+
     public NBTChunk()
     {
+        if (root == null)
+        {
+            GameObject go = new GameObject("ChunkRoot");
+            root = go.transform;
+        }
         gameObject = new GameObject("chunk (" + x + "," + z + ")");
         transform = gameObject.transform;
+        transform.parent = root;
 
         nbtGO = NBTGameObject.Create("Collidable", transform);
-        water = NBTGameObject.Create("Water", transform);
+        water = NBTGameObject.Create("Water", transform, false);
     }
 
     public void SetData(int _x, int _z, TagNodeList sections)

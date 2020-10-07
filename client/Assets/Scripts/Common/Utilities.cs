@@ -21,6 +21,11 @@ public static class Utilities {
         return new Vector3(csv.x, csv.y, csv.z);
     }
 
+    public static CSVector3 ToCSVector3(this Vector3 csv)
+    {
+        return new CSVector3 { x = csv.x, y = csv.y, z = csv.z };
+    }
+
     public static Vector2Int ToVector2Int(this CSVector2Int csv)
     {
         return new Vector2Int(csv.x, csv.y);
