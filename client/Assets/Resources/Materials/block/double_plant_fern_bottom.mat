@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: tallgrass
+  m_Name: double_plant_fern_bottom
   m_Shader: {fileID: 4800000, guid: 4d4c1f0198a8c2f408406a39ce2ce72a, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
@@ -40,7 +40,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 3706caff38b20414abf693bd23c0941f, type: 3}
+        m_Texture: {fileID: 2800000, guid: aed1a8210c5e30c47a1436d985b0dc45, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:

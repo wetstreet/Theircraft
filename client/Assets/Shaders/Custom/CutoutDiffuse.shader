@@ -59,10 +59,10 @@
                 UNITY_LIGHT_ATTENUATION(atten, i, i.worldPos)
 
                 float diff = saturate(dot(worldNormal, lightDir));
-                fixed3 diffuse = color.rgb * diff;
+                fixed3 diffuse = color.rgb;
 
                 fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz * color.rgb;
-                float3 c = diffuse * atten + ambient;
+                float3 c = diffuse;
 
                 UNITY_APPLY_FOG(i.fogCoord, c);
 

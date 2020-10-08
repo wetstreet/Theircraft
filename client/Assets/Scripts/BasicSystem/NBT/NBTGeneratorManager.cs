@@ -23,12 +23,16 @@ public class NBTGeneratorManager : MonoBehaviour
         { 24, new NBTSandStone() },
         { 31, new NBTTallGrass() },
         { 32, new NBTDeadBush() },
-        { 45, new NBTBrick() },
+        { 37, new NBTYellowFlower() },
+        { 38, new NBTRedFlower() },
+        { 39, new NBTBrownMushroom() },
         { 49, new NBTObsidian() },
         { 56, new NBTDiamondOre() },
         { 73, new NBTRedstoneOre() },
         { 81, new NBTCactus() },
+        { 82, new NBTClay() },
         { 83, new NBTSugarCane() },
+        { 175, new NBTLargeFlowers() },
     };
 
     public static void ClearGeneratorData()
