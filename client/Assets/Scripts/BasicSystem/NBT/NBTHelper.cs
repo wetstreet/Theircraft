@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEngine;
 
 public class NBTHelper : MonoBehaviour
@@ -61,6 +62,16 @@ public class NBTHelper : MonoBehaviour
     public static NBTChunk GetChunk(int chunkX, int chunkZ)
     {
         key.Set(chunkX, chunkZ);
+        if (chunkDict.ContainsKey(key))
+        {
+            return chunkDict[key];
+        }
+        return null;
+    }
+
+    public static NBTChunk LoadChunk(int chunkX, int chunkZ)
+    {
+        key.Set(chunkX, chunkZ);
         if (!chunkDict.ContainsKey(key))
         {
             TagNodeCompound Chunk = GetChunkNode(chunkX, chunkZ);
@@ -69,7 +80,7 @@ public class NBTHelper : MonoBehaviour
                 TagNodeCompound Level = Chunk["Level"] as TagNodeCompound;
 
                 TagNodeList Sections = Level["Sections"] as TagNodeList;
-                NBTChunk chunk = new NBTChunk();
+                NBTChunk chunk = ChunkPool.GetChunk();
                 chunk.SetData(chunkX, chunkZ, Sections);
                 chunkDict.Add(key, chunk);
             }
@@ -79,6 +90,34 @@ public class NBTHelper : MonoBehaviour
             return chunkDict[key];
         }
         return null;
+    }
+
+    public static void RemoveChunk(int chunkX, int chunkZ)
+    {
+        key.Set(chunkX, chunkZ);
+        if (chunkDict.ContainsKey(key))
+        {
+            NBTChunk chunk = chunkDict[key];
+            ChunkRefresher.Remove(chunk);
+            chunk.ClearData();
+            ChunkPool.Recover(chunk);
+            chunkDict.Remove(key);
+        }
+    }
+
+    // get the chunks to be load (chunks should be loaded - chunks already loaded)
+    public static List<Vector2Int> GetLoadChunks(Vector2Int centerChunkPos)
+    {
+        List<Vector2Int> shouldLoadChunks = Utilities.GetSurroudingChunks(centerChunkPos);
+        return shouldLoadChunks.Except(chunkDict.Keys).ToList();
+    }
+
+    // get the chunks to be unload (any chunks in the loaded chunks dict whose distance to the centerChunkPos is bigger than chunkRadius should be unloaded)
+    public static List<Vector2Int> GetUnloadChunks(Vector2Int centerChunkPos, int chunkRadius)
+    {
+        return chunkDict.Keys.Where(chunkPos =>
+            Mathf.Abs(chunkPos.x - centerChunkPos.x) > chunkRadius || Mathf.Abs(chunkPos.y - centerChunkPos.y) > chunkRadius
+            ).ToList();
     }
 
     public static TagNodeCompound GetChunkNode(int x, int z)
@@ -189,5 +228,88 @@ public class NBTHelper : MonoBehaviour
         {
             Debug.Log("chunk not exist!");
         }
+    }
+
+    public static byte GetBlockByte(int x, int y, int z)
+    {
+        int chunkX = Mathf.FloorToInt(x / 16f);
+        int chunkY = Mathf.FloorToInt(y / 16f);
+        int chunkZ = Mathf.FloorToInt(z / 16f);
+
+        int xInChunk = x - chunkX * 16;
+        int yInChunk = y - chunkY * 16;
+        int zInChunk = z - chunkZ * 16;
+
+        NBTChunk chunk = GetChunk(chunkX, chunkZ);
+
+        if (chunk != null)
+        {
+            return chunk.GetBlockByte(xInChunk, y, zInChunk);
+        }
+        else
+        {
+            //TagNodeCompound Chunk = GetChunkNode(chunkX, chunkZ);
+            //if (Chunk != null)
+            //{
+            //    TagNodeCompound Level = Chunk["Level"] as TagNodeCompound;
+
+            //    TagNodeList Sections = Level["Sections"] as TagNodeList;
+            //    if (chunkY < Sections.Count)
+            //    {
+            //        TagNodeCompound section = Sections[chunkY] as TagNodeCompound;
+
+            //        TagNodeByteArray Blocks = section["Blocks"] as TagNodeByteArray;
+            //        byte[] blocks = new byte[4096];
+            //        Buffer.BlockCopy(Blocks, 0, blocks, 0, 4096);
+
+            //        int blockPos = yInChunk * 16 * 16 + zInChunk * 16 + xInChunk;
+            //        return blocks[blockPos];
+            //    }
+            //}
+        }
+        return 0;
+    }
+
+    public static void GetBlockData(int x, int y, int z, ref byte blockType, ref byte blockData)
+    {
+        int chunkX = Mathf.FloorToInt(x / 16f);
+        int chunkY = Mathf.FloorToInt(y / 16f);
+        int chunkZ = Mathf.FloorToInt(z / 16f);
+
+        int xInChunk = x - chunkX * 16;
+        int yInChunk = y - chunkY * 16;
+        int zInChunk = z - chunkZ * 16;
+
+        //NBTChunk chunk = GetChunk(chunkX, chunkZ);
+
+        //if (chunk != null)
+        //{
+        //    chunk.GetBlockData(xInChunk, y, zInChunk, ref blockType, ref blockData);
+        //}
+        //else
+        //{
+            TagNodeCompound Chunk = GetChunkNode(chunkX, chunkZ);
+            if (Chunk != null)
+            {
+                TagNodeCompound Level = Chunk["Level"] as TagNodeCompound;
+
+                TagNodeList Sections = Level["Sections"] as TagNodeList;
+                if (chunkY < Sections.Count)
+                {
+                    TagNodeCompound section = Sections[chunkY] as TagNodeCompound;
+
+                    TagNodeByteArray Blocks = section["Blocks"] as TagNodeByteArray;
+                    byte[] blocks = new byte[4096];
+                    Buffer.BlockCopy(Blocks, 0, blocks, 0, 4096);
+
+                    int blockPos = yInChunk * 16 * 16 + zInChunk * 16 + xInChunk;
+                    blockType = blocks[blockPos];
+
+                    TagNodeByteArray Data = section["Data"] as TagNodeByteArray;
+                    byte[] data = Data.Data;
+                    blockData = GetNibble(data, blockPos);
+                }
+            }
+        //}
     }
 }

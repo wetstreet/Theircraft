@@ -23,18 +23,10 @@ public class NBTChunk
     public NBTGameObject nbtGO;
     public NBTGameObject water;
 
-    static Transform root;
-
     public NBTChunk()
     {
-        if (root == null)
-        {
-            GameObject go = new GameObject("ChunkRoot");
-            root = go.transform;
-        }
         gameObject = new GameObject("chunk (" + x + "," + z + ")");
         transform = gameObject.transform;
-        transform.parent = root;
 
         nbtGO = NBTGameObject.Create("Collidable", transform);
         water = NBTGameObject.Create("Water", transform, false);
@@ -55,28 +47,30 @@ public class NBTChunk
     //input is local position
     public byte GetBlockByte(int xInChunk, int worldY, int zInChunk)
     {
-        if (xInChunk < 0 || xInChunk > 15 || worldY < 0 || worldY > 255 || zInChunk < 0 || zInChunk > 15)
+        if (xInChunk < 0 || xInChunk > 15 || zInChunk < 0 || zInChunk > 15)
         {
-            if (xInChunk < 0)
-            {
-                NBTChunk chunk = NBTHelper.GetChunk(x - 1, z);
-                return chunk.GetBlockByte(xInChunk + 16, worldY, zInChunk);
-            }
-            else if (xInChunk > 15)
-            {
-                NBTChunk chunk = NBTHelper.GetChunk(x + 1, z);
-                return chunk.GetBlockByte(xInChunk - 16, worldY, zInChunk);
-            }
-            else if (zInChunk < 0)
-            {
-                NBTChunk chunk = NBTHelper.GetChunk(x, z - 1);
-                return chunk.GetBlockByte(xInChunk, worldY, zInChunk + 16);
-            }
-            else if (zInChunk > 15)
-            {
-                NBTChunk chunk = NBTHelper.GetChunk(x, z + 1);
-                return chunk.GetBlockByte(xInChunk, worldY, zInChunk - 16);
-            }
+            //if (xInChunk < 0)
+            //{
+            //    NBTChunk chunk = NBTHelper.GetChunk(x - 1, z);
+            //    return chunk.GetBlockByte(xInChunk + 16, worldY, zInChunk);
+            //}
+            //else if (xInChunk > 15)
+            //{
+            //    NBTChunk chunk = NBTHelper.GetChunk(x + 1, z);
+            //    return chunk.GetBlockByte(xInChunk - 16, worldY, zInChunk);
+            //}
+            //else if (zInChunk < 0)
+            //{
+            //    NBTChunk chunk = NBTHelper.GetChunk(x, z - 1);
+            //    return chunk.GetBlockByte(xInChunk, worldY, zInChunk + 16);
+            //}
+            //else if (zInChunk > 15)
+            //{
+            //    NBTChunk chunk = NBTHelper.GetChunk(x, z + 1);
+            //    return chunk.GetBlockByte(xInChunk, worldY, zInChunk - 16);
+            //}
+
+            return NBTHelper.GetBlockByte(xInChunk + 16 * x, worldY, zInChunk + 16 * z);
         }
 
         int sectionIndex = Mathf.FloorToInt(worldY / 16f);
@@ -101,26 +95,28 @@ public class NBTChunk
     {
         if (xInChunk < 0 || xInChunk > 15 || worldY < 0 || worldY > 255 || zInChunk < 0 || zInChunk > 15)
         {
-            if (xInChunk < 0)
-            {
-                NBTChunk chunk = NBTHelper.GetChunk(x - 1, z);
-                chunk.GetBlockData(xInChunk + 16, worldY, zInChunk, ref blockType, ref blockData);
-            }
-            else if (xInChunk > 15)
-            {
-                NBTChunk chunk = NBTHelper.GetChunk(x + 1, z);
-                chunk.GetBlockData(xInChunk - 16, worldY, zInChunk, ref blockType, ref blockData);
-            }
-            else if (zInChunk < 0)
-            {
-                NBTChunk chunk = NBTHelper.GetChunk(x, z - 1);
-                chunk.GetBlockData(xInChunk, worldY, zInChunk + 16, ref blockType, ref blockData);
-            }
-            else if (zInChunk > 15)
-            {
-                NBTChunk chunk = NBTHelper.GetChunk(x, z + 1);
-                chunk.GetBlockData(xInChunk, worldY, zInChunk - 16, ref blockType, ref blockData);
-            }
+            //if (xInChunk < 0)
+            //{
+            //    NBTChunk chunk = NBTHelper.GetChunk(x - 1, z);
+            //    chunk.GetBlockData(xInChunk + 16, worldY, zInChunk, ref blockType, ref blockData);
+            //}
+            //else if (xInChunk > 15)
+            //{
+            //    NBTChunk chunk = NBTHelper.GetChunk(x + 1, z);
+            //    chunk.GetBlockData(xInChunk - 16, worldY, zInChunk, ref blockType, ref blockData);
+            //}
+            //else if (zInChunk < 0)
+            //{
+            //    NBTChunk chunk = NBTHelper.GetChunk(x, z - 1);
+            //    chunk.GetBlockData(xInChunk, worldY, zInChunk + 16, ref blockType, ref blockData);
+            //}
+            //else if (zInChunk > 15)
+            //{
+            //    NBTChunk chunk = NBTHelper.GetChunk(x, z + 1);
+            //    chunk.GetBlockData(xInChunk, worldY, zInChunk - 16, ref blockType, ref blockData);
+            //}
+
+            //NBTHelper.GetBlockData(xInChunk + 16 * x, worldY, zInChunk + 16 * z, ref blockType, ref blockData);
             return;
         }
 

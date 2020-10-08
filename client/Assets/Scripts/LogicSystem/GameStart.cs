@@ -20,6 +20,7 @@ public class GameStart : MonoBehaviour
         ChunkManager.ChunksEnterLeaveViewReq(preloadChunks);
 
         PlayerController.Init();
+        ChunkRefresher.ForceRefreshAll();
     }
 
     public static Queue<Chunk> rebuildQueue = new Queue<Chunk>();

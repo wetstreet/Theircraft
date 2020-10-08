@@ -60,11 +60,14 @@ public class DebugUI : MonoBehaviour
 
         Vector3Int curBlock = PlayerController.GetCurrentBlock();
         text += string.Format("\nBlock: {0} {1} {2}", curBlock.x, curBlock.y, curBlock.z);
-
-        Chunk chunk = PlayerController.GetCurrentChunk();
-        int xInChunk = chunk.GetXInChunkByGlobalX(curBlock.x);
-        int zInChunk = chunk.GetZInChunkByGlobalZ(curBlock.z);
-        text += string.Format("\nChunk: {0} {1} {2} in {3} {4}", xInChunk, curBlock.y, zInChunk, chunk.x, chunk.z); 
+        
+        int chunkX = Mathf.FloorToInt(curBlock.x / 16f);
+        int chunkY = Mathf.FloorToInt(curBlock.y / 16f);
+        int chunkZ = Mathf.FloorToInt(curBlock.z / 16f);
+        int xInChunk = curBlock.x - chunkX * 16;
+        int yInChunk = curBlock.y - chunkY * 16;
+        int zInChunk = curBlock.z - chunkZ * 16;
+        text += string.Format("\nChunk: {0} {1} {2} in {3} {4} {5}", xInChunk, yInChunk, zInChunk, chunkX, chunkY, chunkZ); 
 
         if (WireFrameHelper.render)
         {
@@ -78,7 +81,7 @@ public class DebugUI : MonoBehaviour
                 text += string.Format("\nOrient: {0}", orient);
             }
         }
-        text += string.Format("\nLight: {0}", chunk.GetLightAtPos(new Vector3Int(xInChunk, curBlock.y, zInChunk)));
+        //text += string.Format("\nLight: {0}", chunk.GetLightAtPos(new Vector3Int(xInChunk, curBlock.y, zInChunk)));
 
         label.text = text;
     }

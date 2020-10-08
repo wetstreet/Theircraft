@@ -355,21 +355,6 @@ public class ChunkManager
         return dependenceDict[pos];
     }
 
-    // get the chunks to be load (chunks should be loaded - chunks already loaded)
-    public static List<Vector2Int> GetLoadChunks(Vector2Int centerChunkPos)
-    {
-        List<Vector2Int> shouldLoadChunks = Utilities.GetSurroudingChunks(centerChunkPos);
-        return shouldLoadChunks.Except(chunkDict.Keys).ToList();
-    }
-
-    // get the chunks to be unload (any chunks in the loaded chunks dict whose distance to the centerChunkPos is bigger than chunkRadius should be unloaded)
-    public static List<Vector2Int> GetUnloadChunks(Vector2Int centerChunkPos, int chunkRadius)
-    {
-        return chunkDict.Keys.Where(chunkPos => 
-            Mathf.Abs(chunkPos.x - centerChunkPos.x) > chunkRadius || Mathf.Abs(chunkPos.y - centerChunkPos.y) > chunkRadius
-            ).ToList();
-    }
-
     //public static void LoadChunk(CSChunk csChunk)
     //{
     //    //Debug.Log("loadChunk,x=" + csChunk.Position.x + ",z=" + csChunk.Position.y);
@@ -382,26 +367,21 @@ public class ChunkManager
     public static void UnloadChunk(int x, int z)
     {
         //Debug.Log("UnloadChunk,x=" + x + ",z=" + z);
-        NBTChunk chunk = NBTHelper.GetChunk(x, z);
-        if (chunk != null)
-        {
-            ChunkRefresher.Remove(chunk);
-            chunk.ClearData();
-        }
+        NBTHelper.RemoveChunk(x, z);
     }
 
     public static void ChunksEnterLeaveViewReq(List<Vector2Int> enterViewChunks, List<Vector2Int> leaveViewChunks = null)
     {
         foreach (Vector2Int chunkPos in enterViewChunks)
         {
-            NBTChunk chunk = NBTHelper.GetChunk(chunkPos.x, chunkPos.y);
+            NBTChunk chunk = NBTHelper.LoadChunk(chunkPos.x, chunkPos.y);
             ChunkRefresher.Add(chunk);
         }
         if (leaveViewChunks != null)
         {
             foreach (Vector2Int chunk in leaveViewChunks)
             {
-                //UnloadChunk(chunk.x, chunk.y);
+                UnloadChunk(chunk.x, chunk.y);
             }
         }
         ChunkChecker.FinishRefresh();
