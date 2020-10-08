@@ -196,53 +196,6 @@ public class NBTHelper : MonoBehaviour
         return Mathf.FloorToInt(val / 32.0f);
     }
 
-    public static void PrintBlockData(int x, int y, int z)
-    {
-        int chunkX = Mathf.FloorToInt(x / 16f);
-        int chunkY = Mathf.FloorToInt(y / 16f);
-        int chunkZ = Mathf.FloorToInt(z / 16f);
-        TagNodeCompound Chunk = NBTHelper.GetChunkNode(chunkX, chunkZ);
-        if (Chunk != null)
-        {
-            TagNodeCompound Level = Chunk["Level"] as TagNodeCompound;
-
-            TagNodeList Sections = Level["Sections"] as TagNodeList;
-            if (chunkY < Sections.Count)
-            {
-                TagNodeCompound section = Sections[chunkY] as TagNodeCompound;
-
-                TagNodeByteArray Blocks = section["Blocks"] as TagNodeByteArray;
-                byte[] blocks = new byte[4096];
-                Buffer.BlockCopy(Blocks, 0, blocks, 0, 4096);
-
-                TagNodeByteArray Data = section["Data"] as TagNodeByteArray;
-                byte[] data = Data.Data;
-
-                int xInChunk = x - chunkX * 16;
-                int yInChunk = y - chunkY * 16;
-                int zInChunk = z - chunkZ * 16;
-                int blockPos = yInChunk * 16 * 16 + zInChunk * 16 + xInChunk;
-
-                Debug.Log("type=" + blocks[blockPos] + ",data=" + NBTHelper.GetNibble(data, blockPos));
-
-                //string blockstring = "";
-                //for (int i = 0; i < 4096; i++)
-                //{
-                //    blockstring += blocks[i] + ",";
-                //}
-                //Debug.Log("chunk=(" + chunkX + "," + chunkY + "," + chunkZ + "),PosInChunk=("+ xInChunk + "," + yInChunk + "," + zInChunk + ")\n" + blockstring);
-            }
-            else
-            {
-                Debug.Log("section not exist!");
-            }
-        }
-        else
-        {
-            Debug.Log("chunk not exist!");
-        }
-    }
-
     public static void SetBlockByte(Vector3Int pos, byte type) { SetBlockByte(pos.x, pos.y, pos.z, type); }
 
     public static void SetBlockByte(int x, int y, int z, byte type)
