@@ -7,6 +7,8 @@ public class NBTGlass : NBTBlock
 {
     public override SoundMaterial soundMaterial { get { return SoundMaterial.Glass; } }
 
+    public override string GetBreakEffectTexture(byte data) { return "glass"; }
+
     List<int> triangles = new List<int>();
 
     bool ShouldAddFace(NBTChunk chunk, int xInChunk, int worldY, int zInChunk)

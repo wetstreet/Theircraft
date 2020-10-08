@@ -193,7 +193,7 @@ public class PlayerController : MonoBehaviour
                 NBTHelper.SetBlockByte(WireFrameHelper.pos, 0);
 
                 //Item.CreateBlockDropItem(type, WireFrameHelper.pos);
-                //BreakBlockEffect.Create(type, WireFrameHelper.pos);
+                BreakBlockEffect.Create(WireFrameHelper.type, WireFrameHelper.data, WireFrameHelper.pos);
                 SoundManager.PlayBreakSound(WireFrameHelper.type, instance.gameObject);
             }
         }
@@ -327,7 +327,9 @@ public class PlayerController : MonoBehaviour
                 if (hit.transform.gameObject.layer == cubeLayerIndex || hit.transform.gameObject.layer == plantLayerIndex)
                 {
                     Vector3Int pos = Vector3Int.RoundToInt(hit.point - hit.normal / 10);
-                    byte type = NBTHelper.GetBlockByte(pos.x, pos.y, pos.z);
+                    byte type = 0;
+                    byte data = 0;
+                    NBTHelper.GetBlockData(pos.x, pos.y, pos.z, ref type, ref data);
                     if (type != 0)
                     {
                         //Debug.Log(hit.point + "," + pos);
@@ -335,6 +337,7 @@ public class PlayerController : MonoBehaviour
                         WireFrameHelper.pos = pos;
                         WireFrameHelper.hitPos = hit.point;
                         WireFrameHelper.type = type;
+                        WireFrameHelper.data = data;
 
                         //if (Input.GetKeyDown(KeyCode.F1))
                         //{

@@ -9,6 +9,27 @@ public class NBTLeaves : NBTBlock
 
     public override bool isTransparent { get { return true; } }
 
+    public override string GetBreakEffectTexture(byte data)
+    {
+        string texture = "";
+        switch (data % 4)
+        {
+            case 0:
+                texture = "leaves_oak";
+                break;
+            case 1:
+                texture = "leaves_spruce";
+                break;
+            case 2:
+                texture = "leaves_birch";
+                break;
+            case 3:
+                texture = "leaves_jungle";
+                break;
+        }
+        return texture;
+    }
+
     List<int> triangles_oak = new List<int>();
     List<int> triangles_spruce = new List<int>();
     List<int> triangles_birch = new List<int>();

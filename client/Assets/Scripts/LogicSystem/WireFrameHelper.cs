@@ -31,6 +31,7 @@ public class WireFrameHelper : MonoBehaviour
     public static Vector3Int pos;
     public static Vector3 hitPos;
     public static byte type;
+    public static byte data;
 
     // Will be called after all regular rendering is done
     public void OnRenderObject()

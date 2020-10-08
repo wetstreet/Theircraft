@@ -7,6 +7,8 @@ public class NBTSandStone : NBTBlock
 {
     public override SoundMaterial soundMaterial { get { return SoundMaterial.Stone; } }
 
+    public override string GetBreakEffectTexture(byte data) { return "sandstone_normal"; }
+
     List<int> triangles_top = new List<int>();
     List<int> triangles_side = new List<int>();
     List<int> triangles_bot = new List<int>();

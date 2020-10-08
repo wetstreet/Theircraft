@@ -14,6 +14,9 @@ public class NBTRedFlower : NBTBlock
     List<int> triangles_poppy = new List<int>();
     List<int> triangles_daisy = new List<int>();
     List<int> triangles_houstonia = new List<int>();
+    List<int> triangles_tulip_red = new List<int>();
+    List<int> triangles_tulip_white = new List<int>();
+    List<int> triangles_tulip_orange = new List<int>();
 
     public override void GenerateMeshInChunk(NBTChunk chunk, byte blockData, Vector3Int pos, List<Vector3> vertices, List<Vector2> uv)
     {
@@ -27,6 +30,15 @@ public class NBTRedFlower : NBTBlock
                 break;
             case 3:
                 triangles = triangles_houstonia;
+                break;
+            case 4:
+                triangles = triangles_tulip_red;
+                break;
+            case 5:
+                triangles = triangles_tulip_orange;
+                break;
+            case 6:
+                triangles = triangles_tulip_white;
                 break;
             case 8:
                 triangles = triangles_daisy;
@@ -61,6 +73,21 @@ public class NBTRedFlower : NBTBlock
             trianglesList.Add(triangles_houstonia);
             materialList.Add(Resources.Load<Material>("Materials/block/flower_houstonia"));
         }
+        if (triangles_tulip_red.Count > 0)
+        {
+            trianglesList.Add(triangles_tulip_red);
+            materialList.Add(Resources.Load<Material>("Materials/block/flower_tulip_red"));
+        }
+        if (triangles_tulip_white.Count > 0)
+        {
+            trianglesList.Add(triangles_tulip_white);
+            materialList.Add(Resources.Load<Material>("Materials/block/flower_tulip_white"));
+        }
+        if (triangles_tulip_orange.Count > 0)
+        {
+            trianglesList.Add(triangles_tulip_orange);
+            materialList.Add(Resources.Load<Material>("Materials/block/flower_tulip_orange"));
+        }
     }
 
     public override void ClearData()
@@ -68,5 +95,8 @@ public class NBTRedFlower : NBTBlock
         triangles_poppy.Clear();
         triangles_daisy.Clear();
         triangles_houstonia.Clear();
+        triangles_tulip_red.Clear();
+        triangles_tulip_white.Clear();
+        triangles_tulip_orange.Clear();
     }
 }

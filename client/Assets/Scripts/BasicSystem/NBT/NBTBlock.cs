@@ -10,6 +10,8 @@ public abstract class NBTBlock
 
     public virtual bool isCollidable { get { return true; } }
 
+    public virtual string GetBreakEffectTexture(byte data) { return string.Empty; }
+
     protected static Vector3 nearBottomLeft = new Vector3(-0.5f, -0.5f, -0.5f);
     protected static Vector3 nearBottomRight = new Vector3(0.5f, -0.5f, -0.5f);
     protected static Vector3 nearTopLeft = new Vector3(-0.5f, 0.5f, -0.5f);

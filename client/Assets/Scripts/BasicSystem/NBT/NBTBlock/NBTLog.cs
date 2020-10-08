@@ -7,6 +7,27 @@ public class NBTLog : NBTBlock
 {
     public override SoundMaterial soundMaterial { get { return SoundMaterial.Wood; } }
 
+    public override string GetBreakEffectTexture(byte data)
+    {
+        string texture = "";
+        switch (data % 4)
+        {
+            case 0:
+                texture = "log_oak";
+                break;
+            case 1:
+                texture = "log_spruce";
+                break;
+            case 2:
+                texture = "log_birch";
+                break;
+            case 3:
+                texture = "log_jungle";
+                break;
+        }
+        return texture;
+    }
+
     List<int> triangles_oak_top = new List<int>();
     List<int> triangles_oak_side = new List<int>();
     List<int> triangles_spruce_top = new List<int>();

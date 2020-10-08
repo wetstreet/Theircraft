@@ -7,6 +7,8 @@ public class NBTGoldOre : NBTBlock
 {
     public override SoundMaterial soundMaterial { get { return SoundMaterial.Stone; } }
 
+    public override string GetBreakEffectTexture(byte data) { return "gold_ore"; }
+
     List<int> triangles = new List<int>();
 
     public override void GenerateMeshInChunk(NBTChunk chunk, byte blockData, Vector3Int pos, List<Vector3> vertices, List<Vector2> uv)
