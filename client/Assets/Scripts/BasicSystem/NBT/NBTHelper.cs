@@ -69,6 +69,19 @@ public class NBTHelper : MonoBehaviour
         return null;
     }
 
+    public static NBTChunk GetChunk(Vector3Int pos)
+    {
+        int chunkX = Mathf.FloorToInt(pos.x / 16f);
+        int chunkZ = Mathf.FloorToInt(pos.z / 16f);
+
+        key.Set(chunkX, chunkZ);
+        if (chunkDict.ContainsKey(key))
+        {
+            return chunkDict[key];
+        }
+        return null;
+    }
+
     public static NBTChunk LoadChunk(int chunkX, int chunkZ)
     {
         key.Set(chunkX, chunkZ);
@@ -229,6 +242,47 @@ public class NBTHelper : MonoBehaviour
             Debug.Log("chunk not exist!");
         }
     }
+
+    public static void SetBlockByte(Vector3Int pos, byte type) { SetBlockByte(pos.x, pos.y, pos.z, type); }
+
+    public static void SetBlockByte(int x, int y, int z, byte type)
+    {
+        int chunkX = Mathf.FloorToInt(x / 16f);
+        int chunkZ = Mathf.FloorToInt(z / 16f);
+
+        int xInChunk = x - chunkX * 16;
+        int zInChunk = z - chunkZ * 16;
+
+        NBTChunk chunk = GetChunk(chunkX, chunkZ);
+        chunk.SetBlockByte(xInChunk, y, zInChunk, type);
+        chunk.RebuildMesh();
+
+        if (type == 0)
+        {
+            if (xInChunk == 0)
+            {
+                NBTChunk leftChunk = GetChunk(chunkX - 1, chunkZ);
+                leftChunk.RebuildMesh();
+            }
+            if (xInChunk == 15)
+            {
+                NBTChunk rightChunk = GetChunk(chunkX + 1, chunkZ);
+                rightChunk.RebuildMesh();
+            }
+            if (zInChunk == 0)
+            {
+                NBTChunk frontChunk = GetChunk(chunkX, chunkZ - 1);
+                frontChunk.RebuildMesh();
+            }
+            if (zInChunk == 15)
+            {
+                NBTChunk backChunk = GetChunk(chunkX, chunkZ + 1);
+                backChunk.RebuildMesh();
+            }
+        }
+    }
+
+    public static byte GetBlockByte(Vector3Int pos) { return GetBlockByte(pos.x, pos.y, pos.z); }
 
     public static byte GetBlockByte(int x, int y, int z)
     {

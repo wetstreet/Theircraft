@@ -83,7 +83,7 @@ public class PlayerController : MonoBehaviour
         m_HeadBob.Setup(camera, 5);
 
         transform.position = DataCenter.spawnPosition;
-        transform.localEulerAngles = new Vector3(0, DataCenter.spawnRotation.y, 0);
+        transform.localEulerAngles = new Vector3(0, -DataCenter.spawnRotation.y, 0);
         camera.transform.localEulerAngles = new Vector3(DataCenter.spawnRotation.z, 0, 0);
         
         NetworkManager.Register(ENUM_CMD.CS_ADD_BLOCK_NOTIFY, OnAddBlockNotify);
@@ -188,7 +188,13 @@ public class PlayerController : MonoBehaviour
         {
             if (WireFrameHelper.pos.y != 0)
             {
-                DeleteBlockReq(WireFrameHelper.pos);
+                //DeleteBlockReq(WireFrameHelper.pos);
+                
+                NBTHelper.SetBlockByte(WireFrameHelper.pos, 0);
+
+                //Item.CreateBlockDropItem(type, WireFrameHelper.pos);
+                //BreakBlockEffect.Create(type, WireFrameHelper.pos);
+                SoundManager.PlayBreakSound(WireFrameHelper.type, instance.gameObject);
             }
         }
     }
@@ -321,13 +327,14 @@ public class PlayerController : MonoBehaviour
                 if (hit.transform.gameObject.layer == cubeLayerIndex || hit.transform.gameObject.layer == plantLayerIndex)
                 {
                     Vector3Int pos = Vector3Int.RoundToInt(hit.point - hit.normal / 10);
-                    bool hasBlock = ChunkManager.HasBlock(pos);
-                    if (hasBlock)
+                    byte type = NBTHelper.GetBlockByte(pos.x, pos.y, pos.z);
+                    if (type != 0)
                     {
                         //Debug.Log(hit.point + "," + pos);
                         WireFrameHelper.render = true;
                         WireFrameHelper.pos = pos;
                         WireFrameHelper.hitPos = hit.point;
+                        WireFrameHelper.type = type;
 
                         //if (Input.GetKeyDown(KeyCode.F1))
                         //{
@@ -526,7 +533,7 @@ public class PlayerController : MonoBehaviour
                     CSBlockType type = ChunkManager.GetBlockType(pos.x, pos.y, pos.z);
                     if (Time.realtimeSinceStartup - lastFootstepTime > footstepInterval)
                     {
-                        SoundManager.PlayFootstepSound(type, gameObject);
+                        //SoundManager.PlayFootstepSound(type, gameObject);
                         lastFootstepTime = Time.realtimeSinceStartup;
                     }
                 }
@@ -638,7 +645,7 @@ public class PlayerController : MonoBehaviour
         if (rsp.RetCode == 0)
         {
             ChunkManager.AddBlock(rsp.block);
-            SoundManager.PlayPlaceSound(rsp.block.type, gameObject);
+            //SoundManager.PlayPlaceSound(rsp.block.type, gameObject);
         }
         else
         {

@@ -20,7 +20,8 @@ public class NBTChunk
 
     public List<Vector3Int> torchList = new List<Vector3Int>();
 
-    public NBTGameObject nbtGO;
+    public NBTGameObject collidable;
+    public NBTGameObject notCollidable;
     public NBTGameObject water;
 
     public NBTChunk()
@@ -28,7 +29,8 @@ public class NBTChunk
         gameObject = new GameObject("chunk (" + x + "," + z + ")");
         transform = gameObject.transform;
 
-        nbtGO = NBTGameObject.Create("Collidable", transform);
+        collidable = NBTGameObject.Create("Collidable", transform);
+        notCollidable = NBTGameObject.Create("NotCollidable", transform, false);
         water = NBTGameObject.Create("Water", transform, false);
     }
 
@@ -88,6 +90,25 @@ public class NBTChunk
             }
         }
         return 0;
+    }
+
+    //input is local position
+    public void SetBlockByte(int xInChunk, int worldY, int zInChunk, byte type)
+    {
+        int sectionIndex = Mathf.FloorToInt(worldY / 16f);
+        if (sectionIndex >= 0 && sectionIndex < Sections.Count)
+        {
+            TagNodeCompound section = Sections[sectionIndex] as TagNodeCompound;
+            TagNodeByteArray blocks = section["Blocks"] as TagNodeByteArray;
+
+            int yInSection = worldY - sectionIndex * 16;
+            int blockPos = yInSection * 16 * 16 + zInChunk * 16 + xInChunk;
+
+            if (blockPos >= 0 && blockPos < 4096)
+            {
+                blocks.Data[blockPos] = type;
+            }
+        }
     }
 
     //input is local position
@@ -165,12 +186,13 @@ public class NBTChunk
     public void RefreshMeshData()
     {
         //Debug.Log("RefreshMeshData,chunk=" + chunk.pos);
-        nbtGO.Clear();
+        collidable.Clear();
+        notCollidable.Clear();
         water.Clear();
 
         Vector3Int pos = new Vector3Int();
 
-        List<NBTMeshGenerator> generators = new List<NBTMeshGenerator>();
+        List<NBTBlock> generators = new List<NBTBlock>();
         NBTGeneratorManager.ClearGeneratorData();
 
         for (int sectionIndex = 0; sectionIndex < Sections.Count; sectionIndex++)
@@ -187,7 +209,7 @@ public class NBTChunk
                     {
                         int blockPos = yInSection * 16 * 16 + zInSection * 16 + xInSection;
                         byte rawType = Blocks.Data[blockPos];
-                        NBTMeshGenerator generator = NBTGeneratorManager.GetMeshGenerator(rawType);
+                        NBTBlock generator = NBTGeneratorManager.GetMeshGenerator(rawType);
                         if (generator != null)
                         {
                             int worldY = yInSection + sectionIndex * 16;
@@ -199,7 +221,7 @@ public class NBTChunk
                             }
                             else
                             {
-                                generator.GenerateMeshInChunk(this, blockData, pos, nbtGO);
+                                generator.GenerateMeshInChunk(this, blockData, pos, collidable);
                             }
                             if (!generators.Contains(generator))
                             {
@@ -211,7 +233,7 @@ public class NBTChunk
             }
         }
 
-        foreach (NBTMeshGenerator generator in generators)
+        foreach (NBTBlock generator in generators)
         {
             if (generator is NBTStationaryWater)
             {
@@ -219,7 +241,7 @@ public class NBTChunk
             }
             else
             {
-                generator.AfterGenerateMesh(nbtGO);
+                generator.AfterGenerateMesh(collidable);
             }
         }
 
@@ -233,7 +255,8 @@ public class NBTChunk
         {
             RefreshMeshData();
         }
-        nbtGO.Refresh();
+        collidable.Refresh();
+        notCollidable.Refresh();
         water.Refresh();
     }
 
@@ -244,7 +267,8 @@ public class NBTChunk
         meshBuildCount = 0;
         torchList.Clear();
 
-        nbtGO.GetComponent<MeshFilter>().sharedMesh = null;
+        collidable.GetComponent<MeshFilter>().sharedMesh = null;
+        notCollidable.GetComponent<MeshFilter>().sharedMesh = null;
         water.GetComponent<MeshFilter>().sharedMesh = null;
     }
 }

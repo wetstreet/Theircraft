@@ -3,8 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NBTLog : NBTMeshGenerator
+public class NBTLog : NBTBlock
 {
+    public override SoundMaterial soundMaterial { get { return SoundMaterial.Wood; } }
+
     List<int> triangles_oak_top = new List<int>();
     List<int> triangles_oak_side = new List<int>();
     List<int> triangles_spruce_top = new List<int>();

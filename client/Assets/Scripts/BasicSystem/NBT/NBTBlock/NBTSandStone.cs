@@ -3,8 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NBTSandStone : NBTMeshGenerator
+public class NBTSandStone : NBTBlock
 {
+    public override SoundMaterial soundMaterial { get { return SoundMaterial.Stone; } }
+
     List<int> triangles_top = new List<int>();
     List<int> triangles_side = new List<int>();
     List<int> triangles_bot = new List<int>();

@@ -3,8 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NBTGlass : NBTMeshGenerator
+public class NBTGlass : NBTBlock
 {
+    public override SoundMaterial soundMaterial { get { return SoundMaterial.Glass; } }
+
     List<int> triangles = new List<int>();
 
     bool ShouldAddFace(NBTChunk chunk, int xInChunk, int worldY, int zInChunk)

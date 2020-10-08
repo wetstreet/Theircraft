@@ -3,8 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NBTStationaryWater : NBTMeshGenerator
+public class NBTStationaryWater : NBTBlock
 {
+    public override SoundMaterial soundMaterial { get { return SoundMaterial.Grass; } }
+
+    public override bool isTransparent { get { return true; } }
+
     List<int> triangles_still = new List<int>();
     List<int> triangles_flow_east = new List<int>();
     List<int> triangles_flow_west = new List<int>();

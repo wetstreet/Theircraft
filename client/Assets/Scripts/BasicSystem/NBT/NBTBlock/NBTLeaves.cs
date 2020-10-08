@@ -3,8 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NBTLeaves : NBTMeshGenerator
+public class NBTLeaves : NBTBlock
 {
+    public override SoundMaterial soundMaterial { get { return SoundMaterial.Grass; } }
+
+    public override bool isTransparent { get { return true; } }
+
     List<int> triangles_oak = new List<int>();
     List<int> triangles_spruce = new List<int>();
     List<int> triangles_birch = new List<int>();

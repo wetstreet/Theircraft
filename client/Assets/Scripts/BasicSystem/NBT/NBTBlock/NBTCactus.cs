@@ -3,8 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NBTCactus : NBTMeshGenerator
+public class NBTCactus : NBTBlock
 {
+    public override SoundMaterial soundMaterial { get { return SoundMaterial.Grass; } }
+
+    public override bool isTransparent { get { return true; } }
+
     List<int> triangles_top = new List<int>();
     List<int> triangles_side = new List<int>();
     List<int> triangles_bot = new List<int>();

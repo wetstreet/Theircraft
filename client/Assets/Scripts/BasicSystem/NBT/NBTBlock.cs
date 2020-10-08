@@ -2,8 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class NBTMeshGenerator
+public abstract class NBTBlock
 {
+    public virtual SoundMaterial soundMaterial { get; }
+
+    public virtual bool isTransparent { get { return false; } }
+
+    public virtual bool isCollidable { get { return true; } }
+
     protected static Vector3 nearBottomLeft = new Vector3(-0.5f, -0.5f, -0.5f);
     protected static Vector3 nearBottomRight = new Vector3(0.5f, -0.5f, -0.5f);
     protected static Vector3 nearTopLeft = new Vector3(-0.5f, 0.5f, -0.5f);

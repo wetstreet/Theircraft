@@ -37,7 +37,7 @@ public class LocalizationManager
             if (item.Length == 2)
             {
                 string key = item[0];
-                string value = item[1];
+                string value = item[1].TrimEnd();
                 if (langDict.ContainsKey(key))
                 {
                     langDict[key] = value;

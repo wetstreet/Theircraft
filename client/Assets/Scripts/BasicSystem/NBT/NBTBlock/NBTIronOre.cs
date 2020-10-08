@@ -3,8 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NBTIronOre : NBTMeshGenerator
+public class NBTIronOre : NBTBlock
 {
+    public override SoundMaterial soundMaterial { get { return SoundMaterial.Stone; } }
+
     List<int> triangles = new List<int>();
 
     public override void GenerateMeshInChunk(NBTChunk chunk, byte blockData, Vector3Int pos, List<Vector3> vertices, List<Vector2> uv)

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class NBTGeneratorManager : MonoBehaviour
 {
-    static Dictionary<int, NBTMeshGenerator> generatorDict = new Dictionary<int, NBTMeshGenerator>()
+    static Dictionary<int, NBTBlock> generatorDict = new Dictionary<int, NBTBlock>()
     {
         { 1, new NBTStone() },
         { 2, new NBTGrassBlock() },
@@ -28,17 +28,18 @@ public class NBTGeneratorManager : MonoBehaviour
         { 56, new NBTDiamondOre() },
         { 73, new NBTRedstoneOre() },
         { 81, new NBTCactus() },
+        { 83, new NBTSugarCane() },
     };
 
     public static void ClearGeneratorData()
     {
-        foreach (NBTMeshGenerator generator in generatorDict.Values)
+        foreach (NBTBlock generator in generatorDict.Values)
         {
             generator.ClearData();
         }
     }
 
-    public static NBTMeshGenerator GetMeshGenerator(int rawType)
+    public static NBTBlock GetMeshGenerator(byte rawType)
     {
         if (generatorDict.ContainsKey(rawType))
         {
@@ -47,13 +48,14 @@ public class NBTGeneratorManager : MonoBehaviour
         return null;
     }
 
-    static List<int> transparentList = new List<int>()
-    {
-        0,6,8,9,10,11,18,20,30,31,32,37,38,39,40,81
-    };
-
     public static bool IsTransparent(int rawType)
     {
-        return transparentList.Contains(rawType);
+        if (rawType == 0) return true;
+
+        if (generatorDict.ContainsKey(rawType))
+        {
+            return generatorDict[rawType].isTransparent;
+        }
+        return false;
     }
 }
