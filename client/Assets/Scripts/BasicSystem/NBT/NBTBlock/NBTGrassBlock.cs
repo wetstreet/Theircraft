@@ -13,31 +13,31 @@ public class NBTGrassBlock : NBTBlock
     List<int> triangles_side = new List<int>();
     List<int> triangles_bot = new List<int>();
 
-    public override void GenerateMeshInChunk(NBTChunk chunk, byte blockData, Vector3Int pos, List<Vector3> vertices, List<Vector2> uv)
+    public override void GenerateMeshInChunk(NBTChunk chunk, byte blockData, Vector3Int pos, NBTGameObject nbtGO)
     {
         if (!chunk.HasOpaqueBlock(pos.x, pos.y, pos.z - 1))
         {
-            AddFrontFace(vertices, uv, triangles_side, pos);
+            AddFrontFace(nbtGO.vertices, nbtGO.uv1, triangles_side, pos);
         }
         if (!chunk.HasOpaqueBlock(pos.x + 1, pos.y, pos.z))
         {
-            AddRightFace(vertices, uv, triangles_side, pos);
+            AddRightFace(nbtGO.vertices, nbtGO.uv1, triangles_side, pos);
         }
         if (!chunk.HasOpaqueBlock(pos.x - 1, pos.y, pos.z))
         {
-            AddLeftFace(vertices, uv, triangles_side, pos);
+            AddLeftFace(nbtGO.vertices, nbtGO.uv1, triangles_side, pos);
         }
         if (!chunk.HasOpaqueBlock(pos.x, pos.y, pos.z + 1))
         {
-            AddBackFace(vertices, uv, triangles_side, pos);
+            AddBackFace(nbtGO.vertices, nbtGO.uv1, triangles_side, pos);
         }
         if (!chunk.HasOpaqueBlock(pos.x, pos.y + 1, pos.z))
         {
-            AddTopFace(vertices, uv, triangles_top, pos);
+            AddTopFace(nbtGO.vertices, nbtGO.uv1, triangles_top, pos);
         }
         if (!chunk.HasOpaqueBlock(pos.x, pos.y - 1, pos.z))
         {
-            AddBottomFace(vertices, uv, triangles_bot, pos);
+            AddBottomFace(nbtGO.vertices, nbtGO.uv1, triangles_bot, pos);
         }
     }
 

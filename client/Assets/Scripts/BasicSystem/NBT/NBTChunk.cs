@@ -22,6 +22,7 @@ public class NBTChunk
 
     public NBTGameObject collidable;
     public NBTGameObject notCollidable;
+    public NBTGameObject grassBlock;
     public NBTGameObject water;
 
     public NBTChunk()
@@ -30,6 +31,7 @@ public class NBTChunk
         transform = gameObject.transform;
 
         collidable = NBTGameObject.Create("Collidable", transform);
+        grassBlock = NBTGameObject.Create("grassBlock", transform);
         notCollidable = NBTGameObject.Create("NotCollidable", transform, false);
         water = NBTGameObject.Create("Water", transform, false);
     }
@@ -189,6 +191,7 @@ public class NBTChunk
         collidable.Clear();
         notCollidable.Clear();
         water.Clear();
+        grassBlock.Clear();
 
         Vector3Int pos = new Vector3Int();
 
@@ -219,6 +222,10 @@ public class NBTChunk
                             {
                                 generator.GenerateMeshInChunk(this, blockData, pos, water);
                             }
+                            else if (generator is NBTGrassBlock)
+                            {
+                                generator.GenerateMeshInChunk(this, blockData, pos, grassBlock);
+                            }
                             else
                             {
                                 generator.GenerateMeshInChunk(this, blockData, pos, collidable);
@@ -239,6 +246,10 @@ public class NBTChunk
             {
                 generator.AfterGenerateMesh(water);
             }
+            else if (generator is NBTGrassBlock)
+            {
+                generator.AfterGenerateMesh(grassBlock);
+            }
             else
             {
                 generator.AfterGenerateMesh(collidable);
@@ -258,6 +269,7 @@ public class NBTChunk
         collidable.Refresh();
         notCollidable.Refresh();
         water.Refresh();
+        grassBlock.Refresh();
     }
 
     public void ClearData()
@@ -270,5 +282,6 @@ public class NBTChunk
         collidable.GetComponent<MeshFilter>().sharedMesh = null;
         notCollidable.GetComponent<MeshFilter>().sharedMesh = null;
         water.GetComponent<MeshFilter>().sharedMesh = null;
+        grassBlock.GetComponent<MeshFilter>().sharedMesh = null;
     }
 }
