@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEditor;
 using UnityEngine.UI;
+using UnityEngine.Rendering.Universal;
 
 public class UISystem : MonoBehaviour
 {
@@ -49,13 +50,31 @@ public class UISystem : MonoBehaviour
         }
     }
 
+    private void OnLevelWasLoaded(int level)
+    {
+        InitCamera();
+    }
+
+    private void InitCamera()
+    {
+        UniversalAdditionalCameraData camData = camera.gameObject.AddMissingComponent<UniversalAdditionalCameraData>();
+        camData.renderType = CameraRenderType.Overlay;
+        UniversalAdditionalCameraData mainCamData = Camera.main.gameObject.AddMissingComponent<UniversalAdditionalCameraData>();
+        //Debug.Log("mainCamData=" + mainCamData);
+        //Debug.Log("mainCamData.cameraStack=" + mainCamData.cameraStack);
+        mainCamData.cameraStack.Add(camera);
+    }
+
     private void Awake()
     {
         lastScale = 0;
         canvas = transform.Find("Canvas").gameObject;
         camera = transform.Find("Camera").GetComponent<Camera>();
+
         canvasScaler = canvas.GetComponent<CanvasScaler>();
         UpdateScale();
+
+        InitCamera();
     }
 
     private void Update()

@@ -14,7 +14,17 @@ public struct Layer
     public static string ItemTrigger = "ItemTrigger";
 }
 
-public static class Utilities {
+public static class Utilities
+{
+    public static T AddMissingComponent<T>(this GameObject go) where T : Component
+    {
+        T t = go.GetComponent<T>();
+        if (t == null)
+        {
+            t = go.AddComponent<T>();
+        }
+        return t;
+    }
 
     public static Vector3 ToVector3(this CSVector3 csv)
     {
