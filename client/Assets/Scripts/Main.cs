@@ -24,6 +24,7 @@ public class Main : MonoBehaviour {
     {
         SoundManager.Init();
         LocalizationManager.Init();
+        TextureArrayManager.Init();
 
         SceneManager.LoadScene("LoginScene");
 

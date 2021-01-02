@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class NBTGeneratorManager : MonoBehaviour
 {
-    static Dictionary<int, NBTBlock> generatorDict = new Dictionary<int, NBTBlock>()
+    public static Dictionary<int, NBTBlock> generatorDict = new Dictionary<int, NBTBlock>()
     {
         { 1, new NBTStone() },
         { 2, new NBTGrassBlock() },

@@ -5,6 +5,13 @@ using UnityEngine;
 
 public class NBTCoalOre : NBTBlock
 {
+    public override string topName { get { return "coal_ore"; } }
+    public override string bottomName { get { return "coal_ore"; } }
+    public override string frontName { get { return "coal_ore"; } }
+    public override string backName { get { return "coal_ore"; } }
+    public override string leftName { get { return "coal_ore"; } }
+    public override string rightName { get { return "coal_ore"; } }
+
     public override SoundMaterial soundMaterial { get { return SoundMaterial.Stone; } }
 
     public override string GetBreakEffectTexture(byte data) { return "coal_ore"; }

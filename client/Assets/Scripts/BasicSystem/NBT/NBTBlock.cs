@@ -4,6 +4,22 @@ using UnityEngine;
 
 public abstract class NBTBlock
 {
+
+    public virtual string topName { get; }
+    public virtual string bottomName { get; }
+    public virtual string frontName { get; }
+    public virtual string backName { get; }
+    public virtual string leftName { get; }
+    public virtual string rightName { get; }
+
+    public int topIndex { get { return TextureArrayManager.GetIndexByName(topName); } }
+    public int bottomIndex { get { return TextureArrayManager.GetIndexByName(bottomName); } }
+    public int frontIndex { get { return TextureArrayManager.GetIndexByName(frontName); } }
+    public int backIndex { get { return TextureArrayManager.GetIndexByName(backName); } }
+    public int leftIndex { get { return TextureArrayManager.GetIndexByName(leftName); } }
+    public int rightIndex { get { return TextureArrayManager.GetIndexByName(rightName); } }
+
+
     public virtual SoundMaterial soundMaterial { get; }
 
     public virtual bool isTransparent { get { return false; } }

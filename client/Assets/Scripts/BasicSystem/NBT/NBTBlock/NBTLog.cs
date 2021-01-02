@@ -5,6 +5,13 @@ using UnityEngine;
 
 public class NBTLog : NBTBlock
 {
+    public override string topName { get { return "log_oak"; } }
+    public override string bottomName { get { return "log_oak"; } }
+    public override string frontName { get { return "log_oak"; } }
+    public override string backName { get { return "log_oak"; } }
+    public override string leftName { get { return "log_oak"; } }
+    public override string rightName { get { return "log_oak"; } }
+
     public override SoundMaterial soundMaterial { get { return SoundMaterial.Wood; } }
 
     public override string GetBreakEffectTexture(byte data)

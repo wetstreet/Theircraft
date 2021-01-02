@@ -5,6 +5,13 @@ using UnityEngine;
 
 public class NBTGrassBlock : NBTBlock
 {
+    public override string topName { get { return "grass_top"; } }
+    public override string bottomName { get { return "dirt"; } }
+    public override string frontName { get { return "grass_side"; } }
+    public override string backName { get { return "grass_side"; } }
+    public override string leftName { get { return "grass_side"; } }
+    public override string rightName { get { return "grass_side"; } }
+
     public override SoundMaterial soundMaterial { get { return SoundMaterial.Grass; } }
 
     public override string GetBreakEffectTexture(byte data) { return "dirt"; }

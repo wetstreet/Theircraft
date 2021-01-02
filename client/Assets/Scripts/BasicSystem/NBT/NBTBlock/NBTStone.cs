@@ -5,6 +5,13 @@ using UnityEngine;
 
 public class NBTStone : NBTBlock
 {
+    public override string topName { get { return "stone"; } }
+    public override string bottomName { get { return "stone"; } }
+    public override string frontName { get { return "stone"; } }
+    public override string backName { get { return "stone"; } }
+    public override string leftName { get { return "stone"; } }
+    public override string rightName { get { return "stone"; } }
+
     public override SoundMaterial soundMaterial { get { return SoundMaterial.Stone; } }
 
     public override string GetBreakEffectTexture(byte data) { return "stone"; }

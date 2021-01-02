@@ -6,45 +6,45 @@ public class TextureArrayManager
 {
     static Texture2DArray array;
 
-    static Texture2D[] GetTextures(int size)
+    public static int GetIndexByName(string name)
     {
-        Texture2D[] textures = Resources.LoadAll<Texture2D>("GUI/block");
-
-        List<Texture2D> list = new List<Texture2D>();
-
-        Debug.Log(textures.Length);
-        foreach (Texture2D tex in textures)
-        {
-            if (tex.width == size && tex.height == size)
-            {
-                list.Add(tex);
-            }
-            //Debug.Log(tex.name + ",width=" + tex.width + ",height=" + tex.height + ",mip=" + tex.mipmapCount);
-        }
-
-        return list.ToArray();
+        return name2index[name];
     }
 
-#if UNITY_EDITOR
-    [UnityEditor.MenuItem("Assets/Array/Init")]
-#endif
-    public static void InitArray()
+    static Dictionary<string, int> name2index = new Dictionary<string, int>();
+
+    static List<Texture2D> textureList = new List<Texture2D>();
+
+    static void AddTexture(string name)
+    {
+        if (!string.IsNullOrEmpty(name) && !name2index.ContainsKey(name))
+        {
+            Texture2D tex = Resources.Load<Texture2D>("GUI/block/" + name);
+            name2index.Add(name, textureList.Count);
+            textureList.Add(tex);
+        }
+    }
+
+    static Texture2D[] GetTextures(int size)
+    {
+        foreach (NBTBlock generator in NBTGeneratorManager.generatorDict.Values)
+        {
+            AddTexture(generator.frontName);
+            AddTexture(generator.backName);
+            AddTexture(generator.topName);
+            AddTexture(generator.bottomName);
+            AddTexture(generator.leftName);
+            AddTexture(generator.rightName);
+        }
+
+        return textureList.ToArray();
+    }
+    
+    public static void Init()
     {
         int size = 16;
         Texture2D[] textures = GetTextures(size);
         CreateArray(textures, size);
-    }
-
-#if UNITY_EDITOR
-    [UnityEditor.MenuItem("Assets/Array/Test")]
-#endif
-    public static void Test()
-    {
-        GameObject go = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        MeshRenderer mr = go.GetComponent<MeshRenderer>();
-        Material mat = new Material(Shader.Find("Custom/TextureArrayShader"));
-        mat.SetTexture("_Array", array);
-        mr.material = mat;
     }
 
     static void CreateArray(Texture2D[] textures, int size)
@@ -55,7 +55,6 @@ public class TextureArrayManager
         try
         {
             int mip = GetMipCountBySize(size);
-            //RenderTexture rt = new RenderTexture(size, size, 0, RenderTextureFormat.ARGB32, mip);
             RenderTexture rt = RenderTexture.GetTemporary(size, size, 0, RenderTextureFormat.ARGB32);
             Texture2D temp = new Texture2D(rt.width, rt.height, TextureFormat.ARGB32, true);
 

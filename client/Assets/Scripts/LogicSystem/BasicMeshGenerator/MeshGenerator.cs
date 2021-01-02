@@ -14,11 +14,11 @@ public class MeshGenerator : MonoBehaviour
     protected static Vector3 farBottomRight = new Vector3(0.5f, -0.5f, 0.5f);
     protected static Vector3 farTopLeft = new Vector3(-0.5f, 0.5f, 0.5f);
     protected static Vector3 farTopRight = new Vector3(0.5f, 0.5f, 0.5f);
-
-    static int type;
+    
     static Vector3Int pos;
     static List<Vertex> vertices;
     static List<int> triangles;
+    static NBTBlock generator;
 
 #if UNITY_EDITOR
     [UnityEditor.MenuItem("Assets/Array/New Mesh")]
@@ -48,8 +48,16 @@ public class MeshGenerator : MonoBehaviour
 
         Mesh mesh = new Mesh();
 
-        AddCube(Vector3Int.zero, 0);
-        AddCube(Vector3Int.right, 5);
+        AddCube(new Vector3Int(0, 0, 0), 1);
+        AddCube(new Vector3Int(1, 0, 0), 2);
+        AddCube(new Vector3Int(2, 0, 0), 3);
+        AddCube(new Vector3Int(3, 0, 0), 7);
+        AddCube(new Vector3Int(4, 0, 0), 12);
+        AddCube(new Vector3Int(5, 0, 0), 13);
+        AddCube(new Vector3Int(6, 0, 0), 14);
+        AddCube(new Vector3Int(7, 0, 0), 15);
+        AddCube(new Vector3Int(8, 0, 0), 16);
+        AddCube(new Vector3Int(9, 0, 0), 17);
 
         var vertexCount = vertices.Count;
 
@@ -64,14 +72,15 @@ public class MeshGenerator : MonoBehaviour
 
         mesh.SetVertexBufferData(verts, 0, 0, vertexCount);
         mesh.SetTriangles(triangles.ToArray(), 0);
+        mesh.RecalculateBounds();
 
         return mesh;
     }
 
-    static void AddCube(Vector3Int pos, int type)
+    static void AddCube(Vector3Int pos, byte type)
     {
         MeshGenerator.pos = pos;
-        MeshGenerator.type = type;
+        generator = NBTGeneratorManager.GetMeshGenerator(type);
 
         AddFrontFace();
         AddRightFace();
@@ -81,17 +90,17 @@ public class MeshGenerator : MonoBehaviour
         AddBottomFace();
     }
 
-    static Vector4 toVector4(Vector3 v3, float w)
+    static Vector4 ToVector4(Vector3 v3, float w)
     {
         return new Vector4(v3.x, v3.y, v3.z, w);
     }
 
-    static void AddFace(Vector3 pos1, Vector3 pos2, Vector3 pos3, Vector3 pos4)
+    static void AddFace(Vector3 pos1, Vector3 pos2, Vector3 pos3, Vector3 pos4, int faceIndex)
     {
-        vertices.Add(new Vertex { pos = toVector4(pos1 + pos, type), texcoord = Vector2.zero });
-        vertices.Add(new Vertex { pos = toVector4(pos2 + pos, type), texcoord = Vector2.up });
-        vertices.Add(new Vertex { pos = toVector4(pos3 + pos, type), texcoord = Vector2.one });
-        vertices.Add(new Vertex { pos = toVector4(pos4 + pos, type), texcoord = Vector2.right });
+        vertices.Add(new Vertex { pos = ToVector4(pos1 + pos, faceIndex), texcoord = Vector2.zero });
+        vertices.Add(new Vertex { pos = ToVector4(pos2 + pos, faceIndex), texcoord = Vector2.up });
+        vertices.Add(new Vertex { pos = ToVector4(pos3 + pos, faceIndex), texcoord = Vector2.one });
+        vertices.Add(new Vertex { pos = ToVector4(pos4 + pos, faceIndex), texcoord = Vector2.right });
 
         int startIndex = vertices.Count - 4;
         triangles.AddRange(new int[] {
@@ -102,31 +111,31 @@ public class MeshGenerator : MonoBehaviour
 
     static void AddFrontFace()
     {
-        AddFace(nearBottomLeft, nearTopLeft, nearTopRight, nearBottomRight);
+        AddFace(nearBottomLeft, nearTopLeft, nearTopRight, nearBottomRight, generator.frontIndex);
     }
 
     static void AddBackFace()
     {
-        AddFace(farBottomRight, farTopRight, farTopLeft, farBottomLeft);
+        AddFace(farBottomRight, farTopRight, farTopLeft, farBottomLeft, generator.backIndex);
     }
 
     static void AddTopFace()
     {
-        AddFace(farTopRight, nearTopRight, nearTopLeft, farTopLeft);
+        AddFace(farTopRight, nearTopRight, nearTopLeft, farTopLeft, generator.topIndex);
     }
 
     static void AddBottomFace()
     {
-        AddFace(nearBottomRight, farBottomRight, farBottomLeft, nearBottomLeft);
+        AddFace(nearBottomRight, farBottomRight, farBottomLeft, nearBottomLeft, generator.bottomIndex);
     }
 
     static void AddLeftFace()
     {
-        AddFace(farBottomLeft, farTopLeft, nearTopLeft, nearBottomLeft);
+        AddFace(farBottomLeft, farTopLeft, nearTopLeft, nearBottomLeft, generator.leftIndex);
     }
 
     static void AddRightFace()
     {
-        AddFace(nearBottomRight, nearTopRight, farTopRight, farBottomRight);
+        AddFace(nearBottomRight, nearTopRight, farTopRight, farBottomRight, generator.rightIndex);
     }
 }
