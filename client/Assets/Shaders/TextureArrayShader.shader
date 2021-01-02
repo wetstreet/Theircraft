@@ -32,7 +32,7 @@ Shader "Custom/TextureArrayShader"
 
             struct v2f
             {
-                float2 uv : TEXCOORD0;
+                float3 uv : TEXCOORD0;
                 // UNITY_FOG_COORDS(1)
                 float4 vertex : SV_POSITION;
             };
@@ -47,7 +47,8 @@ Shader "Custom/TextureArrayShader"
             {
                 v2f o;
                 o.vertex = TransformObjectToHClip(v.vertex.xyz);
-                o.uv = v.uv * float2(_TileX, _TileY);
+                o.uv.xy = v.uv * float2(_TileX, _TileY);
+                o.uv.z = v.vertex.w;
                 // UNITY_TRANSFER_FOG(o,o.vertex);
                 return o;
             }
@@ -55,7 +56,7 @@ Shader "Custom/TextureArrayShader"
             half4 frag (v2f i) : SV_Target
             {
                 // sample the texture
-                half4 col = SAMPLE_TEXTURE2D_ARRAY(_Array, sampler_Array, i.uv, _Slice);
+                half4 col = SAMPLE_TEXTURE2D_ARRAY(_Array, sampler_Array, i.uv.xy, i.uv.z);
                 clip(col.a - _Cutoff);
                 // apply fog
                 // UNITY_APPLY_FOG(i.fogCoord, col);

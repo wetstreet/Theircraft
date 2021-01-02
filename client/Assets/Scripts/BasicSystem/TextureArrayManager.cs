@@ -86,7 +86,7 @@ public class TextureArrayManager
         }
         catch (System.Exception e)
         {
-            Debug.Log(e.ToString());
+            Debug.LogError(e.ToString());
         }
     }
 
