@@ -87,6 +87,7 @@
 
                 // sample the texture
                 fixed4 col = tex2D(_MainTex, uv) * _Color;
+                return col;
 
                 col.a += _AlphaBoost;
 
