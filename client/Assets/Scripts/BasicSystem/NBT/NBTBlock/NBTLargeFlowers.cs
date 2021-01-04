@@ -3,8 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NBTLargeFlowers : NBTBlock
+public class NBTLargeFlowers : NBTPlant
 {
+    public override string plantName { get { return "double_plant_paeonia_bottom"; } }
+
     public override SoundMaterial soundMaterial { get { return SoundMaterial.Grass; } }
 
     public override bool isTransparent { get { return true; } }

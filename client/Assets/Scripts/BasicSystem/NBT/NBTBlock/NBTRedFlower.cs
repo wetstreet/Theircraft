@@ -5,6 +5,13 @@ using UnityEngine;
 
 public class NBTRedFlower : NBTBlock
 {
+    public override string topName { get { return "flower_allium"; } }
+    public override string bottomName { get { return "flower_allium"; } }
+    public override string frontName { get { return "flower_allium"; } }
+    public override string backName { get { return "flower_allium"; } }
+    public override string leftName { get { return "flower_allium"; } }
+    public override string rightName { get { return "flower_allium"; } }
+
     public override SoundMaterial soundMaterial { get { return SoundMaterial.Grass; } }
 
     public override bool isTransparent { get { return true; } }

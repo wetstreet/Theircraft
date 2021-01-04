@@ -1,6 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Unity.Collections;
 using UnityEngine;
+using UnityEngine.Rendering;
+using static MeshGenerator;
 
 public class NBTGameObject : MonoBehaviour
 {
@@ -11,6 +14,9 @@ public class NBTGameObject : MonoBehaviour
     public List<Vector2> uv2 = new List<Vector2>(capacity);
     public List<List<int>> trianglesList = new List<List<int>>();
     public List<Material> materialList = new List<Material>();
+
+    public List<Vertex> vertexList = new List<Vertex>();
+    public List<int> triangles = new List<int>();
 
     public Mesh mesh;
 
@@ -25,7 +31,7 @@ public class NBTGameObject : MonoBehaviour
         {
             go.AddComponent<MeshCollider>();
         }
-        go.AddComponent<MeshRenderer>();
+        go.AddComponent<MeshRenderer>().material = Resources.Load<Material>("Materials/block");
         go.AddComponent<NavMeshSourceTag>();
         go.layer = LayerMask.NameToLayer("Chunk");
         NBTGameObject nbtGO = go.AddComponent<NBTGameObject>();
@@ -38,25 +44,43 @@ public class NBTGameObject : MonoBehaviour
     public void Clear()
     {
         vertices.Clear();
-        colors.Clear();
-        uv1.Clear();
-        uv2.Clear();
-        trianglesList.Clear();
-        materialList.Clear();
+        //colors.Clear();
+        //uv1.Clear();
+        //uv2.Clear();
+        triangles.Clear();
+        //materialList.Clear();
     }
 
     public void Refresh()
     {
         mesh.Clear();
-        mesh.SetVertices(vertices);
-        mesh.SetUVs(0, uv1);
-        mesh.subMeshCount = trianglesList.Count;
-        for (int i = 0; i < trianglesList.Count; i++)
-        {
-            mesh.SetTriangles(trianglesList[i], i);
-        }
-        mesh.RecalculateNormals();
-        GetComponent<MeshRenderer>().sharedMaterials = materialList.ToArray();
+        //mesh.SetVertices(vertices);
+        //mesh.SetUVs(0, uv1);
+        //mesh.subMeshCount = trianglesList.Count;
+        //for (int i = 0; i < trianglesList.Count; i++)
+        //{
+        //    mesh.SetTriangles(trianglesList[i], i);
+        //}
+        //mesh.RecalculateNormals();
+
+        var vertexCount = vertexList.Count;
+
+        mesh.SetVertexBufferParams(vertexCount, new[] {
+            new VertexAttributeDescriptor(VertexAttribute.Position, VertexAttributeFormat.Float32, 4),
+            new VertexAttributeDescriptor(VertexAttribute.Color, VertexAttributeFormat.Float32, 4),
+            new VertexAttributeDescriptor(VertexAttribute.TexCoord0, VertexAttributeFormat.Float32, 2),
+        });
+
+        var verts = new NativeArray<Vertex>(vertexCount, Allocator.Temp);
+
+        verts.CopyFrom(vertexList.ToArray());
+
+        mesh.SetVertexBufferData(verts, 0, 0, vertexCount);
+        mesh.SetTriangles(triangles.ToArray(), 0);
+        mesh.RecalculateBounds();
+
+        GetComponent<MeshRenderer>().sharedMaterial.SetTexture("_Array", TextureArrayManager.GetArray());
+        //GetComponent<MeshRenderer>().sharedMaterials = materialList.ToArray();
         GetComponent<MeshFilter>().sharedMesh = mesh;
         if (isCollidable)
         {

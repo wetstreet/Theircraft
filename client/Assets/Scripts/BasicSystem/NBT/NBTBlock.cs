@@ -2,6 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
+public struct Vertex
+{
+    public Vector4 pos;
+    public Vector4 color;
+    public Vector2 texcoord;
+}
+
 public abstract class NBTBlock
 {
 
@@ -18,6 +26,10 @@ public abstract class NBTBlock
     public int backIndex { get { return TextureArrayManager.GetIndexByName(backName); } }
     public int leftIndex { get { return TextureArrayManager.GetIndexByName(leftName); } }
     public int rightIndex { get { return TextureArrayManager.GetIndexByName(rightName); } }
+
+
+    public virtual string plantName { get; }
+    public int plantIndex { get { return TextureArrayManager.GetIndexByName(plantName); } }
 
 
     public virtual SoundMaterial soundMaterial { get; }
@@ -188,5 +200,104 @@ public abstract class NBTBlock
         {
             triangles.Add(index + length);
         }
+    }
+
+
+
+    protected Vector3Int pos;
+    protected List<Vertex> vertices;
+    protected List<int> triangles;
+
+    public virtual void AddCube(NBTChunk chunk, byte blockData, Vector3Int pos, NBTGameObject nbtGO)
+    {
+        this.pos = pos;
+        vertices = nbtGO.vertexList;
+        triangles = nbtGO.triangles;
+
+        if (!chunk.HasOpaqueBlock(pos.x, pos.y, pos.z - 1))
+        {
+            AddFrontFace();
+        }
+        if (!chunk.HasOpaqueBlock(pos.x + 1, pos.y, pos.z))
+        {
+            AddRightFace();
+        }
+        if (!chunk.HasOpaqueBlock(pos.x - 1, pos.y, pos.z))
+        {
+            AddLeftFace();
+        }
+        if (!chunk.HasOpaqueBlock(pos.x, pos.y, pos.z + 1))
+        {
+            AddBackFace();
+        }
+        if (!chunk.HasOpaqueBlock(pos.x, pos.y + 1, pos.z))
+        {
+            AddTopFace();
+        }
+        if (!chunk.HasOpaqueBlock(pos.x, pos.y - 1, pos.z))
+        {
+            AddBottomFace();
+        }
+    }
+
+    Vector4 ToVector4(Vector3 v3, float w)
+    {
+        return new Vector4(v3.x, v3.y, v3.z, w);
+    }
+
+    protected virtual Color topColor { get { return Color.white; } }
+    protected virtual Color bottomColor { get { return Color.white; } }
+    protected virtual Color frontColor { get { return Color.white; } }
+    protected virtual Color backColor { get { return Color.white; } }
+    protected virtual Color leftColor { get { return Color.white; } }
+    protected virtual Color rightColor { get { return Color.white; } }
+
+    protected void AddFace(Vector3 pos1, Vector3 pos2, Vector3 pos3, Vector3 pos4, int faceIndex)
+    {
+        AddFace(pos1, pos2, pos3, pos4, faceIndex, Color.white);
+    }
+
+    protected void AddFace(Vector3 pos1, Vector3 pos2, Vector3 pos3, Vector3 pos4, int faceIndex, Color color)
+    {
+        vertices.Add(new Vertex { pos = ToVector4(pos1 + pos, faceIndex), texcoord = Vector2.zero, color = color });
+        vertices.Add(new Vertex { pos = ToVector4(pos2 + pos, faceIndex), texcoord = Vector2.up, color = color });
+        vertices.Add(new Vertex { pos = ToVector4(pos3 + pos, faceIndex), texcoord = Vector2.one, color = color });
+        vertices.Add(new Vertex { pos = ToVector4(pos4 + pos, faceIndex), texcoord = Vector2.right, color = color });
+
+        int startIndex = vertices.Count - 4;
+        triangles.AddRange(new int[] {
+            startIndex, startIndex + 1, startIndex + 2,
+            startIndex, startIndex + 2, startIndex + 3
+        });
+    }
+    
+    void AddFrontFace()
+    {
+        AddFace(nearBottomLeft, nearTopLeft, nearTopRight, nearBottomRight, frontIndex, frontColor);
+    }
+
+    void AddBackFace()
+    {
+        AddFace(farBottomRight, farTopRight, farTopLeft, farBottomLeft, backIndex, backColor);
+    }
+
+    void AddTopFace()
+    {
+        AddFace(farTopRight, nearTopRight, nearTopLeft, farTopLeft, topIndex, topColor);
+    }
+
+    void AddBottomFace()
+    {
+        AddFace(nearBottomRight, farBottomRight, farBottomLeft, nearBottomLeft, bottomIndex, bottomColor);
+    }
+
+    void AddLeftFace()
+    {
+        AddFace(farBottomLeft, farTopLeft, nearTopLeft, nearBottomLeft, leftIndex, leftColor);
+    }
+
+    void AddRightFace()
+    {
+        AddFace(nearBottomRight, nearTopRight, farTopRight, farBottomRight, rightIndex, rightColor);
     }
 }

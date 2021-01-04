@@ -12,6 +12,8 @@ public class NBTGrassBlock : NBTBlock
     public override string leftName { get { return "grass_side"; } }
     public override string rightName { get { return "grass_side"; } }
 
+    protected override Color topColor => TintManager.tintColor;
+
     public override SoundMaterial soundMaterial { get { return SoundMaterial.Grass; } }
 
     public override string GetBreakEffectTexture(byte data) { return "dirt"; }
@@ -73,4 +75,5 @@ public class NBTGrassBlock : NBTBlock
         triangles_side.Clear();
         triangles_bot.Clear();
     }
+
 }

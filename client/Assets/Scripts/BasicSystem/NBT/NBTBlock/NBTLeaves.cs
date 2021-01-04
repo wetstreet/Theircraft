@@ -5,6 +5,20 @@ using UnityEngine;
 
 public class NBTLeaves : NBTBlock
 {
+    public override string topName { get { return "leaves_oak"; } }
+    public override string bottomName { get { return "leaves_oak"; } }
+    public override string frontName { get { return "leaves_oak"; } }
+    public override string backName { get { return "leaves_oak"; } }
+    public override string leftName { get { return "leaves_oak"; } }
+    public override string rightName { get { return "leaves_oak"; } }
+
+    protected override Color topColor => TintManager.tintColor;
+    protected override Color bottomColor => TintManager.tintColor;
+    protected override Color frontColor => TintManager.tintColor;
+    protected override Color backColor => TintManager.tintColor;
+    protected override Color leftColor => TintManager.tintColor;
+    protected override Color rightColor => TintManager.tintColor;
+
     public override SoundMaterial soundMaterial { get { return SoundMaterial.Grass; } }
 
     public override bool isTransparent { get { return true; } }

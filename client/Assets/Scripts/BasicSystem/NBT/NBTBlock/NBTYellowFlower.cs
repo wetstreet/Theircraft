@@ -3,8 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NBTYellowFlower : NBTBlock
+public class NBTYellowFlower : NBTPlant
 {
+    public override string plantName { get { return "flower_dandelion"; } }
+
     public override SoundMaterial soundMaterial { get { return SoundMaterial.Grass; } }
 
     public override bool isTransparent { get { return true; } }

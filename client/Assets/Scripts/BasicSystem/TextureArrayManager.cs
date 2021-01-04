@@ -35,6 +35,7 @@ public class TextureArrayManager
             AddTexture(generator.bottomName);
             AddTexture(generator.leftName);
             AddTexture(generator.rightName);
+            AddTexture(generator.plantName);
         }
 
         return textureList.ToArray();

@@ -5,6 +5,13 @@ using UnityEngine;
 
 public class NBTObsidian : NBTBlock
 {
+    public override string topName { get { return "obsidian"; } }
+    public override string bottomName { get { return "obsidian"; } }
+    public override string frontName { get { return "obsidian"; } }
+    public override string backName { get { return "obsidian"; } }
+    public override string leftName { get { return "obsidian"; } }
+    public override string rightName { get { return "obsidian"; } }
+
     public override SoundMaterial soundMaterial { get { return SoundMaterial.Stone; } }
 
     List<int> triangles = new List<int>();

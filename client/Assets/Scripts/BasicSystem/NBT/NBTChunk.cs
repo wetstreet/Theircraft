@@ -22,7 +22,6 @@ public class NBTChunk
 
     public NBTGameObject collidable;
     public NBTGameObject notCollidable;
-    public NBTGameObject grassBlock;
     public NBTGameObject water;
 
     public NBTChunk()
@@ -31,7 +30,6 @@ public class NBTChunk
         transform = gameObject.transform;
 
         collidable = NBTGameObject.Create("Collidable", transform);
-        grassBlock = NBTGameObject.Create("grassBlock", transform);
         notCollidable = NBTGameObject.Create("NotCollidable", transform, false);
         water = NBTGameObject.Create("Water", transform, false);
     }
@@ -191,11 +189,9 @@ public class NBTChunk
         collidable.Clear();
         notCollidable.Clear();
         water.Clear();
-        grassBlock.Clear();
 
         Vector3Int pos = new Vector3Int();
-
-        List<NBTBlock> generators = new List<NBTBlock>();
+        
         NBTGeneratorManager.ClearGeneratorData();
 
         for (int sectionIndex = 0; sectionIndex < Sections.Count; sectionIndex++)
@@ -218,41 +214,28 @@ public class NBTChunk
                             int worldY = yInSection + sectionIndex * 16;
                             pos.Set(xInSection, worldY, zInSection);
                             byte blockData = NBTHelper.GetNibble(Data.Data, blockPos);
-                            if (generator is NBTStationaryWater)
+                            try
                             {
-                                generator.GenerateMeshInChunk(this, blockData, pos, water);
+                                if (generator is NBTStationaryWater)
+                                {
+                                    generator.GenerateMeshInChunk(this, blockData, pos, water);
+                                }
+                                else if (generator is NBTPlant)
+                                {
+                                    generator.AddCube(this, blockData, pos, notCollidable);
+                                }
+                                else
+                                {
+                                    generator.AddCube(this, blockData, pos, collidable);
+                                }
                             }
-                            else if (generator is NBTGrassBlock)
+                            catch (System.Exception e)
                             {
-                                generator.GenerateMeshInChunk(this, blockData, pos, grassBlock);
-                            }
-                            else
-                            {
-                                generator.GenerateMeshInChunk(this, blockData, pos, collidable);
-                            }
-                            if (!generators.Contains(generator))
-                            {
-                                generators.Add(generator);
+                                Debug.Log(generator.GetType() + "\n" + e.ToString());
                             }
                         }
                     }
                 }
-            }
-        }
-
-        foreach (NBTBlock generator in generators)
-        {
-            if (generator is NBTStationaryWater)
-            {
-                generator.AfterGenerateMesh(water);
-            }
-            else if (generator is NBTGrassBlock)
-            {
-                generator.AfterGenerateMesh(grassBlock);
-            }
-            else
-            {
-                generator.AfterGenerateMesh(collidable);
             }
         }
 
@@ -269,7 +252,6 @@ public class NBTChunk
         collidable.Refresh();
         notCollidable.Refresh();
         water.Refresh();
-        grassBlock.Refresh();
     }
 
     public void ClearData()
@@ -282,6 +264,5 @@ public class NBTChunk
         collidable.GetComponent<MeshFilter>().sharedMesh = null;
         notCollidable.GetComponent<MeshFilter>().sharedMesh = null;
         water.GetComponent<MeshFilter>().sharedMesh = null;
-        grassBlock.GetComponent<MeshFilter>().sharedMesh = null;
     }
 }

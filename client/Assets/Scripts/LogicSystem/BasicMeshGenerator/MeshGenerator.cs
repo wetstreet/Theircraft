@@ -33,13 +33,6 @@ public class MeshGenerator : MonoBehaviour
         MeshFilter mf = go.GetComponent<MeshFilter>();
         mf.mesh = GetMesh();
     }
-    
-    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
-    struct Vertex
-    {
-        public Vector4 pos;
-        public Vector2 texcoord;
-    }
 
     public static Mesh GetMesh()
     {

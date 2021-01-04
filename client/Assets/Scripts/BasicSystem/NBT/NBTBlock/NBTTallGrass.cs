@@ -3,8 +3,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NBTTallGrass : NBTBlock
+public class NBTTallGrass : NBTPlant
 {
+    protected override Color tintColor
+    {
+        get
+        {
+            return TintManager.tintColor;
+        }
+    }
+
+
+    public override string plantName { get { return "tallgrass"; } }
+
     public override SoundMaterial soundMaterial { get { return SoundMaterial.Grass; } }
 
     public override bool isTransparent { get { return true; } }
