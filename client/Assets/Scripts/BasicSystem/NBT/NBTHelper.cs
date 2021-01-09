@@ -133,22 +133,34 @@ public class NBTHelper : MonoBehaviour
             ).ToList();
     }
 
+    static Dictionary<Vector2Int, NbtTree> chunkDictNBT = new Dictionary<Vector2Int, NbtTree>();
     public static TagNodeCompound GetChunkNode(int x, int z)
     {
-        int regionX = GetRegionCoordinate(x);
-        int regionZ = GetRegionCoordinate(z);
-        RegionFile region = GetRegion(regionX, regionZ);
+        key.Set(x, z);
 
-        if (region != null)
+        if (!chunkDictNBT.ContainsKey(key))
         {
-            int _x = x - regionX * 32;
-            int _z = z - regionZ * 32;
-            if (region.HasChunk(_x, _z))
+            int regionX = GetRegionCoordinate(x);
+            int regionZ = GetRegionCoordinate(z);
+            RegionFile region = GetRegion(regionX, regionZ);
+
+            if (region != null)
             {
-                NbtTree _tree = new NbtTree();
-                _tree.ReadFrom(region.GetChunkDataInputStream(_x, _z));
-                return _tree.Root;
+                int _x = x - regionX * 32;
+                int _z = z - regionZ * 32;
+                if (region.HasChunk(_x, _z))
+                {
+                    UnityEngine.Profiling.Profiler.BeginSample("GetChunkDataInputStream");
+                    NbtTree _tree = new NbtTree();
+                    _tree.ReadFrom(region.GetChunkDataInputStream(_x, _z));
+                    UnityEngine.Profiling.Profiler.EndSample();
+                    chunkDictNBT.Add(key, _tree);
+                }
             }
+        }
+        if (chunkDictNBT.ContainsKey(key))
+        {
+            return chunkDictNBT[key].Root;
         }
         return null;
     }
@@ -162,6 +174,7 @@ public class NBTHelper : MonoBehaviour
 
     public static RegionFile GetRegion(int regionX, int regionZ)
     {
+        UnityEngine.Profiling.Profiler.BeginSample("NBTHelper.GetRegion");
         Vector2Int pos = new Vector2Int(regionX, regionZ);
 
         if (!regionDict.ContainsKey(pos))
@@ -183,6 +196,7 @@ public class NBTHelper : MonoBehaviour
                 regionDict.Add(pos, new RegionFile(path));
             }
         }
+        UnityEngine.Profiling.Profiler.EndSample();
 
         if (regionDict.ContainsKey(pos))
         {
@@ -279,6 +293,7 @@ public class NBTHelper : MonoBehaviour
 
     public static void GetBlockData(int x, int y, int z, ref byte blockType, ref byte blockData)
     {
+        UnityEngine.Profiling.Profiler.BeginSample("GetBlockData");
         int chunkX = Mathf.FloorToInt(x / 16f);
         int chunkY = Mathf.FloorToInt(y / 16f);
         int chunkZ = Mathf.FloorToInt(z / 16f);
@@ -295,28 +310,34 @@ public class NBTHelper : MonoBehaviour
         //}
         //else
         //{
-            TagNodeCompound Chunk = GetChunkNode(chunkX, chunkZ);
-            if (Chunk != null)
+        UnityEngine.Profiling.Profiler.BeginSample("GetChunkNode");
+        TagNodeCompound Chunk = GetChunkNode(chunkX, chunkZ);
+        UnityEngine.Profiling.Profiler.EndSample();
+
+        if (Chunk != null)
+        {
+            UnityEngine.Profiling.Profiler.BeginSample("GetBlockData new block");
+            TagNodeCompound Level = Chunk["Level"] as TagNodeCompound;
+
+            TagNodeList Sections = Level["Sections"] as TagNodeList;
+            if (chunkY < Sections.Count)
             {
-                TagNodeCompound Level = Chunk["Level"] as TagNodeCompound;
+                TagNodeCompound section = Sections[chunkY] as TagNodeCompound;
 
-                TagNodeList Sections = Level["Sections"] as TagNodeList;
-                if (chunkY < Sections.Count)
-                {
-                    TagNodeCompound section = Sections[chunkY] as TagNodeCompound;
+                TagNodeByteArray Blocks = section["Blocks"] as TagNodeByteArray;
+                byte[] blocks = new byte[4096];
+                Buffer.BlockCopy(Blocks, 0, blocks, 0, 4096);
 
-                    TagNodeByteArray Blocks = section["Blocks"] as TagNodeByteArray;
-                    byte[] blocks = new byte[4096];
-                    Buffer.BlockCopy(Blocks, 0, blocks, 0, 4096);
+                int blockPos = yInChunk * 16 * 16 + zInChunk * 16 + xInChunk;
+                blockType = blocks[blockPos];
 
-                    int blockPos = yInChunk * 16 * 16 + zInChunk * 16 + xInChunk;
-                    blockType = blocks[blockPos];
-
-                    TagNodeByteArray Data = section["Data"] as TagNodeByteArray;
-                    byte[] data = Data.Data;
-                    blockData = GetNibble(data, blockPos);
-                }
+                TagNodeByteArray Data = section["Data"] as TagNodeByteArray;
+                byte[] data = Data.Data;
+                blockData = GetNibble(data, blockPos);
             }
+            UnityEngine.Profiling.Profiler.EndSample();
+        }
         //}
+        UnityEngine.Profiling.Profiler.EndSample();
     }
 }

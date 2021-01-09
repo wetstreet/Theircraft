@@ -15,6 +15,8 @@ Shader "Custom/TextureArrayShader"
 
         Pass
         {
+            Cull Off
+
             HLSLPROGRAM
 
             #pragma vertex vert

@@ -1,6 +1,7 @@
 ﻿using protocol.cs_theircraft;
 using TMPro;
 using UnityEngine;
+using System.Text;
 
 public class DebugUI : MonoBehaviour
 {
@@ -49,41 +50,75 @@ public class DebugUI : MonoBehaviour
         return fps;
     }
 
+    StringBuilder sb = new StringBuilder();
+
     // Update is called once per frame
     void Update()
     {
-        string text = "Theircraft " + Application.version;
-        text += "\n" + GetFPS() + " fps";
+        sb.Clear();
+        sb.Append("Theircraft ");
+        sb.Append(Application.version);
+        sb.Append("\n");
+        sb.Append(GetFPS());
+        sb.Append(" fps");
 
         Vector3 pos = PlayerController.instance.transform.position;
-        text += string.Format("\nXYZ: {0:0.000} / {1:0.000} / {2:0.000}", pos.x, pos.y, pos.z);
+        sb.Append("\nXYZ: ");
+        sb.Append(pos.x);
+        sb.Append(" / ");
+        sb.Append(pos.y);
+        sb.Append(" / ");
+        sb.Append(pos.z);
 
         Vector3Int curBlock = PlayerController.GetCurrentBlock();
-        text += string.Format("\nBlock: {0} {1} {2}", curBlock.x, curBlock.y, curBlock.z);
-        
+        sb.Append("\nBlock: ");
+        sb.Append(curBlock.x);
+        sb.Append(" ");
+        sb.Append(curBlock.y);
+        sb.Append(" ");
+        sb.Append(curBlock.z);
+
         int chunkX = Mathf.FloorToInt(curBlock.x / 16f);
         int chunkY = Mathf.FloorToInt(curBlock.y / 16f);
         int chunkZ = Mathf.FloorToInt(curBlock.z / 16f);
         int xInChunk = curBlock.x - chunkX * 16;
         int yInChunk = curBlock.y - chunkY * 16;
         int zInChunk = curBlock.z - chunkZ * 16;
-        text += string.Format("\nChunk: {0} {1} {2} in {3} {4} {5}", xInChunk, yInChunk, zInChunk, chunkX, chunkY, chunkZ); 
-
+        sb.Append("\nChunk: ");
+        sb.Append(xInChunk);
+        sb.Append(" ");
+        sb.Append(yInChunk);
+        sb.Append(" ");
+        sb.Append(zInChunk);
+        sb.Append(" in ");
+        sb.Append(chunkX);
+        sb.Append(" ");
+        sb.Append(chunkY);
+        sb.Append(" ");
+        sb.Append(chunkZ);
+        
         if (WireFrameHelper.render)
         {
-            text += string.Format("\nLooking at: {0} {1} {2}", WireFrameHelper.pos.x, WireFrameHelper.pos.y, WireFrameHelper.pos.z);
+            sb.Append("\nLooking at: ");
+            sb.Append(WireFrameHelper.pos.x);
+            sb.Append(" ");
+            sb.Append(WireFrameHelper.pos.y);
+            sb.Append(" ");
+            sb.Append(WireFrameHelper.pos.z);
 
             CSBlockType type = ChunkManager.GetBlockType(WireFrameHelper.pos);
-            text += string.Format("\nType: {0}", type);
+            sb.Append("\nType: ");
+            sb.Append(type);
+
             if (type == CSBlockType.BrickStairs)
             {
                 CSBlockOrientation orient = ChunkManager.GetBlockOrientation(WireFrameHelper.pos);
-                text += string.Format("\nOrient: {0}", orient);
+                sb.Append("\nOrient: ");
+                sb.Append(orient);
             }
         }
-        //text += string.Format("\nLight: {0}", chunk.GetLightAtPos(new Vector3Int(xInChunk, curBlock.y, zInChunk)));
 
-        label.text = text;
+        label.text = sb.ToString();
     }
 
     public static void HandleInput()
