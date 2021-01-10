@@ -29,9 +29,9 @@ public class NBTChunk
         gameObject = new GameObject("chunk (" + x + "," + z + ")");
         transform = gameObject.transform;
 
-        collidable = NBTGameObject.Create("Collidable", transform);
-        notCollidable = NBTGameObject.Create("NotCollidable", transform, false);
-        water = NBTGameObject.Create("Water", transform, false);
+        collidable = NBTGameObject.Create("Collidable", transform, LayerMask.NameToLayer("Chunk"));
+        notCollidable = NBTGameObject.Create("NotCollidable", transform, LayerMask.NameToLayer("Plant"));
+        water = NBTGameObject.Create("Water", transform, LayerMask.NameToLayer("Water"), false);
     }
 
     public void SetData(int _x, int _z, TagNodeList sections)
@@ -233,6 +233,10 @@ public class NBTChunk
                             {
                                 Debug.Log(generator.GetType() + "\n" + e.ToString());
                             }
+                        }
+                        else
+                        {
+                            Debug.Log("generator not exist, type=" + rawType);
                         }
                     }
                 }

@@ -12,6 +12,7 @@ public struct Vertex
 
 public abstract class NBTBlock
 {
+    public virtual string name { get; }
 
     public virtual string topName { get; }
     public virtual string bottomName { get; }
@@ -27,10 +28,9 @@ public abstract class NBTBlock
     public int leftIndex { get { return TextureArrayManager.GetIndexByName(leftName); } }
     public int rightIndex { get { return TextureArrayManager.GetIndexByName(rightName); } }
 
+    public virtual void Init() { }
 
-    public virtual string plantName { get; }
-    public int plantIndex { get { return TextureArrayManager.GetIndexByName(plantName); } }
-
+    public string[] UsedTextures;
 
     public virtual SoundMaterial soundMaterial { get; }
 
@@ -201,9 +201,7 @@ public abstract class NBTBlock
             triangles.Add(index + length);
         }
     }
-
-
-
+    
     protected Vector3Int pos;
     protected List<Vertex> vertices;
     protected List<int> triangles;

@@ -302,42 +302,42 @@ public class NBTHelper : MonoBehaviour
         int yInChunk = y - chunkY * 16;
         int zInChunk = z - chunkZ * 16;
 
-        //NBTChunk chunk = GetChunk(chunkX, chunkZ);
+        NBTChunk chunk = GetChunk(chunkX, chunkZ);
 
-        //if (chunk != null)
-        //{
-        //    chunk.GetBlockData(xInChunk, y, zInChunk, ref blockType, ref blockData);
-        //}
-        //else
-        //{
-        UnityEngine.Profiling.Profiler.BeginSample("GetChunkNode");
-        TagNodeCompound Chunk = GetChunkNode(chunkX, chunkZ);
-        UnityEngine.Profiling.Profiler.EndSample();
-
-        if (Chunk != null)
+        if (chunk != null)
         {
-            UnityEngine.Profiling.Profiler.BeginSample("GetBlockData new block");
-            TagNodeCompound Level = Chunk["Level"] as TagNodeCompound;
-
-            TagNodeList Sections = Level["Sections"] as TagNodeList;
-            if (chunkY < Sections.Count)
-            {
-                TagNodeCompound section = Sections[chunkY] as TagNodeCompound;
-
-                TagNodeByteArray Blocks = section["Blocks"] as TagNodeByteArray;
-                byte[] blocks = new byte[4096];
-                Buffer.BlockCopy(Blocks, 0, blocks, 0, 4096);
-
-                int blockPos = yInChunk * 16 * 16 + zInChunk * 16 + xInChunk;
-                blockType = blocks[blockPos];
-
-                TagNodeByteArray Data = section["Data"] as TagNodeByteArray;
-                byte[] data = Data.Data;
-                blockData = GetNibble(data, blockPos);
-            }
-            UnityEngine.Profiling.Profiler.EndSample();
+            chunk.GetBlockData(xInChunk, y, zInChunk, ref blockType, ref blockData);
         }
-        //}
+        else
+        {
+            UnityEngine.Profiling.Profiler.BeginSample("GetChunkNode");
+            TagNodeCompound Chunk = GetChunkNode(chunkX, chunkZ);
+            UnityEngine.Profiling.Profiler.EndSample();
+
+            if (Chunk != null)
+            {
+                UnityEngine.Profiling.Profiler.BeginSample("GetBlockData new block");
+                TagNodeCompound Level = Chunk["Level"] as TagNodeCompound;
+
+                TagNodeList Sections = Level["Sections"] as TagNodeList;
+                if (chunkY < Sections.Count)
+                {
+                    TagNodeCompound section = Sections[chunkY] as TagNodeCompound;
+
+                    TagNodeByteArray Blocks = section["Blocks"] as TagNodeByteArray;
+                    byte[] blocks = new byte[4096];
+                    Buffer.BlockCopy(Blocks, 0, blocks, 0, 4096);
+
+                    int blockPos = yInChunk * 16 * 16 + zInChunk * 16 + xInChunk;
+                    blockType = blocks[blockPos];
+
+                    TagNodeByteArray Data = section["Data"] as TagNodeByteArray;
+                    byte[] data = Data.Data;
+                    blockData = GetNibble(data, blockPos);
+                }
+                UnityEngine.Profiling.Profiler.EndSample();
+            }
+        }
         UnityEngine.Profiling.Profiler.EndSample();
     }
 }

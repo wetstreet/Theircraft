@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class NBTDeadBush : NBTBlock
 {
+    public override string name { get { return "DeadBush"; } }
+
     public override SoundMaterial soundMaterial { get { return SoundMaterial.Grass; } }
 
     public override bool isTransparent { get { return true; } }

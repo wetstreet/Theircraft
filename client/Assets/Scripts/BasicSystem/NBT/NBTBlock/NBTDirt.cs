@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class NBTDirt : NBTBlock
 {
+    public override string name { get { return "Dirt"; } }
+
     public override string topName { get { return "dirt"; } }
     public override string bottomName { get { return "dirt"; } }
     public override string frontName { get { return "dirt"; } }

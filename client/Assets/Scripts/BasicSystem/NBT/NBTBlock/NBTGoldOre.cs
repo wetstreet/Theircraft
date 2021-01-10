@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class NBTGoldOre : NBTBlock
 {
+    public override string name { get { return "GoldOre"; } }
+
     public override string topName { get { return "gold_ore"; } }
     public override string bottomName { get { return "gold_ore"; } }
     public override string frontName { get { return "gold_ore"; } }

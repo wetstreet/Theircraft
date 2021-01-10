@@ -22,18 +22,24 @@ public class NBTGameObject : MonoBehaviour
 
     bool isCollidable;
 
-    public static NBTGameObject Create(string name, Transform parent, bool isCollidable = true)
+    public static NBTGameObject Create(string name, Transform parent, int layer, bool isCollidable = true)
     {
         GameObject go = new GameObject(name);
         go.transform.parent = parent;
         go.AddComponent<MeshFilter>();
+        go.layer = layer;
         if (isCollidable)
         {
             go.AddComponent<MeshCollider>();
         }
-        go.AddComponent<MeshRenderer>().material = Resources.Load<Material>("Materials/block");
+
+        string matPath = "Materials/block";
+        if (layer == 12)
+        {
+            matPath = "Materials/plant";
+        }
+        go.AddComponent<MeshRenderer>().material = Resources.Load<Material>(matPath);
         go.AddComponent<NavMeshSourceTag>();
-        go.layer = LayerMask.NameToLayer("Chunk");
         NBTGameObject nbtGO = go.AddComponent<NBTGameObject>();
         nbtGO.mesh = new Mesh();
         nbtGO.mesh.name = name;

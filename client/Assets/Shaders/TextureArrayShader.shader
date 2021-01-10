@@ -7,6 +7,7 @@ Shader "Custom/TextureArrayShader"
         _TileX ("Tile X", Float) = 1
         _TileY ("Tile Y", Float) = 1
         _Cutoff ("Cut Off", Range(0, 1)) = 0.5
+        [Enum(UnityEngine.Rendering.CullMode)] _Culling ("Culling", Float) = 2
     }
     SubShader
     {
@@ -15,7 +16,7 @@ Shader "Custom/TextureArrayShader"
 
         Pass
         {
-            Cull Off
+            Cull [_Culling]
 
             HLSLPROGRAM
 

@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class NBTGrassBlock : NBTBlock
 {
+    public override string name { get { return "GrassBlock"; } }
+
     public override string topName { get { return "grass_top"; } }
     public override string bottomName { get { return "dirt"; } }
     public override string frontName { get { return "grass_side"; } }

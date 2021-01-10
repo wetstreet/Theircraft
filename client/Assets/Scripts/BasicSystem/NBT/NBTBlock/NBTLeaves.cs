@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class NBTLeaves : NBTBlock
 {
+    public override string name { get { return "Leaves"; } }
+
     public override string topName { get { return "leaves_oak"; } }
     public override string bottomName { get { return "leaves_oak"; } }
     public override string frontName { get { return "leaves_oak"; } }

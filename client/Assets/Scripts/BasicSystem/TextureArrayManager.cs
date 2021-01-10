@@ -20,6 +20,10 @@ public class TextureArrayManager
         if (!string.IsNullOrEmpty(name) && !name2index.ContainsKey(name))
         {
             Texture2D tex = Resources.Load<Texture2D>("GUI/block/" + name);
+            if (tex == null)
+            {
+                Debug.Log("add texture is null! name = " + name);
+            }
             name2index.Add(name, textureList.Count);
             textureList.Add(tex);
         }
@@ -29,13 +33,19 @@ public class TextureArrayManager
     {
         foreach (NBTBlock generator in NBTGeneratorManager.generatorDict.Values)
         {
+            if (generator.UsedTextures != null)
+            {
+                foreach (string name in generator.UsedTextures)
+                {
+                    AddTexture(name);
+                }
+            }
             AddTexture(generator.frontName);
             AddTexture(generator.backName);
             AddTexture(generator.topName);
             AddTexture(generator.bottomName);
             AddTexture(generator.leftName);
             AddTexture(generator.rightName);
-            AddTexture(generator.plantName);
         }
 
         return textureList.ToArray();
@@ -52,6 +62,7 @@ public class TextureArrayManager
     {
         Texture2DArray newArray = new Texture2DArray(size, size, textures.Length, TextureFormat.ARGB32, true);
         newArray.filterMode = FilterMode.Point;
+        newArray.anisoLevel = 3;
 
         try
         {

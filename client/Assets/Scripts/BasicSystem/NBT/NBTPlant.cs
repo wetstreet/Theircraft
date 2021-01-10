@@ -4,6 +4,18 @@ using UnityEngine;
 
 public class NBTPlant : NBTBlock
 {
+    protected int plantIndex;
+
+    public virtual int GetPlantIndexByData(NBTChunk chunk, int data) { return GetPlantIndexByData(data); }
+
+    public virtual int GetPlantIndexByData(int data) { return 0; }
+
+    public override SoundMaterial soundMaterial { get { return SoundMaterial.Grass; } }
+
+    public override bool isTransparent { get { return true; } }
+
+    public override bool isCollidable { get { return false; } }
+
     public override void ClearData()
     {
 
@@ -15,11 +27,24 @@ public class NBTPlant : NBTBlock
         vertices = nbtGO.vertexList;
         triangles = nbtGO.triangles;
 
-        AddDiagonalFace();
-        AddAntiDiagonalFace();
+        plantIndex = GetPlantIndexByData(chunk, blockData);
+        tintColor = GetTintColorByData(chunk, blockData);
+
+        try
+        {
+            AddDiagonalFace();
+            AddAntiDiagonalFace();
+
+        }
+        catch (System.Exception e)
+        {
+            Debug.Log(e.ToString() + "\n" + "pos=" + pos + ",data=" + blockData);
+        }
     }
 
-    protected virtual Color tintColor { get { return Color.white; } }
+    protected Color tintColor;
+
+    protected virtual Color GetTintColorByData(NBTChunk chunk, byte data) { return Color.white; }
 
     void AddDiagonalFace()
     {

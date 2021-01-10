@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class NBTObsidian : NBTBlock
 {
+    public override string name { get { return "Obsidian"; } }
+
     public override string topName { get { return "obsidian"; } }
     public override string bottomName { get { return "obsidian"; } }
     public override string frontName { get { return "obsidian"; } }

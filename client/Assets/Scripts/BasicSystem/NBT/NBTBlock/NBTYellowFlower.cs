@@ -5,70 +5,27 @@ using UnityEngine;
 
 public class NBTYellowFlower : NBTPlant
 {
-    public override string plantName { get { return "flower_dandelion"; } }
+    public override string name { get { return "Yellow Flower"; } }
 
-    public override SoundMaterial soundMaterial { get { return SoundMaterial.Grass; } }
-
-    public override bool isTransparent { get { return true; } }
-
-    public override bool isCollidable { get { return false; } }
-
-    List<int> triangles_dandelion = new List<int>();
-    List<int> triangles_daisy = new List<int>();
-    List<int> triangles_houstonia = new List<int>();
-
-    public override void GenerateMeshInChunk(NBTChunk chunk, byte blockData, Vector3Int pos, List<Vector3> vertices, List<Vector2> uv)
+    public override void Init()
     {
-
-        List<int> triangles = null;
-
-        switch (blockData)
-        {
-            case 0:
-                triangles = triangles_dandelion;
-                break;
-            //case 3:
-            //    triangles = triangles_houstonia;
-            //    break;
-            //case 8:
-            //    triangles = triangles_daisy;
-            //    break;
-        }
-
-        Vector3Int worldPos = pos + new Vector3Int(chunk.x, 0, chunk.z) * 16;
-        if (triangles == null)
-        {
-            Debug.Log("pos=" + worldPos + ",data=" + blockData);
-
-        }
-
-        AddDiagonalFace(vertices, uv, triangles, pos);
-        AddAntiDiagonalFace(vertices, uv, triangles, pos);
+        UsedTextures = new string[] { "flower_dandelion", "flower_oxeye_daisy", "flower_houstonia" };
     }
 
-    public override void AfterGenerateMesh(List<List<int>> trianglesList, List<Material> materialList)
+    public override int GetPlantIndexByData(int data)
     {
-        if (triangles_dandelion.Count > 0)
+        if (data == 0)
         {
-            trianglesList.Add(triangles_dandelion);
-            materialList.Add(Resources.Load<Material>("Materials/block/flower_dandelion"));
+            return TextureArrayManager.GetIndexByName("flower_dandelion");
         }
-        if (triangles_daisy.Count > 0)
+        else if (data == 3)
         {
-            trianglesList.Add(triangles_daisy);
-            materialList.Add(Resources.Load<Material>("Materials/block/flower_oxeye_daisy"));
+            return TextureArrayManager.GetIndexByName("flower_houstonia");
         }
-        if (triangles_houstonia.Count > 0)
+        else if (data == 8)
         {
-            trianglesList.Add(triangles_houstonia);
-            materialList.Add(Resources.Load<Material>("Materials/block/flower_houstonia"));
+            return TextureArrayManager.GetIndexByName("flower_oxeye_daisy");
         }
-    }
-
-    public override void ClearData()
-    {
-        triangles_dandelion.Clear();
-        triangles_daisy.Clear();
-        triangles_houstonia.Clear();
+        throw new System.Exception("no index");
     }
 }

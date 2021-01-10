@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class NBTSand : NBTBlock
 {
+    public override string name { get { return "Sand"; } }
+
     public override string topName { get { return "sand"; } }
     public override string bottomName { get { return "sand"; } }
     public override string frontName { get { return "sand"; } }

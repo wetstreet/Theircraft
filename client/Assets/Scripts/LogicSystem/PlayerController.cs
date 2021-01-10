@@ -73,6 +73,8 @@ public class PlayerController : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        Physics.queriesHitBackfaces = true;
+
         Cursor.lockState = CursorLockMode.Locked;
         camera = transform.Find("camera");
         vcamWide = camera.Find("vcam_wide").gameObject;

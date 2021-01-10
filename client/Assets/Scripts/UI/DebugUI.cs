@@ -105,17 +105,13 @@ public class DebugUI : MonoBehaviour
             sb.Append(WireFrameHelper.pos.y);
             sb.Append(" ");
             sb.Append(WireFrameHelper.pos.z);
-
-            CSBlockType type = ChunkManager.GetBlockType(WireFrameHelper.pos);
+            
             sb.Append("\nType: ");
-            sb.Append(type);
+            NBTBlock generator = NBTGeneratorManager.GetMeshGenerator(WireFrameHelper.type);
+            sb.Append(generator.name);
 
-            if (type == CSBlockType.BrickStairs)
-            {
-                CSBlockOrientation orient = ChunkManager.GetBlockOrientation(WireFrameHelper.pos);
-                sb.Append("\nOrient: ");
-                sb.Append(orient);
-            }
+            sb.Append("\nData: ");
+            sb.Append(WireFrameHelper.data);
         }
 
         label.text = sb.ToString();

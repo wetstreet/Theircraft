@@ -35,6 +35,14 @@ public class NBTGeneratorManager : MonoBehaviour
         { 175, new NBTLargeFlowers() },
     };
 
+    public static void Init()
+    {
+        foreach (NBTBlock generator in generatorDict.Values)
+        {
+            generator.Init();
+        }
+    }
+
     public static void ClearGeneratorData()
     {
         foreach (NBTBlock generator in generatorDict.Values)

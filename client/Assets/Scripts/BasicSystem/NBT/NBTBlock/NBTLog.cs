@@ -5,8 +5,10 @@ using UnityEngine;
 
 public class NBTLog : NBTBlock
 {
-    public override string topName { get { return "log_oak"; } }
-    public override string bottomName { get { return "log_oak"; } }
+    public override string name { get { return "Log"; } }
+
+    public override string topName { get { return "log_oak_top"; } }
+    public override string bottomName { get { return "log_oak_top"; } }
     public override string frontName { get { return "log_oak"; } }
     public override string backName { get { return "log_oak"; } }
     public override string leftName { get { return "log_oak"; } }

@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class NBTCactus : NBTBlock
 {
+    public override string name { get { return "Cactus"; } }
+
     public override SoundMaterial soundMaterial { get { return SoundMaterial.Grass; } }
 
     public override bool isTransparent { get { return true; } }

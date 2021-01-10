@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class NBTRedstoneOre : NBTBlock
 {
+    public override string name { get { return "RedstoneOre"; } }
+
     public override string topName { get { return "redstone_ore"; } }
     public override string bottomName { get { return "redstone_ore"; } }
     public override string frontName { get { return "redstone_ore"; } }
