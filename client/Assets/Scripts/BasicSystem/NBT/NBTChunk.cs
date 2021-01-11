@@ -234,7 +234,7 @@ public class NBTChunk
                                 Debug.Log(generator.GetType() + "\n" + e.ToString());
                             }
                         }
-                        else
+                        else if (rawType != 0 && rawType != 11)
                         {
                             Debug.Log("generator not exist, type=" + rawType);
                         }

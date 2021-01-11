@@ -9,7 +9,7 @@ public class NBTLargeFlowers : NBTPlant
 
     protected override Color GetTintColorByData(NBTChunk chunk, byte data)
     {
-        if (data == 3)
+        if (data == 3 || data == 2)
         {
             return TintManager.tintColor;
         }
@@ -18,7 +18,7 @@ public class NBTLargeFlowers : NBTPlant
             byte bottomType = 0;
             byte bottomData = 0;
             chunk.GetBlockData(pos.x, pos.y - 1, pos.z, ref bottomType, ref bottomData);
-            if (bottomData == 3)
+            if (bottomData == 3 || bottomData == 2)
             {
                 return TintManager.tintColor;
             }

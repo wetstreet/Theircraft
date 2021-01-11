@@ -1,7 +1,9 @@
-﻿using Substrate.Nbt;
+﻿using Substrate.Core;
+using Substrate.Nbt;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEditor;
 using UnityEngine;
 
@@ -45,6 +47,7 @@ public class NBTEditorWindow : EditorWindow
     Color c;
     float AdjTemp;
     float AdjRainfall;
+    public static string save = "New World1";
     private void OnGUI()
     {
         pos = EditorGUILayout.Vector3IntField("pos", pos);
@@ -61,7 +64,35 @@ public class NBTEditorWindow : EditorWindow
             int yInChunk = pos.y - chunkY * 16;
             int zInChunk = pos.z - chunkZ * 16;
 
-            TagNodeCompound Chunk = NBTHelper.GetChunkNode(chunkX, chunkZ);
+            TagNodeCompound Chunk = null;
+
+            int regionX = NBTHelper.GetRegionCoordinate(chunkX);
+            int regionZ = NBTHelper.GetRegionCoordinate(chunkZ);
+
+            string path = Environment.ExpandEnvironmentVariables("%APPDATA%");
+            if (!Directory.Exists(path))
+            {
+                path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            }
+
+            path = Path.Combine(path, ".minecraft");
+            path = Path.Combine(path, "saves");
+            path = Path.Combine(path, save);
+            path = Path.Combine(path, "region");
+            path = Path.Combine(path, "r." + regionX + "." + regionZ + ".mca");
+            RegionFile region = new RegionFile(path);
+
+            if (region != null)
+            {
+                int _x = chunkX - regionX * 32;
+                int _z = chunkZ - regionZ * 32;
+                if (region.HasChunk(_x, _z))
+                {
+                    NbtTree _tree = new NbtTree();
+                    _tree.ReadFrom(region.GetChunkDataInputStream(_x, _z));
+                    Chunk = _tree.Root;
+                }
+            }
             if (Chunk != null)
             {
                 TagNodeCompound Level = Chunk["Level"] as TagNodeCompound;

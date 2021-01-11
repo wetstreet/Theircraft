@@ -9,11 +9,11 @@ public class NBTSugarCane : NBTPlant
 
     public override void Init()
     {
-        UsedTextures = new string[] { "sugar_cane" };
+        UsedTextures = new string[] { "reeds" };
     }
 
     public override int GetPlantIndexByData(int data)
     {
-        return TextureArrayManager.GetIndexByName("sugar_cane");
+        return TextureArrayManager.GetIndexByName("reeds");
     }
 }

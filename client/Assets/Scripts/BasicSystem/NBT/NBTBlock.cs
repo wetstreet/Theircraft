@@ -10,6 +10,12 @@ public struct Vertex
     public Vector2 texcoord;
 }
 
+public enum Rotation
+{
+    Zero,
+    Right,
+}
+
 public abstract class NBTBlock
 {
     public virtual string name { get; }
@@ -21,12 +27,19 @@ public abstract class NBTBlock
     public virtual string leftName { get; }
     public virtual string rightName { get; }
 
-    public int topIndex { get { return TextureArrayManager.GetIndexByName(topName); } }
-    public int bottomIndex { get { return TextureArrayManager.GetIndexByName(bottomName); } }
-    public int frontIndex { get { return TextureArrayManager.GetIndexByName(frontName); } }
-    public int backIndex { get { return TextureArrayManager.GetIndexByName(backName); } }
-    public int leftIndex { get { return TextureArrayManager.GetIndexByName(leftName); } }
-    public int rightIndex { get { return TextureArrayManager.GetIndexByName(rightName); } }
+    public int topIndex;
+    public int bottomIndex;
+    public int frontIndex;
+    public int backIndex;
+    public int leftIndex;
+    public int rightIndex;
+
+    public virtual int GetTopIndexByData(NBTChunk chunk, int data) { return TextureArrayManager.GetIndexByName(topName); }
+    public virtual int GetBottomIndexByData(NBTChunk chunk, int data) { return TextureArrayManager.GetIndexByName(bottomName); }
+    public virtual int GetFrontIndexByData(NBTChunk chunk, int data) { return TextureArrayManager.GetIndexByName(frontName); }
+    public virtual int GetBackIndexByData(NBTChunk chunk, int data) { return TextureArrayManager.GetIndexByName(backName); }
+    public virtual int GetLeftIndexByData(NBTChunk chunk, int data) { return TextureArrayManager.GetIndexByName(leftName); }
+    public virtual int GetRightIndexByData(NBTChunk chunk, int data) { return TextureArrayManager.GetIndexByName(rightName); }
 
     public virtual void Init() { }
 
@@ -203,14 +216,30 @@ public abstract class NBTBlock
     }
     
     protected Vector3Int pos;
+    protected byte blockData;
     protected List<Vertex> vertices;
     protected List<int> triangles;
+
+    protected virtual Rotation GetTopRotationByData(byte data) { return Rotation.Zero; }
+    protected virtual Rotation GetBottomRotationByData(byte data) { return Rotation.Zero; }
+    protected virtual Rotation GetFrontRotationByData(byte data) { return Rotation.Zero; }
+    protected virtual Rotation GetBackRotationByData(byte data) { return Rotation.Zero; }
+    protected virtual Rotation GetLeftRotationByData(byte data) { return Rotation.Zero; }
+    protected virtual Rotation GetRightRotationByData(byte data) { return Rotation.Zero; }
 
     public virtual void AddCube(NBTChunk chunk, byte blockData, Vector3Int pos, NBTGameObject nbtGO)
     {
         this.pos = pos;
+        this.blockData = blockData;
         vertices = nbtGO.vertexList;
         triangles = nbtGO.triangles;
+
+        topIndex = GetTopIndexByData(chunk, blockData);
+        bottomIndex = GetBottomIndexByData(chunk, blockData);
+        frontIndex = GetFrontIndexByData(chunk, blockData);
+        backIndex = GetBackIndexByData(chunk, blockData);
+        leftIndex = GetLeftIndexByData(chunk, blockData);
+        rightIndex = GetRightIndexByData(chunk, blockData);
 
         if (!chunk.HasOpaqueBlock(pos.x, pos.y, pos.z - 1))
         {
@@ -255,12 +284,26 @@ public abstract class NBTBlock
         AddFace(pos1, pos2, pos3, pos4, faceIndex, Color.white);
     }
 
+    protected Rotation rotation = Rotation.Zero;
+    Vector2[] uv_zero = new Vector2[4] { Vector2.zero, Vector2.up, Vector2.one, Vector2.right };
+    Vector2[] uv_right = new Vector2[4] { Vector2.up, Vector2.one, Vector2.right, Vector2.zero };
+    Vector2[] uv {
+        get {
+            if (rotation == Rotation.Zero) {
+                return uv_zero;
+            } else if (rotation == Rotation.Right) {
+                return uv_right;
+            }
+            return uv_zero;
+        }
+    }
+
     protected void AddFace(Vector3 pos1, Vector3 pos2, Vector3 pos3, Vector3 pos4, int faceIndex, Color color)
     {
-        vertices.Add(new Vertex { pos = ToVector4(pos1 + pos, faceIndex), texcoord = Vector2.zero, color = color });
-        vertices.Add(new Vertex { pos = ToVector4(pos2 + pos, faceIndex), texcoord = Vector2.up, color = color });
-        vertices.Add(new Vertex { pos = ToVector4(pos3 + pos, faceIndex), texcoord = Vector2.one, color = color });
-        vertices.Add(new Vertex { pos = ToVector4(pos4 + pos, faceIndex), texcoord = Vector2.right, color = color });
+        vertices.Add(new Vertex { pos = ToVector4(pos1 + pos, faceIndex), texcoord = uv[0], color = color });
+        vertices.Add(new Vertex { pos = ToVector4(pos2 + pos, faceIndex), texcoord = uv[1], color = color });
+        vertices.Add(new Vertex { pos = ToVector4(pos3 + pos, faceIndex), texcoord = uv[2], color = color });
+        vertices.Add(new Vertex { pos = ToVector4(pos4 + pos, faceIndex), texcoord = uv[3], color = color });
 
         int startIndex = vertices.Count - 4;
         triangles.AddRange(new int[] {
@@ -271,31 +314,37 @@ public abstract class NBTBlock
     
     void AddFrontFace()
     {
+        rotation = GetFrontRotationByData(blockData);
         AddFace(nearBottomLeft, nearTopLeft, nearTopRight, nearBottomRight, frontIndex, frontColor);
     }
 
     void AddBackFace()
     {
+        rotation = GetBackRotationByData(blockData);
         AddFace(farBottomRight, farTopRight, farTopLeft, farBottomLeft, backIndex, backColor);
     }
 
     void AddTopFace()
     {
+        rotation = GetTopRotationByData(blockData);
         AddFace(farTopRight, nearTopRight, nearTopLeft, farTopLeft, topIndex, topColor);
     }
 
     void AddBottomFace()
     {
+        rotation = GetBottomRotationByData(blockData);
         AddFace(nearBottomRight, farBottomRight, farBottomLeft, nearBottomLeft, bottomIndex, bottomColor);
     }
 
     void AddLeftFace()
     {
+        rotation = GetLeftRotationByData(blockData);
         AddFace(farBottomLeft, farTopLeft, nearTopLeft, nearBottomLeft, leftIndex, leftColor);
     }
 
     void AddRightFace()
     {
+        rotation = GetRightRotationByData(blockData);
         AddFace(nearBottomRight, nearTopRight, farTopRight, farBottomRight, rightIndex, rightColor);
     }
 }
