@@ -14,6 +14,8 @@ public class NBTLog : NBTBlock
     public override string leftName { get { return "log_oak"; } }
     public override string rightName { get { return "log_oak"; } }
 
+    public override float hardness { get { return 2f; } }
+
     protected override Rotation GetTopRotationByData(byte data)
     {
         if (data < 4)

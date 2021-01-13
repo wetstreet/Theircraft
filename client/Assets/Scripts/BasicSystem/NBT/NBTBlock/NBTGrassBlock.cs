@@ -13,7 +13,9 @@ public class NBTGrassBlock : NBTBlock
     public override string backName { get { return "grass_side"; } }
     public override string leftName { get { return "grass_side"; } }
     public override string rightName { get { return "grass_side"; } }
-    
+
+    public override float hardness { get { return 0.6f; } }
+
     protected override Color GetTopTintColorByData(NBTChunk chunk, byte data) { return TintManager.tintColor; }
 
     public override SoundMaterial soundMaterial { get { return SoundMaterial.Grass; } }

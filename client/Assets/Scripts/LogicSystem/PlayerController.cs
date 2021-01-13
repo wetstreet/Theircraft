@@ -183,22 +183,34 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void OnLeftClick()
-    {
-        handAnimator.SetTrigger("interactTrigger");
-        if (WireFrameHelper.render)
-        {
-            if (WireFrameHelper.pos.y != 0)
-            {
-                //DeleteBlockReq(WireFrameHelper.pos);
-                
-                NBTHelper.SetBlockByte(WireFrameHelper.pos, 0);
+    bool leftMouseDown = false;
 
-                //Item.CreateBlockDropItem(type, WireFrameHelper.pos);
-                BreakBlockEffect.Create(WireFrameHelper.type, WireFrameHelper.data, WireFrameHelper.pos);
-                SoundManager.PlayBreakSound(WireFrameHelper.type, instance.gameObject);
-            }
-        }
+    void BreakBlock(Vector3Int pos)
+    {
+        breakTime = 0;
+
+        HideBreakingEffect();
+        //DeleteBlockReq(WireFrameHelper.pos);
+
+        NBTHelper.SetBlockByte(WireFrameHelper.pos, 0);
+
+        //Item.CreateBlockDropItem(type, WireFrameHelper.pos);
+        BreakBlockEffect.Create(WireFrameHelper.type, WireFrameHelper.data, WireFrameHelper.pos);
+        SoundManager.PlayBreakSound(WireFrameHelper.type, instance.gameObject);
+    }
+
+    void OnLeftMouseDown()
+    {
+        leftMouseDown = true;
+
+        handAnimator.SetTrigger("interactTrigger");
+    }
+
+    void OnLeftMouseUp()
+    {
+        leftMouseDown = false;
+        breakTime = 0;
+        HideBreakingEffect();
     }
 
     bool CanAddBlock(Vector3Int pos)
@@ -279,7 +291,11 @@ public class PlayerController : MonoBehaviour
             
             if (Input.GetKeyDown(KeyCode.Mouse0))
             {
-                OnLeftClick();
+                OnLeftMouseDown();
+            }
+            if (Input.GetKeyUp(KeyCode.Mouse0))
+            {
+                OnLeftMouseUp();
             }
             if (Input.GetKeyDown(KeyCode.Mouse1))
             {
@@ -312,7 +328,39 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    MeshRenderer breakingEffect;
+    void UpdateBreakingEffect(Vector3Int pos, int stage)
+    {
+        if (breakingEffect == null)
+        {
+            GameObject prefab = Resources.Load<GameObject>("Prefabs/BreakingEffect");
+            breakingEffect = GameObject.Instantiate(prefab).GetComponent<MeshRenderer>();
+            breakingEffect.gameObject.SetActive(false);
+        }
+        if (stage == 0)
+        {
+            breakingEffect.gameObject.SetActive(false);
+        }
+        else
+        {
+            breakingEffect.gameObject.SetActive(true);
+            breakingEffect.transform.position = pos;
+
+            breakingEffect.sharedMaterial.mainTexture = Resources.Load<Texture2D>("GUI/block/destroy_stage_" + (stage - 1));
+        }
+    }
+
+    void HideBreakingEffect()
+    {
+        if (breakingEffect != null)
+        {
+            breakingEffect.gameObject.SetActive(false);
+        }
+    }
+
     RaycastHit hit;
+    float breakTime;
+    int stage;
     void DrawWireFrame()
     {
         WireFrameHelper.render = false;
@@ -334,12 +382,40 @@ public class PlayerController : MonoBehaviour
                     NBTHelper.GetBlockData(pos.x, pos.y, pos.z, ref type, ref data);
                     if (type != 0)
                     {
-                        //Debug.Log(hit.point + "," + pos);
+                        if (pos != WireFrameHelper.pos)
+                        {
+                            breakTime = 0;
+                        }
+                        
                         WireFrameHelper.render = true;
                         WireFrameHelper.pos = pos;
                         WireFrameHelper.hitPos = hit.point;
                         WireFrameHelper.type = type;
                         WireFrameHelper.data = data;
+
+                        if (leftMouseDown)
+                        {
+                            breakTime += Time.deltaTime;
+
+                            float breakNeedTime = NBTGeneratorManager.GetMeshGenerator(type).breakNeedTime;
+                            if (breakNeedTime == 0)
+                            {
+                                BreakBlock(pos);
+                            }
+                            else
+                            {
+                                int curStage = Mathf.FloorToInt(breakTime / (breakNeedTime / 12));
+                                if (stage != curStage)
+                                {
+                                    stage = curStage;
+                                    UpdateBreakingEffect(pos, stage);
+                                }
+                                if (stage >= 11)
+                                {
+                                    BreakBlock(pos);
+                                }
+                            }
+                        }
 
                         //if (Input.GetKeyDown(KeyCode.F1))
                         //{

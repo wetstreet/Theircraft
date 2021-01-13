@@ -10,18 +10,15 @@ public class NBTPlant : NBTBlock
 
     public virtual int GetPlantIndexByData(int data) { return 0; }
 
+    public override float breakNeedTime { get { return 0; } }
+
     public override SoundMaterial soundMaterial { get { return SoundMaterial.Grass; } }
 
     public override bool isTransparent { get { return true; } }
 
     public override bool isCollidable { get { return false; } }
 
-    public override void ClearData()
-    {
-
-    }
-
-    public override void AddCube(NBTChunk chunk, byte blockData, Vector3Int pos, NBTGameObject nbtGO)
+    public override void AddCube(NBTChunk chunk, byte blockData, byte skyLight, Vector3Int pos, NBTGameObject nbtGO)
     {
         this.pos = pos;
         vertices = nbtGO.vertexList;
@@ -34,7 +31,6 @@ public class NBTPlant : NBTBlock
         {
             AddDiagonalFace();
             AddAntiDiagonalFace();
-
         }
         catch (System.Exception e)
         {
@@ -49,12 +45,10 @@ public class NBTPlant : NBTBlock
     void AddDiagonalFace()
     {
         AddFace(farBottomLeft, farTopLeft, nearTopRight, nearBottomRight, plantIndex, tintColor);
-        //AddFace(farBottomLeft, farTopLeft, nearTopRight, nearBottomRight, plantIndex);
     }
 
     void AddAntiDiagonalFace()
     {
         AddFace(nearBottomLeft, nearTopLeft, farTopRight, farBottomRight, plantIndex, tintColor);
-        //AddFace(nearBottomLeft, nearTopLeft, farTopRight, farBottomRight, plantIndex);
     }
 }

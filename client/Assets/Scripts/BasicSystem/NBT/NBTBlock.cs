@@ -27,6 +27,19 @@ public abstract class NBTBlock
     public virtual string leftName { get; }
     public virtual string rightName { get; }
 
+    public virtual float hardness { get { return 1; } }
+
+    public virtual float speedMultiplier { get { return 3; } }
+
+    public virtual float breakNeedTime {
+        get {
+            float damage = speedMultiplier / hardness / 100;
+            if (damage > 1) return 0;
+            int ticks = Mathf.CeilToInt(1 / damage);
+            return ticks / 20f;
+        }
+    }
+
     public int topIndex;
     public int bottomIndex;
     public int frontIndex;
@@ -227,7 +240,7 @@ public abstract class NBTBlock
     protected virtual Rotation GetLeftRotationByData(byte data) { return Rotation.Zero; }
     protected virtual Rotation GetRightRotationByData(byte data) { return Rotation.Zero; }
 
-    public virtual void AddCube(NBTChunk chunk, byte blockData, Vector3Int pos, NBTGameObject nbtGO)
+    public virtual void AddCube(NBTChunk chunk, byte blockData, byte skyLight, Vector3Int pos, NBTGameObject nbtGO)
     {
         this.pos = pos;
         this.blockData = blockData;

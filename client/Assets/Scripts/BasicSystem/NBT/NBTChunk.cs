@@ -199,6 +199,7 @@ public class NBTChunk
             TagNodeCompound Section = Sections[sectionIndex] as TagNodeCompound;
             TagNodeByteArray Blocks = Section["Blocks"] as TagNodeByteArray;
             TagNodeByteArray Data = Section["Data"] as TagNodeByteArray;
+            TagNodeByteArray SkyLight = Section["SkyLight"] as TagNodeByteArray;
 
             for (int yInSection = 0; yInSection < 16; yInSection++)
             {
@@ -214,6 +215,7 @@ public class NBTChunk
                             int worldY = yInSection + sectionIndex * 16;
                             pos.Set(xInSection, worldY, zInSection);
                             byte blockData = NBTHelper.GetNibble(Data.Data, blockPos);
+                            byte skyLight = NBTHelper.GetNibble(SkyLight.Data, blockPos);
                             try
                             {
                                 if (generator is NBTStationaryWater)
@@ -222,11 +224,11 @@ public class NBTChunk
                                 }
                                 else if (generator is NBTPlant)
                                 {
-                                    generator.AddCube(this, blockData, pos, notCollidable);
+                                    generator.AddCube(this, blockData, skyLight, pos, notCollidable);
                                 }
                                 else
                                 {
-                                    generator.AddCube(this, blockData, pos, collidable);
+                                    generator.AddCube(this, blockData, skyLight, pos, collidable);
                                 }
                             }
                             catch (System.Exception e)

@@ -13,5 +13,7 @@ public class NBTCobblestone : NBTBlock
     public override string leftName { get { return "cobblestone"; } }
     public override string rightName { get { return "cobblestone"; } }
 
+    public override float hardness { get { return 2; } }
+
     public override SoundMaterial soundMaterial { get { return SoundMaterial.Stone; } }
 }
