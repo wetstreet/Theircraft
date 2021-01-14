@@ -185,14 +185,12 @@ public class NBTChunk
     
     public void RefreshMeshData()
     {
-        //Debug.Log("RefreshMeshData,chunk=" + chunk.pos);
+        //Debug.Log("RefreshMeshData,chunk=" + x + ",z=" + z);
         collidable.Clear();
         notCollidable.Clear();
         water.Clear();
 
         Vector3Int pos = new Vector3Int();
-        
-        NBTGeneratorManager.ClearGeneratorData();
 
         for (int sectionIndex = 0; sectionIndex < Sections.Count; sectionIndex++)
         {
@@ -220,7 +218,7 @@ public class NBTChunk
                             {
                                 if (generator is NBTStationaryWater)
                                 {
-                                    generator.GenerateMeshInChunk(this, blockData, pos, water);
+                                    //generator.GenerateMeshInChunk(this, blockData, pos, water);
                                 }
                                 else if (generator is NBTPlant)
                                 {

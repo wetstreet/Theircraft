@@ -46,14 +46,6 @@ public class NBTGeneratorManager : MonoBehaviour
         }
     }
 
-    public static void ClearGeneratorData()
-    {
-        foreach (NBTBlock generator in generatorDict.Values)
-        {
-            generator.ClearData();
-        }
-    }
-
     public static NBTBlock GetMeshGenerator(byte rawType)
     {
         if (generatorDict.ContainsKey(rawType))

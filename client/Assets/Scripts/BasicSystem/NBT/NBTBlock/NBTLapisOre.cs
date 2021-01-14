@@ -5,49 +5,16 @@ using UnityEngine;
 
 public class NBTLapisOre : NBTBlock
 {
+    public override string name { get { return "Lapis Ore"; } }
+
+    public override string topName { get { return "lapis_ore"; } }
+    public override string bottomName { get { return "lapis_ore"; } }
+    public override string frontName { get { return "lapis_ore"; } }
+    public override string backName { get { return "lapis_ore"; } }
+    public override string leftName { get { return "lapis_ore"; } }
+    public override string rightName { get { return "lapis_ore"; } }
+
     public override SoundMaterial soundMaterial { get { return SoundMaterial.Stone; } }
 
-    List<int> triangles = new List<int>();
-
-    public override void GenerateMeshInChunk(NBTChunk chunk, byte blockData, Vector3Int pos, List<Vector3> vertices, List<Vector2> uv)
-    {
-        if (!chunk.HasOpaqueBlock(pos.x, pos.y, pos.z - 1))
-        {
-            AddFrontFace(vertices, uv, triangles, pos);
-        }
-        if (!chunk.HasOpaqueBlock(pos.x + 1, pos.y, pos.z))
-        {
-            AddRightFace(vertices, uv, triangles, pos);
-        }
-        if (!chunk.HasOpaqueBlock(pos.x - 1, pos.y, pos.z))
-        {
-            AddLeftFace(vertices, uv, triangles, pos);
-        }
-        if (!chunk.HasOpaqueBlock(pos.x, pos.y, pos.z + 1))
-        {
-            AddBackFace(vertices, uv, triangles, pos);
-        }
-        if (!chunk.HasOpaqueBlock(pos.x, pos.y + 1, pos.z))
-        {
-            AddTopFace(vertices, uv, triangles, pos);
-        }
-        if (!chunk.HasOpaqueBlock(pos.x, pos.y - 1, pos.z))
-        {
-            AddBottomFace(vertices, uv, triangles, pos);
-        }
-    }
-
-    public override void AfterGenerateMesh(List<List<int>> trianglesList, List<Material> materialList)
-    {
-        if (triangles.Count > 0)
-        {
-            trianglesList.Add(triangles);
-            materialList.Add(Resources.Load<Material>("Materials/block/lapis_ore"));
-        }
-    }
-
-    public override void ClearData()
-    {
-        triangles.Clear();
-    }
+    public override string GetBreakEffectTexture(byte data) { return "lapis_ore"; }
 }
