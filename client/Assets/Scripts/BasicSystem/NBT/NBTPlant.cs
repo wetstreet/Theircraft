@@ -42,6 +42,8 @@ public class NBTPlant : NBTBlock
 
     protected virtual Color GetTintColorByData(NBTChunk chunk, byte data) { return Color.white; }
 
+    public override Color GetFrontTintColorByData(NBTChunk chunk, byte data) { return GetTintColorByData(chunk, data); }
+
     void AddDiagonalFace()
     {
         AddFace(farBottomLeft, farTopLeft, nearTopRight, nearBottomRight, plantIndex, tintColor);

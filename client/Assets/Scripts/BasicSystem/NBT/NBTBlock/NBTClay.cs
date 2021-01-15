@@ -15,4 +15,6 @@ public class NBTClay : NBTBlock
     public override string rightName { get { return "clay"; } }
 
     public override SoundMaterial soundMaterial { get { return SoundMaterial.Gravel; } }
+
+    public override string GetBreakEffectTexture(byte data) { return "clay"; }
 }

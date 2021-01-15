@@ -40,4 +40,34 @@ public class NBTRedFlower : NBTPlant
         }
         throw new System.Exception("no index");
     }
+
+    public override string GetBreakEffectTexture(byte data)
+    {
+        if (data == 0)
+        {
+            return "flower_rose";
+        }
+        else if (data == 3)
+        {
+            return "flower_houstonia";
+        }
+        else if (data == 4)
+        {
+            return "flower_tulip_red";
+        }
+        else if (data == 5)
+        {
+            return "flower_tulip_orange";
+        }
+        else if (data == 6)
+        {
+            return "flower_houstonia";
+        }
+        else if (data == 8)
+        {
+            return "flower_oxeye_daisy";
+        }
+        Debug.Log("red flower no break effect texture, data=" + data);
+        return "flower_rose";
+    }
 }

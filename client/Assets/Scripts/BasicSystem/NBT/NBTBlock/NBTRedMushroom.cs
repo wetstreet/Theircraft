@@ -16,4 +16,6 @@ public class NBTRedMushroom : NBTPlant
     {
         return TextureArrayManager.GetIndexByName("mushroom_red");
     }
+
+    public override string GetBreakEffectTexture(byte data) { return "mushroom_red"; }
 }

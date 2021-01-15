@@ -16,7 +16,7 @@ public class NBTGrassBlock : NBTBlock
 
     public override float hardness { get { return 0.6f; } }
 
-    protected override Color GetTopTintColorByData(NBTChunk chunk, byte data) { return TintManager.tintColor; }
+    public override Color GetTopTintColorByData(NBTChunk chunk, byte data) { return TintManager.tintColor; }
 
     public override SoundMaterial soundMaterial { get { return SoundMaterial.Grass; } }
 

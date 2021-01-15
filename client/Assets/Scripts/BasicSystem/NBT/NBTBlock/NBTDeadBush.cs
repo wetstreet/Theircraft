@@ -16,4 +16,6 @@ public class NBTDeadBush : NBTPlant
     {
         return TextureArrayManager.GetIndexByName("deadbush");
     }
+
+    public override string GetBreakEffectTexture(byte data) { return "deadbush"; }
 }

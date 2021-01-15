@@ -21,4 +21,6 @@ public class NBTTallGrass : NBTPlant
     {
         return TextureArrayManager.GetIndexByName("tallgrass");
     }
+
+    public override string GetBreakEffectTexture(byte data) { return "tallgrass"; }
 }

@@ -66,6 +66,22 @@ public abstract class NBTBlock
 
     public virtual string GetBreakEffectTexture(byte data) { return string.Empty; }
 
+    public virtual string GetBreakEffectTexture(NBTChunk chunk, byte data) { return GetBreakEffectTexture(data); }
+
+    protected Color topColor;
+    protected Color bottomColor;
+    protected Color frontColor;
+    protected Color backColor;
+    protected Color leftColor;
+    protected Color rightColor;
+
+    public virtual Color GetTopTintColorByData(NBTChunk chunk, byte data) { return Color.white; }
+    public virtual Color GetBottomTintColorByData(NBTChunk chunk, byte data) { return Color.white; }
+    public virtual Color GetFrontTintColorByData(NBTChunk chunk, byte data) { return Color.white; }
+    public virtual Color GetBackTintColorByData(NBTChunk chunk, byte data) { return Color.white; }
+    public virtual Color GetLeftTintColorByData(NBTChunk chunk, byte data) { return Color.white; }
+    public virtual Color GetRightTintColorByData(NBTChunk chunk, byte data) { return Color.white; }
+
     protected static Vector3 nearBottomLeft = new Vector3(-0.5f, -0.5f, -0.5f);
     protected static Vector3 nearBottomRight = new Vector3(0.5f, -0.5f, -0.5f);
     protected static Vector3 nearTopLeft = new Vector3(-0.5f, 0.5f, -0.5f);
@@ -153,20 +169,6 @@ public abstract class NBTBlock
     {
         return new Vector4(v3.x, v3.y, v3.z, w);
     }
-
-    protected Color topColor;
-    protected Color bottomColor;
-    protected Color frontColor;
-    protected Color backColor;
-    protected Color leftColor;
-    protected Color rightColor;
-
-    protected virtual Color GetTopTintColorByData(NBTChunk chunk, byte data) { return Color.white; }
-    protected virtual Color GetBottomTintColorByData(NBTChunk chunk, byte data) { return Color.white; }
-    protected virtual Color GetFrontTintColorByData(NBTChunk chunk, byte data) { return Color.white; }
-    protected virtual Color GetBackTintColorByData(NBTChunk chunk, byte data) { return Color.white; }
-    protected virtual Color GetLeftTintColorByData(NBTChunk chunk, byte data) { return Color.white; }
-    protected virtual Color GetRightTintColorByData(NBTChunk chunk, byte data) { return Color.white; }
 
     protected void AddFace(Vector3 pos1, Vector3 pos2, Vector3 pos3, Vector3 pos4, int faceIndex)
     {

@@ -15,4 +15,6 @@ public class NBTDiamondOre : NBTBlock
     public override string rightName { get { return "diamond_ore"; } }
 
     public override SoundMaterial soundMaterial { get { return SoundMaterial.Stone; } }
+
+    public override string GetBreakEffectTexture(byte data) { return "diamond_ore"; }
 }

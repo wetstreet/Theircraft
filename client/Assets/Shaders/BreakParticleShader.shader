@@ -4,6 +4,7 @@ Shader "Custom/BreakParticleShader"
     {
         _Array ("Texture", 2DArray) = "" {}
         _Slice ("Slice", Range(0, 460)) = 0
+        _Color ("Color Tint", Color) = (1, 1, 1, 1)
         _Cutoff ("Cut Off", Range(0, 1)) = 0.5
         [Enum(UnityEngine.Rendering.CullMode)] _Culling ("Culling", Float) = 2
     }
@@ -24,6 +25,7 @@ Shader "Custom/BreakParticleShader"
             #pragma multi_compile_fog
 
             #include "Common.hlsl"
+            #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"        
 
             struct appdata
             {
@@ -40,6 +42,7 @@ Shader "Custom/BreakParticleShader"
             TEXTURE2D_ARRAY(_Array);  SAMPLER(sampler_Array);
             float _Slice;
             float _Cutoff;
+            half4 _Color;
 
             v2f vert (appdata v)
             {
@@ -53,6 +56,7 @@ Shader "Custom/BreakParticleShader"
             {
                 half4 col = SAMPLE_TEXTURE2D_ARRAY(_Array, sampler_Array, i.uv, _Slice);
                 clip(col.a - _Cutoff);
+                col.rgb *= LinearToGamma22(_Color.rgb);
                 return col;
             }
 

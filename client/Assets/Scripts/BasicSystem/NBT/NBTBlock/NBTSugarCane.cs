@@ -16,4 +16,6 @@ public class NBTSugarCane : NBTPlant
     {
         return TextureArrayManager.GetIndexByName("reeds");
     }
+
+    public override string GetBreakEffectTexture(byte data) { return "reeds"; }
 }

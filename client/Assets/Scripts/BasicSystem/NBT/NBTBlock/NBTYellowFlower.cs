@@ -28,4 +28,21 @@ public class NBTYellowFlower : NBTPlant
         }
         throw new System.Exception("no index");
     }
+
+    public override string GetBreakEffectTexture(byte data)
+    {
+        if (data == 0)
+        {
+            return "flower_dandelion";
+        }
+        else if (data == 3)
+        {
+            return "flower_houstonia";
+        }
+        else if (data == 8)
+        {
+            return "flower_oxeye_daisy";
+        }
+        throw new System.Exception("no texture");
+    }
 }

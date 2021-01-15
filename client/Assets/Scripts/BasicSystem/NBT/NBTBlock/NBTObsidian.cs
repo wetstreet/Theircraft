@@ -15,4 +15,6 @@ public class NBTObsidian : NBTBlock
     public override string rightName { get { return "obsidian"; } }
 
     public override SoundMaterial soundMaterial { get { return SoundMaterial.Stone; } }
+
+    public override string GetBreakEffectTexture(byte data) { return "obsidian"; }
 }
