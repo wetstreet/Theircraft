@@ -8,7 +8,11 @@ public class TextureArrayManager
 
     public static int GetIndexByName(string name)
     {
-        return name2index[name];
+        if (name2index.ContainsKey(name))
+        {
+            return name2index[name];
+        }
+        return 0;
     }
 
     static Dictionary<string, int> name2index = new Dictionary<string, int>();

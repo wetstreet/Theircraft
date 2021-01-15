@@ -189,6 +189,8 @@ public class PlayerController : MonoBehaviour
     {
         breakTime = 0;
 
+        handAnimator.SetBool("isBreaking", false);
+
         HideBreakingEffect();
         //DeleteBlockReq(WireFrameHelper.pos);
 
@@ -211,6 +213,8 @@ public class PlayerController : MonoBehaviour
         leftMouseDown = false;
         breakTime = 0;
         HideBreakingEffect();
+
+        handAnimator.SetBool("isBreaking", false);
     }
 
     bool CanAddBlock(Vector3Int pos)
@@ -395,6 +399,8 @@ public class PlayerController : MonoBehaviour
 
                         if (leftMouseDown)
                         {
+                            handAnimator.SetBool("isBreaking", true);
+
                             breakTime += Time.deltaTime;
 
                             float breakNeedTime = NBTGeneratorManager.GetMeshGenerator(type).breakNeedTime;
@@ -415,6 +421,8 @@ public class PlayerController : MonoBehaviour
                                     BreakBlock(pos);
                                 }
                             }
+
+                            return;
                         }
 
                         //if (Input.GetKeyDown(KeyCode.F1))
@@ -433,6 +441,8 @@ public class PlayerController : MonoBehaviour
                 }
             }
         }
+
+        handAnimator.SetBool("isBreaking", false);
     }
 
     bool isFlying = false;

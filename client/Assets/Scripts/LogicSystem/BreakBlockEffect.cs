@@ -20,7 +20,7 @@ public class BreakBlockEffect : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Texture2D texture = Resources.Load<Texture2D>("GUI/block/" + texturePath);
-        GetComponent<Renderer>().material.mainTexture = texture;
+        GetComponent<Renderer>().material.SetTexture("_Array", TextureArrayManager.GetArray());
+        GetComponent<Renderer>().material.SetInt("_Slice", TextureArrayManager.GetIndexByName(texturePath));
     }
 }
