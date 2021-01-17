@@ -7,10 +7,10 @@ using TMPro;
 
 public class ItemSelectPanel : MonoBehaviour
 {
-    static uint curIndex;
+    public static uint curIndex;
     public static CSBlockType curBlockType { get { return dataList[curIndex]; } }
 
-    static SlotItem[] itemList = new SlotItem[9];
+    private SlotItem[] itemList = new SlotItem[9];
     public static CSBlockType[] dataList = new CSBlockType[9];
     public static int[] countList = new int[9];
 
@@ -72,13 +72,13 @@ public class ItemSelectPanel : MonoBehaviour
         }
         dataList[index] = type;
         countList[index] = type == CSBlockType.None ? 0 : countList[index] + count;
-        CSHeroChangeSelectItemReq req = new CSHeroChangeSelectItemReq
-        {
-            Index = index,
-            Item = type,
-            Count = (uint)countList[index],
-        };
-        NetworkManager.SendPkgToServer(ENUM_CMD.CS_HERO_CHANGE_SELECT_ITEM_REQ, req);
+        //CSHeroChangeSelectItemReq req = new CSHeroChangeSelectItemReq
+        //{
+        //    Index = index,
+        //    Item = type,
+        //    Count = (uint)countList[index],
+        //};
+        //NetworkManager.SendPkgToServer(ENUM_CMD.CS_HERO_CHANGE_SELECT_ITEM_REQ, req);
         instance.RefreshUI();
     }
 
@@ -119,24 +119,24 @@ public class ItemSelectPanel : MonoBehaviour
     }
 
     uint lastIndex = 0;
-    void RefreshUI()
+    public void RefreshUI()
     {
         for (int i = 0; i < 9; i++)
         {
-            CSBlockType blockType = dataList[i];
-            if (blockType == CSBlockType.None)
+            InventoryItem item = InventorySystem.items[i];
+            if (item.id == null)
             {
                 itemList[i].icon.gameObject.SetActive(false);
                 itemList[i].count.gameObject.SetActive(false);
             }
             else
             {
-                itemList[i].icon.sprite = BlockIconHelper.GetIcon(blockType);
+                itemList[i].icon.sprite = BlockIconHelper.GetIcon(item.id, item.damage);
                 itemList[i].icon.gameObject.SetActive(true);
-                if (countList[i] > 1)
+                if (item.count > 1)
                 {
                     itemList[i].count.gameObject.SetActive(true);
-                    itemList[i].count.text = countList[i].ToString();
+                    itemList[i].count.text = item.count.ToString();
                 }
                 else
                 {
@@ -149,11 +149,21 @@ public class ItemSelectPanel : MonoBehaviour
         if (lastIndex != curIndex)
         {
             lastIndex = curIndex;
-            HeroChangeSelectIndexReq(curIndex);
+            //HeroChangeSelectIndexReq(curIndex);
         }
-        if (curBlockType != CSBlockType.None)
+
+        InventoryItem curItem = InventorySystem.items[curIndex];
+        if (curItem.id != null)
         {
-            PlayerController.ShowBlock(curBlockType);
+            NBTBlock generator = NBTGeneratorManager.GetMeshGenerator(curItem.id);
+            if (generator != null)
+            {
+                PlayerController.ShowBlock(generator, curItem.damage);
+            }
+            else
+            {
+                PlayerController.ShowHand();
+            }
         }
         else
         {
@@ -161,14 +171,14 @@ public class ItemSelectPanel : MonoBehaviour
         }
     }
 
-    void HeroChangeSelectIndexReq(uint index)
-    {
-        CSHeroChangeSelectIndexReq req = new CSHeroChangeSelectIndexReq
-        {
-            Index = index
-        };
-        NetworkManager.SendPkgToServer(ENUM_CMD.CS_HERO_CHANGE_SELECT_INDEX_REQ, req);
-    }
+    //void HeroChangeSelectIndexReq(uint index)
+    //{
+    //    CSHeroChangeSelectIndexReq req = new CSHeroChangeSelectIndexReq
+    //    {
+    //        Index = index
+    //    };
+    //    NetworkManager.SendPkgToServer(ENUM_CMD.CS_HERO_CHANGE_SELECT_INDEX_REQ, req);
+    //}
 
     // Use this for initialization
     void Start () {
@@ -217,10 +227,5 @@ public class ItemSelectPanel : MonoBehaviour
         {
             RefreshUI();
         }
-    }
-	
-	// Update is called once per frame
-	void Update ()
-    {
     }
 }

@@ -112,6 +112,27 @@ public class NBTChunk
     }
 
     //input is local position
+    public void SetBlockData(int xInChunk, int worldY, int zInChunk, byte type, byte data)
+    {
+        int sectionIndex = Mathf.FloorToInt(worldY / 16f);
+        if (sectionIndex >= 0 && sectionIndex < Sections.Count)
+        {
+            TagNodeCompound section = Sections[sectionIndex] as TagNodeCompound;
+            TagNodeByteArray Blocks = section["Blocks"] as TagNodeByteArray;
+            TagNodeByteArray Data = section["Data"] as TagNodeByteArray;
+
+            int yInSection = worldY - sectionIndex * 16;
+            int blockPos = yInSection * 16 * 16 + zInChunk * 16 + xInChunk;
+
+            if (blockPos >= 0 && blockPos < 4096)
+            {
+                Blocks.Data[blockPos] = type;
+                NBTHelper.SetNibble(Data.Data, blockPos, data);
+            }
+        }
+    }
+
+    //input is local position
     public void GetBlockData(int xInChunk, int worldY, int zInChunk, ref byte blockType, ref byte blockData)
     {
         if (xInChunk < 0 || xInChunk > 15 || worldY < 0 || worldY > 255 || zInChunk < 0 || zInChunk > 15)

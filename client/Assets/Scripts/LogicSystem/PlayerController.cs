@@ -165,11 +165,11 @@ public class PlayerController : MonoBehaviour
         return Mathf.Max(Mathf.Abs(chunk.x - chunkPos.x), Mathf.Abs(chunk.z - chunkPos.y));
     }
 
-    public static void ShowBlock(CSBlockType type)
+    public static void ShowBlock(NBTBlock generator, short data)
     {
         instance.handMeshRenderer.enabled = false;
-        instance.blockMeshFilter.mesh = ChunkMeshGenerator.GetBlockMesh(type);
-        instance.blockMeshRenderer.material.mainTexture = ChunkMeshGenerator.GetBlockTexture(type);
+        instance.blockMeshFilter.sharedMesh = generator.GetItemMesh(NBTHelper.GetChunk(GetCurrentBlock()), (byte)data);
+        instance.blockMeshRenderer.GetComponent<MeshRenderer>().sharedMaterial.SetTexture("_Array", TextureArrayManager.GetArray());
         instance.blockMeshFilter.transform.gameObject.SetActive(true);
     }
 
@@ -224,63 +224,49 @@ public class PlayerController : MonoBehaviour
 
     bool CanAddBlock(Vector3Int pos)
     {
-        int type = (int)ItemSelectPanel.curBlockType;
-        if (ChunkMeshGenerator.type2texcoords[type].isPlant)
+        NBTBlock generator = NBTGeneratorManager.GetMeshGenerator(InventorySystem.items[ItemSelectPanel.curIndex].id);
+        // 手上的
+        if (generator == null) return false;
+
+        byte type = NBTHelper.GetBlockByte(pos);
+        NBTBlock targetGenerator = NBTGeneratorManager.GetMeshGenerator(type);
+
+        if (generator is NBTPlant)
         {
-            if (ItemSelectPanel.curBlockType == ChunkManager.GetBlockType(pos))
-            {
-                return false;
-            }
+            if (generator == targetGenerator) { return false; }
+
+            byte belowType = NBTHelper.GetBlockByte(pos + Vector3Int.down);
 
             //如果手上拿的是植物，则判断下方是否是否是实体
-            return ChunkManager.HasNotPlantBlock(pos + Vector3Int.down);
+            NBTBlock targetBelowGenerator = NBTGeneratorManager.GetMeshGenerator(belowType);
+            return targetBelowGenerator != null && !(targetBelowGenerator is NBTPlant);
         }
         else
         {
             //如果手上拿的不是植物，则判断碰撞盒是否与玩家相交
-            return !cc.bounds.Intersects(new Bounds(pos, Vector3.one)) && !ChunkManager.HasNotPlantBlock(pos);
+            return !cc.bounds.Intersects(new Bounds(pos, Vector3.one));
         }
     }
 
     void OnRightClick()
     {
-        if (WireFrameHelper.render && ItemSelectPanel.curBlockType != CSBlockType.None)
+        string id = InventorySystem.items[ItemSelectPanel.curIndex].id;
+        if (WireFrameHelper.render && id != null)
         {
             Vector3Int pos = WireFrameHelper.pos;
 
-            if (ChunkManager.HasNotPlantBlock(pos) && ChunkManager.HasCollidableBlock(WireFrameHelper.pos.x, WireFrameHelper.pos.y, WireFrameHelper.pos.z))
-            {
-                pos = WireFrameHelper.pos + Vector3Int.RoundToInt(hit.normal);
-            }
+            pos = WireFrameHelper.pos + Vector3Int.RoundToInt(hit.normal);
 
             if (CanAddBlock(pos))
             {
                 handAnimator.SetTrigger("interactTrigger");
-                if (ItemSelectPanel.curBlockType == CSBlockType.Torch)
-                {
-                    AddBlockReq(Vector3Int.RoundToInt(pos), ItemSelectPanel.curBlockType, WireFrameHelper.pos);
-                }
-                else
-                {
-                    CSBlockOrientation orientation = CSBlockOrientation.Default;
-                    if (ItemSelectPanel.curBlockType == CSBlockType.VerticalBrickSlab)
-                    {
-                        orientation = VerticalSlabMeshGenerator.GetOrientation(transform.position, pos, WireFrameHelper.hitPos);
-                    }
-                    else if (ChunkMeshGenerator.type2texcoords[(byte)ItemSelectPanel.curBlockType].isSlab)
-                    {
-                        orientation = SlabMeshGenerator.GetOrientation(transform.position, pos, WireFrameHelper.hitPos);
-                    }
-                    else if (ChunkMeshGenerator.type2texcoords[(byte)ItemSelectPanel.curBlockType].isLog)
-                    {
-                        orientation = LogMeshGenerator.GetOrientation(hit.normal);
-                    }
-                    else if (ChunkMeshGenerator.type2texcoords[(byte)ItemSelectPanel.curBlockType].isRotatable)
-                    {
-                        orientation = ChunkMeshGenerator.GetBlockOrientation(transform.position, pos, WireFrameHelper.hitPos);
-                    }
-                    AddBlockReq(Vector3Int.RoundToInt(pos), ItemSelectPanel.curBlockType, orientation);
-                }
+
+                byte type = NBTGeneratorManager.id2type[id];
+                byte data = (byte)InventorySystem.items[ItemSelectPanel.curIndex].damage;
+                NBTHelper.SetBlockData(pos, type, data);
+
+                InventorySystem.DecrementCurrent();
+                ItemSelectPanel.instance.RefreshUI();
             }
         }
     }
@@ -429,19 +415,6 @@ public class PlayerController : MonoBehaviour
 
                             return;
                         }
-
-                        //if (Input.GetKeyDown(KeyCode.F1))
-                        //{
-                        //    SpruceTreeGenerator.Generate(pos.x, pos.y + 1, pos.z);
-                        //}
-                        //else if (Input.GetKeyDown(KeyCode.F2))
-                        //{
-                        //    OakTreeGenerator.Generate(pos.x, pos.y + 1, pos.z);
-                        //}
-                        //else if (Input.GetKeyDown(KeyCode.F4))
-                        //{
-                        //    BirchTreeGenerator.Generate(pos.x, pos.y + 1, pos.z);
-                        //}s
                     }
                 }
             }

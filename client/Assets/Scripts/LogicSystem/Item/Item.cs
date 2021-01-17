@@ -160,7 +160,8 @@ public class Item : MonoBehaviour
             {
                 Destroy(gameObject);
                 SoundManager.PlayPopSound();
-                //ItemSelectPanel.AddItem(type, Count);
+                InventorySystem.Increment(blockType, blockData, (byte)Count);
+                ItemSelectPanel.instance.RefreshUI();
             }
         }
         if (transform.position.y < 0)

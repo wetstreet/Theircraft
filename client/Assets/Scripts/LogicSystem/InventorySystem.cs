@@ -33,4 +33,71 @@ public class InventorySystem
             items[slot].damage = damage;
         }
     }
+
+    public static void Increment(byte type, byte data, byte count)
+    {
+        NBTBlock generator = NBTGeneratorManager.GetMeshGenerator(type);
+        // 优先加到已有的同类的里面
+        for (int i = 0; i < 36; i++)
+        {
+            if (items[i].id == null) continue;
+
+            if (!NBTGeneratorManager.id2type.ContainsKey(items[i].id))
+            {
+                Debug.Log("cannot get type,slot=" + i + ",id=" + items[i].id);
+                continue;
+            }
+
+            byte t = NBTGeneratorManager.id2type[items[i].id];
+            short d = items[i].damage;
+            byte c = items[i].count;
+            if (t == type && d == data && c < generator.maxStackCount)
+            {
+                int diff = generator.maxStackCount - c;
+
+                if (count > diff)
+                {
+                    items[i].count = generator.maxStackCount;
+                    count -= (byte)diff;
+                }
+                else
+                {
+                    items[i].count += count;
+                    return;
+                }
+
+            }
+        }
+        //已有的放不下，需要放在空格内
+        for (int i = 0; i < 36; i++)
+        {
+            if (items[i].id == null)
+            {
+                items[i].id = generator.id;
+                items[i].damage = data;
+
+                if (count > generator.maxStackCount)
+                {
+                    items[i].count = generator.maxStackCount;
+                    count -= generator.maxStackCount;
+                }
+                else
+                {
+                    items[i].count = count;
+                    return;
+                }
+            }
+        }
+    }
+
+    public static void DecrementCurrent()
+    {
+        uint slot = ItemSelectPanel.curIndex;
+        items[slot].count--;
+        if (items[slot].count == 0)
+        {
+            items[slot].id = null;
+            items[slot].damage = 0;
+        }
+    }
 }

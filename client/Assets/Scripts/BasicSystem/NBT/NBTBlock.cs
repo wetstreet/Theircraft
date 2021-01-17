@@ -23,6 +23,8 @@ public abstract class NBTBlock
     public virtual string name { get; }
     public virtual string id { get; }
 
+    public virtual byte maxStackCount { get { return 64; } }
+
     public virtual string GetIconPathByData(short data) { return null; }
 
     public virtual string topName { get; }
@@ -232,7 +234,7 @@ public abstract class NBTBlock
         }
     }
 
-    Vector4 ToVector4(Vector3 v3, float w)
+    protected Vector4 ToVector4(Vector3 v3, float w)
     {
         return new Vector4(v3.x, v3.y, v3.z, w);
     }

@@ -48,9 +48,11 @@ public class NBTEditorWindow : EditorWindow
     Color c;
     float AdjTemp;
     float AdjRainfall;
-    public static string save = "New World1";
+    string save = "New World1";
     private void OnGUI()
     {
+        save = EditorGUILayout.TextField("save", save);
+
         pos = EditorGUILayout.Vector3IntField("pos", pos);
         GUILayout.Label("type=" + type);
         GUILayout.Label("data=" + blockdata);

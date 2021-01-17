@@ -170,6 +170,20 @@ public class NBTHelper : MonoBehaviour
         return (byte)(index % 2 == 0 ? arr[index / 2] & 0x0F : (arr[index / 2] >> 4) & 0x0F);
     }
 
+    public static void SetNibble(byte[] arr, int index, byte data)
+    {
+        if (index % 2 == 0)
+        {
+            int newData = (arr[index / 2] & 0xF0) | (data & 0x0F);
+            arr[index / 2] = (byte)newData;
+        }
+        else
+        {
+            int newData = (arr[index / 2] & 0x0F) | (data << 4 & 0xF0);
+            arr[index / 2] = (byte)newData;
+        }
+    }
+
     public static Dictionary<Vector2Int, RegionFile> regionDict = new Dictionary<Vector2Int, RegionFile>();
 
     public static RegionFile GetRegion(int regionX, int regionZ)
@@ -222,6 +236,45 @@ public class NBTHelper : MonoBehaviour
 
         NBTChunk chunk = GetChunk(chunkX, chunkZ);
         chunk.SetBlockByte(xInChunk, y, zInChunk, type);
+        chunk.RebuildMesh();
+
+        if (type == 0)
+        {
+            if (xInChunk == 0)
+            {
+                NBTChunk leftChunk = GetChunk(chunkX - 1, chunkZ);
+                leftChunk.RebuildMesh();
+            }
+            if (xInChunk == 15)
+            {
+                NBTChunk rightChunk = GetChunk(chunkX + 1, chunkZ);
+                rightChunk.RebuildMesh();
+            }
+            if (zInChunk == 0)
+            {
+                NBTChunk frontChunk = GetChunk(chunkX, chunkZ - 1);
+                frontChunk.RebuildMesh();
+            }
+            if (zInChunk == 15)
+            {
+                NBTChunk backChunk = GetChunk(chunkX, chunkZ + 1);
+                backChunk.RebuildMesh();
+            }
+        }
+    }
+
+    public static void SetBlockData(Vector3Int pos, byte type, byte data) { SetBlockData(pos.x, pos.y, pos.z, type, data); }
+
+    public static void SetBlockData(int x, int y, int z, byte type, byte data)
+    {
+        int chunkX = Mathf.FloorToInt(x / 16f);
+        int chunkZ = Mathf.FloorToInt(z / 16f);
+
+        int xInChunk = x - chunkX * 16;
+        int zInChunk = z - chunkZ * 16;
+
+        NBTChunk chunk = GetChunk(chunkX, chunkZ);
+        chunk.SetBlockData(xInChunk, y, zInChunk, type, data);
         chunk.RebuildMesh();
 
         if (type == 0)
