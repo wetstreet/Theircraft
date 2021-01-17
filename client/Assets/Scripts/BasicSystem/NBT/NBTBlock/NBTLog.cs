@@ -17,6 +17,22 @@ public class NBTLog : NBTBlock
         else return null;
     }
 
+    public override string GetNameByData(short data)
+    {
+        switch (data)
+        {
+            case 0:
+                return "Oak Wood";
+            case 1:
+                return "Spruce Wood";
+            case 2:
+                return "Birch Wood";
+            case 3:
+                return "Jungle Wood";
+        }
+        return "Log";
+    }
+
     public override float hardness { get { return 2f; } }
 
     protected override Rotation GetTopRotationByData(byte data)

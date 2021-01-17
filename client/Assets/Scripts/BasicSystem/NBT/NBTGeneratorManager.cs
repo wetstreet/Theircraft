@@ -33,6 +33,7 @@ public class NBTGeneratorManager : MonoBehaviour
         { 45, new NBTBrick() },
         { 49, new NBTObsidian() },
         { 56, new NBTDiamondOre() },
+        { 58, new NBTCraftingTable() },
         { 73, new NBTRedstoneOre() },
         { 81, new NBTCactus() },
         { 82, new NBTClay() },

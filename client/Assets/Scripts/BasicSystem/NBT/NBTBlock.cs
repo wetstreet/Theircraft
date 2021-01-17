@@ -25,6 +25,8 @@ public abstract class NBTBlock
 
     public virtual byte maxStackCount { get { return 64; } }
 
+    public virtual string GetNameByData(short data) { return name; }
+
     public virtual string GetIconPathByData(short data) { return null; }
 
     public virtual string topName { get; }

@@ -22,11 +22,13 @@ public class SurvivalInventory : MonoBehaviour
     int showSelectIndex;
 
     byte holdItemType;
+    byte holdItemData;
     int holdItemCount;
 
     struct SlotItem
     {
         public Image icon;
+        public Image highlight;
         public GameObject select;
         public TextMeshProUGUI count;
     }
@@ -99,6 +101,7 @@ public class SurvivalInventory : MonoBehaviour
             trans.localScale = Vector3.one;
             trans.gameObject.SetActive(true);
             
+            items[i].highlight = trans.Find("highlight").GetComponent<Image>();
             items[i].icon = trans.GetComponent<Image>();
             items[i].count = trans.Find("text").GetComponent<TextMeshProUGUI>();
         }
@@ -110,6 +113,7 @@ public class SurvivalInventory : MonoBehaviour
             trans.localScale = Vector3.one;
             trans.gameObject.SetActive(true);
 
+            items[i].highlight = trans.Find("highlight").GetComponent<Image>();
             items[i].icon = trans.GetComponent<Image>();
             items[i].count = trans.Find("text").GetComponent<TextMeshProUGUI>();
         }
@@ -136,6 +140,7 @@ public class SurvivalInventory : MonoBehaviour
         RefreshSelectPanel();
     }
 
+    Color highlightColor = new Color(1, 1, 1, 0.2f);
     void RefreshUI()
     {
         for (int i = 0; i < 36; i++)
@@ -160,58 +165,32 @@ public class SurvivalInventory : MonoBehaviour
                 items[i].icon.enabled = false;
                 items[i].count.enabled = false;
             }
+            items[i].highlight.color = i == highlightIndex ? highlightColor : Color.clear;
         }
         UpdateDesc();
     }
 
+    int lastHighlightIndex = -1;
+    int highlightIndex = -1;
     void HandleMouseOperation()
     {
-        //PointerEventData ped = new PointerEventData(null) { position = Input.mousePosition };
-        //List<RaycastResult> results = new List<RaycastResult>();
-        //gr.Raycast(ped, results);
-        //showDesc = false;
-        //showSelectDesc = false;
-        //foreach (RaycastResult result in results)
-        //{
-        //    if (result.gameObject.transform.parent == grid.transform)
-        //    {
-        //        int curIndex = int.Parse(result.gameObject.name) + step * 9;
-        //        if (curIndex < blocks.Length)
-        //        {
-        //            showDesc = true;
-        //            if (showIndex != curIndex && !holdItem)
-        //            {
-        //                showIndex = curIndex;
-        //            }
-        //            if (Input.GetKeyDown(KeyCode.Mouse0))
-        //            {
-        //                OnItemClick(curIndex);
-        //            }
-        //        }
-        //        break;
-        //    }
-        //    else if (result.gameObject.transform.parent == selectPanel)
-        //    {
-        //        showSelectDesc = true;
-        //        int curIndex = int.Parse(result.gameObject.name);
-        //        if (showSelectIndex != curIndex)
-        //        {
-        //            showSelectIndex = curIndex;
-        //        }
-        //        if (Input.GetKeyDown(KeyCode.Mouse0))
-        //        {
-        //            OnClickSelectItem(curIndex);
-        //        }
-        //        break;
-        //    }
-        //    else if (result.gameObject == mask)
-        //    {
-        //        if (Input.GetKeyDown(KeyCode.Mouse0))
-        //        {
-        //            OnClickMask();
-        //        }
-        //    }
-        //}
+        PointerEventData ped = new PointerEventData(null) { position = Input.mousePosition };
+        List<RaycastResult> results = new List<RaycastResult>();
+        gr.Raycast(ped, results);
+
+        if (results.Count > 0 && int.TryParse(results[0].gameObject.transform.parent.name, out int slot))
+        {
+            highlightIndex = slot;
+        }
+        else
+        {
+            highlightIndex = -1;
+        }
+        if (lastHighlightIndex != highlightIndex)
+        {
+            lastHighlightIndex = highlightIndex;
+            RefreshUI();
+        }
     }
 
     // Update is called once per frame
@@ -230,7 +209,7 @@ public class SurvivalInventory : MonoBehaviour
     static Vector3 offset = new Vector3(8, 0, 0);
     void UpdateDesc()
     {
-        if ((showDesc || (showSelectDesc && ItemSelectPanel.dataList[showSelectIndex] != 0)) && !holdItem && !holdSelectItem)
+        if (highlightIndex != -1 && InventorySystem.items[highlightIndex].id != null && !holdItem && !holdSelectItem)
         {
             if (!descTrans.gameObject.activeSelf)
             {
@@ -238,18 +217,17 @@ public class SurvivalInventory : MonoBehaviour
             }
             descTrans.anchoredPosition = Input.mousePosition / UISystem.scale + offset;
 
-            string name = "";
-            //if (showDesc)
-            //{
-            //    CSBlockType type = blocks[showIndex];
-            //    name = LocalizationManager.GetBlockName(type);
-            //}
-            //else if (showSelectDesc)
-            //{
-            //    CSBlockType type = ItemSelectPanel.dataList[showSelectIndex];
-            //    name = LocalizationManager.GetBlockName(type);
-            //}
-            descLabel.text = name;
+            InventoryItem item = InventorySystem.items[highlightIndex];
+            NBTBlock generator = NBTGeneratorManager.GetMeshGenerator(item.id);
+            if (generator == null)
+            {
+                descLabel.text = item.id;
+            }
+            else
+            {
+                descLabel.text = generator.GetNameByData(item.damage);
+            }
+            descLabel.Rebuild(CanvasUpdate.PreRender);
             descTrans.sizeDelta = new Vector2(Mathf.CeilToInt(descLabel.renderedWidth) + 10, 16);
         }
         else
