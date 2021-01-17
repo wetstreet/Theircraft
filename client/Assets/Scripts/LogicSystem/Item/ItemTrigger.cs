@@ -34,7 +34,7 @@ public class ItemTrigger : MonoBehaviour
         {
             Item otherItem = other.transform.parent.GetComponent<Item>();
             if (!item.destroyed && !otherItem.destroyed &&
-                otherItem.type == item.type &&
+                otherItem.blockType == item.blockType &&
                 MergeCoolDownFinish() && other.GetComponent<ItemTrigger>().MergeCoolDownFinish() &&
                 Vector3.Distance(other.transform.position, transform.position) < 1f)
             {

@@ -10,6 +10,8 @@ public class NBTGeneratorManager : MonoBehaviour
         { 2, new NBTGrassBlock() },
         { 3, new NBTDirt() },
         { 4, new NBTCobblestone() },
+        { 5, new NBTPlanks() },
+        { 6, new NBTSapling() },
         { 7, new NBTBedrock() },
         { 9, new NBTStationaryWater() },
         { 12, new NBTSand() },
@@ -38,11 +40,18 @@ public class NBTGeneratorManager : MonoBehaviour
         { 175, new NBTLargeFlowers() },
     };
 
+    public static Dictionary<string, NBTBlock> id2generator = new Dictionary<string, NBTBlock>();
+
     public static void Init()
     {
         foreach (NBTBlock generator in generatorDict.Values)
         {
             generator.Init();
+
+            if (generator.id != null)
+            {
+                id2generator.Add(generator.id, generator);
+            }
         }
     }
 

@@ -15,6 +15,7 @@ public class GameStart : MonoBehaviour
         OtherPlayerManager.Init();
         ItemSelectPanel.Show();
         ChatPanel.ShowChatPanel();
+        InventorySystem.Init();
 
         List<Vector2Int> preloadChunks = Utilities.GetSurroudingChunks(PlayerController.GetCurrentChunkPos());
         ChunkManager.ChunksEnterLeaveViewReq(preloadChunks);

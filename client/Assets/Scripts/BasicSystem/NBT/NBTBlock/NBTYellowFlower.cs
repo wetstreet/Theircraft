@@ -45,4 +45,24 @@ public class NBTYellowFlower : NBTPlant
         }
         throw new System.Exception("no texture");
     }
+
+    public override Mesh GetItemMesh(NBTChunk chunk, byte data)
+    {
+        if (data == 0)
+        {
+            string path = "dandelion";
+            return Resources.Load<Mesh>("Meshes/items/" + path + "/" + path);
+        }
+        else if (data == 3)
+        {
+            string path = "flower_houstonia";
+            return Resources.Load<Mesh>("Meshes/items/" + path + "/" + path);
+        }
+        else if (data == 8)
+        {
+            string path = "flower_oxeye_daisy";
+            return Resources.Load<Mesh>("Meshes/items/" + path + "/" + path);
+        }
+        throw new System.Exception("no texture");
+    }
 }

@@ -9,7 +9,7 @@ using UnityEngine;
 
 public class NBTHelper : MonoBehaviour
 {
-    public static string save = "New World1";
+    public static string save = "New World---";
 
     private static Dictionary<Vector2Int, NBTChunk> chunkDict = new Dictionary<Vector2Int, NBTChunk>();
 

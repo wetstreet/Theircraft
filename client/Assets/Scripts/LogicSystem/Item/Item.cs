@@ -12,6 +12,8 @@ public class Item : MonoBehaviour
 
     [HideInInspector] public float coolDownTime = 2f;
     [HideInInspector] public CSBlockType type;
+    [HideInInspector] public byte blockType;
+    [HideInInspector] public byte blockData;
     [HideInInspector] public bool destroyed;
 
     bool singleMesh = true;
@@ -30,6 +32,33 @@ public class Item : MonoBehaviour
     static float maxAlpha = 0.6f;
     static float minDistance = 0.2f;
     static float moveTime = 0.2f;
+
+    public static Item CreateBlockDropItem(byte type, byte data, Vector3 pos)
+    {
+        float right = Random.Range(-1f, 1f);
+        float forward = Random.Range(-1f, 1f);
+        Vector3 dir = Vector3.up + right * Vector3.right + forward * Vector3.forward;
+        Item item = Create(type, data, pos, dir.normalized);
+        item.coolDownTime = 0.5f;
+        return item;
+    }
+
+    public static Item Create(byte type, byte data, Vector3 pos, Vector3 dir, int count = 1)
+    {
+        if (prefab == null)
+        {
+            prefab = Resources.Load<GameObject>("Prefabs/Item");
+        }
+        GameObject obj = Instantiate(prefab);
+        obj.transform.position = pos;
+        obj.GetComponent<Rigidbody>().AddForce(dir);
+        Item item = obj.GetComponent<Item>();
+        item.blockType = type;
+        item.blockData = data;
+        item.Count = count;
+        return item;
+    }
+
 
     public static Item CreateBlockDropItem(CSBlockType type, Vector3 pos)
     {
@@ -70,7 +99,8 @@ public class Item : MonoBehaviour
             Transform mesh = Instantiate(meshTrans);
             Destroy(mesh.GetComponent<Animator>());
             mesh.parent = meshTrans;
-            mesh.localPosition = ChunkMeshGenerator.IsCubeType(type) ? cubeOffset : plantOffset;
+            NBTBlock generator = NBTGeneratorManager.GetMeshGenerator(blockType);
+            mesh.localPosition = generator is NBTPlant ? plantOffset : cubeOffset;
             mesh.localEulerAngles = Vector3.zero;
             mesh.localScale = Vector3.one;
         }
@@ -93,13 +123,15 @@ public class Item : MonoBehaviour
         meshTrans = transform.Find("mesh_parent/mesh");
         MeshFilter meshFilter = meshTrans.GetComponent<MeshFilter>();
 
-        meshFilter.sharedMesh = ChunkMeshGenerator.GetBlockMesh(type);
-        if (ChunkMeshGenerator.IsCubeType(type))
+        NBTBlock generator = NBTGeneratorManager.GetMeshGenerator(blockType);
+        
+        meshFilter.sharedMesh = generator.GetItemMesh(NBTHelper.GetChunk(PlayerController.GetCurrentBlock()), blockData);
+        if (!(generator is NBTPlant))
         {
             meshFilter.transform.localScale = Vector3.one / 2;
         }
 
-        meshTrans.GetComponent<MeshRenderer>().material.mainTexture = ChunkMeshGenerator.GetBlockTexture(type);
+        meshTrans.GetComponent<MeshRenderer>().sharedMaterial.SetTexture("_Array", TextureArrayManager.GetArray());
 
         RefreshMesh();
     }
@@ -128,7 +160,7 @@ public class Item : MonoBehaviour
             {
                 Destroy(gameObject);
                 SoundManager.PlayPopSound();
-                ItemSelectPanel.AddItem(type, Count);
+                //ItemSelectPanel.AddItem(type, Count);
             }
         }
         if (transform.position.y < 0)

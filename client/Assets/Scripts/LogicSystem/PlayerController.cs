@@ -199,6 +199,11 @@ public class PlayerController : MonoBehaviour
         //Item.CreateBlockDropItem(type, WireFrameHelper.pos);
         BreakBlockEffect.Create(WireFrameHelper.type, WireFrameHelper.data, WireFrameHelper.pos);
         SoundManager.PlayBreakSound(WireFrameHelper.type, instance.gameObject);
+        
+        if (NBTGeneratorManager.GetMeshGenerator(WireFrameHelper.type).hasDropItem)
+        {
+            Item.CreateBlockDropItem(WireFrameHelper.type, WireFrameHelper.data, pos);
+        }
     }
 
     void OnLeftMouseDown()
@@ -650,10 +655,12 @@ public class PlayerController : MonoBehaviour
         return q;
     }
 
+    public float sensitivity = 2;
+
     void RotateView()
     {
-        float x = Input.GetAxis("Mouse X");
-        float y = Input.GetAxis("Mouse Y");
+        float x = Input.GetAxis("Mouse X") * sensitivity;
+        float y = Input.GetAxis("Mouse Y") * sensitivity;
         if (x != 0 || y != 0)
         {
             camera.transform.localRotation *= Quaternion.Euler(-y, 0, 0);

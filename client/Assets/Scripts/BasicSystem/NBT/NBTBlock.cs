@@ -1,6 +1,8 @@
 ﻿using protocol.cs_theircraft;
 using System.Collections.Generic;
+using Unity.Collections;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
 public struct Vertex
@@ -19,6 +21,9 @@ public enum Rotation
 public abstract class NBTBlock
 {
     public virtual string name { get; }
+    public virtual string id { get; }
+
+    public virtual string GetIconPathByData(short data) { return null; }
 
     public virtual string topName { get; }
     public virtual string bottomName { get; }
@@ -81,6 +86,68 @@ public abstract class NBTBlock
     public virtual Color GetBackTintColorByData(NBTChunk chunk, byte data) { return Color.white; }
     public virtual Color GetLeftTintColorByData(NBTChunk chunk, byte data) { return Color.white; }
     public virtual Color GetRightTintColorByData(NBTChunk chunk, byte data) { return Color.white; }
+
+    protected Dictionary<byte, Mesh> itemMeshDict = new Dictionary<byte, Mesh>();
+
+    public virtual bool hasDropItem { get { return true; } }
+
+    public virtual Mesh GetItemMesh(NBTChunk chunk, byte data)
+    {
+        if (!itemMeshDict.ContainsKey(data))
+        {
+            Mesh mesh = new Mesh();
+
+            pos = Vector3Int.zero;
+            blockData = data;
+
+            List<Vertex> vertexList = new List<Vertex>();
+            List<int> triangles = new List<int>();
+
+            this.vertices = vertexList;
+            this.triangles = triangles;
+
+            topIndex = GetTopIndexByData(chunk, blockData);
+            bottomIndex = GetBottomIndexByData(chunk, blockData);
+            frontIndex = GetFrontIndexByData(chunk, blockData);
+            backIndex = GetBackIndexByData(chunk, blockData);
+            leftIndex = GetLeftIndexByData(chunk, blockData);
+            rightIndex = GetRightIndexByData(chunk, blockData);
+
+            topColor = GetTopTintColorByData(chunk, blockData);
+            bottomColor = GetBottomTintColorByData(chunk, blockData);
+            frontColor = GetFrontTintColorByData(chunk, blockData);
+            backColor = GetBackTintColorByData(chunk, blockData);
+            leftColor = GetLeftTintColorByData(chunk, blockData);
+            rightColor = GetRightTintColorByData(chunk, blockData);
+
+            AddFrontFace();
+            AddRightFace();
+            AddLeftFace();
+            AddBackFace();
+            AddTopFace();
+            AddBottomFace();
+
+            var vertexCount = vertexList.Count;
+
+            mesh.SetVertexBufferParams(vertexCount, new[] {
+                new VertexAttributeDescriptor(VertexAttribute.Position, VertexAttributeFormat.Float32, 4),
+                new VertexAttributeDescriptor(VertexAttribute.Color, VertexAttributeFormat.Float32, 4),
+                new VertexAttributeDescriptor(VertexAttribute.TexCoord0, VertexAttributeFormat.Float32, 2),
+            });
+
+            var verts = new NativeArray<Vertex>(vertexCount, Allocator.Temp);
+
+            verts.CopyFrom(vertexList.ToArray());
+
+            mesh.SetVertexBufferData(verts, 0, 0, vertexCount);
+            mesh.SetTriangles(triangles.ToArray(), 0);
+            mesh.RecalculateBounds();
+
+            itemMeshDict.Add(data, mesh);
+        }
+
+        return itemMeshDict[data];
+    }
 
     protected static Vector3 nearBottomLeft = new Vector3(-0.5f, -0.5f, -0.5f);
     protected static Vector3 nearBottomRight = new Vector3(0.5f, -0.5f, -0.5f);

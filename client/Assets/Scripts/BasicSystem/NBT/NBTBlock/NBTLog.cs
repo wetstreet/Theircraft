@@ -6,13 +6,16 @@ using UnityEngine;
 public class NBTLog : NBTBlock
 {
     public override string name { get { return "Log"; } }
-
-    public override string topName { get { return "log_oak_top"; } }
-    public override string bottomName { get { return "log_oak_top"; } }
-    public override string frontName { get { return "log_oak"; } }
-    public override string backName { get { return "log_oak"; } }
-    public override string leftName { get { return "log_oak"; } }
-    public override string rightName { get { return "log_oak"; } }
+    public override string id { get { return "minecraft:log"; } }
+    
+    public override string GetIconPathByData(short data)
+    {
+        if (data == 0) return "OakLog";
+        else if (data == 1) return "SpruceLog";
+        else if (data == 2) return "BirchLog";
+        else if (data == 3) return "JungleLog";
+        else return null;
+    }
 
     public override float hardness { get { return 2f; } }
 

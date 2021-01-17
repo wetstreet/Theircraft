@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Collections;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class NBTPlant : NBTBlock
 {
@@ -17,6 +19,8 @@ public class NBTPlant : NBTBlock
     public override bool isTransparent { get { return true; } }
 
     public override bool isCollidable { get { return false; } }
+
+    public override bool hasDropItem { get { return false; } }
 
     public override void AddCube(NBTChunk chunk, byte blockData, byte skyLight, Vector3Int pos, NBTGameObject nbtGO)
     {
@@ -52,5 +56,16 @@ public class NBTPlant : NBTBlock
     void AddAntiDiagonalFace()
     {
         AddFace(nearBottomLeft, nearTopLeft, farTopRight, farBottomRight, plantIndex, tintColor);
+    }
+
+    protected virtual string itemMeshPath { get { return null; } }
+
+    public override Mesh GetItemMesh(NBTChunk chunk, byte data)
+    {
+        if (!string.IsNullOrEmpty(itemMeshPath))
+        {
+            return Resources.Load<Mesh>("Meshes/items/" + itemMeshPath + "/" + itemMeshPath);
+        }
+        return null;
     }
 }

@@ -6,6 +6,9 @@ using UnityEngine;
 public class NBTDirt : NBTBlock
 {
     public override string name { get { return "Dirt"; } }
+    public override string id { get { return "minecraft:dirt"; } }
+
+    public override string GetIconPathByData(short data) { return "Dirt"; }
 
     public override string topName { get { return "dirt"; } }
     public override string bottomName { get { return "dirt"; } }

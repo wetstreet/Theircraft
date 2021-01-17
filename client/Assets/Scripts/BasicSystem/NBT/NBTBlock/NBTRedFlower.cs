@@ -70,4 +70,14 @@ public class NBTRedFlower : NBTPlant
         Debug.Log("red flower no break effect texture, data=" + data);
         return "flower_rose";
     }
+
+    public override Mesh GetItemMesh(NBTChunk chunk, byte data)
+    {
+        if (data == 0)
+        {
+            string path = "poppy";
+            return Resources.Load<Mesh>("Meshes/items/" + path + "/" + path);
+        }
+        throw new System.Exception("no texture");
+    }
 }
