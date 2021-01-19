@@ -443,13 +443,13 @@ public class CreativeInventory : MonoBehaviour
         if (holdItem)
         {
             holdItem = false;
-            Item.CreatePlayerDropItem(holdItemType, 1);
+            //Item.CreatePlayerDropItem(holdItemType, 1);
             holdItemImage.gameObject.SetActive(false);
         }
         else if (holdSelectItem)
         {
             holdSelectItem = false;
-            Item.CreatePlayerDropItem(holdItemType, holdItemCount);
+            //Item.CreatePlayerDropItem(holdItemType, holdItemCount);
             holdItemImage.gameObject.SetActive(false);
         }
     }

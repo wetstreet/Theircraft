@@ -18,16 +18,8 @@ public enum Rotation
     Right,
 }
 
-public abstract class NBTBlock
+public abstract class NBTBlock : NBTObject
 {
-    public virtual string name { get; }
-    public virtual string id { get; }
-
-    public virtual byte maxStackCount { get { return 64; } }
-
-    public virtual string GetNameByData(short data) { return name; }
-
-    public virtual string GetIconPathByData(short data) { return null; }
 
     public virtual string topName { get; }
     public virtual string bottomName { get; }
@@ -91,11 +83,21 @@ public abstract class NBTBlock
     public virtual Color GetLeftTintColorByData(NBTChunk chunk, byte data) { return Color.white; }
     public virtual Color GetRightTintColorByData(NBTChunk chunk, byte data) { return Color.white; }
 
-    protected Dictionary<byte, Mesh> itemMeshDict = new Dictionary<byte, Mesh>();
 
     public virtual bool hasDropItem { get { return true; } }
 
-    public virtual Mesh GetItemMesh(NBTChunk chunk, byte data)
+    public virtual byte GetDropItemTypeByData() { return NBTGeneratorManager.id2type[id]; }
+
+    protected static Vector3 nearBottomLeft = new Vector3(-0.5f, -0.5f, -0.5f);
+    protected static Vector3 nearBottomRight = new Vector3(0.5f, -0.5f, -0.5f);
+    protected static Vector3 nearTopLeft = new Vector3(-0.5f, 0.5f, -0.5f);
+    protected static Vector3 nearTopRight = new Vector3(0.5f, 0.5f, -0.5f);
+    protected static Vector3 farBottomLeft = new Vector3(-0.5f, -0.5f, 0.5f);
+    protected static Vector3 farBottomRight = new Vector3(0.5f, -0.5f, 0.5f);
+    protected static Vector3 farTopLeft = new Vector3(-0.5f, 0.5f, 0.5f);
+    protected static Vector3 farTopRight = new Vector3(0.5f, 0.5f, 0.5f);
+
+    public override Mesh GetItemMesh(NBTChunk chunk, byte data)
     {
         if (!itemMeshDict.ContainsKey(data))
         {
@@ -124,12 +126,12 @@ public abstract class NBTBlock
             leftColor = GetLeftTintColorByData(chunk, blockData);
             rightColor = GetRightTintColorByData(chunk, blockData);
 
-            AddFrontFace();
-            AddRightFace();
-            AddLeftFace();
-            AddBackFace();
-            AddTopFace();
-            AddBottomFace();
+            AddFrontFace(blockData);
+            AddRightFace(blockData);
+            AddLeftFace(blockData);
+            AddBackFace(blockData);
+            AddTopFace(blockData);
+            AddBottomFace(blockData);
 
             var vertexCount = vertexList.Count;
 
@@ -153,30 +155,6 @@ public abstract class NBTBlock
         return itemMeshDict[data];
     }
 
-    protected static Vector3 nearBottomLeft = new Vector3(-0.5f, -0.5f, -0.5f);
-    protected static Vector3 nearBottomRight = new Vector3(0.5f, -0.5f, -0.5f);
-    protected static Vector3 nearTopLeft = new Vector3(-0.5f, 0.5f, -0.5f);
-    protected static Vector3 nearTopRight = new Vector3(0.5f, 0.5f, -0.5f);
-    protected static Vector3 farBottomLeft = new Vector3(-0.5f, -0.5f, 0.5f);
-    protected static Vector3 farBottomRight = new Vector3(0.5f, -0.5f, 0.5f);
-    protected static Vector3 farTopLeft = new Vector3(-0.5f, 0.5f, 0.5f);
-    protected static Vector3 farTopRight = new Vector3(0.5f, 0.5f, 0.5f);
-
-    protected void CopyFromMesh(Mesh mesh, Vector3Int pos, List<Vector3> vertices, List<Vector2> uv, List<int> triangles)
-    {
-        int length = vertices.Count;
-        foreach (Vector3 vertex in mesh.vertices)
-        {
-            vertices.Add(vertex + pos);
-        }
-        uv.AddRange(mesh.uv);
-
-        foreach (int index in mesh.triangles)
-        {
-            triangles.Add(index + length);
-        }
-    }
-    
     protected Vector3Int pos;
     protected byte blockData;
     protected List<Vertex> vertices;
@@ -212,27 +190,27 @@ public abstract class NBTBlock
 
         if (!chunk.HasOpaqueBlock(pos.x, pos.y, pos.z - 1))
         {
-            AddFrontFace();
+            AddFrontFace(blockData);
         }
         if (!chunk.HasOpaqueBlock(pos.x + 1, pos.y, pos.z))
         {
-            AddRightFace();
+            AddRightFace(blockData);
         }
         if (!chunk.HasOpaqueBlock(pos.x - 1, pos.y, pos.z))
         {
-            AddLeftFace();
+            AddLeftFace(blockData);
         }
         if (!chunk.HasOpaqueBlock(pos.x, pos.y, pos.z + 1))
         {
-            AddBackFace();
+            AddBackFace(blockData);
         }
         if (!chunk.HasOpaqueBlock(pos.x, pos.y + 1, pos.z))
         {
-            AddTopFace();
+            AddTopFace(blockData);
         }
         if (!chunk.HasOpaqueBlock(pos.x, pos.y - 1, pos.z))
         {
-            AddBottomFace();
+            AddBottomFace(blockData);
         }
     }
 
@@ -274,37 +252,37 @@ public abstract class NBTBlock
         });
     }
     
-    void AddFrontFace()
+    protected virtual void AddFrontFace(byte data)
     {
         rotation = GetFrontRotationByData(blockData);
         AddFace(nearBottomLeft, nearTopLeft, nearTopRight, nearBottomRight, frontIndex, frontColor);
     }
 
-    void AddBackFace()
+    protected virtual void AddBackFace(byte data)
     {
         rotation = GetBackRotationByData(blockData);
         AddFace(farBottomRight, farTopRight, farTopLeft, farBottomLeft, backIndex, backColor);
     }
 
-    void AddTopFace()
+    protected virtual void AddTopFace(byte data)
     {
         rotation = GetTopRotationByData(blockData);
         AddFace(farTopRight, nearTopRight, nearTopLeft, farTopLeft, topIndex, topColor);
     }
 
-    void AddBottomFace()
+    protected virtual void AddBottomFace(byte data)
     {
         rotation = GetBottomRotationByData(blockData);
         AddFace(nearBottomRight, farBottomRight, farBottomLeft, nearBottomLeft, bottomIndex, bottomColor);
     }
 
-    void AddLeftFace()
+    protected virtual void AddLeftFace(byte data)
     {
         rotation = GetLeftRotationByData(blockData);
         AddFace(farBottomLeft, farTopLeft, nearTopLeft, nearBottomLeft, leftIndex, leftColor);
     }
 
-    void AddRightFace()
+    protected virtual void AddRightFace(byte data)
     {
         rotation = GetRightRotationByData(blockData);
         AddFace(nearBottomRight, nearTopRight, farTopRight, farBottomRight, rightIndex, rightColor);

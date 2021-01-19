@@ -282,7 +282,7 @@ public class ChunkManager
                 //}
             }
 
-            Item.CreateBlockDropItem(type, pos);
+            //Item.CreateBlockDropItem(type, pos);
             //BreakBlockEffect.Create(type, pos);
             //SoundManager.PlayBreakSound(type, PlayerController.instance.gameObject);
 

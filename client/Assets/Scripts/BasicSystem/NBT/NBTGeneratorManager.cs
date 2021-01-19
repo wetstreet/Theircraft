@@ -38,6 +38,8 @@ public class NBTGeneratorManager : MonoBehaviour
         { 81, new NBTCactus() },
         { 82, new NBTClay() },
         { 83, new NBTSugarCane() },
+        { 125, new NBTDoubleWoodenSlab() },
+        { 126, new NBTWoodenSlab() },
         { 175, new NBTLargeFlowers() },
     };
 

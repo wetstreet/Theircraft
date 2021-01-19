@@ -12,8 +12,9 @@ public class NBTEditorWindow : EditorWindow
     [MenuItem("Window/NBT Editor Window")]
     static void Init()
     {
-        EditorWindow window = GetWindow(typeof(NBTEditorWindow));
+        NBTEditorWindow window = (NBTEditorWindow)GetWindow(typeof(NBTEditorWindow));
         window.Show();
+        window.save = NBTHelper.save;
     }
 
     struct Biome
@@ -48,7 +49,7 @@ public class NBTEditorWindow : EditorWindow
     Color c;
     float AdjTemp;
     float AdjRainfall;
-    string save = "New World1";
+    public string save = "New World1";
     private void OnGUI()
     {
         save = EditorGUILayout.TextField("save", save);
@@ -124,7 +125,16 @@ public class NBTEditorWindow : EditorWindow
                 biomeType = Biomes[xInChunk * 16 + zInChunk];
             }
 
-            Biome biome = gBiomes[biomeType];
+            Biome biome;
+            if (biomeType < 6)
+            {
+                biome = gBiomes[biomeType];
+            }
+            else
+            {
+                biome = gBiomes[0];
+                Debug.Log("no biome,type=" + biomeType);
+            }
             float temp = biome.temp - Mathf.Max(pos.y - 64, 0) * 0.0016f;
             AdjTemp = Mathf.Clamp01(temp);
             AdjRainfall = Mathf.Clamp01(biome.rainfall) * AdjTemp;

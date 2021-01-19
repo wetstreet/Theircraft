@@ -51,7 +51,7 @@ public class ItemSelectPanel : MonoBehaviour
     {
         if (dataList[curIndex] != CSBlockType.None)
         {
-            Item.CreatePlayerDropItem(dataList[curIndex]);
+            //Item.CreatePlayerDropItem(dataList[curIndex]);
             int left = countList[curIndex] - count;
             if (left <= 0)
             {

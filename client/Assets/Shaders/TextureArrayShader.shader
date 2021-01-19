@@ -31,13 +31,14 @@ Shader "Custom/TextureArrayShader"
             {
                 float4 vertex : POSITION;
                 float2 uv : TEXCOORD0;
+                // float3 normal : NORMAL;
                 float4 color : COLOR;
             };
 
             struct v2f
             {
                 float3 uv : TEXCOORD0;
-                // UNITY_FOG_COORDS(1)
+                // float3 worldNormal : TEXCOORD1;
                 float4 vertex : SV_POSITION;
                 half4 color : COLOR;
             };
@@ -55,7 +56,7 @@ Shader "Custom/TextureArrayShader"
                 o.uv.xy = v.uv * float2(_TileX, _TileY);
                 o.uv.z = v.vertex.w;
                 o.color = v.color;
-                // UNITY_TRANSFER_FOG(o,o.vertex);
+                // o.worldNormal = TransformObjectToWorldNormal(v.normal);
                 return o;
             }
 
@@ -64,8 +65,11 @@ Shader "Custom/TextureArrayShader"
                 // sample the texture
                 half4 col = SAMPLE_TEXTURE2D_ARRAY(_Array, sampler_Array, i.uv.xy, i.uv.z) * i.color;
                 clip(col.a - _Cutoff);
-                // apply fog
-                // UNITY_APPLY_FOG(i.fogCoord, col);
+                
+                // float normal = i.worldNormal;
+                // float NdotL = max(dot(_MainLightPosition.xyz, normal), 0.2);
+                // col.rgb *= NdotL;
+
                 return col;
             }
 

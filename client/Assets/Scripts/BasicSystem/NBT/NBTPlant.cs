@@ -57,15 +57,4 @@ public class NBTPlant : NBTBlock
     {
         AddFace(nearBottomLeft, nearTopLeft, farTopRight, farBottomRight, plantIndex, tintColor);
     }
-
-    protected virtual string itemMeshPath { get { return null; } }
-
-    public override Mesh GetItemMesh(NBTChunk chunk, byte data)
-    {
-        if (!string.IsNullOrEmpty(itemMeshPath))
-        {
-            return Resources.Load<Mesh>("Meshes/items/" + itemMeshPath + "/" + itemMeshPath);
-        }
-        return null;
-    }
 }

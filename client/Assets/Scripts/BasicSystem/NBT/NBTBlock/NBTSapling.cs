@@ -32,70 +32,30 @@ public class NBTSapling : NBTPlant
 
     public override bool hasDropItem { get { return true; } }
 
-    public override Mesh GetItemMesh(NBTChunk chunk, byte data)
+    public override Mesh GetPrefabMesh(NBTChunk chunk, byte data)
     {
-        if (!itemMeshDict.ContainsKey(data))
+        string path;
+        Mesh oldMesh = null;
+        switch (data % 4)
         {
-            Mesh oldMesh = null;
-            string path;
-            switch (data % 4)
-            {
-                case 0:
-                    path = "oak_sapling";
-                    oldMesh = Resources.Load<Mesh>("Meshes/items/" + path + "/" + path);
-                    break;
-                case 1:
-                    path = "spruce_sapling";
-                    oldMesh = Resources.Load<Mesh>("Meshes/items/" + path + "/" + path);
-                    break;
-                case 2:
-                    path = "birch_sapling";
-                    oldMesh = Resources.Load<Mesh>("Meshes/items/" + path + "/" + path);
-                    break;
-                case 3:
-                    path = "jungle_sapling";
-                    oldMesh = Resources.Load<Mesh>("Meshes/items/" + path + "/" + path);
-                    break;
-            }
-            
-            Mesh mesh = new Mesh();
-
-            pos = Vector3Int.zero;
-            blockData = data;
-
-            List<Vertex> vertexList = new List<Vertex>();
-            List<int> triangles = new List<int>();
-            
-            int index = GetPlantIndexByData(data);
-            for (int i = 0; i < oldMesh.vertices.Length; i++)
-            {
-                vertexList.Add(new Vertex { pos = ToVector4(oldMesh.vertices[i], index), texcoord = oldMesh.uv[i], color = Color.white });
-            }
-            foreach (int i in oldMesh.triangles)
-            {
-                triangles.Add(i);
-            }
-            
-            var vertexCount = vertexList.Count;
-
-            mesh.SetVertexBufferParams(vertexCount, new[] {
-                new VertexAttributeDescriptor(VertexAttribute.Position, VertexAttributeFormat.Float32, 4),
-                new VertexAttributeDescriptor(VertexAttribute.Color, VertexAttributeFormat.Float32, 4),
-                new VertexAttributeDescriptor(VertexAttribute.TexCoord0, VertexAttributeFormat.Float32, 2),
-            });
-
-            var verts = new NativeArray<Vertex>(vertexCount, Allocator.Temp);
-
-            verts.CopyFrom(vertexList.ToArray());
-
-            mesh.SetVertexBufferData(verts, 0, 0, vertexCount);
-            mesh.SetTriangles(triangles.ToArray(), 0);
-            mesh.RecalculateBounds();
-
-            itemMeshDict.Add(data, mesh);
+            case 0:
+                path = "oak_sapling";
+                oldMesh = Resources.Load<Mesh>("Meshes/items/" + path + "/" + path);
+                break;
+            case 1:
+                path = "spruce_sapling";
+                oldMesh = Resources.Load<Mesh>("Meshes/items/" + path + "/" + path);
+                break;
+            case 2:
+                path = "birch_sapling";
+                oldMesh = Resources.Load<Mesh>("Meshes/items/" + path + "/" + path);
+                break;
+            case 3:
+                path = "jungle_sapling";
+                oldMesh = Resources.Load<Mesh>("Meshes/items/" + path + "/" + path);
+                break;
         }
-
-        return itemMeshDict[data];
+        return oldMesh;
     }
 
     public override int GetPlantIndexByData(int data)

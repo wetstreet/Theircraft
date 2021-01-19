@@ -302,7 +302,16 @@ public class PlayerController : MonoBehaviour
             }
             if (Input.GetKeyDown(KeyCode.Q))
             {
-                ItemSelectPanel.DropCurItem();
+                uint slot = ItemSelectPanel.curIndex;
+                InventoryItem item = InventorySystem.items[ItemSelectPanel.curIndex];
+                if (item.id != null)
+                {
+                    byte type = NBTGeneratorManager.id2type[item.id];
+                    short data = InventorySystem.items[slot].damage;
+                    Item.CreatePlayerDropItem(type, (byte)data);
+                    InventorySystem.DecrementCurrent();
+                    ItemSelectPanel.instance.RefreshUI();
+                }
             }
         }
         if (Input.GetKeyDown(KeyCode.F2))

@@ -6,10 +6,45 @@ using UnityEngine;
 public class NBTLeaves : NBTBlock
 {
     public override string name { get { return "Leaves"; } }
+    public override string id { get { return "minecraft:leaves"; } }
 
     public override void Init()
     {
         UsedTextures = new string[] { "leaves_oak", "leaves_spruce", "leaves_birch", "leaves_jungle" };
+    }
+    
+    public override float hardness { get { return 0.2f; } }
+
+    public override string GetIconPathByData(short data)
+    {
+        switch (data % 4)
+        {
+            case 0:
+                return "OakLeaves";
+            case 1:
+                return "SpruceLeaves";
+            case 2:
+                return "BirchLeaves";
+            case 3:
+                return "JungleLeaves";
+        }
+        return "OakLeaves";
+    }
+
+    public override string GetNameByData(short data)
+    {
+        switch (data % 4)
+        {
+            case 0:
+                return "Oak Leaves";
+            case 1:
+                return "Spruce Leaves";
+            case 2:
+                return "Birch Leaves";
+            case 3:
+                return "Jungle Leaves";
+        }
+        return "Leaves";
     }
 
     Color GetTintColorByData(byte data)

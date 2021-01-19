@@ -59,36 +59,10 @@ public class Item : MonoBehaviour
         return item;
     }
 
-
-    public static Item CreateBlockDropItem(CSBlockType type, Vector3 pos)
-    {
-        float right = Random.Range(-1f, 1f);
-        float forward = Random.Range(-1f, 1f);
-        Vector3 dir = Vector3.up + right * Vector3.right + forward * Vector3.forward;
-        Item item = Create(type, pos, dir.normalized);
-        item.coolDownTime = 0.5f;
-        return item;
-    }
-
     public static Vector3 dropOffset = new Vector3(0, 1.1f, 0);
-    public static Item CreatePlayerDropItem(CSBlockType type, int count = 1)
+    public static Item CreatePlayerDropItem(byte type, byte data, int count = 1)
     {
-        return Create(type, PlayerController.instance.position + dropOffset, PlayerController.instance.camera.transform.forward * 3, count);
-    }
-
-    public static Item Create(CSBlockType type, Vector3 pos, Vector3 dir, int count = 1)
-    {
-        if (prefab == null)
-        {
-            prefab = Resources.Load<GameObject>("Prefabs/Item");
-        }
-        GameObject obj = Instantiate(prefab);
-        obj.transform.position = pos;
-        obj.GetComponent<Rigidbody>().AddForce(dir);
-        Item item = obj.GetComponent<Item>();
-        item.type = type;
-        item.Count = count;
-        return item;
+        return Create(type, data, PlayerController.instance.position + dropOffset, PlayerController.instance.camera.transform.forward * 3, count);
     }
 
     void RefreshMesh()
