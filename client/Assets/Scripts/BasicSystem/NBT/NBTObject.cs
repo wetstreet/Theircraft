@@ -11,6 +11,8 @@ public abstract class NBTObject
 
     public virtual string GetNameByData(short data) { return name; }
 
+    public virtual string pathPrefix { get { return "GUI/icon/"; } }
+
     public virtual string GetIconPathByData(short data) { return null; }
 
     static Material commonItemMat;

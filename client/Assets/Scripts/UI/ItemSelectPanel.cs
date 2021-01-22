@@ -155,7 +155,7 @@ public class ItemSelectPanel : MonoBehaviour
         InventoryItem curItem = InventorySystem.items[curIndex];
         if (curItem.id != null)
         {
-            NBTBlock generator = NBTGeneratorManager.GetMeshGenerator(curItem.id);
+            NBTObject generator = NBTGeneratorManager.GetObjectGenerator(curItem.id);
             if (generator != null)
             {
                 PlayerController.ShowBlock(generator, curItem.damage);

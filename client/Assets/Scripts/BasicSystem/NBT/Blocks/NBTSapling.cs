@@ -14,6 +14,19 @@ public class NBTSapling : NBTPlant
         UsedTextures = new string[] { "sapling_oak", "sapling_spruce", "sapling_birch", "sapling_jungle" };
     }
 
+    public override Material GetItemMaterial(byte data)
+    {
+        byte index = (byte)(data % 4);
+        if (!itemMaterialDict.ContainsKey(index))
+        {
+            Material mat = new Material(Shader.Find("Custom/BlockShader"));
+            Texture2D tex = Resources.Load<Texture2D>("GUI/icon/" + GetIconPathByData(index));
+            mat.mainTexture = tex;
+            itemMaterialDict.Add(index, mat);
+        }
+        return itemMaterialDict[index];
+    }
+
     public override string GetIconPathByData(short data)
     {
         switch (data % 4)

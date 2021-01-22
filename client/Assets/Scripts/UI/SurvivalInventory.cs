@@ -218,7 +218,7 @@ public class SurvivalInventory : MonoBehaviour
             descTrans.anchoredPosition = Input.mousePosition / UISystem.scale + offset;
 
             InventoryItem item = InventorySystem.items[highlightIndex];
-            NBTBlock generator = NBTGeneratorManager.GetMeshGenerator(item.id);
+            NBTObject generator = NBTGeneratorManager.GetObjectGenerator(item.id);
             if (generator == null)
             {
                 descLabel.text = item.id;

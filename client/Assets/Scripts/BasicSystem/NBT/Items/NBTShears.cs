@@ -9,9 +9,5 @@ public class NBTShears : NBTItem
 
     public override byte maxStackCount { get { return 1; } }
 
-    public override string GetNameByData(short data) { return name; }
-
     public override string GetIconPathByData(short data) { return "shears"; }
-
-    protected override string itemMeshPath { get { return null; } }
 }

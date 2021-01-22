@@ -165,7 +165,7 @@ public class PlayerController : MonoBehaviour
         return Mathf.Max(Mathf.Abs(chunk.x - chunkPos.x), Mathf.Abs(chunk.z - chunkPos.y));
     }
 
-    public static void ShowBlock(NBTBlock generator, short data)
+    public static void ShowBlock(NBTObject generator, short data)
     {
         instance.handMeshRenderer.enabled = false;
         instance.blockMeshFilter.sharedMesh = generator.GetItemMesh(NBTHelper.GetChunk(GetCurrentBlock()), (byte)data);
@@ -199,10 +199,11 @@ public class PlayerController : MonoBehaviour
         //Item.CreateBlockDropItem(type, WireFrameHelper.pos);
         BreakBlockEffect.Create(WireFrameHelper.type, WireFrameHelper.data, WireFrameHelper.pos);
         SoundManager.PlayBreakSound(WireFrameHelper.type, instance.gameObject);
-        
-        if (NBTGeneratorManager.GetMeshGenerator(WireFrameHelper.type).hasDropItem)
+
+        NBTBlock generator = NBTGeneratorManager.GetMeshGenerator(WireFrameHelper.type);
+        if (generator.hasDropItem)
         {
-            Item.CreateBlockDropItem(WireFrameHelper.type, WireFrameHelper.data, pos);
+            Item.CreateBlockDropItem(generator, WireFrameHelper.data, pos);
         }
     }
 
@@ -306,11 +307,14 @@ public class PlayerController : MonoBehaviour
                 InventoryItem item = InventorySystem.items[ItemSelectPanel.curIndex];
                 if (item.id != null)
                 {
-                    byte type = NBTGeneratorManager.id2type[item.id];
-                    short data = InventorySystem.items[slot].damage;
-                    Item.CreatePlayerDropItem(type, (byte)data);
-                    InventorySystem.DecrementCurrent();
-                    ItemSelectPanel.instance.RefreshUI();
+                    NBTObject generator = NBTGeneratorManager.GetObjectGenerator(item.id);
+                    if (generator != null)
+                    {
+                        short data = InventorySystem.items[slot].damage;
+                        Item.CreatePlayerDropItem(generator, (byte)data);
+                        InventorySystem.DecrementCurrent();
+                        ItemSelectPanel.instance.RefreshUI();
+                    }
                 }
             }
         }

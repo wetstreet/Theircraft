@@ -12,7 +12,7 @@ public class Item : MonoBehaviour
 
     [HideInInspector] public float coolDownTime = 2f;
     [HideInInspector] public CSBlockType type;
-    [HideInInspector] public byte blockType;
+    [HideInInspector] public NBTObject generator;
     [HideInInspector] public byte blockData;
     [HideInInspector] public bool destroyed;
 
@@ -33,17 +33,17 @@ public class Item : MonoBehaviour
     static float minDistance = 0.2f;
     static float moveTime = 0.2f;
 
-    public static Item CreateBlockDropItem(byte type, byte data, Vector3 pos)
+    public static Item CreateBlockDropItem(NBTObject generator, byte data, Vector3 pos)
     {
         float right = Random.Range(-1f, 1f);
         float forward = Random.Range(-1f, 1f);
         Vector3 dir = Vector3.up + right * Vector3.right + forward * Vector3.forward;
-        Item item = Create(type, data, pos, dir.normalized);
+        Item item = Create(generator, data, pos, dir.normalized);
         item.coolDownTime = 0.5f;
         return item;
     }
 
-    public static Item Create(byte type, byte data, Vector3 pos, Vector3 dir, int count = 1)
+    public static Item Create(NBTObject generator, byte data, Vector3 pos, Vector3 dir, int count = 1)
     {
         if (prefab == null)
         {
@@ -53,16 +53,16 @@ public class Item : MonoBehaviour
         obj.transform.position = pos;
         obj.GetComponent<Rigidbody>().AddForce(dir);
         Item item = obj.GetComponent<Item>();
-        item.blockType = type;
+        item.generator = generator;
         item.blockData = data;
         item.Count = count;
         return item;
     }
 
     public static Vector3 dropOffset = new Vector3(0, 1.1f, 0);
-    public static Item CreatePlayerDropItem(byte type, byte data, int count = 1)
+    public static Item CreatePlayerDropItem(NBTObject generator, byte data, int count = 1)
     {
-        return Create(type, data, PlayerController.instance.position + dropOffset, PlayerController.instance.camera.transform.forward * 3, count);
+        return Create(generator, data, PlayerController.instance.position + dropOffset, PlayerController.instance.camera.transform.forward * 3, count);
     }
 
     void RefreshMesh()
@@ -73,7 +73,6 @@ public class Item : MonoBehaviour
             Transform mesh = Instantiate(meshTrans);
             Destroy(mesh.GetComponent<Animator>());
             mesh.parent = meshTrans;
-            NBTBlock generator = NBTGeneratorManager.GetMeshGenerator(blockType);
             mesh.localPosition = generator is NBTPlant ? plantOffset : cubeOffset;
             mesh.localEulerAngles = Vector3.zero;
             mesh.localScale = Vector3.one;
@@ -96,8 +95,6 @@ public class Item : MonoBehaviour
 
         meshTrans = transform.Find("mesh_parent/mesh");
         MeshFilter meshFilter = meshTrans.GetComponent<MeshFilter>();
-
-        NBTBlock generator = NBTGeneratorManager.GetMeshGenerator(blockType);
         
         meshFilter.sharedMesh = generator.GetItemMesh(NBTHelper.GetChunk(PlayerController.GetCurrentBlock()), blockData);
         if (!(generator is NBTPlant))
@@ -134,7 +131,7 @@ public class Item : MonoBehaviour
             {
                 Destroy(gameObject);
                 SoundManager.PlayPopSound();
-                InventorySystem.Increment(blockType, blockData, (byte)Count);
+                InventorySystem.Increment(generator, blockData, (byte)Count);
                 ItemSelectPanel.instance.RefreshUI();
             }
         }

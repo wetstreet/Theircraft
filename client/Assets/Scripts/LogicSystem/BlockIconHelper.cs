@@ -11,10 +11,11 @@ public class BlockIconHelper
 
     public static Sprite GetIcon(string id, short data)
     {
-        if (NBTGeneratorManager.id2generator.ContainsKey(id))
+        NBTObject generator = NBTGeneratorManager.GetObjectGenerator(id);
+        if (generator != null)
         {
-            string path = NBTGeneratorManager.id2generator[id].GetIconPathByData(data);
-            return Resources.Load<Sprite>("GUI/icon/" + path);
+            string path = generator.GetIconPathByData(data);
+            return Resources.Load<Sprite>(generator.pathPrefix + path);
         }
         Debug.Log("no icon, id=" + id + ",data=" + data);
         return null;

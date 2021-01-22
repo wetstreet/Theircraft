@@ -34,7 +34,10 @@ public class ItemMeshGenerator
     public Mesh Generate(Texture2D tex)
     {
         texture = tex;
-        Debug.Log("generator,tex=" + texture + ",height=" + texture.height);
+
+        vertices.Clear();
+        uv.Clear();
+        triangles.Clear();
 
         unit = 1f / texture.width;
         offset = unit / 5;
@@ -48,7 +51,6 @@ public class ItemMeshGenerator
             for (int j = 0; j < texture.height; j++)
             {
                 int index = i * texture.width + j;
-                Debug.Log("i=" + i + ",j=" + j + ",index=" + index + ",color=" + colors[index]);
 
                 int x = j;
                 int y = i;

@@ -34,9 +34,8 @@ public class InventorySystem
         }
     }
 
-    public static void Increment(byte type, byte data, byte count)
+    public static void Increment(NBTObject generator, byte data, byte count)
     {
-        NBTBlock generator = NBTGeneratorManager.GetMeshGenerator(type);
         // 优先加到已有的同类的里面
         for (int i = 0; i < 36; i++)
         {
@@ -48,10 +47,10 @@ public class InventorySystem
                 continue;
             }
 
-            byte t = NBTGeneratorManager.id2type[items[i].id];
+            string id = items[i].id;
             short d = items[i].damage;
             byte c = items[i].count;
-            if (t == type && d == data && c < generator.maxStackCount)
+            if (id == generator.id && d == data && c < generator.maxStackCount)
             {
                 int diff = generator.maxStackCount - c;
 

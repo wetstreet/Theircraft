@@ -43,7 +43,15 @@ public class NBTGeneratorManager : MonoBehaviour
         { 175, new NBTLargeFlowers() },
     };
 
+    public static List<NBTItem> itemList = new List<NBTItem>()
+    {
+        new NBTShears(),
+        new NBTWheatSeeds(),
+    };
+
     public static Dictionary<string, NBTBlock> id2generator = new Dictionary<string, NBTBlock>();
+
+    public static Dictionary<string, NBTItem> id2item = new Dictionary<string, NBTItem>();
 
     public static Dictionary<string, byte> id2type = new Dictionary<string, byte>();
 
@@ -58,6 +66,14 @@ public class NBTGeneratorManager : MonoBehaviour
             {
                 id2generator.Add(generator.id, generator);
                 id2type.Add(generator.id, keyValue.Key);
+            }
+        }
+
+        foreach (NBTItem item in itemList)
+        {
+            if (item.id != null)
+            {
+                id2item.Add(item.id, item);
             }
         }
     }
@@ -76,6 +92,19 @@ public class NBTGeneratorManager : MonoBehaviour
         if (id2generator.ContainsKey(id))
         {
             return id2generator[id];
+        }
+        return null;
+    }
+
+    public static NBTObject GetObjectGenerator(string id)
+    {
+        if (id2generator.ContainsKey(id))
+        {
+            return id2generator[id];
+        }
+        if (id2item.ContainsKey(id))
+        {
+            return id2item[id];
         }
         return null;
     }

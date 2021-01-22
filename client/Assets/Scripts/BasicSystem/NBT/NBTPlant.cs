@@ -60,15 +60,14 @@ public class NBTPlant : NBTBlock
     
     public override Material GetItemMaterial(byte data)
     {
-        byte index = (byte)(data % 4);
-        if (!itemMaterialDict.ContainsKey(index))
+        if (!itemMaterialDict.ContainsKey(data))
         {
             Material mat = new Material(Shader.Find("Custom/BlockShader"));
-            Texture2D tex = Resources.Load<Texture2D>("GUI/icon/" + GetIconPathByData(index));
+            Texture2D tex = Resources.Load<Texture2D>("GUI/icon/" + GetIconPathByData(data));
             mat.mainTexture = tex;
-            itemMaterialDict.Add(index, mat);
+            itemMaterialDict.Add(data, mat);
         }
-        return itemMaterialDict[index];
+        return itemMaterialDict[data];
     }
 
     public override Mesh GetItemMesh(NBTChunk chunk, byte data)
