@@ -169,7 +169,7 @@ public class PlayerController : MonoBehaviour
     {
         instance.handMeshRenderer.enabled = false;
         instance.blockMeshFilter.sharedMesh = generator.GetItemMesh(NBTHelper.GetChunk(GetCurrentBlock()), (byte)data);
-        instance.blockMeshRenderer.GetComponent<MeshRenderer>().sharedMaterial.SetTexture("_Array", TextureArrayManager.GetArray());
+        instance.blockMeshRenderer.GetComponent<MeshRenderer>().sharedMaterial = generator.GetItemMaterial((byte)data);
         instance.blockMeshFilter.transform.gameObject.SetActive(true);
     }
 

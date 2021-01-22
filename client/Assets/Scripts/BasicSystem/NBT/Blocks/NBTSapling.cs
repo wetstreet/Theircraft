@@ -32,32 +32,6 @@ public class NBTSapling : NBTPlant
 
     public override bool hasDropItem { get { return true; } }
 
-    public override Mesh GetPrefabMesh(NBTChunk chunk, byte data)
-    {
-        string path;
-        Mesh oldMesh = null;
-        switch (data % 4)
-        {
-            case 0:
-                path = "oak_sapling";
-                oldMesh = Resources.Load<Mesh>("Meshes/items/" + path + "/" + path);
-                break;
-            case 1:
-                path = "spruce_sapling";
-                oldMesh = Resources.Load<Mesh>("Meshes/items/" + path + "/" + path);
-                break;
-            case 2:
-                path = "birch_sapling";
-                oldMesh = Resources.Load<Mesh>("Meshes/items/" + path + "/" + path);
-                break;
-            case 3:
-                path = "jungle_sapling";
-                oldMesh = Resources.Load<Mesh>("Meshes/items/" + path + "/" + path);
-                break;
-        }
-        return oldMesh;
-    }
-
     public override int GetPlantIndexByData(int data)
     {
         switch (data % 4)

@@ -105,7 +105,7 @@ public class Item : MonoBehaviour
             meshFilter.transform.localScale = Vector3.one / 2;
         }
 
-        meshTrans.GetComponent<MeshRenderer>().sharedMaterial.SetTexture("_Array", TextureArrayManager.GetArray());
+        meshTrans.GetComponent<MeshRenderer>().sharedMaterial = generator.GetItemMaterial(blockData);
 
         RefreshMesh();
     }

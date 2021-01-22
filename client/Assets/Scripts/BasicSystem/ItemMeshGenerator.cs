@@ -2,9 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ItemMeshGenerator : MonoBehaviour
+public class ItemMeshGenerator
 {
-    public Texture2D texture;
+    Texture2D texture;
 
     List<Vector3> vertices = new List<Vector3>();
     List<Vector2> uv = new List<Vector2>();
@@ -13,41 +13,62 @@ public class ItemMeshGenerator : MonoBehaviour
     float unit;
     float offset;
 
-    int GetIndexByCoord(int x, int y)
+    int GetIndexByCoord(int j, int i)
     {
-        return y * texture.height + x;
+        return i * texture.width + j;
     }
 
-    private void Start()
+    static ItemMeshGenerator _instance;
+    public static ItemMeshGenerator instance
     {
+        get
+        {
+            if (_instance == null)
+            {
+                _instance = new ItemMeshGenerator();
+            }
+            return _instance;
+        }
+    }
+
+    public Mesh Generate(Texture2D tex)
+    {
+        texture = tex;
+        Debug.Log("generator,tex=" + texture + ",height=" + texture.height);
+
         unit = 1f / texture.width;
         offset = unit / 5;
 
         Mesh mesh = new Mesh();
 
         Color32[] colors = texture.GetPixels32();
+
         for (int i = 0; i < texture.width; i++)
         {
             for (int j = 0; j < texture.height; j++)
             {
-                int index = i * texture.height + j;
+                int index = i * texture.width + j;
+                Debug.Log("i=" + i + ",j=" + j + ",index=" + index + ",color=" + colors[index]);
+
+                int x = j;
+                int y = i;
 
                 if (colors[index].a > 0)
                 {
-                    AddFrontFace(j, i);
-                    AddBackFace(j, i);
+                    AddFrontFace(x, y);
+                    AddBackFace(x, y);
 
-                    if (j == 0 || colors[GetIndexByCoord(j - 1, i)].a == 0)
-                        AddLeftFace(j, i);
+                    if (x == 0 || colors[GetIndexByCoord(x - 1, y)].a == 0)
+                        AddLeftFace(x, y);
 
-                    if (j == texture.width || colors[GetIndexByCoord(j + 1, i)].a == 0)
-                        AddRightFace(j, i);
+                    if (x == texture.width - 1 || colors[GetIndexByCoord(x + 1, y)].a == 0)
+                        AddRightFace(x, y);
 
-                    if (i == texture.height || colors[GetIndexByCoord(j, i + 1)].a == 0)
-                        AddTopFace(j, i);
+                    if (y == texture.height - 1 || colors[GetIndexByCoord(x, y + 1)].a == 0)
+                        AddTopFace(x, y);
 
-                    if (i == 0 || colors[GetIndexByCoord(j, i - 1)].a == 0)
-                        AddBottomFace(j, i);
+                    if (y == 0 || colors[GetIndexByCoord(x, y - 1)].a == 0)
+                        AddBottomFace(x, y);
                 }
             }
         }
@@ -56,9 +77,7 @@ public class ItemMeshGenerator : MonoBehaviour
         mesh.uv = uv.ToArray();
         mesh.triangles = triangles.ToArray();
 
-        GetComponent<MeshFilter>().sharedMesh = mesh;
-        GetComponent<MeshRenderer>().sharedMaterial = new Material(Shader.Find("Custom/BlockShader"));
-        GetComponent<MeshRenderer>().sharedMaterial.mainTexture = texture;
+        return mesh;
     }
 
     void AddUV(int start, int x, int y)

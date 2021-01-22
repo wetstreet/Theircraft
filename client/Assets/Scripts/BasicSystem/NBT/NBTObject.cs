@@ -13,6 +13,20 @@ public abstract class NBTObject
 
     public virtual string GetIconPathByData(short data) { return null; }
 
+    static Material commonItemMat;
+
+    protected Dictionary<byte, Material> itemMaterialDict = new Dictionary<byte, Material>();
+
+    public virtual Material GetItemMaterial(byte data)
+    {
+        if (commonItemMat == null)
+        {
+            commonItemMat = new Material(Shader.Find("Custom/TextureArrayShader"));
+            commonItemMat.SetTexture("_Array", TextureArrayManager.GetArray());
+        }
+        return commonItemMat;
+    }
+
     protected Dictionary<byte, Mesh> itemMeshDict = new Dictionary<byte, Mesh>();
 
     protected virtual string itemMeshPath { get { return null; } }

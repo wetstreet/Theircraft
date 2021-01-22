@@ -57,53 +57,78 @@ public class NBTPlant : NBTBlock
     {
         AddFace(nearBottomLeft, nearTopLeft, farTopRight, farBottomRight, plantIndex, tintColor);
     }
+    
+    public override Material GetItemMaterial(byte data)
+    {
+        byte index = (byte)(data % 4);
+        if (!itemMaterialDict.ContainsKey(index))
+        {
+            Material mat = new Material(Shader.Find("Custom/BlockShader"));
+            Texture2D tex = Resources.Load<Texture2D>("GUI/icon/" + GetIconPathByData(index));
+            mat.mainTexture = tex;
+            itemMaterialDict.Add(index, mat);
+        }
+        return itemMaterialDict[index];
+    }
 
     public override Mesh GetItemMesh(NBTChunk chunk, byte data)
     {
-        if (!itemMeshDict.ContainsKey(data))
+        byte index = (byte)(data % 4);
+        if (!itemMeshDict.ContainsKey(index))
         {
-            Mesh oldMesh = GetPrefabMesh(chunk, data);
-
-            Mesh mesh = new Mesh();
-
-            pos = Vector3Int.zero;
-            blockData = data;
-
-            List<Vertex> vertexList = new List<Vertex>();
-            List<int> triangles = new List<int>();
-
-            int index = GetPlantIndexByData(data);
-
-            Color color = GetTintColorByData(chunk, data);
-
-            for (int i = 0; i < oldMesh.vertices.Length; i++)
-            {
-                vertexList.Add(new Vertex { pos = ToVector4(oldMesh.vertices[i], index), texcoord = oldMesh.uv[i], color = color });
-            }
-            foreach (int i in oldMesh.triangles)
-            {
-                triangles.Add(i);
-            }
-
-            var vertexCount = vertexList.Count;
-
-            mesh.SetVertexBufferParams(vertexCount, new[] {
-                new VertexAttributeDescriptor(VertexAttribute.Position, VertexAttributeFormat.Float32, 4),
-                new VertexAttributeDescriptor(VertexAttribute.Color, VertexAttributeFormat.Float32, 4),
-                new VertexAttributeDescriptor(VertexAttribute.TexCoord0, VertexAttributeFormat.Float32, 2),
-            });
-
-            var verts = new NativeArray<Vertex>(vertexCount, Allocator.Temp);
-
-            verts.CopyFrom(vertexList.ToArray());
-
-            mesh.SetVertexBufferData(verts, 0, 0, vertexCount);
-            mesh.SetTriangles(triangles.ToArray(), 0);
-            mesh.RecalculateBounds();
-
-            itemMeshDict.Add(data, mesh);
+            Texture2D tex = Resources.Load<Texture2D>("GUI/icon/" + GetIconPathByData(index));
+            Mesh mesh = ItemMeshGenerator.instance.Generate(tex);
+            itemMeshDict.Add(index, mesh);
         }
-
-        return itemMeshDict[data];
+        return itemMeshDict[index];
     }
+
+    //public override Mesh GetItemMesh(NBTChunk chunk, byte data)
+    //{
+    //    if (!itemMeshDict.ContainsKey(data))
+    //    {
+    //        Mesh oldMesh = GetPrefabMesh(chunk, data);
+
+    //        Mesh mesh = new Mesh();
+
+    //        pos = Vector3Int.zero;
+    //        blockData = data;
+
+    //        List<Vertex> vertexList = new List<Vertex>();
+    //        List<int> triangles = new List<int>();
+
+    //        int index = GetPlantIndexByData(data);
+
+    //        Color color = GetTintColorByData(chunk, data);
+
+    //        for (int i = 0; i < oldMesh.vertices.Length; i++)
+    //        {
+    //            vertexList.Add(new Vertex { pos = ToVector4(oldMesh.vertices[i], index), texcoord = oldMesh.uv[i], color = color });
+    //        }
+    //        foreach (int i in oldMesh.triangles)
+    //        {
+    //            triangles.Add(i);
+    //        }
+
+    //        var vertexCount = vertexList.Count;
+
+    //        mesh.SetVertexBufferParams(vertexCount, new[] {
+    //            new VertexAttributeDescriptor(VertexAttribute.Position, VertexAttributeFormat.Float32, 4),
+    //            new VertexAttributeDescriptor(VertexAttribute.Color, VertexAttributeFormat.Float32, 4),
+    //            new VertexAttributeDescriptor(VertexAttribute.TexCoord0, VertexAttributeFormat.Float32, 2),
+    //        });
+
+    //        var verts = new NativeArray<Vertex>(vertexCount, Allocator.Temp);
+
+    //        verts.CopyFrom(vertexList.ToArray());
+
+    //        mesh.SetVertexBufferData(verts, 0, 0, vertexCount);
+    //        mesh.SetTriangles(triangles.ToArray(), 0);
+    //        mesh.RecalculateBounds();
+
+    //        itemMeshDict.Add(data, mesh);
+    //    }
+
+    //    return itemMeshDict[data];
+    //}
 }
