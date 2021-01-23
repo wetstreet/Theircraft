@@ -15,6 +15,8 @@ public class InventorySystem
 
     public static InventoryItem[] items = new InventoryItem[36];
 
+    public static InventoryItem grabItem;
+
     public static void Init()
     {
         TagNodeCompound playerData = NBTHelper.GetPlayerData();
@@ -32,6 +34,20 @@ public class InventorySystem
             items[slot].count = count;
             items[slot].damage = damage;
         }
+    }
+
+    public static void MouseGrabItem(int index)
+    {
+        InventoryItem tempItem = grabItem;
+        grabItem = items[index];
+        items[index] = tempItem;
+    }
+
+    public static void DropGrabItem()
+    {
+        grabItem.id = null;
+        grabItem.damage = 0;
+        grabItem.count = 0;
     }
 
     public static void Increment(NBTObject generator, byte data, byte count)

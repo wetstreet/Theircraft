@@ -7,23 +7,14 @@ using UnityEngine.UI;
 
 public class SurvivalInventory : MonoBehaviour
 {
-
     Transform grid;
     Transform selectGrid;
     Transform unit;
     RectTransform descTrans;
     TextMeshProUGUI descLabel;
-    bool holdItem = false;
-    bool holdSelectItem = false;
-    RawImage holdItemImage;
-    bool showDesc;
-    bool showSelectDesc;
-    int showIndex;
-    int showSelectIndex;
 
-    byte holdItemType;
-    byte holdItemData;
-    int holdItemCount;
+    RawImage holdItemImage;
+    TextMeshProUGUI holdItemCount;
 
     struct SlotItem
     {
@@ -43,7 +34,6 @@ public class SurvivalInventory : MonoBehaviour
         {
             Instance.gameObject.SetActive(true);
             Instance.RefreshUI();
-            Instance.RefreshSelectPanel();
         }
         else
         {
@@ -52,11 +42,6 @@ public class SurvivalInventory : MonoBehaviour
 
         InputManager.enabled = false;
         PlayerController.LockCursor(false);
-    }
-
-    void OnClickClose()
-    {
-        Hide();
     }
 
     public static void Hide()
@@ -83,12 +68,6 @@ public class SurvivalInventory : MonoBehaviour
         {
             Hide();
         }
-    }
-
-    private void OnEnable()
-    {
-        showDesc = false;
-        showSelectDesc = false;
     }
 
     void InitGrid()
@@ -134,10 +113,11 @@ public class SurvivalInventory : MonoBehaviour
         unit = transform.Find("unit");
         unit.gameObject.SetActive(false);
         holdItemImage = transform.Find("holdItem").GetComponent<RawImage>();
+        holdItemCount = transform.Find("holdItem/text").GetComponent<TextMeshProUGUI>();
 
         InitGrid();
         RefreshUI();
-        RefreshSelectPanel();
+        RefreshGrabItem();
     }
 
     Color highlightColor = new Color(1, 1, 1, 0.2f);
@@ -167,7 +147,6 @@ public class SurvivalInventory : MonoBehaviour
             }
             items[i].highlight.color = i == highlightIndex ? highlightColor : Color.clear;
         }
-        UpdateDesc();
     }
 
     int lastHighlightIndex = -1;
@@ -191,6 +170,54 @@ public class SurvivalInventory : MonoBehaviour
             lastHighlightIndex = highlightIndex;
             RefreshUI();
         }
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            if (highlightIndex == -1)
+            {
+                if (InventorySystem.grabItem.id != null)
+                {
+                    NBTObject generator = NBTGeneratorManager.GetObjectGenerator(InventorySystem.grabItem.id);
+                    Item.CreatePlayerDropItem(generator, (byte)InventorySystem.grabItem.damage, InventorySystem.grabItem.count);
+                    InventorySystem.DropGrabItem();
+
+                    RefreshGrabItem();
+                    RefreshUI();
+                    ItemSelectPanel.instance.RefreshUI();
+                }
+            }
+            else
+            {
+                InventorySystem.MouseGrabItem(highlightIndex);
+                RefreshGrabItem();
+                RefreshUI();
+                ItemSelectPanel.instance.RefreshUI();
+            }
+        }
+    }
+
+    void RefreshGrabItem()
+    {
+        if (InventorySystem.grabItem.id != null)
+        {
+            holdItemImage.enabled = true;
+            holdItemImage.texture = BlockIconHelper.GetIcon(InventorySystem.grabItem.id, InventorySystem.grabItem.damage);
+
+            if (InventorySystem.grabItem.count > 1)
+            {
+                holdItemCount.enabled = true;
+                holdItemCount.text = InventorySystem.grabItem.count.ToString();
+            }
+            else
+            {
+                holdItemCount.enabled = false;
+            }
+        }
+        else
+        {
+            holdItemImage.enabled = false;
+            holdItemCount.enabled = false;
+        }
     }
 
     // Update is called once per frame
@@ -200,16 +227,13 @@ public class SurvivalInventory : MonoBehaviour
         HandleInputUpdate();
         UpdateDesc();
 
-        if (holdItem || holdSelectItem)
-        {
-            holdItemImage.rectTransform.anchoredPosition = Input.mousePosition / UISystem.scale;
-        }
+        holdItemImage.rectTransform.anchoredPosition = Input.mousePosition / UISystem.scale;
     }
 
     static Vector3 offset = new Vector3(8, 0, 0);
     void UpdateDesc()
     {
-        if (highlightIndex != -1 && InventorySystem.items[highlightIndex].id != null && !holdItem && !holdSelectItem)
+        if (highlightIndex != -1 && InventorySystem.items[highlightIndex].id != null && InventorySystem.grabItem.id == null)
         {
             if (!descTrans.gameObject.activeSelf)
             {
@@ -237,32 +261,5 @@ public class SurvivalInventory : MonoBehaviour
                 descTrans.gameObject.SetActive(false);
             }
         }
-    }
-
-    void RefreshSelectPanel()
-    {
-        //for (int i = 0; i < 9; i++)
-        //{
-        //    CSBlockType type = ItemSelectPanel.dataList[i];
-        //    if (type == CSBlockType.None)
-        //    {
-        //        selectItems[i].icon.color = Color.clear;
-        //        selectItems[i].count.gameObject.SetActive(false);
-        //    }
-        //    else
-        //    {
-        //        selectItems[i].icon.sprite = BlockIconHelper.GetIcon(type);
-        //        selectItems[i].icon.color = Color.white;
-        //        if (ItemSelectPanel.countList[i] > 1)
-        //        {
-        //            selectItems[i].count.gameObject.SetActive(true);
-        //            selectItems[i].count.text = ItemSelectPanel.countList[i].ToString();
-        //        }
-        //        else
-        //        {
-        //            selectItems[i].count.gameObject.SetActive(false);
-        //        }
-        //    }
-        //}
     }
 }
