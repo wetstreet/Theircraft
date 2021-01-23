@@ -58,12 +58,14 @@ public class NBTPlant : NBTBlock
         AddFace(nearBottomLeft, nearTopLeft, farTopRight, farBottomRight, plantIndex, tintColor);
     }
     
+    public override string pathPrefix { get { return "GUI/block/"; } }
+
     public override Material GetItemMaterial(byte data)
     {
         if (!itemMaterialDict.ContainsKey(data))
         {
             Material mat = new Material(Shader.Find("Custom/BlockShader"));
-            Texture2D tex = Resources.Load<Texture2D>("GUI/icon/" + GetIconPathByData(data));
+            Texture2D tex = Resources.Load<Texture2D>(pathPrefix + GetIconPathByData(data));
             mat.mainTexture = tex;
             itemMaterialDict.Add(data, mat);
         }
@@ -75,7 +77,7 @@ public class NBTPlant : NBTBlock
         byte index = (byte)(data % 4);
         if (!itemMeshDict.ContainsKey(index))
         {
-            Texture2D tex = Resources.Load<Texture2D>("GUI/icon/" + GetIconPathByData(index));
+            Texture2D tex = Resources.Load<Texture2D>(pathPrefix + GetIconPathByData(index));
             Mesh mesh = ItemMeshGenerator.instance.Generate(tex);
             itemMeshDict.Add(index, mesh);
         }

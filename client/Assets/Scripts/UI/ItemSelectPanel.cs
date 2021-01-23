@@ -84,7 +84,7 @@ public class ItemSelectPanel : MonoBehaviour
 
     struct SlotItem
     {
-        public Image icon;
+        public RawImage icon;
         public GameObject select;
         public TextMeshProUGUI count;
     }
@@ -108,7 +108,7 @@ public class ItemSelectPanel : MonoBehaviour
             trans.gameObject.SetActive(true);
             SlotItem item = new SlotItem
             {
-                icon = trans.Find("icon").GetComponent<Image>(),
+                icon = trans.Find("icon").GetComponent<RawImage>(),
                 select = trans.Find("select").gameObject,
                 count = trans.Find("Text").GetComponent<TextMeshProUGUI>(),
             };
@@ -131,7 +131,7 @@ public class ItemSelectPanel : MonoBehaviour
             }
             else
             {
-                itemList[i].icon.sprite = BlockIconHelper.GetIcon(item.id, item.damage);
+                itemList[i].icon.texture = BlockIconHelper.GetIcon(item.id, item.damage);
                 itemList[i].icon.gameObject.SetActive(true);
                 if (item.count > 1)
                 {

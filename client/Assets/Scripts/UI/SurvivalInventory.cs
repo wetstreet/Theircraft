@@ -15,7 +15,7 @@ public class SurvivalInventory : MonoBehaviour
     TextMeshProUGUI descLabel;
     bool holdItem = false;
     bool holdSelectItem = false;
-    Image holdItemImage;
+    RawImage holdItemImage;
     bool showDesc;
     bool showSelectDesc;
     int showIndex;
@@ -27,8 +27,8 @@ public class SurvivalInventory : MonoBehaviour
 
     struct SlotItem
     {
-        public Image icon;
-        public Image highlight;
+        public RawImage icon;
+        public RawImage highlight;
         public GameObject select;
         public TextMeshProUGUI count;
     }
@@ -101,8 +101,8 @@ public class SurvivalInventory : MonoBehaviour
             trans.localScale = Vector3.one;
             trans.gameObject.SetActive(true);
             
-            items[i].highlight = trans.Find("highlight").GetComponent<Image>();
-            items[i].icon = trans.GetComponent<Image>();
+            items[i].highlight = trans.Find("highlight").GetComponent<RawImage>();
+            items[i].icon = trans.GetComponent<RawImage>();
             items[i].count = trans.Find("text").GetComponent<TextMeshProUGUI>();
         }
         for (int i = 9; i < 36; i++)
@@ -113,8 +113,8 @@ public class SurvivalInventory : MonoBehaviour
             trans.localScale = Vector3.one;
             trans.gameObject.SetActive(true);
 
-            items[i].highlight = trans.Find("highlight").GetComponent<Image>();
-            items[i].icon = trans.GetComponent<Image>();
+            items[i].highlight = trans.Find("highlight").GetComponent<RawImage>();
+            items[i].icon = trans.GetComponent<RawImage>();
             items[i].count = trans.Find("text").GetComponent<TextMeshProUGUI>();
         }
     }
@@ -133,7 +133,7 @@ public class SurvivalInventory : MonoBehaviour
         selectGrid = transform.Find("SelectGrid");
         unit = transform.Find("unit");
         unit.gameObject.SetActive(false);
-        holdItemImage = transform.Find("holdItem").GetComponent<Image>();
+        holdItemImage = transform.Find("holdItem").GetComponent<RawImage>();
 
         InitGrid();
         RefreshUI();
@@ -149,7 +149,7 @@ public class SurvivalInventory : MonoBehaviour
             if (item.id != null)
             {
                 items[i].icon.enabled = true;
-                items[i].icon.sprite = BlockIconHelper.GetIcon(item.id, item.damage);
+                items[i].icon.texture = BlockIconHelper.GetIcon(item.id, item.damage);
                 if (item.count > 1)
                 {
                     items[i].count.enabled = true;

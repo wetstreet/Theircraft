@@ -6,6 +6,7 @@ using UnityEngine;
 public class NBTYellowFlower : NBTPlant
 {
     public override string name { get { return "Yellow Flower"; } }
+    public override string id { get { return "minecraft:yellow_flower"; } }
 
     public override void Init()
     {
@@ -46,23 +47,20 @@ public class NBTYellowFlower : NBTPlant
         throw new System.Exception("no texture");
     }
 
-    public override Mesh GetItemMesh(NBTChunk chunk, byte data)
+    public override string GetIconPathByData(short data)
     {
         if (data == 0)
         {
-            string path = "dandelion";
-            return Resources.Load<Mesh>("Meshes/items/" + path + "/" + path);
+            return "flower_dandelion";
         }
         else if (data == 3)
         {
-            string path = "flower_houstonia";
-            return Resources.Load<Mesh>("Meshes/items/" + path + "/" + path);
+            return "flower_houstonia";
         }
         else if (data == 8)
         {
-            string path = "flower_oxeye_daisy";
-            return Resources.Load<Mesh>("Meshes/items/" + path + "/" + path);
+            return "flower_oxeye_daisy";
         }
-        throw new System.Exception("no texture");
+        throw new System.Exception("no icon");
     }
 }

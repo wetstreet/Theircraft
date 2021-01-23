@@ -97,7 +97,7 @@ public class Item : MonoBehaviour
         MeshFilter meshFilter = meshTrans.GetComponent<MeshFilter>();
         
         meshFilter.sharedMesh = generator.GetItemMesh(NBTHelper.GetChunk(PlayerController.GetCurrentBlock()), blockData);
-        if (!(generator is NBTPlant))
+        if (generator is NBTBlock && !(generator is NBTPlant))
         {
             meshFilter.transform.localScale = Vector3.one / 2;
         }

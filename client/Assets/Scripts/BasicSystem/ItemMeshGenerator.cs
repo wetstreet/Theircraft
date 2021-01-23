@@ -11,7 +11,8 @@ public class ItemMeshGenerator
     List<int> triangles = new List<int>();
 
     float unit;
-    float offset;
+    float uv_offset;
+    float pos_offset;
 
     int GetIndexByCoord(int j, int i)
     {
@@ -40,7 +41,8 @@ public class ItemMeshGenerator
         triangles.Clear();
 
         unit = 1f / texture.width;
-        offset = unit / 5;
+        uv_offset = unit / 5;
+        pos_offset = -0.5f;
 
         Mesh mesh = new Mesh();
 
@@ -84,10 +86,10 @@ public class ItemMeshGenerator
 
     void AddUV(int start, int x, int y)
     {
-        uv.Add(new Vector2(unit * x + offset, unit * y + offset));
-        uv.Add(new Vector2(unit * (x + 1) - offset, unit * y + offset));
-        uv.Add(new Vector2(unit * (x + 1) - offset, unit * (y + 1) - offset));
-        uv.Add(new Vector2(unit * x + offset, unit * (y + 1) - offset));
+        uv.Add(new Vector2(unit * x + uv_offset, unit * y + uv_offset));
+        uv.Add(new Vector2(unit * (x + 1) - uv_offset, unit * y + uv_offset));
+        uv.Add(new Vector2(unit * (x + 1) - uv_offset, unit * (y + 1) - uv_offset));
+        uv.Add(new Vector2(unit * x + uv_offset, unit * (y + 1) - uv_offset));
         triangles.Add(start);
         triangles.Add(start + 3);
         triangles.Add(start + 2);
@@ -96,63 +98,68 @@ public class ItemMeshGenerator
         triangles.Add(start + 1);
     }
 
+    void AddVertices(int x, int y, int z)
+    {
+        vertices.Add(new Vector3(unit * x + pos_offset, unit * y + pos_offset, unit * z / 2));
+    }
+
     void AddFrontFace(int x, int y)
     {
         int count = vertices.Count;
-        vertices.Add(new Vector3(unit * x, unit * y, -unit / 2));
-        vertices.Add(new Vector3(unit * (x + 1), unit * y, -unit / 2));
-        vertices.Add(new Vector3(unit * (x + 1), unit * (y + 1), -unit / 2));
-        vertices.Add(new Vector3(unit * x, unit * (y + 1), -unit / 2));
+        AddVertices(x, y, -1);
+        AddVertices(x + 1, y, -1);
+        AddVertices(x + 1, y + 1, -1);
+        AddVertices(x, y + 1, -1);
         AddUV(count, x, y);
     }
 
     void AddBackFace(int x, int y)
     {
         int count = vertices.Count;
-        vertices.Add(new Vector3(unit * (x + 1), unit * y, unit / 2));
-        vertices.Add(new Vector3(unit * x, unit * y, unit / 2));
-        vertices.Add(new Vector3(unit * x, unit * (y + 1), unit / 2));
-        vertices.Add(new Vector3(unit * (x + 1), unit * (y + 1), unit / 2));
+        AddVertices(x + 1, y, 1);
+        AddVertices(x, y, 1);
+        AddVertices(x, y + 1, 1);
+        AddVertices(x + 1, y + 1, 1);
         AddUV(count, x, y);
     }
 
     void AddLeftFace(int x, int y)
     {
         int count = vertices.Count;
-        vertices.Add(new Vector3(unit * x, unit * y, unit / 2));
-        vertices.Add(new Vector3(unit * x, unit * y, -unit / 2));
-        vertices.Add(new Vector3(unit * x, unit * (y + 1), -unit / 2));
-        vertices.Add(new Vector3(unit * x, unit * (y + 1), unit / 2));
+        AddVertices(x, y, 1);
+        AddVertices(x, y, -1);
+        AddVertices(x, y + 1, -1);
+        AddVertices(x, y + 1, 1);
         AddUV(count, x, y);
     }
 
     void AddRightFace(int x, int y)
     {
         int count = vertices.Count;
-        vertices.Add(new Vector3(unit * (x + 1), unit * y, -unit / 2));
-        vertices.Add(new Vector3(unit * (x + 1), unit * y, unit / 2));
-        vertices.Add(new Vector3(unit * (x + 1), unit * (y + 1), unit / 2));
-        vertices.Add(new Vector3(unit * (x + 1), unit * (y + 1), -unit / 2));
+        AddVertices(x + 1, y, -1);
+        AddVertices(x + 1, y, 1);
+        AddVertices(x + 1, y + 1, 1);
+        AddVertices(x + 1, y + 1, -1);
         AddUV(count, x, y);
     }
     
     void AddTopFace(int x, int y)
     {
         int count = vertices.Count;
-        vertices.Add(new Vector3(unit * x, unit * (y + 1), -unit / 2));
-        vertices.Add(new Vector3(unit * (x + 1), unit * (y + 1), -unit / 2));
-        vertices.Add(new Vector3(unit * (x + 1), unit * (y + 1), unit / 2));
-        vertices.Add(new Vector3(unit * x, unit * (y + 1), unit / 2));
+        AddVertices(x, y + 1, -1);
+        AddVertices(x + 1, y + 1, -1);
+        AddVertices(x + 1, y + 1, 1);
+        AddVertices(x, y + 1, 1);
         AddUV(count, x, y);
     }
 
     void AddBottomFace(int x, int y)
     {
         int count = vertices.Count;
-        vertices.Add(new Vector3(unit * x, unit * y, unit / 2));
-        vertices.Add(new Vector3(unit * (x + 1), unit * y, unit / 2));
-        vertices.Add(new Vector3(unit * (x + 1), unit * y, -unit / 2));
-        vertices.Add(new Vector3(unit * x, unit * y, -unit / 2));
+        AddVertices(x, y, 1);
+        AddVertices(x + 1, y, 1);
+        AddVertices(x + 1, y, -1);
+        AddVertices(x, y, -1);
         AddUV(count, x, y);
     }
 }

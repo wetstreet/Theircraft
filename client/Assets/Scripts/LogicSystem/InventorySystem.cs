@@ -41,7 +41,7 @@ public class InventorySystem
         {
             if (items[i].id == null) continue;
 
-            if (!NBTGeneratorManager.id2type.ContainsKey(items[i].id))
+            if (NBTGeneratorManager.GetObjectGenerator(items[i].id) == null)
             {
                 Debug.Log("cannot get type,slot=" + i + ",id=" + items[i].id);
                 continue;

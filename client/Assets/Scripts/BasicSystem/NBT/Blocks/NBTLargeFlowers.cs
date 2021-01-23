@@ -6,6 +6,7 @@ using UnityEngine;
 public class NBTLargeFlowers : NBTPlant
 {
     public override string name { get { return "Large Flowers"; } }
+    public override string id { get { return "minecraft:double_plant"; } }
 
     protected override Color GetTintColorByData(NBTChunk chunk, byte data)
     {
@@ -114,5 +115,23 @@ public class NBTLargeFlowers : NBTPlant
         }
         Debug.Log("large flowers no break effect texture, data=" + data);
         return "double_plant_syringa_bottom";
+    }
+
+    public override string GetIconPathByData(short data)
+    {
+        switch (data)
+        {
+            case 1:
+                return "double_plant_syringa_bottom";
+            case 2:
+                return "double_plant_grass_bottom";
+            case 3:
+                return "double_plant_fern_bottom";
+            case 4:
+                return "double_plant_rose_bottom";
+            case 5:
+                return "double_plant_paeonia_bottom";
+        }
+        throw new System.Exception("no icon");
     }
 }
