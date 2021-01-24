@@ -41,5 +41,6 @@ public class GameStart : MonoBehaviour
         InputManager.Destroy();
         UISystem.DestroyUIRoot();
         PlayerController.Destroy();
+        NBTHelper.Uninit();
     }
 }

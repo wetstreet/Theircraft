@@ -9,12 +9,16 @@ public class SurvivalInventory : MonoBehaviour
 {
     Transform grid;
     Transform selectGrid;
+    Transform craftGrid;
     Transform unit;
     RectTransform descTrans;
     TextMeshProUGUI descLabel;
 
     RawImage holdItemImage;
     TextMeshProUGUI holdItemCount;
+
+    Transform head;
+    Transform headAnchor;
 
     struct SlotItem
     {
@@ -24,7 +28,7 @@ public class SurvivalInventory : MonoBehaviour
         public TextMeshProUGUI count;
     }
     
-    SlotItem[] items = new SlotItem[36];
+    SlotItem[] items = new SlotItem[41];
 
     static SurvivalInventory Instance;
 
@@ -96,6 +100,24 @@ public class SurvivalInventory : MonoBehaviour
             items[i].icon = trans.GetComponent<RawImage>();
             items[i].count = trans.Find("text").GetComponent<TextMeshProUGUI>();
         }
+
+        for (int i = 36; i < 40; i++)
+        {
+            Transform trans = Instantiate(unit);
+            trans.name = i.ToString();
+            trans.parent = craftGrid;
+            trans.localScale = Vector3.one;
+            trans.gameObject.SetActive(true);
+
+            items[i].highlight = trans.Find("highlight").GetComponent<RawImage>();
+            items[i].icon = trans.GetComponent<RawImage>();
+            items[i].count = trans.Find("text").GetComponent<TextMeshProUGUI>();
+        }
+
+        Transform resultTrans = transform.Find("CraftingResult/40");
+        items[40].highlight = resultTrans.Find("highlight").GetComponent<RawImage>();
+        items[40].icon = resultTrans.GetComponent<RawImage>();
+        items[40].count = resultTrans.Find("text").GetComponent<TextMeshProUGUI>();
     }
 
     GraphicRaycaster gr;
@@ -110,10 +132,14 @@ public class SurvivalInventory : MonoBehaviour
         
         grid = transform.Find("BagGrid");
         selectGrid = transform.Find("SelectGrid");
+        craftGrid = transform.Find("CraftingGrid");
         unit = transform.Find("unit");
         unit.gameObject.SetActive(false);
         holdItemImage = transform.Find("holdItem").GetComponent<RawImage>();
         holdItemCount = transform.Find("holdItem/text").GetComponent<TextMeshProUGUI>();
+
+        head = transform.Find("meshParent/steve/Move/Body/Head");
+        headAnchor = transform.Find("meshParent/RotateHelper");
 
         InitGrid();
         RefreshUI();
@@ -123,7 +149,7 @@ public class SurvivalInventory : MonoBehaviour
     Color highlightColor = new Color(1, 1, 1, 0.2f);
     void RefreshUI()
     {
-        for (int i = 0; i < 36; i++)
+        for (int i = 0; i < 41; i++)
         {
             InventoryItem item = InventorySystem.items[i];
             if (item.id != null)
@@ -173,22 +199,85 @@ public class SurvivalInventory : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0))
         {
-            if (highlightIndex == -1)
-            {
-                if (InventorySystem.grabItem.id != null)
-                {
-                    NBTObject generator = NBTGeneratorManager.GetObjectGenerator(InventorySystem.grabItem.id);
-                    Item.CreatePlayerDropItem(generator, (byte)InventorySystem.grabItem.damage, InventorySystem.grabItem.count);
-                    InventorySystem.DropGrabItem();
+            OnLeftMouseClick();
+        }
+        if (Input.GetMouseButtonDown(1))
+        {
+            OnRightMouseClick();
+        }
+    }
 
-                    RefreshGrabItem();
-                    RefreshUI();
-                    ItemSelectPanel.instance.RefreshUI();
-                }
+    void OnLeftMouseClick()
+    {
+        if (highlightIndex == -1)
+        {
+            if (InventorySystem.grabItem.id != null)
+            {
+                NBTObject generator = NBTGeneratorManager.GetObjectGenerator(InventorySystem.grabItem.id);
+                Item.CreatePlayerDropItem(generator, (byte)InventorySystem.grabItem.damage, InventorySystem.grabItem.count);
+                InventorySystem.DropGrabItem();
+
+                RefreshGrabItem();
+                RefreshUI();
+                ItemSelectPanel.instance.RefreshUI();
             }
-            else
+        }
+        else if (highlightIndex == 40)
+        {
+            if (InventorySystem.grabItem.id == null)
             {
                 InventorySystem.MouseGrabItem(highlightIndex);
+                RefreshGrabItem();
+                RefreshUI();
+                ItemSelectPanel.instance.RefreshUI();
+            }
+        }
+        else
+        {
+            InventorySystem.MouseGrabItem(highlightIndex);
+            RefreshGrabItem();
+            RefreshUI();
+            ItemSelectPanel.instance.RefreshUI();
+        }
+    }
+
+    void OnRightMouseClick()
+    {
+        if (highlightIndex == -1)
+        {
+            if (InventorySystem.grabItem.id != null)
+            {
+                NBTObject generator = NBTGeneratorManager.GetObjectGenerator(InventorySystem.grabItem.id);
+                Item.CreatePlayerDropItem(generator, (byte)InventorySystem.grabItem.damage, InventorySystem.grabItem.count);
+                InventorySystem.DropGrabItem();
+
+                RefreshGrabItem();
+                RefreshUI();
+                ItemSelectPanel.instance.RefreshUI();
+            }
+        }
+        else if (highlightIndex == 40)
+        {
+            if (InventorySystem.grabItem.id == null)
+            {
+                InventorySystem.MouseGrabItem(highlightIndex);
+                RefreshGrabItem();
+                RefreshUI();
+                ItemSelectPanel.instance.RefreshUI();
+            }
+        }
+        else
+        {
+            if (InventorySystem.grabItem.id != null)
+            {
+                if (InventorySystem.items[highlightIndex].id != null)
+                {
+                    InventorySystem.MouseGrabItem(highlightIndex);
+                }
+                else
+                {
+                    InventorySystem.PutOneItem(highlightIndex);
+                }
                 RefreshGrabItem();
                 RefreshUI();
                 ItemSelectPanel.instance.RefreshUI();
@@ -228,31 +317,47 @@ public class SurvivalInventory : MonoBehaviour
         UpdateDesc();
 
         holdItemImage.rectTransform.anchoredPosition = Input.mousePosition / UISystem.scale;
+
+        //headAnchor.LookAt(Input.mousePosition);
+        //Vector3 headPos = UISystem.camera.WorldToScreenPoint(head.position);
+        //Vector3 dir = Input.mousePosition - headPos;
+        //Debug.Log("dir=" + dir);
     }
 
     static Vector3 offset = new Vector3(8, 0, 0);
     void UpdateDesc()
     {
-        if (highlightIndex != -1 && InventorySystem.items[highlightIndex].id != null && InventorySystem.grabItem.id == null)
+        if (highlightIndex != -1 && InventorySystem.grabItem.id == null)
         {
-            if (!descTrans.gameObject.activeSelf)
-            {
-                descTrans.gameObject.SetActive(true);
-            }
-            descTrans.anchoredPosition = Input.mousePosition / UISystem.scale + offset;
-
             InventoryItem item = InventorySystem.items[highlightIndex];
-            NBTObject generator = NBTGeneratorManager.GetObjectGenerator(item.id);
-            if (generator == null)
+
+            if (item.id != null)
             {
-                descLabel.text = item.id;
+                if (!descTrans.gameObject.activeSelf)
+                {
+                    descTrans.gameObject.SetActive(true);
+                }
+                descTrans.anchoredPosition = Input.mousePosition / UISystem.scale + offset;
+
+                NBTObject generator = NBTGeneratorManager.GetObjectGenerator(item.id);
+                if (generator == null)
+                {
+                    descLabel.text = item.id;
+                }
+                else
+                {
+                    descLabel.text = generator.GetNameByData(item.damage);
+                }
+                descLabel.Rebuild(CanvasUpdate.PreRender);
+                descTrans.sizeDelta = new Vector2(Mathf.CeilToInt(descLabel.renderedWidth) + 10, 16);
             }
             else
             {
-                descLabel.text = generator.GetNameByData(item.damage);
+                if (descTrans.gameObject.activeSelf)
+                {
+                    descTrans.gameObject.SetActive(false);
+                }
             }
-            descLabel.Rebuild(CanvasUpdate.PreRender);
-            descTrans.sizeDelta = new Vector2(Mathf.CeilToInt(descLabel.renderedWidth) + 10, 16);
         }
         else
         {

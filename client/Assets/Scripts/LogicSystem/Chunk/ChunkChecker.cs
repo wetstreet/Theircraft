@@ -26,6 +26,8 @@ public static class ChunkChecker
     
     public static void Update()
     {
+        UnityEngine.Profiling.Profiler.BeginSample("ChunkChecker.Update");
+
         if (isRefreshing)
         {
             return;
@@ -55,6 +57,8 @@ public static class ChunkChecker
                 FinishRefresh();
             }
         }
+
+        UnityEngine.Profiling.Profiler.EndSample();
     }
 
     public static void FinishRefresh()

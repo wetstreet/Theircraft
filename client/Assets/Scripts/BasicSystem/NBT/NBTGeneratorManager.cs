@@ -50,6 +50,7 @@ public class NBTGeneratorManager : MonoBehaviour
         new NBTWheat(),
         new NBTWoodenHoe(),
         new NBTWoodenShovel(),
+        new NBTStick(),
     };
 
     public static Dictionary<string, NBTBlock> id2generator = new Dictionary<string, NBTBlock>();

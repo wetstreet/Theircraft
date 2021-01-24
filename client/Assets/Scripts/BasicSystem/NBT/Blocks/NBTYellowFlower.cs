@@ -63,4 +63,18 @@ public class NBTYellowFlower : NBTPlant
         }
         throw new System.Exception("no icon");
     }
+
+    public override string GetNameByData(short data)
+    {
+        switch (data)
+        {
+            case 0:
+                return "Dandelion";
+            case 3:
+                return "Houstonia";
+            case 8:
+                return "Oxeye Daisy";
+        }
+        throw new System.Exception("no name, data=" + data);
+    }
 }

@@ -270,6 +270,8 @@ public class NBTChunk
 
     public void RebuildMesh(bool forceRefreshMeshData = true)
     {
+        UnityEngine.Profiling.Profiler.BeginSample("RebuildMesh");
+
         if (forceRefreshMeshData || isDirty)
         {
             RefreshMeshData();
@@ -277,6 +279,8 @@ public class NBTChunk
         collidable.Refresh();
         notCollidable.Refresh();
         water.Refresh();
+
+        UnityEngine.Profiling.Profiler.EndSample();
     }
 
     public void ClearData()

@@ -16,6 +16,21 @@ public class NBTPlanks : NBTBlock
         else return null;
     }
 
+    public override string GetNameByData(short data)
+    {
+        switch (data % 4)
+        {
+            case 0:
+                return "Oak Wood Planks";
+            case 1:
+                return "Spruce Wood Planks";
+            case 2:
+                return "Birch Wood Planks";
+            case 3:
+                return "Jungle Wood Planks";
+        }
+        throw new System.Exception("no name, data=" + data);
+    }
 
     public override void Init()
     {

@@ -12,10 +12,46 @@ public struct InventoryItem
 
 public class InventorySystem
 {
-
-    public static InventoryItem[] items = new InventoryItem[36];
+    public static InventoryItem[] items = new InventoryItem[41];
 
     public static InventoryItem grabItem;
+
+    static NBTObject UpperLeft
+    {
+        get
+        {
+            if (items[36].id != null)
+                return NBTGeneratorManager.GetObjectGenerator(items[36].id);
+            return null;
+        }
+    }
+    static NBTObject UpperRight
+    {
+        get
+        {
+            if (items[37].id != null)
+                return NBTGeneratorManager.GetObjectGenerator(items[37].id);
+            return null;
+        }
+    }
+    static NBTObject BottomLeft
+    {
+        get
+        {
+            if (items[38].id != null)
+                return NBTGeneratorManager.GetObjectGenerator(items[38].id);
+            return null;
+        }
+    }
+    static NBTObject BottomRight
+    {
+        get
+        {
+            if (items[39].id != null)
+                return NBTGeneratorManager.GetObjectGenerator(items[39].id);
+            return null;
+        }
+    }
 
     public static void Init()
     {
@@ -41,6 +77,24 @@ public class InventorySystem
         InventoryItem tempItem = grabItem;
         grabItem = items[index];
         items[index] = tempItem;
+
+        CheckCanCraft();
+    }
+
+    public static void PutOneItem(int index)
+    {
+        items[index].id = grabItem.id;
+        items[index].damage = grabItem.damage;
+        items[index].count++;
+
+        grabItem.count--;
+        if (grabItem.count == 0)
+        {
+            grabItem.id = null;
+            grabItem.damage = 0;
+        }
+
+        CheckCanCraft();
     }
 
     public static void DropGrabItem()
@@ -113,6 +167,16 @@ public class InventorySystem
         {
             items[slot].id = null;
             items[slot].damage = 0;
+        }
+    }
+
+    static void CheckCanCraft()
+    {
+        if (UpperLeft is NBTPlanks && UpperRight is NBTPlanks && BottomLeft is NBTPlanks && BottomRight is NBTPlanks)
+        {
+            items[40].id = "minecraft:crafting_table";
+            items[40].damage = 0;
+            items[40].count = 1;
         }
     }
 }

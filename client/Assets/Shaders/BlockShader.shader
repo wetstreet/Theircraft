@@ -2,9 +2,9 @@
 {
     Properties
     {
+        _Color ("Color", Color) = (1, 1, 1, 1)
         _MainTex ("Texture", 2D) = "white" {}
         _Cutoff ("Cutoff", Range(0, 1)) = 0.5
-        _LUT ("LUT", 2D) = "white" {}
     }
     SubShader
     {
@@ -39,22 +39,17 @@
             sampler2D _MainTex;
             float4 _MainTex_ST;
 
-            sampler2D _LUT;
-
             float _Cutoff;
             float _Pow;
             float _Min;
+
+            half4 _Color;
 
             v2f vert (appdata v)
             {
                 v2f o;
                 o.positionCS = TransformObjectToHClip(v.positionOS.xyz);
                 o.uv = TRANSFORM_TEX(v.texcoord, _MainTex);
-
-                //逐顶点光照
-				// fixed3 worldNormal = UnityObjectToWorldNormal(v.normal);
-				// fixed3 worldLight = normalize(WorldSpaceLightDir(v.vertex));
-                // o.light = saturate(dot(worldNormal, worldLight));
 
                 o.color = v.color.rgb;
 
@@ -63,11 +58,9 @@
 
             half4 frag (v2f i) : SV_Target
             {
-                float3 light = tex2D(_LUT, i.color.xy).rgb;
-                // return half4(light, 1);
                 half4 col = tex2D(_MainTex, i.uv);
                 clip(col.a - _Cutoff);
-                return half4(col.rgb * light, col.a);
+                return half4(col.rgb * _Color.rgb, col.a);
             }
 
             ENDHLSL

@@ -100,4 +100,24 @@ public class NBTRedFlower : NBTPlant
         }
         throw new System.Exception("no icon");
     }
+
+    public override string GetNameByData(short data)
+    {
+        switch (data)
+        {
+            case 0:
+                return "Rose";
+            case 3:
+                return "Houstonia";
+            case 4:
+                return "Red Tulip";
+            case 5:
+                return "Orange Tulip";
+            case 6:
+                return "Houstonia";
+            case 8:
+                return "Oxeye Daisy";
+        }
+        throw new System.Exception("no name, data=" + data);
+    }
 }

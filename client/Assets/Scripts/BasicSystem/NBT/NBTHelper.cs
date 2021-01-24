@@ -84,6 +84,8 @@ public class NBTHelper : MonoBehaviour
 
     public static NBTChunk LoadChunk(int chunkX, int chunkZ)
     {
+        UnityEngine.Profiling.Profiler.BeginSample("ChunkChecker.Update");
+
         key.Set(chunkX, chunkZ);
         if (!chunkDict.ContainsKey(key))
         {
@@ -98,6 +100,9 @@ public class NBTHelper : MonoBehaviour
                 chunkDict.Add(key, chunk);
             }
         }
+
+        UnityEngine.Profiling.Profiler.EndSample();
+
         if (chunkDict.ContainsKey(key))
         {
             return chunkDict[key];
@@ -151,9 +156,14 @@ public class NBTHelper : MonoBehaviour
                 if (region.HasChunk(_x, _z))
                 {
                     UnityEngine.Profiling.Profiler.BeginSample("GetChunkDataInputStream");
-                    NbtTree _tree = new NbtTree();
-                    _tree.ReadFrom(region.GetChunkDataInputStream(_x, _z));
+                    Stream stream = region.GetChunkDataInputStream(_x, _z);
                     UnityEngine.Profiling.Profiler.EndSample();
+
+                    UnityEngine.Profiling.Profiler.BeginSample("NBTTree ReadFrom");
+                    NbtTree _tree = new NbtTree();
+                    _tree.ReadFrom(stream);
+                    UnityEngine.Profiling.Profiler.EndSample();
+
                     chunkDictNBT.Add(key, _tree);
                 }
             }
@@ -392,5 +402,14 @@ public class NBTHelper : MonoBehaviour
             }
         }
         UnityEngine.Profiling.Profiler.EndSample();
+    }
+
+    public static void Uninit()
+    {
+        foreach (KeyValuePair<Vector2Int, RegionFile> kvPair in regionDict)
+        {
+            kvPair.Value.Close();
+            kvPair.Value.Dispose();
+        }
     }
 }

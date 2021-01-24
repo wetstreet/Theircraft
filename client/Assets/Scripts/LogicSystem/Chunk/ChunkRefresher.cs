@@ -12,6 +12,8 @@ public class ChunkRefresher
 
     public static void Update()
     {
+        UnityEngine.Profiling.Profiler.BeginSample("ChunkRefresher.Update");
+
         if (PlayerController.isInitialized && refreshChunkList.Count > 0)
         {
             refreshChunkList.Sort(ChunkComparer.instance);
@@ -22,6 +24,8 @@ public class ChunkRefresher
                 refreshChunkList.RemoveAt(0);
             }
         }
+
+        UnityEngine.Profiling.Profiler.EndSample();
     }
 
     public static void Add(NBTChunk chunk)
