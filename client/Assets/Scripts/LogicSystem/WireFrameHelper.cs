@@ -25,7 +25,7 @@ public class WireFrameHelper : MonoBehaviour
         }
     }
 
-    float unit = 0.5f;
+    float unit = 0.501f;
 
     public static bool render = false;
     public static Vector3Int pos;

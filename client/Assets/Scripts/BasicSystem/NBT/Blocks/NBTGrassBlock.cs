@@ -5,7 +5,10 @@ using UnityEngine;
 
 public class NBTGrassBlock : NBTBlock
 {
-    public override string name { get { return "GrassBlock"; } }
+    public override string name { get { return "Grass Block"; } }
+    public override string id { get { return "minecraft:grass"; } }
+
+    public override string GetIconPathByData(short data) { return "GrassBlock"; }
 
     public override string topName { get { return "grass_top"; } }
     public override string bottomName { get { return "dirt"; } }

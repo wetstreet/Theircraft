@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class NBTTallGrass : NBTPlant
 {
-    public override string name { get { return "Tall Grass"; } }
+    public override string name { get { return "Grass"; } }
     public override string id { get { return "minecraft:tallgrass"; } }
 
     protected override Color GetTintColorByData(NBTChunk chunk, byte data)

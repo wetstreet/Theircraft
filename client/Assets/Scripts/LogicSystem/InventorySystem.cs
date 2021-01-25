@@ -97,6 +97,28 @@ public class InventorySystem
         CheckCanCraft();
     }
 
+    public static void PutItems(int index)
+    {
+        // todo: max stack count
+        items[index].count += grabItem.count;
+
+        grabItem.id = null;
+        grabItem.damage = 0;
+        grabItem.count = 0;
+
+        CheckCanCraft();
+    }
+
+    public static void SplitHalf(int index)
+    {
+        byte half = (byte)Mathf.CeilToInt(items[index].count / 2f);
+        items[index].count -= half;
+
+        grabItem.id = items[index].id;
+        grabItem.damage = items[index].damage;
+        grabItem.count = half;
+    }
+
     public static void DropGrabItem()
     {
         grabItem.id = null;
@@ -170,13 +192,49 @@ public class InventorySystem
         }
     }
 
+    public static void CraftItems()
+    {
+        if (items[40].id == null) return;
+
+        for (int i = 36; i < 40; i++)
+        {
+            if (items[i].count > 0)
+            {
+                items[i].count--;
+
+                if (items[i].count == 0)
+                {
+                    items[i].id = null;
+                    items[i].damage = 0;
+                }
+            }
+        }
+
+        grabItem.id = items[40].id;
+        grabItem.damage = items[40].damage;
+        grabItem.count = items[40].count;
+
+        CheckCanCraft();
+    }
+
     static void CheckCanCraft()
     {
+        items[40].id = null;
+        items[40].damage = 0;
+        items[40].count = 0;
+
         if (UpperLeft is NBTPlanks && UpperRight is NBTPlanks && BottomLeft is NBTPlanks && BottomRight is NBTPlanks)
         {
             items[40].id = "minecraft:crafting_table";
             items[40].damage = 0;
             items[40].count = 1;
+        }
+        else if ((UpperLeft is NBTPlanks && UpperRight is null && BottomLeft is NBTPlanks && BottomRight is null) ||
+            (UpperLeft is null && BottomLeft is NBTPlanks && UpperRight is null && BottomRight is NBTPlanks))
+        {
+            items[40].id = "minecraft:stick";
+            items[40].damage = 0;
+            items[40].count = 4;
         }
     }
 }

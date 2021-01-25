@@ -226,7 +226,7 @@ public class SurvivalInventory : MonoBehaviour
         {
             if (InventorySystem.grabItem.id == null)
             {
-                InventorySystem.MouseGrabItem(highlightIndex);
+                InventorySystem.CraftItems();
                 RefreshGrabItem();
                 RefreshUI();
                 ItemSelectPanel.instance.RefreshUI();
@@ -234,7 +234,14 @@ public class SurvivalInventory : MonoBehaviour
         }
         else
         {
-            InventorySystem.MouseGrabItem(highlightIndex);
+            if (InventorySystem.grabItem.id != null && InventorySystem.items[highlightIndex].id != null && InventorySystem.grabItem.id == InventorySystem.items[highlightIndex].id)
+            {
+                InventorySystem.PutItems(highlightIndex);
+            }
+            else
+            {
+                InventorySystem.MouseGrabItem(highlightIndex);
+            }
             RefreshGrabItem();
             RefreshUI();
             ItemSelectPanel.instance.RefreshUI();
@@ -281,6 +288,16 @@ public class SurvivalInventory : MonoBehaviour
                 RefreshGrabItem();
                 RefreshUI();
                 ItemSelectPanel.instance.RefreshUI();
+            }
+            else
+            {
+                if (InventorySystem.items[highlightIndex].id != null)
+                {
+                    InventorySystem.SplitHalf(highlightIndex);
+                    RefreshGrabItem();
+                    RefreshUI();
+                    ItemSelectPanel.instance.RefreshUI();
+                }
             }
         }
     }
