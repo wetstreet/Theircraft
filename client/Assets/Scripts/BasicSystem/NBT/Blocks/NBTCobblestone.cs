@@ -5,6 +5,7 @@ using UnityEngine;
 public class NBTCobblestone : NBTBlock
 {
     public override string name { get { return "Cobblestone"; } }
+    public override string id { get { return "minecraft:cobblestone"; } }
 
     public override string topName { get { return "cobblestone"; } }
     public override string bottomName { get { return "cobblestone"; } }
@@ -16,6 +17,8 @@ public class NBTCobblestone : NBTBlock
     public override float hardness { get { return 2; } }
 
     public override SoundMaterial soundMaterial { get { return SoundMaterial.Stone; } }
+
+    public override string GetIconPathByData(short data) { return "Cobblestone"; }
 
     public override string GetBreakEffectTexture(byte data) { return "cobblestone"; }
 }

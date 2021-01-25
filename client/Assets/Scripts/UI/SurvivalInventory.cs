@@ -38,6 +38,7 @@ public class SurvivalInventory : MonoBehaviour
         {
             Instance.gameObject.SetActive(true);
             Instance.RefreshUI();
+            Instance.RefreshGrabItem();
         }
         else
         {
@@ -55,6 +56,11 @@ public class SurvivalInventory : MonoBehaviour
         if (Instance != null)
         {
             Instance.gameObject.SetActive(false);
+        }
+
+        if (InventorySystem.grabItem.id != null)
+        {
+            InventorySystem.DropGrabItem();
         }
     }
 
@@ -213,10 +219,7 @@ public class SurvivalInventory : MonoBehaviour
         {
             if (InventorySystem.grabItem.id != null)
             {
-                NBTObject generator = NBTGeneratorManager.GetObjectGenerator(InventorySystem.grabItem.id);
-                Item.CreatePlayerDropItem(generator, (byte)InventorySystem.grabItem.damage, InventorySystem.grabItem.count);
                 InventorySystem.DropGrabItem();
-
                 RefreshGrabItem();
                 RefreshUI();
                 ItemSelectPanel.instance.RefreshUI();
@@ -254,10 +257,7 @@ public class SurvivalInventory : MonoBehaviour
         {
             if (InventorySystem.grabItem.id != null)
             {
-                NBTObject generator = NBTGeneratorManager.GetObjectGenerator(InventorySystem.grabItem.id);
-                Item.CreatePlayerDropItem(generator, (byte)InventorySystem.grabItem.damage, InventorySystem.grabItem.count);
                 InventorySystem.DropGrabItem();
-
                 RefreshGrabItem();
                 RefreshUI();
                 ItemSelectPanel.instance.RefreshUI();

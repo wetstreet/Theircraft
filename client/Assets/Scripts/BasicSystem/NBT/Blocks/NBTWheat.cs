@@ -24,4 +24,45 @@ public class NBTWheat : NBTPlant
     protected override string itemMeshPath { get { return "wheat"; } }
 
     public override string GetBreakEffectTexture(byte data) { return "wheat"; }
+
+    protected static Vector3 nearBottomLeft_1 = new Vector3(-0.5f, -0.5f, -0.25f);
+    protected static Vector3 nearBottomRight_1 = new Vector3(0.5f, -0.5f, -0.25f);
+    protected static Vector3 nearTopLeft_1 = new Vector3(-0.5f, 0.5f, -0.25f);
+    protected static Vector3 nearTopRight_1 = new Vector3(0.5f, 0.5f, -0.25f);
+    protected static Vector3 farBottomLeft_1 = new Vector3(-0.5f, -0.5f, 0.25f);
+    protected static Vector3 farBottomRight_1 = new Vector3(0.5f, -0.5f, 0.25f);
+    protected static Vector3 farTopLeft_1 = new Vector3(-0.5f, 0.5f, 0.25f);
+    protected static Vector3 farTopRight_1 = new Vector3(0.5f, 0.5f, 0.25f);
+
+    protected static Vector3 nearBottomLeft_2 = new Vector3(-0.25f, -0.5f, -0.5f);
+    protected static Vector3 nearBottomRight_2 = new Vector3(0.25f, -0.5f, -0.5f);
+    protected static Vector3 nearTopLeft_2 = new Vector3(-0.25f, 0.5f, -0.5f);
+    protected static Vector3 nearTopRight_2 = new Vector3(0.25f, 0.5f, -0.5f);
+    protected static Vector3 farBottomLeft_2 = new Vector3(-0.25f, -0.5f, 0.5f);
+    protected static Vector3 farBottomRight_2 = new Vector3(0.25f, -0.5f, 0.5f);
+    protected static Vector3 farTopLeft_2 = new Vector3(-0.25f, 0.5f, 0.5f);
+    protected static Vector3 farTopRight_2 = new Vector3(0.25f, 0.5f, 0.5f);
+
+    public override void AddCube(NBTChunk chunk, byte blockData, byte skyLight, Vector3Int pos, NBTGameObject nbtGO)
+    {
+        this.pos = pos;
+        vertices = nbtGO.vertexList;
+        triangles = nbtGO.triangles;
+
+        plantIndex = GetPlantIndexByData(chunk, blockData);
+        tintColor = GetTintColorByData(chunk, blockData);
+
+        try
+        {
+            AddFace(nearBottomLeft_1, nearTopLeft_1, nearTopRight_1, nearBottomRight_1, plantIndex, Color.white);
+            AddFace(farBottomLeft_1, farTopLeft_1, farTopRight_1, farBottomRight_1, plantIndex, Color.white);
+
+            AddFace(farBottomLeft_2, farTopLeft_2, nearTopLeft_2, nearBottomLeft_2, plantIndex, Color.white);
+            AddFace(farBottomRight_2, farTopRight_2, nearTopRight_2, nearBottomRight_2, plantIndex, Color.white);
+        }
+        catch (System.Exception e)
+        {
+            Debug.Log(e.ToString() + "\n" + "pos=" + pos + ",data=" + blockData);
+        }
+    }
 }

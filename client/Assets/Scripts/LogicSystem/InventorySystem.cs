@@ -121,6 +121,9 @@ public class InventorySystem
 
     public static void DropGrabItem()
     {
+        NBTObject generator = NBTGeneratorManager.GetObjectGenerator(grabItem.id);
+        Item.CreatePlayerDropItem(generator, (byte)grabItem.damage, grabItem.count);
+
         grabItem.id = null;
         grabItem.damage = 0;
         grabItem.count = 0;
