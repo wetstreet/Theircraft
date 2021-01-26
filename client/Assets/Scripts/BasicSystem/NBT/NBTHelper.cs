@@ -69,6 +69,15 @@ public class NBTHelper : MonoBehaviour
         return null;
     }
 
+    public static NBTChunk GetChunk(Vector2Int pos)
+    {
+        if (chunkDict.ContainsKey(pos))
+        {
+            return chunkDict[pos];
+        }
+        return null;
+    }
+
     public static NBTChunk GetChunk(Vector3Int pos)
     {
         int chunkX = Mathf.FloorToInt(pos.x / 16f);

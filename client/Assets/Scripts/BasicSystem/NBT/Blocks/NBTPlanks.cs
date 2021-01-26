@@ -7,6 +7,8 @@ public class NBTPlanks : NBTBlock
     public override string name { get { return "Planks"; } }
     public override string id { get { return "minecraft:planks"; } }
 
+    public override float hardness => 2;
+
     public override string GetIconPathByData(short data)
     {
         if (data == 0) return "OakWoodPlanks";

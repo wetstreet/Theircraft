@@ -6,6 +6,7 @@ using UnityEngine;
 public class NBTBrick : NBTBlock
 {
     public override string name { get { return "Brick"; } }
+    public override string id { get { return "minecraft:brick"; } }
 
     public override string topName { get { return "brick"; } }
     public override string bottomName { get { return "brick"; } }

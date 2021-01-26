@@ -11,6 +11,8 @@ public class NBTSpruceStairs : NBTStairs
 
     public override float hardness => 2;
 
+    public override SoundMaterial soundMaterial { get { return SoundMaterial.Wood; } }
+
     public override string GetIconPathByData(short data) { return "SpruceWoodStairs"; }
 
     public override string GetBreakEffectTexture(NBTChunk chunk, byte data) { return "planks_spruce"; }

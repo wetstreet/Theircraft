@@ -11,6 +11,8 @@ public class NBTBrickStairs : NBTStairs
 
     public override float hardness => 2;
 
+    public override SoundMaterial soundMaterial { get { return SoundMaterial.Stone; } }
+
     public override string GetIconPathByData(short data) { return "BrickStairs"; }
 
     public override string GetBreakEffectTexture(NBTChunk chunk, byte data) { return "brick"; }

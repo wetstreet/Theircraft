@@ -134,16 +134,37 @@ public class NBTWoodenSlab : NBTBlock
         }
     }
 
+    static Vector2 leftMid = new Vector2(0, 0.5f);
+    static Vector2 rightMid = new Vector2(1, 0.5f);
+
+    Vector2[] uv_full = new Vector2[4] { Vector2.zero, Vector2.up, Vector2.one, Vector2.right };
+    Vector2[] uv_top = new Vector2[4] { leftMid, Vector2.up, Vector2.one, rightMid };
+    Vector2[] uv_bot = new Vector2[4] { Vector2.zero, leftMid, rightMid, Vector2.right };
+
+    protected void AddFace(Vector3 pos1, Vector3 pos2, Vector3 pos3, Vector3 pos4, Vector2[] uv, int faceIndex, Color color)
+    {
+        vertices.Add(new Vertex { pos = ToVector4(pos1 + pos, faceIndex), texcoord = uv[0], color = color });
+        vertices.Add(new Vertex { pos = ToVector4(pos2 + pos, faceIndex), texcoord = uv[1], color = color });
+        vertices.Add(new Vertex { pos = ToVector4(pos3 + pos, faceIndex), texcoord = uv[2], color = color });
+        vertices.Add(new Vertex { pos = ToVector4(pos4 + pos, faceIndex), texcoord = uv[3], color = color });
+
+        int startIndex = vertices.Count - 4;
+        triangles.AddRange(new int[] {
+            startIndex, startIndex + 1, startIndex + 2,
+            startIndex, startIndex + 2, startIndex + 3
+        });
+    }
+
     protected override void AddFrontFace(byte data)
     {
         rotation = GetFrontRotationByData(blockData);
         if (data >= 8)
         {
-            AddFace(nearMiddleLeft, nearTopLeft, nearTopRight, nearMiddleRight, frontIndex, frontColor);
+            AddFace(nearMiddleLeft, nearTopLeft, nearTopRight, nearMiddleRight, uv_top, frontIndex, frontColor);
         }
         else
         {
-            AddFace(nearBottomLeft, nearMiddleLeft, nearMiddleRight, nearBottomRight, frontIndex, frontColor);
+            AddFace(nearBottomLeft, nearMiddleLeft, nearMiddleRight, nearBottomRight, uv_bot, frontIndex, frontColor);
         }
     }
 
@@ -151,44 +172,44 @@ public class NBTWoodenSlab : NBTBlock
     {
         rotation = GetBackRotationByData(blockData);
         if (data >= 8)
-            AddFace(farMiddleRight, farTopRight, farTopLeft, farMiddleLeft, backIndex, backColor);
+            AddFace(farMiddleRight, farTopRight, farTopLeft, farMiddleLeft, uv_top, backIndex, backColor);
         else
-            AddFace(farBottomRight, farMiddleRight, farMiddleLeft, farBottomLeft, backIndex, backColor);
+            AddFace(farBottomRight, farMiddleRight, farMiddleLeft, farBottomLeft, uv_bot, backIndex, backColor);
     }
 
     protected override void AddTopFace(byte data)
     {
         rotation = GetTopRotationByData(blockData);
         if (data >= 8)
-            AddFace(farTopRight, nearTopRight, nearTopLeft, farTopLeft, topIndex, topColor);
+            AddFace(farTopRight, nearTopRight, nearTopLeft, farTopLeft, uv_full, topIndex, topColor);
         else
-            AddFace(farMiddleRight, nearMiddleRight, nearMiddleLeft, farMiddleLeft, topIndex, topColor);
+            AddFace(farMiddleRight, nearMiddleRight, nearMiddleLeft, farMiddleLeft, uv_full, topIndex, topColor);
     }
 
     protected override void AddBottomFace(byte data)
     {
         rotation = GetBottomRotationByData(blockData);
         if (data >= 8)
-            AddFace(nearMiddleRight, farMiddleRight, farMiddleLeft, nearMiddleLeft, bottomIndex, bottomColor);
+            AddFace(nearMiddleRight, farMiddleRight, farMiddleLeft, nearMiddleLeft, uv_full, bottomIndex, bottomColor);
         else
-            AddFace(nearBottomRight, farBottomRight, farBottomLeft, nearBottomLeft, bottomIndex, bottomColor);
+            AddFace(nearBottomRight, farBottomRight, farBottomLeft, nearBottomLeft, uv_full, bottomIndex, bottomColor);
     }
 
     protected override void AddLeftFace(byte data)
     {
         rotation = GetLeftRotationByData(blockData);
         if (data >= 8)
-            AddFace(farMiddleLeft, farTopLeft, nearTopLeft, nearMiddleLeft, leftIndex, leftColor);
+            AddFace(farMiddleLeft, farTopLeft, nearTopLeft, nearMiddleLeft, uv_top, leftIndex, leftColor);
         else
-            AddFace(farBottomLeft, farMiddleLeft, nearMiddleLeft, nearBottomLeft, leftIndex, leftColor);
+            AddFace(farBottomLeft, farMiddleLeft, nearMiddleLeft, nearBottomLeft, uv_bot, leftIndex, leftColor);
     }
 
     protected override void AddRightFace(byte data)
     {
         rotation = GetRightRotationByData(blockData);
         if (data >= 8)
-            AddFace(nearMiddleRight, nearTopRight, farTopRight, farMiddleRight, rightIndex, rightColor);
+            AddFace(nearMiddleRight, nearTopRight, farTopRight, farMiddleRight, uv_top, rightIndex, rightColor);
         else
-            AddFace(nearBottomRight, nearMiddleRight, farMiddleRight, farBottomRight, rightIndex, rightColor);
+            AddFace(nearBottomRight, nearMiddleRight, farMiddleRight, farBottomRight, uv_bot, rightIndex, rightColor);
     }
 }

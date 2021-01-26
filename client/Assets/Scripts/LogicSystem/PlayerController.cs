@@ -337,14 +337,18 @@ public class PlayerController : MonoBehaviour
     }
 
     MeshRenderer breakingEffect;
-    void UpdateBreakingEffect(Vector3Int pos, int stage)
+    MeshFilter breakingEffectMesh;
+    void UpdateBreakingEffect(NBTBlock generator, Vector3Int pos, int stage)
     {
         if (breakingEffect == null)
         {
             GameObject prefab = Resources.Load<GameObject>("Prefabs/BreakingEffect");
-            breakingEffect = GameObject.Instantiate(prefab).GetComponent<MeshRenderer>();
-            breakingEffect.gameObject.SetActive(false);
+            GameObject go = Instantiate(prefab);
+            breakingEffect = go.GetComponent<MeshRenderer>();
+            breakingEffectMesh = go.GetComponent<MeshFilter>();
+            go.SetActive(false);
         }
+
         if (stage == 0)
         {
             breakingEffect.gameObject.SetActive(false);
@@ -353,6 +357,7 @@ public class PlayerController : MonoBehaviour
         {
             breakingEffect.gameObject.SetActive(true);
             breakingEffect.transform.position = pos;
+            breakingEffectMesh.sharedMesh = generator.GetItemMesh(NBTHelper.GetChunk(GetCurrentChunkPos()), WireFrameHelper.data);
 
             breakingEffect.sharedMaterial.mainTexture = Resources.Load<Texture2D>("GUI/block/destroy_stage_" + (stage - 1));
         }
@@ -407,7 +412,8 @@ public class PlayerController : MonoBehaviour
 
                             breakTime += Time.deltaTime;
 
-                            float breakNeedTime = NBTGeneratorManager.GetMeshGenerator(type).breakNeedTime;
+                            NBTBlock generator = NBTGeneratorManager.GetMeshGenerator(type);
+                            float breakNeedTime = generator.breakNeedTime;
                             if (breakNeedTime == 0)
                             {
                                 BreakBlock(pos);
@@ -418,9 +424,9 @@ public class PlayerController : MonoBehaviour
                                 if (stage != curStage)
                                 {
                                     stage = curStage;
-                                    UpdateBreakingEffect(pos, stage);
+                                    UpdateBreakingEffect(generator, pos, stage);
                                 }
-                                if (stage >= 11)
+                                if (stage >= 10)
                                 {
                                     BreakBlock(pos);
                                 }
@@ -437,6 +443,7 @@ public class PlayerController : MonoBehaviour
     }
 
     bool isFlying = false;
+    bool isCreative = false;
 
     public Vector3 jumpSpeed = new Vector3(0, 9f, 0);
     public Vector3 fallSpeed = new Vector3(0, -28f, 0);
@@ -447,16 +454,19 @@ public class PlayerController : MonoBehaviour
             verticalSpeed = jumpSpeed;
         }
 
-        if (Time.time - lastSpace <= 0.3f)
+        if (isCreative)
         {
-            isFlying = !isFlying;
-            vcamWide.SetActive(isFlying);
-            //重置时间戳，防止连按三下
-            lastSpace = 0;
-        }
-        else
-        {
-            lastSpace = Time.time;
+            if (Time.time - lastSpace <= 0.3f)
+            {
+                isFlying = !isFlying;
+                vcamWide.SetActive(isFlying);
+                //重置时间戳，防止连按三下
+                lastSpace = 0;
+            }
+            else
+            {
+                lastSpace = Time.time;
+            }
         }
     }
 
