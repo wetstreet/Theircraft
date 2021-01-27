@@ -323,6 +323,9 @@ namespace UnityEngine.Rendering.Universal
         static void RenderSingleCamera(ScriptableRenderContext context, CameraData cameraData, bool anyPostProcessingEnabled)
         {
             Camera camera = cameraData.camera;
+
+            currentRenderingCamera = camera;
+
             var renderer = cameraData.renderer;
             if (renderer == null)
             {
@@ -393,6 +396,8 @@ namespace UnityEngine.Rendering.Universal
 
             ScriptableRenderer.current = null;
         }
+
+        public static Camera currentRenderingCamera;
 
         /// <summary>
         // Renders a camera stack. This method calls RenderSingleCamera for each valid camera in the stack.

@@ -9,32 +9,70 @@ using UnityEngine;
 
 public class NBTHelper : MonoBehaviour
 {
-    public static string save = "New World---";
+    public static string save = "New World-";
 
     private static Dictionary<Vector2Int, NBTChunk> chunkDict = new Dictionary<Vector2Int, NBTChunk>();
 
+    static string savePath { get
+        {
+            //string path = Environment.ExpandEnvironmentVariables("%APPDATA%");
+            //path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            //path = Path.Combine(path, ".minecraft");
+            //path = Path.Combine(path, "saves");
+
+            string path = Path.Combine(Application.streamingAssetsPath, "saves");
+            path = Path.Combine(path, save);
+            return path;
+        }
+    }
+
+    public static void Save()
+    {
+        TagNodeList Pos = playerData.Root["Pos"] as TagNodeList;
+        Pos[0] = (TagNodeDouble)PlayerController.instance.transform.position.x;
+        Pos[1] = (TagNodeDouble)PlayerController.instance.transform.position.y;
+        Pos[2] = (TagNodeDouble)PlayerController.instance.transform.position.z;
+        TagNodeList Rotation = playerData.Root["Rotation"] as TagNodeList;
+        Rotation[0] = (TagNodeFloat)(-PlayerController.instance.transform.localEulerAngles.y);
+        Rotation[1] = (TagNodeFloat)(PlayerController.instance.camera.localEulerAngles.x);
+
+        using (Stream stream = playerFile.GetDataOutputStream())
+        {
+            playerData.WriteTo(stream);
+        }
+
+        foreach (KeyValuePair<Vector2Int, NbtTree> kvPair in chunkDictNBT)
+        {
+            int chunkX = kvPair.Key.x;
+            int chunkZ = kvPair.Key.y;
+            int regionX = GetRegionCoordinate(chunkX);
+            int regionZ = GetRegionCoordinate(chunkZ);
+            RegionFile region = GetRegion(regionX, regionZ);
+            using (Stream stream = region.GetChunkDataOutputStream(chunkX, chunkZ))
+            {
+                kvPair.Value.WriteTo(stream);
+            }
+        }
+    }
+
+    static PlayerFile playerFile;
+    static NbtTree playerData;
     public static TagNodeCompound GetPlayerData()
     {
-        string path = Environment.ExpandEnvironmentVariables("%APPDATA%");
-        if (!Directory.Exists(path))
+        if (playerData == null)
         {
-            path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-        }
+            string path = Path.Combine(savePath, "playerdata");
+            string[] files = Directory.GetFiles(path);
 
-        path = Path.Combine(path, ".minecraft");
-        path = Path.Combine(path, "saves");
-        path = Path.Combine(path, save);
-        path = Path.Combine(path, "playerdata");
-        string[] files = Directory.GetFiles(path);
-
-        if (files.Length > 0)
-        {
-            PlayerFile player = new PlayerFile(files[0]);
-            NbtTree _tree = new NbtTree();
-            _tree.ReadFrom(player.GetDataInputStream());
-            return _tree.Root;
+            if (files.Length == 0)
+            {
+                throw new Exception("no player data");
+            }
+            playerFile = new PlayerFile(files[0]);
+            playerData = new NbtTree();
+            playerData.ReadFrom(playerFile.GetDataInputStream());
         }
-        return null;
+        return playerData.Root;
     }
 
     public static Vector3 GetPlayerPos()
@@ -165,13 +203,15 @@ public class NBTHelper : MonoBehaviour
                 if (region.HasChunk(_x, _z))
                 {
                     UnityEngine.Profiling.Profiler.BeginSample("GetChunkDataInputStream");
-                    Stream stream = region.GetChunkDataInputStream(_x, _z);
+                    NbtTree _tree = new NbtTree();
+                    using (Stream stream = region.GetChunkDataInputStream(_x, _z))
+                    {
+                        UnityEngine.Profiling.Profiler.BeginSample("NBTTree ReadFrom");
+                        _tree.ReadFrom(stream);
+                        UnityEngine.Profiling.Profiler.EndSample();
+                    }
                     UnityEngine.Profiling.Profiler.EndSample();
 
-                    UnityEngine.Profiling.Profiler.BeginSample("NBTTree ReadFrom");
-                    NbtTree _tree = new NbtTree();
-                    _tree.ReadFrom(stream);
-                    UnityEngine.Profiling.Profiler.EndSample();
 
                     chunkDictNBT.Add(key, _tree);
                 }
@@ -212,16 +252,7 @@ public class NBTHelper : MonoBehaviour
 
         if (!regionDict.ContainsKey(pos))
         {
-            string path = Environment.ExpandEnvironmentVariables("%APPDATA%");
-            if (!Directory.Exists(path))
-            {
-                path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            }
-
-            path = Path.Combine(path, ".minecraft");
-            path = Path.Combine(path, "saves");
-            path = Path.Combine(path, save);
-            path = Path.Combine(path, "region");
+            string path = Path.Combine(savePath, "region");
             path = Path.Combine(path, "r." + regionX + "." + regionZ + ".mca");
 
             if (File.Exists(path))

@@ -94,7 +94,10 @@ public class NBTEditorWindow : EditorWindow
                 if (region.HasChunk(_x, _z))
                 {
                     NbtTree _tree = new NbtTree();
-                    _tree.ReadFrom(region.GetChunkDataInputStream(_x, _z));
+                    using (Stream stream = region.GetChunkDataInputStream(_x, _z))
+                    {
+                        _tree.ReadFrom(stream);
+                    }
                     Chunk = _tree.Root;
                 }
             }

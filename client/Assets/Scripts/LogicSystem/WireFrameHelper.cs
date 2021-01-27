@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 
 public class WireFrameHelper : MonoBehaviour
 {
@@ -33,17 +35,17 @@ public class WireFrameHelper : MonoBehaviour
     public static byte type;
     public static byte data;
 
-    // Will be called after all regular rendering is done
-    public void OnRenderObject()
+    private void OnRenderObject()
     {
-        if (!render)
-        //if (!render || Camera.current.tag == "HandCamera")
+        if (!render || UniversalRenderPipeline.currentRenderingCamera != Camera.main)
+        {
             return;
+        }
 
         CreateLineMaterial();
         // Apply the line material
         lineMaterial.SetPass(0);
-        
+
         // Draw lines
         GL.Begin(GL.LINES);
         GL.Color(Color.black);

@@ -133,6 +133,7 @@ public class SettingsPanel : MonoBehaviour {
 
     void OnClickQuit()
     {
+        NBTHelper.Save();
         LocalServer.SaveData();
         NetworkManager.Clear();
         SceneManager.LoadScene("LoginScene");
