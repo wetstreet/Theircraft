@@ -86,7 +86,7 @@ public abstract class NBTBlock : NBTObject
 
     public virtual bool hasDropItem { get { return true; } }
 
-    public virtual byte GetDropItemTypeByData() { return NBTGeneratorManager.id2type[id]; }
+    public virtual string GetDropItemByData(byte data) { return id; }
 
     protected static Vector3 nearBottomLeft = new Vector3(-0.5f, -0.5f, -0.5f);
     protected static Vector3 nearBottomRight = new Vector3(0.5f, -0.5f, -0.5f);

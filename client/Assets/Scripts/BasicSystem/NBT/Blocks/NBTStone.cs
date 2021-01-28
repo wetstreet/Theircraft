@@ -6,6 +6,11 @@ using UnityEngine;
 public class NBTStone : NBTBlock
 {
     public override string name { get { return "Stone"; } }
+    public override string id { get { return "minecraft:stone"; } }
+
+    public override float hardness { get { return 1.5f; } }
+
+    public override string GetDropItemByData(byte data) { return "minecraft:cobblestone"; }
 
     public override string topName { get { return "stone"; } }
     public override string bottomName { get { return "stone"; } }

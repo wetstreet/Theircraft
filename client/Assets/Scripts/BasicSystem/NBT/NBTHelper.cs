@@ -34,7 +34,9 @@ public class NBTHelper : MonoBehaviour
         Pos[2] = (TagNodeDouble)PlayerController.instance.transform.position.z;
         TagNodeList Rotation = playerData.Root["Rotation"] as TagNodeList;
         Rotation[0] = (TagNodeFloat)(-PlayerController.instance.transform.localEulerAngles.y);
-        Rotation[1] = (TagNodeFloat)(PlayerController.instance.camera.localEulerAngles.x);
+        Rotation[1] = (TagNodeFloat)PlayerController.instance.camera.localEulerAngles.x;
+
+        InventorySystem.SaveData(playerData.Root["Inventory"] as TagNodeList);
 
         using (Stream stream = playerFile.GetDataOutputStream())
         {

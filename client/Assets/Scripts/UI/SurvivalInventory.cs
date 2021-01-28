@@ -86,7 +86,7 @@ public class SurvivalInventory : MonoBehaviour
         {
             Transform trans = Instantiate(unit);
             trans.name = i.ToString();
-            trans.parent = selectGrid;
+            trans.SetParent(selectGrid, false);
             trans.localScale = Vector3.one;
             trans.gameObject.SetActive(true);
             
@@ -98,7 +98,7 @@ public class SurvivalInventory : MonoBehaviour
         {
             Transform trans = Instantiate(unit);
             trans.name = i.ToString();
-            trans.parent = grid;
+            trans.SetParent(grid, false);
             trans.localScale = Vector3.one;
             trans.gameObject.SetActive(true);
 
@@ -111,7 +111,7 @@ public class SurvivalInventory : MonoBehaviour
         {
             Transform trans = Instantiate(unit);
             trans.name = i.ToString();
-            trans.parent = craftGrid;
+            trans.SetParent(craftGrid, false);
             trans.localScale = Vector3.one;
             trans.gameObject.SetActive(true);
 

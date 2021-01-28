@@ -240,4 +240,26 @@ public class InventorySystem
             items[40].count = 4;
         }
     }
+
+    public static void SaveData(TagNodeList Inventory)
+    {
+        Inventory.Clear();
+        Inventory.ChangeValueType(TagType.TAG_COMPOUND);
+
+        int count = 0;
+        for (int i = 0; i < 36; i++)
+        {
+            InventoryItem item = items[i];
+            if (item.id != null)
+            {
+                TagNodeCompound serializeItem = new TagNodeCompound();
+                serializeItem.Add("Count", (TagNodeByte)item.count);
+                serializeItem.Add("Damage", (TagNodeShort)item.damage);
+                serializeItem.Add("id", (TagNodeString)item.id);
+                serializeItem.Add("Slot", (TagNodeByte)i);
+                Inventory.Insert(count, serializeItem);
+            }
+        }
+    }
+
 }

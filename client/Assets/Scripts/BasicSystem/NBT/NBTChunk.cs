@@ -252,12 +252,12 @@ public class NBTChunk
                             }
                             catch (System.Exception e)
                             {
-                                Debug.Log(generator.GetType() + "\n" + e.ToString());
+                                Debug.LogWarning(generator.GetType() + "\n" + e.ToString());
                             }
                         }
                         else if (rawType != 0 && rawType != 11)
                         {
-                            Debug.Log("generator not exist, type=" + rawType);
+                            Debug.LogWarning("generator not exist, type=" + rawType);
                         }
                     }
                 }

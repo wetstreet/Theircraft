@@ -194,17 +194,17 @@ public class PlayerController : MonoBehaviour
         HideBreakingEffect();
         //DeleteBlockReq(WireFrameHelper.pos);
 
+        NBTBlock generator = NBTGeneratorManager.GetMeshGenerator(WireFrameHelper.type);
+        if (generator.hasDropItem)
+        {
+            Item.CreateBlockDropItem(generator.GetDropItemByData(WireFrameHelper.data), WireFrameHelper.data, pos);
+        }
+
         NBTHelper.SetBlockByte(WireFrameHelper.pos, 0);
 
         //Item.CreateBlockDropItem(type, WireFrameHelper.pos);
         BreakBlockEffect.Create(WireFrameHelper.type, WireFrameHelper.data, WireFrameHelper.pos);
         SoundManager.PlayBreakSound(WireFrameHelper.type, instance.gameObject);
-
-        NBTBlock generator = NBTGeneratorManager.GetMeshGenerator(WireFrameHelper.type);
-        if (generator.hasDropItem)
-        {
-            Item.CreateBlockDropItem(generator, WireFrameHelper.data, pos);
-        }
     }
 
     void OnLeftMouseDown()
