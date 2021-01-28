@@ -50,7 +50,9 @@ public class NBTHelper : MonoBehaviour
             int regionX = GetRegionCoordinate(chunkX);
             int regionZ = GetRegionCoordinate(chunkZ);
             RegionFile region = GetRegion(regionX, regionZ);
-            using (Stream stream = region.GetChunkDataOutputStream(chunkX, chunkZ))
+            int _x = chunkX - regionX * 32;
+            int _z = chunkZ - regionZ * 32;
+            using (Stream stream = region.GetChunkDataOutputStream(_x, _z))
             {
                 kvPair.Value.WriteTo(stream);
             }
