@@ -374,8 +374,10 @@ public class ChunkManager
     {
         foreach (Vector2Int chunkPos in enterViewChunks)
         {
-            NBTChunk chunk = NBTHelper.LoadChunk(chunkPos.x, chunkPos.y);
-            ChunkRefresher.Add(chunk);
+            NBTHelper.LoadChunkAsync(chunkPos.x, chunkPos.y, (NBTChunk chunk) => {
+                ChunkRefresher.Add(chunk);
+                ChunkChecker.FinishRefresh();
+            });
         }
         if (leaveViewChunks != null)
         {
@@ -383,6 +385,15 @@ public class ChunkManager
             {
                 UnloadChunk(chunk.x, chunk.y);
             }
+        }
+    }
+
+    public static void PreloadChunks(List<Vector2Int> enterViewChunks)
+    {
+        foreach (Vector2Int chunkPos in enterViewChunks)
+        {
+            NBTChunk chunk = NBTHelper.LoadChunk(chunkPos.x, chunkPos.y);
+            ChunkRefresher.Add(chunk);
         }
         ChunkChecker.FinishRefresh();
     }

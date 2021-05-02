@@ -103,55 +103,55 @@ public abstract class NBTBlock : NBTObject
     {
         if (!itemMeshDict.ContainsKey(data))
         {
-            Mesh mesh = new Mesh();
+            //Mesh mesh = new Mesh();
 
-            pos = Vector3Int.zero;
-            blockData = data;
+            //pos = Vector3Int.zero;
+            //blockData = data;
 
-            List<Vertex> vertexList = new List<Vertex>();
-            List<int> triangles = new List<int>();
+            //List<Vertex> vertexList = new List<Vertex>();
+            //List<int> triangles = new List<int>();
 
-            this.vertices = vertexList;
-            this.triangles = triangles;
+            //this.vertices = vertexList;
+            //this.triangles = triangles;
 
-            topIndex = GetTopIndexByData(chunk, blockData);
-            bottomIndex = GetBottomIndexByData(chunk, blockData);
-            frontIndex = GetFrontIndexByData(chunk, blockData);
-            backIndex = GetBackIndexByData(chunk, blockData);
-            leftIndex = GetLeftIndexByData(chunk, blockData);
-            rightIndex = GetRightIndexByData(chunk, blockData);
+            //topIndex = GetTopIndexByData(chunk, blockData);
+            //bottomIndex = GetBottomIndexByData(chunk, blockData);
+            //frontIndex = GetFrontIndexByData(chunk, blockData);
+            //backIndex = GetBackIndexByData(chunk, blockData);
+            //leftIndex = GetLeftIndexByData(chunk, blockData);
+            //rightIndex = GetRightIndexByData(chunk, blockData);
 
-            topColor = GetTopTintColorByData(chunk, blockData);
-            bottomColor = GetBottomTintColorByData(chunk, blockData);
-            frontColor = GetFrontTintColorByData(chunk, blockData);
-            backColor = GetBackTintColorByData(chunk, blockData);
-            leftColor = GetLeftTintColorByData(chunk, blockData);
-            rightColor = GetRightTintColorByData(chunk, blockData);
+            //topColor = GetTopTintColorByData(chunk, blockData);
+            //bottomColor = GetBottomTintColorByData(chunk, blockData);
+            //frontColor = GetFrontTintColorByData(chunk, blockData);
+            //backColor = GetBackTintColorByData(chunk, blockData);
+            //leftColor = GetLeftTintColorByData(chunk, blockData);
+            //rightColor = GetRightTintColorByData(chunk, blockData);
 
-            AddFrontFace(blockData);
-            AddRightFace(blockData);
-            AddLeftFace(blockData);
-            AddBackFace(blockData);
-            AddTopFace(blockData);
-            AddBottomFace(blockData);
+            //AddFrontFace(blockData);
+            //AddRightFace(blockData);
+            //AddLeftFace(blockData);
+            //AddBackFace(blockData);
+            //AddTopFace(blockData);
+            //AddBottomFace(blockData);
 
-            var vertexCount = vertexList.Count;
+            //var vertexCount = vertexList.Count;
 
-            mesh.SetVertexBufferParams(vertexCount, new[] {
-                new VertexAttributeDescriptor(VertexAttribute.Position, VertexAttributeFormat.Float32, 4),
-                new VertexAttributeDescriptor(VertexAttribute.Color, VertexAttributeFormat.Float32, 4),
-                new VertexAttributeDescriptor(VertexAttribute.TexCoord0, VertexAttributeFormat.Float32, 2),
-            });
+            //mesh.SetVertexBufferParams(vertexCount, new[] {
+            //    new VertexAttributeDescriptor(VertexAttribute.Position, VertexAttributeFormat.Float32, 4),
+            //    new VertexAttributeDescriptor(VertexAttribute.Color, VertexAttributeFormat.Float32, 4),
+            //    new VertexAttributeDescriptor(VertexAttribute.TexCoord0, VertexAttributeFormat.Float32, 2),
+            //});
 
-            var verts = new NativeArray<Vertex>(vertexCount, Allocator.Temp);
+            //var verts = new NativeArray<Vertex>(vertexCount, Allocator.Temp);
 
-            verts.CopyFrom(vertexList.ToArray());
+            //verts.CopyFrom(vertexList.ToArray());
 
-            mesh.SetVertexBufferData(verts, 0, 0, vertexCount);
-            mesh.SetTriangles(triangles.ToArray(), 0);
-            mesh.RecalculateBounds();
+            //mesh.SetVertexBufferData(verts, 0, 0, vertexCount);
+            //mesh.SetTriangles(triangles.ToArray(), 0);
+            //mesh.RecalculateBounds();
 
-            itemMeshDict.Add(data, mesh);
+            //itemMeshDict.Add(data, mesh);
         }
 
         return itemMeshDict[data];
@@ -159,8 +159,11 @@ public abstract class NBTBlock : NBTObject
 
     protected Vector3Int pos;
     protected byte blockData;
-    protected List<Vertex> vertices;
-    protected List<int> triangles;
+
+    protected NativeArray<Vertex> vertexArray;
+    protected NativeArray<ushort> triangleArray;
+    protected ushort vertexCount;
+    protected ushort triangleCount;
 
     protected virtual Rotation GetTopRotationByData(byte data) { return Rotation.Zero; }
     protected virtual Rotation GetBottomRotationByData(byte data) { return Rotation.Zero; }
@@ -175,8 +178,11 @@ public abstract class NBTBlock : NBTObject
 
         this.pos = pos;
         this.blockData = blockData;
-        vertices = nbtGO.vertexList;
-        triangles = nbtGO.triangles;
+
+        vertexArray = nbtGO.vertexArray;
+        triangleArray = nbtGO.triangleArray;
+        vertexCount = nbtGO.vertexCount;
+        triangleCount = nbtGO.triangleCount;
 
         topIndex = GetTopIndexByData(chunk, blockData);
         bottomIndex = GetBottomIndexByData(chunk, blockData);
@@ -221,6 +227,11 @@ public abstract class NBTBlock : NBTObject
 
         UnityEngine.Profiling.Profiler.EndSample();
 
+        nbtGO.vertexArray = vertexArray;
+        nbtGO.triangleArray = triangleArray;
+        nbtGO.vertexCount = vertexCount;
+        nbtGO.triangleCount = triangleCount;
+
         UnityEngine.Profiling.Profiler.EndSample();
     }
 
@@ -248,18 +259,30 @@ public abstract class NBTBlock : NBTObject
         }
     }
 
+    void SetVertex(Vector4 pos, Vector2 texcoord, Vector4 color)
+    {
+        Vertex vert = vertexArray[vertexCount];
+        vert.pos = pos;
+        vert.texcoord = texcoord;
+        vert.color = color;
+        vertexArray[vertexCount++] = vert;
+    }
+
     protected void AddFace(Vector3 pos1, Vector3 pos2, Vector3 pos3, Vector3 pos4, int faceIndex, Color color)
     {
-        vertices.Add(new Vertex { pos = ToVector4(pos1 + pos, faceIndex), texcoord = uv[0], color = color });
-        vertices.Add(new Vertex { pos = ToVector4(pos2 + pos, faceIndex), texcoord = uv[1], color = color });
-        vertices.Add(new Vertex { pos = ToVector4(pos3 + pos, faceIndex), texcoord = uv[2], color = color });
-        vertices.Add(new Vertex { pos = ToVector4(pos4 + pos, faceIndex), texcoord = uv[3], color = color });
+        ushort startIndex = vertexCount;
 
-        int startIndex = vertices.Count - 4;
-        triangles.AddRange(new int[] {
-            startIndex, startIndex + 1, startIndex + 2,
-            startIndex, startIndex + 2, startIndex + 3
-        });
+        SetVertex(ToVector4(pos1 + pos, faceIndex), uv[0], color);
+        SetVertex(ToVector4(pos2 + pos, faceIndex), uv[1], color);
+        SetVertex(ToVector4(pos3 + pos, faceIndex), uv[2], color);
+        SetVertex(ToVector4(pos4 + pos, faceIndex), uv[3], color);
+
+        triangleArray[triangleCount++] = startIndex;
+        triangleArray[triangleCount++] = (ushort)(startIndex + 1);
+        triangleArray[triangleCount++] = (ushort)(startIndex + 2);
+        triangleArray[triangleCount++] = startIndex;
+        triangleArray[triangleCount++] = (ushort)(startIndex + 2);
+        triangleArray[triangleCount++] = (ushort)(startIndex + 3);
     }
     
     protected virtual void AddFrontFace(byte data)

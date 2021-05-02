@@ -19,9 +19,14 @@ public static class ChunkChecker
     public static void Init()
     {
         isRefreshing = false;
-        tmpChunk = Vector2Int.zero;
-        lastChunk = Vector2Int.zero;
-        lastRenderDistance = 0;
+
+        lastRenderDistance = SettingsPanel.RenderDistance;
+        lastChunk = PlayerController.GetCurrentChunkPos();
+
+        tmpChunk = lastChunk;
+
+        List<Vector2Int> preloadChunks = Utilities.GetSurroudingChunks(lastChunk);
+        ChunkManager.PreloadChunks(preloadChunks);
     }
     
     public static void Update()

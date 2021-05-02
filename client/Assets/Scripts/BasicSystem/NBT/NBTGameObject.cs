@@ -7,12 +7,17 @@ using static MeshGenerator;
 
 public class NBTGameObject : MonoBehaviour
 {
-    public List<Vertex> vertexList = new List<Vertex>();
-    public List<int> triangles = new List<int>();
+    public NativeArray<Vertex> vertexArray;
+    public NativeArray<ushort> triangleArray;
+
+    public ushort vertexCount = 0;
+    public ushort triangleCount = 0;
 
     public Mesh mesh;
 
     bool isCollidable;
+
+    static VertexAttributeDescriptor[] vertexAttributes;
 
     public static NBTGameObject Create(string name, Transform parent, int layer, bool isCollidable = true)
     {
@@ -41,29 +46,60 @@ public class NBTGameObject : MonoBehaviour
 
     public void Clear()
     {
-        vertexList.Clear();
-        triangles.Clear();
+        vertexCount = 0;
+        triangleCount = 0;
+        //vertexList.Clear();
+        //triangles.Clear();
+    }
+
+    private void Awake()
+    {
+        vertexArray = new NativeArray<Vertex>(65536, Allocator.Persistent);
+        triangleArray = new NativeArray<ushort>(65536, Allocator.Persistent);
+    }
+
+    private void OnDestroy()
+    {
+        vertexArray.Dispose();
+        triangleArray.Dispose();
     }
 
     public void Refresh()
     {
         mesh.Clear();
 
-        var vertexCount = vertexList.Count;
+        if (vertexAttributes == null)
+        {
+            vertexAttributes = new[] {
+                new VertexAttributeDescriptor(VertexAttribute.Position, VertexAttributeFormat.Float32, 4),
+                new VertexAttributeDescriptor(VertexAttribute.Color, VertexAttributeFormat.Float32, 4),
+                new VertexAttributeDescriptor(VertexAttribute.TexCoord0, VertexAttributeFormat.Float32, 2),
+            };
+        }
 
-        mesh.SetVertexBufferParams(vertexCount, new[] {
-            new VertexAttributeDescriptor(VertexAttribute.Position, VertexAttributeFormat.Float32, 4),
-            new VertexAttributeDescriptor(VertexAttribute.Color, VertexAttributeFormat.Float32, 4),
-            new VertexAttributeDescriptor(VertexAttribute.TexCoord0, VertexAttributeFormat.Float32, 2),
-        });
+        mesh.SetVertexBufferParams(vertexCount, vertexAttributes);
+        mesh.SetVertexBufferData(vertexArray, 0, 0, vertexCount);
 
-        var verts = new NativeArray<Vertex>(vertexCount, Allocator.Temp);
+        mesh.SetIndexBufferParams(triangleCount, IndexFormat.UInt16);
+        print("triangleCount=" + triangleCount);
+        mesh.SetIndexBufferData(triangleArray, 0, 0, triangleCount);
 
-        verts.CopyFrom(vertexList.ToArray());
+        mesh.subMeshCount = 1;
+        SubMeshDescriptor desc = new SubMeshDescriptor();
+        desc.indexStart = 0;
+        desc.indexCount = triangleCount;
+        desc.baseVertex = 0;
+        desc.topology = MeshTopology.Triangles;
+        mesh.SetSubMesh(0, desc);
 
-        mesh.SetVertexBufferData(verts, 0, 0, vertexCount);
-        mesh.SetTriangles(triangles.ToArray(), 0);
-        mesh.RecalculateBounds();
+        Vector3[] positions = new Vector3[vertexCount];
+        for (int i = 0; i < vertexCount; i++)
+        {
+            Vertex vert = vertexArray[i];
+            positions[i] = vert.pos;
+        }
+        Bounds bounds = GeometryUtility.CalculateBounds(positions, Matrix4x4.identity);
+        mesh.bounds = bounds;
 
         GetComponent<MeshRenderer>().sharedMaterial.SetTexture("_Array", TextureArrayManager.GetArray());
         GetComponent<MeshFilter>().sharedMesh = mesh;
@@ -71,8 +107,6 @@ public class NBTGameObject : MonoBehaviour
         {
             GetComponent<MeshCollider>().sharedMesh = mesh;
         }
-
-        verts.Dispose();
     }
 
 }

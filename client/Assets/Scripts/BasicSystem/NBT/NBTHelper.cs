@@ -5,9 +5,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
+using Unity.Jobs;
 using UnityEngine;
 
-public class NBTHelper : MonoBehaviour
+public class NBTHelper
 {
     public static string save = "New World-";
 
@@ -132,7 +134,6 @@ public class NBTHelper : MonoBehaviour
         }
         return null;
     }
-
     public static NBTChunk LoadChunk(int chunkX, int chunkZ)
     {
         UnityEngine.Profiling.Profiler.BeginSample("ChunkChecker.Update");
@@ -159,6 +160,37 @@ public class NBTHelper : MonoBehaviour
             return chunkDict[key];
         }
         return null;
+    }
+
+    public static void LoadChunkAsync(int chunkX, int chunkZ, Action<NBTChunk> callback)
+    {
+        UnityEngine.Profiling.Profiler.BeginSample("ChunkChecker.Update");
+
+        Vector2Int key = new Vector2Int(chunkX, chunkZ);
+        if (!chunkDict.ContainsKey(key))
+        {
+            GetChunkNodeAsync(chunkX, chunkZ, (TagNodeCompound Chunk) => {
+                Debug.Log("chunk load callback,x=" + chunkX + ",z=" + chunkZ);
+                if (Chunk != null)
+                {
+                    TagNodeCompound Level = Chunk["Level"] as TagNodeCompound;
+
+                    TagNodeList Sections = Level["Sections"] as TagNodeList;
+                    NBTChunk chunk = ChunkPool.GetChunk();
+                    chunk.SetData(chunkX, chunkZ, Sections);
+                    chunkDict.Add(key, chunk);
+
+                    callback(chunk);
+                }
+            });
+        }
+
+        UnityEngine.Profiling.Profiler.EndSample();
+
+        if (chunkDict.ContainsKey(key))
+        {
+            callback(chunkDict[key]);
+        }
     }
 
     public static void RemoveChunk(int chunkX, int chunkZ)
@@ -189,7 +221,69 @@ public class NBTHelper : MonoBehaviour
             ).ToList();
     }
 
-    static Dictionary<Vector2Int, NbtTree> chunkDictNBT = new Dictionary<Vector2Int, NbtTree>();
+    struct LoadJobPack
+    {
+        public Vector2Int chunkPos;
+        public LoadJob job;
+        public JobHandle handle;
+        public Action<TagNodeCompound> callback;
+    }
+
+    struct LoadJob : IJob
+    {
+        public GCHandle streamHandle;
+        public GCHandle treeHandle;
+        public void Execute()
+        {
+            Stream stream = (Stream)streamHandle.Target;
+            NbtTree tree = (NbtTree)treeHandle.Target;
+            tree.ReadFrom(stream);
+        }
+    }
+
+    static void LoadAsync(Vector2Int chunkPos, NbtTree tree, Stream stream, Action<TagNodeCompound> callback)
+    {
+
+        GCHandle treeHandle = GCHandle.Alloc(tree);
+        GCHandle streamHandle = GCHandle.Alloc(stream);
+
+        var job = new LoadJob()
+        {
+            treeHandle = treeHandle,
+            streamHandle = streamHandle
+        };
+        JobHandle handle = job.Schedule();
+
+        loadJobList.Add(new LoadJobPack { chunkPos = chunkPos, job = job, handle = handle, callback = callback });
+    }
+
+    static List<LoadJobPack> loadJobList = new List<LoadJobPack>();
+
+    public static void Update()
+    {
+        for (int i = 0; i < loadJobList.Count; i++)
+        {
+            LoadJobPack pack = loadJobList[i];
+            if (pack.handle.IsCompleted)
+            {
+                loadJobList.Remove(pack);
+
+                Stream stream = (Stream)pack.job.streamHandle.Target;
+                stream.Dispose();
+
+                NbtTree tree = (NbtTree)pack.job.treeHandle.Target;
+
+                pack.job.treeHandle.Free();
+                pack.job.streamHandle.Free();
+
+                chunkDictNBT.Add(pack.chunkPos, tree);
+
+                Debug.Log("tree read finish!,pos="+pack.chunkPos);
+
+                pack.callback(tree.Root);
+            }
+        }
+    }
     public static TagNodeCompound GetChunkNode(int x, int z)
     {
         key.Set(x, z);
@@ -226,6 +320,49 @@ public class NBTHelper : MonoBehaviour
             return chunkDictNBT[key].Root;
         }
         return null;
+    }
+
+    static Dictionary<Vector2Int, NbtTree> chunkDictNBT = new Dictionary<Vector2Int, NbtTree>();
+    public static void GetChunkNodeAsync(int x, int z, Action<TagNodeCompound> callback)
+    {
+        key.Set(x, z);
+
+        if (!chunkDictNBT.ContainsKey(key))
+        {
+            int regionX = GetRegionCoordinate(x);
+            int regionZ = GetRegionCoordinate(z);
+            RegionFile region = GetRegion(regionX, regionZ);
+
+            if (region != null)
+            {
+                int _x = x - regionX * 32;
+                int _z = z - regionZ * 32;
+                if (region.HasChunk(_x, _z))
+                {
+                    UnityEngine.Profiling.Profiler.BeginSample("GetChunkDataInputStream");
+                    NbtTree _tree = new NbtTree();
+
+                    UnityEngine.Profiling.Profiler.BeginSample("NBTTree ReadFrom");
+
+                    Stream stream = region.GetChunkDataInputStream(_x, _z);
+                    Debug.Log("tree read start async,x=" + x + ",z=" + z);
+                    //_tree.ReadFrom(stream);
+                    LoadAsync(key, _tree, stream, callback);
+
+                    UnityEngine.Profiling.Profiler.EndSample();
+
+                    UnityEngine.Profiling.Profiler.EndSample();
+                }
+            }
+            else
+            {
+                Debug.LogError("Region does not exist! need generation.");
+            }
+        }
+        if (chunkDictNBT.ContainsKey(key))
+        {
+            callback(chunkDictNBT[key].Root);
+        }
     }
 
     public static byte GetNibble(byte[] arr, int index)
@@ -417,33 +554,33 @@ public class NBTHelper : MonoBehaviour
         }
         else
         {
-            UnityEngine.Profiling.Profiler.BeginSample("GetChunkNode");
-            TagNodeCompound Chunk = GetChunkNode(chunkX, chunkZ);
-            UnityEngine.Profiling.Profiler.EndSample();
+            //UnityEngine.Profiling.Profiler.BeginSample("GetChunkNode");
+            //TagNodeCompound Chunk = GetChunkNode(chunkX, chunkZ);
+            //UnityEngine.Profiling.Profiler.EndSample();
 
-            if (Chunk != null)
-            {
-                UnityEngine.Profiling.Profiler.BeginSample("GetBlockData new block");
-                TagNodeCompound Level = Chunk["Level"] as TagNodeCompound;
+            //if (Chunk != null)
+            //{
+            //    UnityEngine.Profiling.Profiler.BeginSample("GetBlockData new block");
+            //    TagNodeCompound Level = Chunk["Level"] as TagNodeCompound;
 
-                TagNodeList Sections = Level["Sections"] as TagNodeList;
-                if (chunkY < Sections.Count)
-                {
-                    TagNodeCompound section = Sections[chunkY] as TagNodeCompound;
+            //    TagNodeList Sections = Level["Sections"] as TagNodeList;
+            //    if (chunkY < Sections.Count)
+            //    {
+            //        TagNodeCompound section = Sections[chunkY] as TagNodeCompound;
 
-                    TagNodeByteArray Blocks = section["Blocks"] as TagNodeByteArray;
-                    byte[] blocks = new byte[4096];
-                    Buffer.BlockCopy(Blocks, 0, blocks, 0, 4096);
+            //        TagNodeByteArray Blocks = section["Blocks"] as TagNodeByteArray;
+            //        byte[] blocks = new byte[4096];
+            //        Buffer.BlockCopy(Blocks, 0, blocks, 0, 4096);
 
-                    int blockPos = yInChunk * 16 * 16 + zInChunk * 16 + xInChunk;
-                    blockType = blocks[blockPos];
+            //        int blockPos = yInChunk * 16 * 16 + zInChunk * 16 + xInChunk;
+            //        blockType = blocks[blockPos];
 
-                    TagNodeByteArray Data = section["Data"] as TagNodeByteArray;
-                    byte[] data = Data.Data;
-                    blockData = GetNibble(data, blockPos);
-                }
-                UnityEngine.Profiling.Profiler.EndSample();
-            }
+            //        TagNodeByteArray Data = section["Data"] as TagNodeByteArray;
+            //        byte[] data = Data.Data;
+            //        blockData = GetNibble(data, blockPos);
+            //    }
+            //    UnityEngine.Profiling.Profiler.EndSample();
+            //}
         }
         UnityEngine.Profiling.Profiler.EndSample();
     }

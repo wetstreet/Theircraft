@@ -8,7 +8,6 @@ public class GameStart : MonoBehaviour
     void Start()
     {
         SettingsPanel.Init();
-        ChunkChecker.Init();
         ChunkRefresher.Init();
         ChunkManager.Init();
         ChunkPool.Init();
@@ -17,8 +16,8 @@ public class GameStart : MonoBehaviour
         ChatPanel.ShowChatPanel();
         InventorySystem.Init();
 
-        List<Vector2Int> preloadChunks = Utilities.GetSurroudingChunks(PlayerController.GetCurrentChunkPos());
-        ChunkManager.ChunksEnterLeaveViewReq(preloadChunks);
+        // load chunk here
+        ChunkChecker.Init();
 
         PlayerController.Init();
         ChunkRefresher.ForceRefreshAll();
@@ -31,6 +30,7 @@ public class GameStart : MonoBehaviour
         {
             ChunkChecker.Update();
             ChunkRefresher.Update();
+            NBTHelper.Update();
         }
     }
 
