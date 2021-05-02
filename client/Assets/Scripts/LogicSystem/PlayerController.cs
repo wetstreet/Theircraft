@@ -197,7 +197,7 @@ public class PlayerController : MonoBehaviour
         NBTBlock generator = NBTGeneratorManager.GetMeshGenerator(WireFrameHelper.type);
         if (generator.hasDropItem)
         {
-            Item.CreateBlockDropItem(generator.GetDropItemByData(WireFrameHelper.data), WireFrameHelper.data, pos);
+            Item.CreateBlockDropItem(generator.GetDropItemByData(WireFrameHelper.data), generator.GetDropItemData(WireFrameHelper.data), pos);
         }
 
         NBTHelper.SetBlockByte(WireFrameHelper.pos, 0);

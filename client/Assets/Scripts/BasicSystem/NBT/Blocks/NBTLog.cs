@@ -14,7 +14,8 @@ public class NBTLog : NBTBlock
         else if (data == 1) return "SpruceLog";
         else if (data == 2) return "BirchLog";
         else if (data == 3) return "JungleLog";
-        else return null;
+
+        throw new System.Exception("no icon, data=" + data);
     }
 
     public override string GetNameByData(short data)
@@ -30,8 +31,11 @@ public class NBTLog : NBTBlock
             case 3:
                 return "Jungle Wood";
         }
-        return "Log";
+        throw new System.Exception("no name, data=" + data);
     }
+
+
+    public override byte GetDropItemData(byte data) { return (byte)(data % 4); }
 
     public override float hardness { get { return 2f; } }
 

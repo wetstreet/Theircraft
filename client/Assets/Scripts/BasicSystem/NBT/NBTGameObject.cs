@@ -71,6 +71,8 @@ public class NBTGameObject : MonoBehaviour
         {
             GetComponent<MeshCollider>().sharedMesh = mesh;
         }
+
+        verts.Dispose();
     }
 
 }

@@ -88,6 +88,8 @@ public abstract class NBTBlock : NBTObject
 
     public virtual string GetDropItemByData(byte data) { return id; }
 
+    public virtual byte GetDropItemData(byte data) { return data; }
+
     protected static Vector3 nearBottomLeft = new Vector3(-0.5f, -0.5f, -0.5f);
     protected static Vector3 nearBottomRight = new Vector3(0.5f, -0.5f, -0.5f);
     protected static Vector3 nearTopLeft = new Vector3(-0.5f, 0.5f, -0.5f);
@@ -169,6 +171,8 @@ public abstract class NBTBlock : NBTObject
 
     public virtual void AddCube(NBTChunk chunk, byte blockData, byte skyLight, Vector3Int pos, NBTGameObject nbtGO)
     {
+        UnityEngine.Profiling.Profiler.BeginSample("AddCube");
+
         this.pos = pos;
         this.blockData = blockData;
         vertices = nbtGO.vertexList;
@@ -187,6 +191,8 @@ public abstract class NBTBlock : NBTObject
         backColor = GetBackTintColorByData(chunk, blockData);
         leftColor = GetLeftTintColorByData(chunk, blockData);
         rightColor = GetRightTintColorByData(chunk, blockData);
+
+        UnityEngine.Profiling.Profiler.BeginSample("AddFaces");
 
         if (!chunk.HasOpaqueBlock(pos.x, pos.y, pos.z - 1))
         {
@@ -212,6 +218,10 @@ public abstract class NBTBlock : NBTObject
         {
             AddBottomFace(blockData);
         }
+
+        UnityEngine.Profiling.Profiler.EndSample();
+
+        UnityEngine.Profiling.Profiler.EndSample();
     }
 
     protected Vector4 ToVector4(Vector3 v3, float w)

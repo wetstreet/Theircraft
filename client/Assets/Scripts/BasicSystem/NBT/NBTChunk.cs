@@ -203,16 +203,17 @@ public class NBTChunk
         byte type = GetBlockByte(xInChunk, worldY, zInChunk);
         return !NBTGeneratorManager.IsTransparent(type);
     }
-    
+
+    Vector3Int pos = new Vector3Int();
     public void RefreshMeshData()
     {
         //Debug.Log("RefreshMeshData,chunk=" + x + ",z=" + z);
+        UnityEngine.Profiling.Profiler.BeginSample("RefreshMeshData");
+
         collidable.Clear();
         notCollidable.Clear();
         water.Clear();
-
-        Vector3Int pos = new Vector3Int();
-
+        
         for (int sectionIndex = 0; sectionIndex < Sections.Count; sectionIndex++)
         {
             TagNodeCompound Section = Sections[sectionIndex] as TagNodeCompound;
@@ -266,6 +267,8 @@ public class NBTChunk
 
         hasBuiltMesh = true;
         isDirty = false;
+
+        UnityEngine.Profiling.Profiler.EndSample();
     }
 
     public void RebuildMesh(bool forceRefreshMeshData = true)
