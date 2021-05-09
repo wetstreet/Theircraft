@@ -370,15 +370,15 @@ public class ChunkManager
         NBTHelper.RemoveChunk(x, z);
     }
 
-    public static void ChunksEnterLeaveViewReq(List<Vector2Int> enterViewChunks, List<Vector2Int> leaveViewChunks = null)
+    public async static void ChunksEnterLeaveViewReq(List<Vector2Int> enterViewChunks, List<Vector2Int> leaveViewChunks = null)
     {
         foreach (Vector2Int chunkPos in enterViewChunks)
         {
-            NBTHelper.LoadChunkAsync(chunkPos.x, chunkPos.y, (NBTChunk chunk) => {
-                ChunkRefresher.Add(chunk);
-                ChunkChecker.FinishRefresh();
-            });
+            NBTChunk chunk = await NBTHelper.LoadChunkAsync(chunkPos.x, chunkPos.y);
+            ChunkRefresher.Add(chunk);
         }
+        ChunkChecker.FinishRefresh();
+
         if (leaveViewChunks != null)
         {
             foreach (Vector2Int chunk in leaveViewChunks)

@@ -30,7 +30,6 @@ public class GameStart : MonoBehaviour
         {
             ChunkChecker.Update();
             ChunkRefresher.Update();
-            NBTHelper.Update();
         }
     }
 

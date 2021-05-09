@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using Unity.Jobs;
 using UnityEngine;
 
@@ -162,35 +163,33 @@ public class NBTHelper
         return null;
     }
 
-    public static void LoadChunkAsync(int chunkX, int chunkZ, Action<NBTChunk> callback)
+    public static async Task<NBTChunk> LoadChunkAsync(int chunkX, int chunkZ)
     {
         UnityEngine.Profiling.Profiler.BeginSample("ChunkChecker.Update");
 
         Vector2Int key = new Vector2Int(chunkX, chunkZ);
         if (!chunkDict.ContainsKey(key))
         {
-            GetChunkNodeAsync(chunkX, chunkZ, (TagNodeCompound Chunk) => {
-                Debug.Log("chunk load callback,x=" + chunkX + ",z=" + chunkZ);
-                if (Chunk != null)
-                {
-                    TagNodeCompound Level = Chunk["Level"] as TagNodeCompound;
+            TagNodeCompound Chunk = await GetChunkNodeAsync(chunkX, chunkZ);
+            Debug.Log("chunk load callback,x=" + chunkX + ",z=" + chunkZ);
+            if (Chunk != null)
+            {
+                TagNodeCompound Level = Chunk["Level"] as TagNodeCompound;
 
-                    TagNodeList Sections = Level["Sections"] as TagNodeList;
-                    NBTChunk chunk = ChunkPool.GetChunk();
-                    chunk.SetData(chunkX, chunkZ, Sections);
-                    chunkDict.Add(key, chunk);
-
-                    callback(chunk);
-                }
-            });
+                TagNodeList Sections = Level["Sections"] as TagNodeList;
+                NBTChunk chunk = ChunkPool.GetChunk();
+                chunk.SetData(chunkX, chunkZ, Sections);
+                chunkDict.Add(key, chunk);
+            }
         }
 
         UnityEngine.Profiling.Profiler.EndSample();
 
         if (chunkDict.ContainsKey(key))
         {
-            callback(chunkDict[key]);
+            return chunkDict[key];
         }
+        return null;
     }
 
     public static void RemoveChunk(int chunkX, int chunkZ)
@@ -221,69 +220,6 @@ public class NBTHelper
             ).ToList();
     }
 
-    struct LoadJobPack
-    {
-        public Vector2Int chunkPos;
-        public LoadJob job;
-        public JobHandle handle;
-        public Action<TagNodeCompound> callback;
-    }
-
-    struct LoadJob : IJob
-    {
-        public GCHandle streamHandle;
-        public GCHandle treeHandle;
-        public void Execute()
-        {
-            Stream stream = (Stream)streamHandle.Target;
-            NbtTree tree = (NbtTree)treeHandle.Target;
-            tree.ReadFrom(stream);
-        }
-    }
-
-    static void LoadAsync(Vector2Int chunkPos, NbtTree tree, Stream stream, Action<TagNodeCompound> callback)
-    {
-
-        GCHandle treeHandle = GCHandle.Alloc(tree);
-        GCHandle streamHandle = GCHandle.Alloc(stream);
-
-        var job = new LoadJob()
-        {
-            treeHandle = treeHandle,
-            streamHandle = streamHandle
-        };
-        JobHandle handle = job.Schedule();
-
-        loadJobList.Add(new LoadJobPack { chunkPos = chunkPos, job = job, handle = handle, callback = callback });
-    }
-
-    static List<LoadJobPack> loadJobList = new List<LoadJobPack>();
-
-    public static void Update()
-    {
-        for (int i = 0; i < loadJobList.Count; i++)
-        {
-            LoadJobPack pack = loadJobList[i];
-            if (pack.handle.IsCompleted)
-            {
-                loadJobList.Remove(pack);
-
-                Stream stream = (Stream)pack.job.streamHandle.Target;
-                stream.Dispose();
-
-                NbtTree tree = (NbtTree)pack.job.treeHandle.Target;
-
-                pack.job.treeHandle.Free();
-                pack.job.streamHandle.Free();
-
-                chunkDictNBT.Add(pack.chunkPos, tree);
-
-                Debug.Log("tree read finish!,pos="+pack.chunkPos);
-
-                pack.callback(tree.Root);
-            }
-        }
-    }
     public static TagNodeCompound GetChunkNode(int x, int z)
     {
         key.Set(x, z);
@@ -323,9 +259,9 @@ public class NBTHelper
     }
 
     static Dictionary<Vector2Int, NbtTree> chunkDictNBT = new Dictionary<Vector2Int, NbtTree>();
-    public static void GetChunkNodeAsync(int x, int z, Action<TagNodeCompound> callback)
+    public async static Task<TagNodeCompound> GetChunkNodeAsync(int x, int z)
     {
-        key.Set(x, z);
+        Vector2Int key = new Vector2Int(x, z);
 
         if (!chunkDictNBT.ContainsKey(key))
         {
@@ -345,9 +281,13 @@ public class NBTHelper
                     UnityEngine.Profiling.Profiler.BeginSample("NBTTree ReadFrom");
 
                     Stream stream = region.GetChunkDataInputStream(_x, _z);
-                    Debug.Log("tree read start async,x=" + x + ",z=" + z);
-                    //_tree.ReadFrom(stream);
-                    LoadAsync(key, _tree, stream, callback);
+
+                    await Task.Run(() =>
+                    {
+                        _tree.ReadFrom(stream);
+                    });
+
+                    chunkDictNBT[key] = _tree;
 
                     UnityEngine.Profiling.Profiler.EndSample();
 
@@ -361,8 +301,9 @@ public class NBTHelper
         }
         if (chunkDictNBT.ContainsKey(key))
         {
-            callback(chunkDictNBT[key].Root);
+            return chunkDictNBT[key].Root;
         }
+        return null;
     }
 
     public static byte GetNibble(byte[] arr, int index)
