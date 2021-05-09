@@ -11,41 +11,41 @@ public class NBTStairs : NBTBlock
     Mesh GetMesh()
     {
         Mesh mesh = Resources.Load<Mesh>("Meshes/blocks/stair/stair_+y-x");
-        switch (blockData)
-        {
-            case 1:
-                mesh = Resources.Load<Mesh>("Meshes/blocks/stair/stair_+y+x");
-                break;
-            case 2:
-                mesh = Resources.Load<Mesh>("Meshes/blocks/stair/stair_+y-z");
-                break;
-            case 3:
-                mesh = Resources.Load<Mesh>("Meshes/blocks/stair/stair_+y+z");
-                break;
-        }
+        //switch (blockData)
+        //{
+        //    case 1:
+        //        mesh = Resources.Load<Mesh>("Meshes/blocks/stair/stair_+y+x");
+        //        break;
+        //    case 2:
+        //        mesh = Resources.Load<Mesh>("Meshes/blocks/stair/stair_+y-z");
+        //        break;
+        //    case 3:
+        //        mesh = Resources.Load<Mesh>("Meshes/blocks/stair/stair_+y+z");
+        //        break;
+        //}
         return mesh;
     }
 
     public override void AddCube(NBTChunk chunk, byte blockData, byte skyLight, Vector3Int pos, NBTGameObject nbtGO)
     {
-        this.pos = pos;
-        this.blockData = blockData;
-        vertices = nbtGO.vertexList;
-        triangles = nbtGO.triangles;
+        //this.pos = pos;
+        //this.blockData = blockData;
+        //vertices = nbtGO.vertexList;
+        //triangles = nbtGO.triangles;
 
-        Mesh mesh = GetMesh();
+        //Mesh mesh = GetMesh();
 
-        int faceIndex = TextureArrayManager.GetIndexByName(stairsName);
+        //int faceIndex = TextureArrayManager.GetIndexByName(stairsName);
 
-        int length = vertices.Count;
-        for (int i = 0; i < mesh.vertices.Length; i++)
-        {
-            vertices.Add(new Vertex { pos = ToVector4(mesh.vertices[i] + pos, faceIndex), texcoord = mesh.uv[i], color = Color.white });
-        }
-        foreach (int index in mesh.triangles)
-        {
-            triangles.Add(index + length);
-        }
+        //int length = vertices.Count;
+        //for (int i = 0; i < mesh.vertices.Length; i++)
+        //{
+        //    vertices.Add(new Vertex { pos = ToVector4(mesh.vertices[i] + pos, faceIndex), texcoord = mesh.uv[i], color = Color.white });
+        //}
+        //foreach (int index in mesh.triangles)
+        //{
+        //    triangles.Add(index + length);
+        //}
     }
     
     public override Mesh GetItemMesh(NBTChunk chunk, byte data)

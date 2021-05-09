@@ -8,6 +8,8 @@ public class ChunkPool
     static GameObject instance;
     static Transform chunkParent;
 
+    static bool isInited = false;
+
     public static void Init()
     {
         chunks = new Queue<NBTChunk>(1000);
@@ -19,10 +21,15 @@ public class ChunkPool
             NBTChunk chunk = new NBTChunk();
             Recover(chunk);
         }
+        isInited = true;
     }
 
     public static NBTChunk GetChunk()
     {
+        if (!isInited)
+        {
+            Init();
+        }
         NBTChunk chunk = chunks.Dequeue();
         chunk.transform.parent = chunkParent;
         chunk.transform.localPosition = Vector3.zero;
@@ -41,5 +48,6 @@ public class ChunkPool
     public static void Uninit()
     {
         chunks = null;
+        isInited = false;
     }
 }

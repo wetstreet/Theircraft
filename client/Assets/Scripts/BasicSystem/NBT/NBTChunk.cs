@@ -2,6 +2,9 @@
 using protocol.cs_theircraft;
 using System.Collections.Generic;
 using Substrate.Nbt;
+using Unity.Jobs;
+using Unity.Collections;
+using System.Threading.Tasks;
 
 public class NBTChunk
 {
@@ -12,7 +15,7 @@ public class NBTChunk
     public Transform transform;
     public GameObject gameObject;
     public bool isDirty = false;
-    TagNodeList Sections;
+    public TagNodeList Sections;
 
     public bool hasBuiltMesh = false;
     public int lightGenerationCount = 0;
@@ -30,8 +33,8 @@ public class NBTChunk
         transform = gameObject.transform;
 
         collidable = NBTGameObject.Create("Collidable", transform, LayerMask.NameToLayer("Chunk"));
-        notCollidable = NBTGameObject.Create("NotCollidable", transform, LayerMask.NameToLayer("Plant"));
-        water = NBTGameObject.Create("Water", transform, LayerMask.NameToLayer("Water"), false);
+        //notCollidable = NBTGameObject.Create("NotCollidable", transform, LayerMask.NameToLayer("Plant"));
+        //water = NBTGameObject.Create("Water", transform, LayerMask.NameToLayer("Water"), false);
     }
 
     public void SetData(int _x, int _z, TagNodeList sections)
@@ -211,9 +214,9 @@ public class NBTChunk
         UnityEngine.Profiling.Profiler.BeginSample("RefreshMeshData");
 
         collidable.Clear();
-        notCollidable.Clear();
-        water.Clear();
-        
+        //notCollidable.Clear();
+        //water.Clear();
+
         for (int sectionIndex = 0; sectionIndex < Sections.Count; sectionIndex++)
         {
             TagNodeCompound Section = Sections[sectionIndex] as TagNodeCompound;
@@ -244,7 +247,7 @@ public class NBTChunk
                                 }
                                 else if (generator is NBTPlant)
                                 {
-                                    generator.AddCube(this, blockData, skyLight, pos, notCollidable);
+                                    //generator.AddCube(this, blockData, skyLight, pos, notCollidable);
                                 }
                                 else
                                 {
@@ -279,11 +282,21 @@ public class NBTChunk
         {
             RefreshMeshData();
         }
+
         collidable.Refresh();
-        notCollidable.Refresh();
-        water.Refresh();
+        //notCollidable.Refresh();
+        //water.Refresh();
 
         UnityEngine.Profiling.Profiler.EndSample();
+    }
+
+    public async void RebuildMeshAsync(bool forceRefreshMeshData = true)
+    {
+        if (forceRefreshMeshData || isDirty)
+        {
+            await Task.Run(RefreshMeshData);
+        }
+        collidable.Refresh();
     }
 
     public void ClearData()
@@ -294,7 +307,7 @@ public class NBTChunk
         torchList.Clear();
 
         collidable.GetComponent<MeshFilter>().sharedMesh = null;
-        notCollidable.GetComponent<MeshFilter>().sharedMesh = null;
-        water.GetComponent<MeshFilter>().sharedMesh = null;
+        //notCollidable.GetComponent<MeshFilter>().sharedMesh = null;
+        //water.GetComponent<MeshFilter>().sharedMesh = null;
     }
 }

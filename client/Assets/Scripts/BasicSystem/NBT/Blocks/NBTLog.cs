@@ -15,7 +15,8 @@ public class NBTLog : NBTBlock
         else if (data == 2) return "BirchLog";
         else if (data == 3) return "JungleLog";
 
-        throw new System.Exception("no icon, data=" + data);
+        return "OakLog";
+        //throw new System.Exception("no icon, data=" + data);
     }
 
     public override string GetNameByData(short data)

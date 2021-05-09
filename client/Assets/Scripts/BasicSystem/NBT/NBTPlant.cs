@@ -24,38 +24,41 @@ public class NBTPlant : NBTBlock
 
     public override void AddCube(NBTChunk chunk, byte blockData, byte skyLight, Vector3Int pos, NBTGameObject nbtGO)
     {
-        this.pos = pos;
-        vertices = nbtGO.vertexList;
-        triangles = nbtGO.triangles;
+        //this.pos = pos;
+        //vertices = nbtGO.vertexList;
+        //triangles = nbtGO.triangles;
 
-        plantIndex = GetPlantIndexByData(chunk, blockData);
-        tintColor = GetTintColorByData(chunk, blockData);
+        //plantIndex = GetPlantIndexByData(chunk, blockData);
+        //tintColor = GetTintColorByData(chunk, blockData);
 
-        try
-        {
-            AddDiagonalFace();
-            AddAntiDiagonalFace();
-        }
-        catch (System.Exception e)
-        {
-            Debug.Log(e.ToString() + "\n" + "pos=" + pos + ",data=" + blockData);
-        }
+        //try
+        //{
+        //    AddDiagonalFace();
+        //    AddAntiDiagonalFace();
+        //}
+        //catch (System.Exception e)
+        //{
+        //    Debug.Log(e.ToString() + "\n" + "pos=" + pos + ",data=" + blockData);
+        //}
     }
 
     protected Color tintColor;
 
-    protected virtual Color GetTintColorByData(NBTChunk chunk, byte data) { return Color.white; }
+    protected virtual Color GetTintColorByData(NBTChunk chunk, Vector3Int pos, byte data) { return Color.white; }
 
-    public override Color GetFrontTintColorByData(NBTChunk chunk, byte data) { return GetTintColorByData(chunk, data); }
+    //public override Color GetFrontTintColorByData(NBTChunk chunk, Vector3Int pos, byte data)
+    //{
+    //    return GetTintColorByData(chunk, pos, data);
+    //}
 
     void AddDiagonalFace()
     {
-        AddFace(farBottomLeft, farTopLeft, nearTopRight, nearBottomRight, plantIndex, tintColor);
+        //AddFace(farBottomLeft, farTopLeft, nearTopRight, nearBottomRight, plantIndex, tintColor);
     }
 
     void AddAntiDiagonalFace()
     {
-        AddFace(nearBottomLeft, nearTopLeft, farTopRight, farBottomRight, plantIndex, tintColor);
+        //AddFace(nearBottomLeft, nearTopLeft, farTopRight, farBottomRight, plantIndex, tintColor);
     }
     
     public override string pathPrefix { get { return "GUI/block/"; } }

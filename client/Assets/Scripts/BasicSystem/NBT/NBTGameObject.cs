@@ -7,17 +7,9 @@ using static MeshGenerator;
 
 public class NBTGameObject : MonoBehaviour
 {
-    public NativeArray<Vertex> vertexArray;
-    public NativeArray<ushort> triangleArray;
-
-    public ushort vertexCount = 0;
-    public ushort triangleCount = 0;
-
-    public Mesh mesh;
+    public NBTMesh nbtMesh;
 
     bool isCollidable;
-
-    static VertexAttributeDescriptor[] vertexAttributes;
 
     public static NBTGameObject Create(string name, Transform parent, int layer, bool isCollidable = true)
     {
@@ -38,74 +30,35 @@ public class NBTGameObject : MonoBehaviour
         go.AddComponent<MeshRenderer>().material = Resources.Load<Material>(matPath);
         go.AddComponent<NavMeshSourceTag>();
         NBTGameObject nbtGO = go.AddComponent<NBTGameObject>();
-        nbtGO.mesh = new Mesh();
-        nbtGO.mesh.name = name;
+        nbtGO.nbtMesh.mesh.name = name;
         nbtGO.isCollidable = isCollidable;
         return nbtGO;
     }
 
     public void Clear()
     {
-        vertexCount = 0;
-        triangleCount = 0;
-        //vertexList.Clear();
-        //triangles.Clear();
+        nbtMesh.Clear();
     }
 
     private void Awake()
     {
-        vertexArray = new NativeArray<Vertex>(65536, Allocator.Persistent);
-        triangleArray = new NativeArray<ushort>(65536, Allocator.Persistent);
+        nbtMesh = new NBTMesh(65536);
     }
 
     private void OnDestroy()
     {
-        vertexArray.Dispose();
-        triangleArray.Dispose();
+        nbtMesh.Dispose();
     }
 
     public void Refresh()
     {
-        mesh.Clear();
-
-        if (vertexAttributes == null)
-        {
-            vertexAttributes = new[] {
-                new VertexAttributeDescriptor(VertexAttribute.Position, VertexAttributeFormat.Float32, 4),
-                new VertexAttributeDescriptor(VertexAttribute.Color, VertexAttributeFormat.Float32, 4),
-                new VertexAttributeDescriptor(VertexAttribute.TexCoord0, VertexAttributeFormat.Float32, 2),
-            };
-        }
-
-        mesh.SetVertexBufferParams(vertexCount, vertexAttributes);
-        mesh.SetVertexBufferData(vertexArray, 0, 0, vertexCount);
-
-        mesh.SetIndexBufferParams(triangleCount, IndexFormat.UInt16);
-        print("triangleCount=" + triangleCount);
-        mesh.SetIndexBufferData(triangleArray, 0, 0, triangleCount);
-
-        mesh.subMeshCount = 1;
-        SubMeshDescriptor desc = new SubMeshDescriptor();
-        desc.indexStart = 0;
-        desc.indexCount = triangleCount;
-        desc.baseVertex = 0;
-        desc.topology = MeshTopology.Triangles;
-        mesh.SetSubMesh(0, desc);
-
-        Vector3[] positions = new Vector3[vertexCount];
-        for (int i = 0; i < vertexCount; i++)
-        {
-            Vertex vert = vertexArray[i];
-            positions[i] = vert.pos;
-        }
-        Bounds bounds = GeometryUtility.CalculateBounds(positions, Matrix4x4.identity);
-        mesh.bounds = bounds;
+        nbtMesh.Refresh();
 
         GetComponent<MeshRenderer>().sharedMaterial.SetTexture("_Array", TextureArrayManager.GetArray());
-        GetComponent<MeshFilter>().sharedMesh = mesh;
+        GetComponent<MeshFilter>().sharedMesh = nbtMesh.mesh;
         if (isCollidable)
         {
-            GetComponent<MeshCollider>().sharedMesh = mesh;
+            GetComponent<MeshCollider>().sharedMesh = nbtMesh.mesh;
         }
     }
 

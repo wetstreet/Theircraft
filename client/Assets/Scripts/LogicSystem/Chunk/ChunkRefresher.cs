@@ -20,7 +20,7 @@ public class ChunkRefresher
             NBTChunk chunk = refreshChunkList[0];
             if (PlayerController.GetChunkToFrontDot(chunk) > 0 || PlayerController.IsNearByChunk(chunk))
             {
-                chunk.RebuildMesh();
+                chunk.RebuildMeshAsync();
                 refreshChunkList.RemoveAt(0);
             }
         }

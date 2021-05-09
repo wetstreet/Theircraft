@@ -99,71 +99,44 @@ public abstract class NBTBlock : NBTObject
     protected static Vector3 farTopLeft = new Vector3(-0.5f, 0.5f, 0.5f);
     protected static Vector3 farTopRight = new Vector3(0.5f, 0.5f, 0.5f);
 
-    public override Mesh GetItemMesh(NBTChunk chunk, byte data)
+    public override Mesh GetItemMesh(NBTChunk chunk, byte blockData)
     {
-        if (!itemMeshDict.ContainsKey(data))
+        if (!itemMeshDict.ContainsKey(blockData))
         {
-            //Mesh mesh = new Mesh();
+            Vector3Int pos = Vector3Int.zero;
 
-            //pos = Vector3Int.zero;
-            //blockData = data;
+            topIndex = GetTopIndexByData(chunk, blockData);
+            bottomIndex = GetBottomIndexByData(chunk, blockData);
+            frontIndex = GetFrontIndexByData(chunk, blockData);
+            backIndex = GetBackIndexByData(chunk, blockData);
+            leftIndex = GetLeftIndexByData(chunk, blockData);
+            rightIndex = GetRightIndexByData(chunk, blockData);
 
-            //List<Vertex> vertexList = new List<Vertex>();
-            //List<int> triangles = new List<int>();
+            topColor = GetTopTintColorByData(chunk, blockData);
+            bottomColor = GetBottomTintColorByData(chunk, blockData);
+            frontColor = GetFrontTintColorByData(chunk, blockData);
+            backColor = GetBackTintColorByData(chunk, blockData);
+            leftColor = GetLeftTintColorByData(chunk, blockData);
+            rightColor = GetRightTintColorByData(chunk, blockData);
 
-            //this.vertices = vertexList;
-            //this.triangles = triangles;
+            NBTMesh nbtMesh = new NBTMesh(256);
 
-            //topIndex = GetTopIndexByData(chunk, blockData);
-            //bottomIndex = GetBottomIndexByData(chunk, blockData);
-            //frontIndex = GetFrontIndexByData(chunk, blockData);
-            //backIndex = GetBackIndexByData(chunk, blockData);
-            //leftIndex = GetLeftIndexByData(chunk, blockData);
-            //rightIndex = GetRightIndexByData(chunk, blockData);
+            AddFrontFace(nbtMesh, pos, blockData);
+            AddRightFace(nbtMesh, pos, blockData);
+            AddLeftFace(nbtMesh, pos, blockData);
+            AddBackFace(nbtMesh, pos, blockData);
+            AddTopFace(nbtMesh, pos, blockData);
+            AddBottomFace(nbtMesh, pos, blockData);
 
-            //topColor = GetTopTintColorByData(chunk, blockData);
-            //bottomColor = GetBottomTintColorByData(chunk, blockData);
-            //frontColor = GetFrontTintColorByData(chunk, blockData);
-            //backColor = GetBackTintColorByData(chunk, blockData);
-            //leftColor = GetLeftTintColorByData(chunk, blockData);
-            //rightColor = GetRightTintColorByData(chunk, blockData);
+            nbtMesh.Refresh();
 
-            //AddFrontFace(blockData);
-            //AddRightFace(blockData);
-            //AddLeftFace(blockData);
-            //AddBackFace(blockData);
-            //AddTopFace(blockData);
-            //AddBottomFace(blockData);
+            itemMeshDict.Add(blockData, nbtMesh.mesh);
 
-            //var vertexCount = vertexList.Count;
-
-            //mesh.SetVertexBufferParams(vertexCount, new[] {
-            //    new VertexAttributeDescriptor(VertexAttribute.Position, VertexAttributeFormat.Float32, 4),
-            //    new VertexAttributeDescriptor(VertexAttribute.Color, VertexAttributeFormat.Float32, 4),
-            //    new VertexAttributeDescriptor(VertexAttribute.TexCoord0, VertexAttributeFormat.Float32, 2),
-            //});
-
-            //var verts = new NativeArray<Vertex>(vertexCount, Allocator.Temp);
-
-            //verts.CopyFrom(vertexList.ToArray());
-
-            //mesh.SetVertexBufferData(verts, 0, 0, vertexCount);
-            //mesh.SetTriangles(triangles.ToArray(), 0);
-            //mesh.RecalculateBounds();
-
-            //itemMeshDict.Add(data, mesh);
+            nbtMesh.Dispose();
         }
 
-        return itemMeshDict[data];
+        return itemMeshDict[blockData];
     }
-
-    protected Vector3Int pos;
-    protected byte blockData;
-
-    protected NativeArray<Vertex> vertexArray;
-    protected NativeArray<ushort> triangleArray;
-    protected ushort vertexCount;
-    protected ushort triangleCount;
 
     protected virtual Rotation GetTopRotationByData(byte data) { return Rotation.Zero; }
     protected virtual Rotation GetBottomRotationByData(byte data) { return Rotation.Zero; }
@@ -174,16 +147,6 @@ public abstract class NBTBlock : NBTObject
 
     public virtual void AddCube(NBTChunk chunk, byte blockData, byte skyLight, Vector3Int pos, NBTGameObject nbtGO)
     {
-        UnityEngine.Profiling.Profiler.BeginSample("AddCube");
-
-        this.pos = pos;
-        this.blockData = blockData;
-
-        vertexArray = nbtGO.vertexArray;
-        triangleArray = nbtGO.triangleArray;
-        vertexCount = nbtGO.vertexCount;
-        triangleCount = nbtGO.triangleCount;
-
         topIndex = GetTopIndexByData(chunk, blockData);
         bottomIndex = GetBottomIndexByData(chunk, blockData);
         frontIndex = GetFrontIndexByData(chunk, blockData);
@@ -202,35 +165,28 @@ public abstract class NBTBlock : NBTObject
 
         if (!chunk.HasOpaqueBlock(pos.x, pos.y, pos.z - 1))
         {
-            AddFrontFace(blockData);
+            AddFrontFace(nbtGO.nbtMesh, pos, blockData);
         }
         if (!chunk.HasOpaqueBlock(pos.x + 1, pos.y, pos.z))
         {
-            AddRightFace(blockData);
+            AddRightFace(nbtGO.nbtMesh, pos, blockData);
         }
         if (!chunk.HasOpaqueBlock(pos.x - 1, pos.y, pos.z))
         {
-            AddLeftFace(blockData);
+            AddLeftFace(nbtGO.nbtMesh, pos, blockData);
         }
         if (!chunk.HasOpaqueBlock(pos.x, pos.y, pos.z + 1))
         {
-            AddBackFace(blockData);
+            AddBackFace(nbtGO.nbtMesh, pos, blockData);
         }
         if (!chunk.HasOpaqueBlock(pos.x, pos.y + 1, pos.z))
         {
-            AddTopFace(blockData);
+            AddTopFace(nbtGO.nbtMesh, pos, blockData);
         }
         if (!chunk.HasOpaqueBlock(pos.x, pos.y - 1, pos.z))
         {
-            AddBottomFace(blockData);
+            AddBottomFace(nbtGO.nbtMesh, pos, blockData);
         }
-
-        UnityEngine.Profiling.Profiler.EndSample();
-
-        nbtGO.vertexArray = vertexArray;
-        nbtGO.triangleArray = triangleArray;
-        nbtGO.vertexCount = vertexCount;
-        nbtGO.triangleCount = triangleCount;
 
         UnityEngine.Profiling.Profiler.EndSample();
     }
@@ -240,9 +196,9 @@ public abstract class NBTBlock : NBTObject
         return new Vector4(v3.x, v3.y, v3.z, w);
     }
 
-    protected void AddFace(Vector3 pos1, Vector3 pos2, Vector3 pos3, Vector3 pos4, int faceIndex)
+    protected void AddFace(NBTMesh mesh, Vector3Int pos, Vector3 pos1, Vector3 pos2, Vector3 pos3, Vector3 pos4, int faceIndex)
     {
-        AddFace(pos1, pos2, pos3, pos4, faceIndex, Color.white);
+        AddFace(mesh, pos, pos1, pos2, pos3, pos4, faceIndex, Color.white);
     }
 
     protected Rotation rotation = Rotation.Zero;
@@ -259,65 +215,65 @@ public abstract class NBTBlock : NBTObject
         }
     }
 
-    void SetVertex(Vector4 pos, Vector2 texcoord, Vector4 color)
+    void SetVertex(NBTMesh mesh, Vector4 pos, Vector2 texcoord, Vector4 color)
     {
-        Vertex vert = vertexArray[vertexCount];
+        Vertex vert = mesh.vertexArray[mesh.vertexCount];
         vert.pos = pos;
         vert.texcoord = texcoord;
         vert.color = color;
-        vertexArray[vertexCount++] = vert;
+        mesh.vertexArray[mesh.vertexCount++] = vert;
     }
 
-    protected void AddFace(Vector3 pos1, Vector3 pos2, Vector3 pos3, Vector3 pos4, int faceIndex, Color color)
+    protected void AddFace(NBTMesh mesh, Vector3Int pos, Vector3 pos1, Vector3 pos2, Vector3 pos3, Vector3 pos4, int faceIndex, Color color)
     {
-        ushort startIndex = vertexCount;
+        ushort startIndex = mesh.vertexCount;
 
-        SetVertex(ToVector4(pos1 + pos, faceIndex), uv[0], color);
-        SetVertex(ToVector4(pos2 + pos, faceIndex), uv[1], color);
-        SetVertex(ToVector4(pos3 + pos, faceIndex), uv[2], color);
-        SetVertex(ToVector4(pos4 + pos, faceIndex), uv[3], color);
+        SetVertex(mesh, ToVector4(pos1 + pos, faceIndex), uv[0], color);
+        SetVertex(mesh, ToVector4(pos2 + pos, faceIndex), uv[1], color);
+        SetVertex(mesh, ToVector4(pos3 + pos, faceIndex), uv[2], color);
+        SetVertex(mesh, ToVector4(pos4 + pos, faceIndex), uv[3], color);
 
-        triangleArray[triangleCount++] = startIndex;
-        triangleArray[triangleCount++] = (ushort)(startIndex + 1);
-        triangleArray[triangleCount++] = (ushort)(startIndex + 2);
-        triangleArray[triangleCount++] = startIndex;
-        triangleArray[triangleCount++] = (ushort)(startIndex + 2);
-        triangleArray[triangleCount++] = (ushort)(startIndex + 3);
+        mesh.triangleArray[mesh.triangleCount++] = startIndex;
+        mesh.triangleArray[mesh.triangleCount++] = (ushort)(startIndex + 1);
+        mesh.triangleArray[mesh.triangleCount++] = (ushort)(startIndex + 2);
+        mesh.triangleArray[mesh.triangleCount++] = startIndex;
+        mesh.triangleArray[mesh.triangleCount++] = (ushort)(startIndex + 2);
+        mesh.triangleArray[mesh.triangleCount++] = (ushort)(startIndex + 3);
     }
     
-    protected virtual void AddFrontFace(byte data)
+    protected virtual void AddFrontFace(NBTMesh mesh, Vector3Int pos, byte blockData)
     {
         rotation = GetFrontRotationByData(blockData);
-        AddFace(nearBottomLeft, nearTopLeft, nearTopRight, nearBottomRight, frontIndex, frontColor);
+        AddFace(mesh, pos, nearBottomLeft, nearTopLeft, nearTopRight, nearBottomRight, frontIndex, frontColor);
     }
 
-    protected virtual void AddBackFace(byte data)
+    protected virtual void AddBackFace(NBTMesh mesh, Vector3Int pos, byte blockData)
     {
         rotation = GetBackRotationByData(blockData);
-        AddFace(farBottomRight, farTopRight, farTopLeft, farBottomLeft, backIndex, backColor);
+        AddFace(mesh, pos, farBottomRight, farTopRight, farTopLeft, farBottomLeft, backIndex, backColor);
     }
 
-    protected virtual void AddTopFace(byte data)
+    protected virtual void AddTopFace(NBTMesh mesh, Vector3Int pos, byte blockData)
     {
         rotation = GetTopRotationByData(blockData);
-        AddFace(farTopRight, nearTopRight, nearTopLeft, farTopLeft, topIndex, topColor);
+        AddFace(mesh, pos, farTopRight, nearTopRight, nearTopLeft, farTopLeft, topIndex, topColor);
     }
 
-    protected virtual void AddBottomFace(byte data)
+    protected virtual void AddBottomFace(NBTMesh mesh, Vector3Int pos, byte blockData)
     {
         rotation = GetBottomRotationByData(blockData);
-        AddFace(nearBottomRight, farBottomRight, farBottomLeft, nearBottomLeft, bottomIndex, bottomColor);
+        AddFace(mesh, pos, nearBottomRight, farBottomRight, farBottomLeft, nearBottomLeft, bottomIndex, bottomColor);
     }
 
-    protected virtual void AddLeftFace(byte data)
+    protected virtual void AddLeftFace(NBTMesh mesh, Vector3Int pos, byte blockData)
     {
         rotation = GetLeftRotationByData(blockData);
-        AddFace(farBottomLeft, farTopLeft, nearTopLeft, nearBottomLeft, leftIndex, leftColor);
+        AddFace(mesh, pos, farBottomLeft, farTopLeft, nearTopLeft, nearBottomLeft, leftIndex, leftColor);
     }
 
-    protected virtual void AddRightFace(byte data)
+    protected virtual void AddRightFace(NBTMesh mesh, Vector3Int pos, byte blockData)
     {
         rotation = GetRightRotationByData(blockData);
-        AddFace(nearBottomRight, nearTopRight, farTopRight, farBottomRight, rightIndex, rightColor);
+        AddFace(mesh, pos, nearBottomRight, nearTopRight, farTopRight, farBottomRight, rightIndex, rightColor);
     }
 }

@@ -89,49 +89,49 @@ public class NBTWoodenSlab : NBTBlock
     
     public override void AddCube(NBTChunk chunk, byte blockData, byte skyLight, Vector3Int pos, NBTGameObject nbtGO)
     {
-        this.pos = pos;
-        this.blockData = blockData;
-        vertices = nbtGO.vertexList;
-        triangles = nbtGO.triangles;
+        //this.pos = pos;
+        //this.blockData = blockData;
+        //vertices = nbtGO.vertexList;
+        //triangles = nbtGO.triangles;
 
-        topIndex = GetTopIndexByData(chunk, blockData);
-        bottomIndex = GetBottomIndexByData(chunk, blockData);
-        frontIndex = GetFrontIndexByData(chunk, blockData);
-        backIndex = GetBackIndexByData(chunk, blockData);
-        leftIndex = GetLeftIndexByData(chunk, blockData);
-        rightIndex = GetRightIndexByData(chunk, blockData);
+        //topIndex = GetTopIndexByData(chunk, blockData);
+        //bottomIndex = GetBottomIndexByData(chunk, blockData);
+        //frontIndex = GetFrontIndexByData(chunk, blockData);
+        //backIndex = GetBackIndexByData(chunk, blockData);
+        //leftIndex = GetLeftIndexByData(chunk, blockData);
+        //rightIndex = GetRightIndexByData(chunk, blockData);
 
-        topColor = GetTopTintColorByData(chunk, blockData);
-        bottomColor = GetBottomTintColorByData(chunk, blockData);
-        frontColor = GetFrontTintColorByData(chunk, blockData);
-        backColor = GetBackTintColorByData(chunk, blockData);
-        leftColor = GetLeftTintColorByData(chunk, blockData);
-        rightColor = GetRightTintColorByData(chunk, blockData);
+        //topColor = GetTopTintColorByData(chunk, blockData);
+        //bottomColor = GetBottomTintColorByData(chunk, blockData);
+        //frontColor = GetFrontTintColorByData(chunk, blockData);
+        //backColor = GetBackTintColorByData(chunk, blockData);
+        //leftColor = GetLeftTintColorByData(chunk, blockData);
+        //rightColor = GetRightTintColorByData(chunk, blockData);
 
-        if (!chunk.HasOpaqueBlock(pos.x, pos.y, pos.z - 1))
-        {
-            AddFrontFace(blockData);
-        }
-        if (!chunk.HasOpaqueBlock(pos.x + 1, pos.y, pos.z))
-        {
-            AddRightFace(blockData);
-        }
-        if (!chunk.HasOpaqueBlock(pos.x - 1, pos.y, pos.z))
-        {
-            AddLeftFace(blockData);
-        }
-        if (!chunk.HasOpaqueBlock(pos.x, pos.y, pos.z + 1))
-        {
-            AddBackFace(blockData);
-        }
-        if (blockData < 8 || !chunk.HasOpaqueBlock(pos.x, pos.y + 1, pos.z))
-        {
-            AddTopFace(blockData);
-        }
-        if (blockData >= 8 || !chunk.HasOpaqueBlock(pos.x, pos.y - 1, pos.z))
-        {
-            AddBottomFace(blockData);
-        }
+        //if (!chunk.HasOpaqueBlock(pos.x, pos.y, pos.z - 1))
+        //{
+        //    AddFrontFace(blockData);
+        //}
+        //if (!chunk.HasOpaqueBlock(pos.x + 1, pos.y, pos.z))
+        //{
+        //    AddRightFace(blockData);
+        //}
+        //if (!chunk.HasOpaqueBlock(pos.x - 1, pos.y, pos.z))
+        //{
+        //    AddLeftFace(blockData);
+        //}
+        //if (!chunk.HasOpaqueBlock(pos.x, pos.y, pos.z + 1))
+        //{
+        //    AddBackFace(blockData);
+        //}
+        //if (blockData < 8 || !chunk.HasOpaqueBlock(pos.x, pos.y + 1, pos.z))
+        //{
+        //    AddTopFace(blockData);
+        //}
+        //if (blockData >= 8 || !chunk.HasOpaqueBlock(pos.x, pos.y - 1, pos.z))
+        //{
+        //    AddBottomFace(blockData);
+        //}
     }
 
     static Vector2 leftMid = new Vector2(0, 0.5f);
@@ -143,73 +143,73 @@ public class NBTWoodenSlab : NBTBlock
 
     protected void AddFace(Vector3 pos1, Vector3 pos2, Vector3 pos3, Vector3 pos4, Vector2[] uv, int faceIndex, Color color)
     {
-        vertices.Add(new Vertex { pos = ToVector4(pos1 + pos, faceIndex), texcoord = uv[0], color = color });
-        vertices.Add(new Vertex { pos = ToVector4(pos2 + pos, faceIndex), texcoord = uv[1], color = color });
-        vertices.Add(new Vertex { pos = ToVector4(pos3 + pos, faceIndex), texcoord = uv[2], color = color });
-        vertices.Add(new Vertex { pos = ToVector4(pos4 + pos, faceIndex), texcoord = uv[3], color = color });
+        //vertices.Add(new Vertex { pos = ToVector4(pos1 + pos, faceIndex), texcoord = uv[0], color = color });
+        //vertices.Add(new Vertex { pos = ToVector4(pos2 + pos, faceIndex), texcoord = uv[1], color = color });
+        //vertices.Add(new Vertex { pos = ToVector4(pos3 + pos, faceIndex), texcoord = uv[2], color = color });
+        //vertices.Add(new Vertex { pos = ToVector4(pos4 + pos, faceIndex), texcoord = uv[3], color = color });
 
-        int startIndex = vertices.Count - 4;
-        triangles.AddRange(new int[] {
-            startIndex, startIndex + 1, startIndex + 2,
-            startIndex, startIndex + 2, startIndex + 3
-        });
+        //int startIndex = vertices.Count - 4;
+        //triangles.AddRange(new int[] {
+        //    startIndex, startIndex + 1, startIndex + 2,
+        //    startIndex, startIndex + 2, startIndex + 3
+        //});
     }
 
-    protected override void AddFrontFace(byte data)
-    {
-        rotation = GetFrontRotationByData(blockData);
-        if (data >= 8)
-        {
-            AddFace(nearMiddleLeft, nearTopLeft, nearTopRight, nearMiddleRight, uv_top, frontIndex, frontColor);
-        }
-        else
-        {
-            AddFace(nearBottomLeft, nearMiddleLeft, nearMiddleRight, nearBottomRight, uv_bot, frontIndex, frontColor);
-        }
-    }
+    //protected override void AddFrontFace(byte data)
+    //{
+    //    rotation = GetFrontRotationByData(blockData);
+    //    if (data >= 8)
+    //    {
+    //        AddFace(nearMiddleLeft, nearTopLeft, nearTopRight, nearMiddleRight, uv_top, frontIndex, frontColor);
+    //    }
+    //    else
+    //    {
+    //        AddFace(nearBottomLeft, nearMiddleLeft, nearMiddleRight, nearBottomRight, uv_bot, frontIndex, frontColor);
+    //    }
+    //}
 
-    protected override void AddBackFace(byte data)
-    {
-        rotation = GetBackRotationByData(blockData);
-        if (data >= 8)
-            AddFace(farMiddleRight, farTopRight, farTopLeft, farMiddleLeft, uv_top, backIndex, backColor);
-        else
-            AddFace(farBottomRight, farMiddleRight, farMiddleLeft, farBottomLeft, uv_bot, backIndex, backColor);
-    }
+    //protected override void AddBackFace(byte data)
+    //{
+    //    rotation = GetBackRotationByData(blockData);
+    //    if (data >= 8)
+    //        AddFace(farMiddleRight, farTopRight, farTopLeft, farMiddleLeft, uv_top, backIndex, backColor);
+    //    else
+    //        AddFace(farBottomRight, farMiddleRight, farMiddleLeft, farBottomLeft, uv_bot, backIndex, backColor);
+    //}
 
-    protected override void AddTopFace(byte data)
-    {
-        rotation = GetTopRotationByData(blockData);
-        if (data >= 8)
-            AddFace(farTopRight, nearTopRight, nearTopLeft, farTopLeft, uv_full, topIndex, topColor);
-        else
-            AddFace(farMiddleRight, nearMiddleRight, nearMiddleLeft, farMiddleLeft, uv_full, topIndex, topColor);
-    }
+    //protected override void AddTopFace(byte data)
+    //{
+    //    rotation = GetTopRotationByData(blockData);
+    //    if (data >= 8)
+    //        AddFace(farTopRight, nearTopRight, nearTopLeft, farTopLeft, uv_full, topIndex, topColor);
+    //    else
+    //        AddFace(farMiddleRight, nearMiddleRight, nearMiddleLeft, farMiddleLeft, uv_full, topIndex, topColor);
+    //}
 
-    protected override void AddBottomFace(byte data)
-    {
-        rotation = GetBottomRotationByData(blockData);
-        if (data >= 8)
-            AddFace(nearMiddleRight, farMiddleRight, farMiddleLeft, nearMiddleLeft, uv_full, bottomIndex, bottomColor);
-        else
-            AddFace(nearBottomRight, farBottomRight, farBottomLeft, nearBottomLeft, uv_full, bottomIndex, bottomColor);
-    }
+    //protected override void AddBottomFace(byte data)
+    //{
+    //    rotation = GetBottomRotationByData(blockData);
+    //    if (data >= 8)
+    //        AddFace(nearMiddleRight, farMiddleRight, farMiddleLeft, nearMiddleLeft, uv_full, bottomIndex, bottomColor);
+    //    else
+    //        AddFace(nearBottomRight, farBottomRight, farBottomLeft, nearBottomLeft, uv_full, bottomIndex, bottomColor);
+    //}
 
-    protected override void AddLeftFace(byte data)
-    {
-        rotation = GetLeftRotationByData(blockData);
-        if (data >= 8)
-            AddFace(farMiddleLeft, farTopLeft, nearTopLeft, nearMiddleLeft, uv_top, leftIndex, leftColor);
-        else
-            AddFace(farBottomLeft, farMiddleLeft, nearMiddleLeft, nearBottomLeft, uv_bot, leftIndex, leftColor);
-    }
+    //protected override void AddLeftFace(byte data)
+    //{
+    //    rotation = GetLeftRotationByData(blockData);
+    //    if (data >= 8)
+    //        AddFace(farMiddleLeft, farTopLeft, nearTopLeft, nearMiddleLeft, uv_top, leftIndex, leftColor);
+    //    else
+    //        AddFace(farBottomLeft, farMiddleLeft, nearMiddleLeft, nearBottomLeft, uv_bot, leftIndex, leftColor);
+    //}
 
-    protected override void AddRightFace(byte data)
-    {
-        rotation = GetRightRotationByData(blockData);
-        if (data >= 8)
-            AddFace(nearMiddleRight, nearTopRight, farTopRight, farMiddleRight, uv_top, rightIndex, rightColor);
-        else
-            AddFace(nearBottomRight, nearMiddleRight, farMiddleRight, farBottomRight, uv_bot, rightIndex, rightColor);
-    }
+    //protected override void AddRightFace(byte data)
+    //{
+    //    rotation = GetRightRotationByData(blockData);
+    //    if (data >= 8)
+    //        AddFace(nearMiddleRight, nearTopRight, farTopRight, farMiddleRight, uv_top, rightIndex, rightColor);
+    //    else
+    //        AddFace(nearBottomRight, nearMiddleRight, farMiddleRight, farBottomRight, uv_bot, rightIndex, rightColor);
+    //}
 }
