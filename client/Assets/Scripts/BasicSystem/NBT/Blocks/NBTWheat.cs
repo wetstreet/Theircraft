@@ -45,24 +45,20 @@ public class NBTWheat : NBTPlant
 
     public override void AddCube(NBTChunk chunk, byte blockData, byte skyLight, Vector3Int pos, NBTGameObject nbtGO)
     {
-        //this.pos = pos;
-        //vertices = nbtGO.vertexList;
-        //triangles = nbtGO.triangles;
+        plantIndex = GetPlantIndexByData(chunk, blockData);
+        tintColor = GetTintColorByData(chunk, blockData);
 
-        //plantIndex = GetPlantIndexByData(chunk, blockData);
-        //tintColor = GetTintColorByData(chunk, blockData);
+        try
+        {
+            AddFace(nbtGO.nbtMesh, pos, nearBottomLeft_1, nearTopLeft_1, nearTopRight_1, nearBottomRight_1, plantIndex, Color.white);
+            AddFace(nbtGO.nbtMesh, pos, farBottomLeft_1, farTopLeft_1, farTopRight_1, farBottomRight_1, plantIndex, Color.white);
 
-        //try
-        //{
-        //    AddFace(nearBottomLeft_1, nearTopLeft_1, nearTopRight_1, nearBottomRight_1, plantIndex, Color.white);
-        //    AddFace(farBottomLeft_1, farTopLeft_1, farTopRight_1, farBottomRight_1, plantIndex, Color.white);
-
-        //    AddFace(farBottomLeft_2, farTopLeft_2, nearTopLeft_2, nearBottomLeft_2, plantIndex, Color.white);
-        //    AddFace(farBottomRight_2, farTopRight_2, nearTopRight_2, nearBottomRight_2, plantIndex, Color.white);
-        //}
-        //catch (System.Exception e)
-        //{
-        //    Debug.Log(e.ToString() + "\n" + "pos=" + pos + ",data=" + blockData);
-        //}
+            AddFace(nbtGO.nbtMesh, pos, farBottomLeft_2, farTopLeft_2, nearTopLeft_2, nearBottomLeft_2, plantIndex, Color.white);
+            AddFace(nbtGO.nbtMesh, pos, farBottomRight_2, farTopRight_2, nearTopRight_2, nearBottomRight_2, plantIndex, Color.white);
+        }
+        catch (System.Exception e)
+        {
+            Debug.Log(e.ToString() + "\n" + "pos=" + pos + ",data=" + blockData);
+        }
     }
 }

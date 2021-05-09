@@ -13,12 +13,23 @@ public class NBTMesh
 
     public Mesh mesh;
 
-    public NBTMesh(int size)
+    int chunkX = 0;
+    int chunkZ = 0;
+    bool isChunk = false;
+
+    public NBTMesh(int size, NBTChunk chunk = null)
     {
         vertexArray = new NativeArray<Vertex>(size, Allocator.Persistent);
         triangleArray = new NativeArray<ushort>(size, Allocator.Persistent);
 
         mesh = new Mesh();
+
+        if (chunk != null)
+        {
+            isChunk = true;
+            chunkX = chunk.x;
+            chunkZ = chunk.z;
+        }
     }
 
     public void Dispose()
@@ -68,7 +79,14 @@ public class NBTMesh
             Vertex vert = vertexArray[i];
             positions[i] = vert.pos;
         }
-        Bounds bounds = GeometryUtility.CalculateBounds(positions, Matrix4x4.identity);
-        mesh.bounds = bounds;
+        try
+        {
+            Bounds bounds = GeometryUtility.CalculateBounds(positions, Matrix4x4.identity);
+            mesh.bounds = bounds;
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError("calculate bounds error,ischunk=" + isChunk+",chunk=(" + chunkX + "," + chunkZ + "), vertexCount=" + vertexCount + "\n" + e.Message);
+        }
     }
 }

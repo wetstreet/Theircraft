@@ -103,10 +103,9 @@ public class NBTHelper
         return rot;
     }
 
-    private static Vector2Int key = new Vector2Int();
     public static NBTChunk GetChunk(int chunkX, int chunkZ)
     {
-        key.Set(chunkX, chunkZ);
+        Vector2Int key = new Vector2Int(chunkX, chunkZ);
         if (chunkDict.ContainsKey(key))
         {
             return chunkDict[key];
@@ -128,7 +127,7 @@ public class NBTHelper
         int chunkX = Mathf.FloorToInt(pos.x / 16f);
         int chunkZ = Mathf.FloorToInt(pos.z / 16f);
 
-        key.Set(chunkX, chunkZ);
+        Vector2Int key = new Vector2Int(chunkX, chunkZ);
         if (chunkDict.ContainsKey(key))
         {
             return chunkDict[key];
@@ -139,7 +138,7 @@ public class NBTHelper
     {
         UnityEngine.Profiling.Profiler.BeginSample("ChunkChecker.Update");
 
-        key.Set(chunkX, chunkZ);
+        Vector2Int key = new Vector2Int(chunkX, chunkZ);
         if (!chunkDict.ContainsKey(key))
         {
             TagNodeCompound Chunk = GetChunkNode(chunkX, chunkZ);
@@ -165,13 +164,10 @@ public class NBTHelper
 
     public static async Task<NBTChunk> LoadChunkAsync(int chunkX, int chunkZ)
     {
-        UnityEngine.Profiling.Profiler.BeginSample("ChunkChecker.Update");
-
         Vector2Int key = new Vector2Int(chunkX, chunkZ);
         if (!chunkDict.ContainsKey(key))
         {
             TagNodeCompound Chunk = await GetChunkNodeAsync(chunkX, chunkZ);
-            Debug.Log("chunk load callback,x=" + chunkX + ",z=" + chunkZ);
             if (Chunk != null)
             {
                 TagNodeCompound Level = Chunk["Level"] as TagNodeCompound;
@@ -183,8 +179,6 @@ public class NBTHelper
             }
         }
 
-        UnityEngine.Profiling.Profiler.EndSample();
-
         if (chunkDict.ContainsKey(key))
         {
             return chunkDict[key];
@@ -194,7 +188,7 @@ public class NBTHelper
 
     public static void RemoveChunk(int chunkX, int chunkZ)
     {
-        key.Set(chunkX, chunkZ);
+        Vector2Int key = new Vector2Int(chunkX, chunkZ);
         if (chunkDict.ContainsKey(key))
         {
             NBTChunk chunk = chunkDict[key];
@@ -222,7 +216,7 @@ public class NBTHelper
 
     public static TagNodeCompound GetChunkNode(int x, int z)
     {
-        key.Set(x, z);
+        Vector2Int key = new Vector2Int(x, z);
 
         if (!chunkDictNBT.ContainsKey(key))
         {
@@ -275,11 +269,7 @@ public class NBTHelper
                 int _z = z - regionZ * 32;
                 if (region.HasChunk(_x, _z))
                 {
-                    UnityEngine.Profiling.Profiler.BeginSample("GetChunkDataInputStream");
                     NbtTree _tree = new NbtTree();
-
-                    UnityEngine.Profiling.Profiler.BeginSample("NBTTree ReadFrom");
-
                     Stream stream = region.GetChunkDataInputStream(_x, _z);
 
                     await Task.Run(() =>
@@ -288,10 +278,6 @@ public class NBTHelper
                     });
 
                     chunkDictNBT[key] = _tree;
-
-                    UnityEngine.Profiling.Profiler.EndSample();
-
-                    UnityEngine.Profiling.Profiler.EndSample();
                 }
             }
             else

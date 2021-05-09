@@ -32,8 +32,8 @@ public class NBTChunk
         gameObject = new GameObject("chunk (" + x + "," + z + ")");
         transform = gameObject.transform;
 
-        collidable = NBTGameObject.Create("Collidable", transform, LayerMask.NameToLayer("Chunk"));
-        //notCollidable = NBTGameObject.Create("NotCollidable", transform, LayerMask.NameToLayer("Plant"));
+        collidable = NBTGameObject.Create("Collidable", this, LayerMask.NameToLayer("Chunk"));
+        notCollidable = NBTGameObject.Create("NotCollidable", this, LayerMask.NameToLayer("Plant"));
         //water = NBTGameObject.Create("Water", transform, LayerMask.NameToLayer("Water"), false);
     }
 
@@ -214,7 +214,7 @@ public class NBTChunk
         UnityEngine.Profiling.Profiler.BeginSample("RefreshMeshData");
 
         collidable.Clear();
-        //notCollidable.Clear();
+        notCollidable.Clear();
         //water.Clear();
 
         for (int sectionIndex = 0; sectionIndex < Sections.Count; sectionIndex++)
@@ -247,7 +247,7 @@ public class NBTChunk
                                 }
                                 else if (generator is NBTPlant)
                                 {
-                                    //generator.AddCube(this, blockData, skyLight, pos, notCollidable);
+                                    generator.AddCube(this, blockData, skyLight, pos, notCollidable);
                                 }
                                 else
                                 {
@@ -284,7 +284,7 @@ public class NBTChunk
         }
 
         collidable.Refresh();
-        //notCollidable.Refresh();
+        notCollidable.Refresh();
         //water.Refresh();
 
         UnityEngine.Profiling.Profiler.EndSample();
@@ -297,6 +297,7 @@ public class NBTChunk
             await Task.Run(RefreshMeshData);
         }
         collidable.Refresh();
+        notCollidable.Refresh();
     }
 
     public void ClearData()
@@ -307,7 +308,7 @@ public class NBTChunk
         torchList.Clear();
 
         collidable.GetComponent<MeshFilter>().sharedMesh = null;
-        //notCollidable.GetComponent<MeshFilter>().sharedMesh = null;
+        notCollidable.GetComponent<MeshFilter>().sharedMesh = null;
         //water.GetComponent<MeshFilter>().sharedMesh = null;
     }
 }

@@ -11,10 +11,12 @@ public class NBTGameObject : MonoBehaviour
 
     bool isCollidable;
 
-    public static NBTGameObject Create(string name, Transform parent, int layer, bool isCollidable = true)
+    NBTChunk chunk;
+
+    public static NBTGameObject Create(string name, NBTChunk chunk, int layer, bool isCollidable = true)
     {
         GameObject go = new GameObject(name);
-        go.transform.parent = parent;
+        go.transform.parent = chunk.transform;
         go.AddComponent<MeshFilter>();
         go.layer = layer;
         if (isCollidable)
@@ -32,6 +34,7 @@ public class NBTGameObject : MonoBehaviour
         NBTGameObject nbtGO = go.AddComponent<NBTGameObject>();
         nbtGO.nbtMesh.mesh.name = name;
         nbtGO.isCollidable = isCollidable;
+        nbtGO.chunk = chunk;
         return nbtGO;
     }
 
@@ -42,7 +45,7 @@ public class NBTGameObject : MonoBehaviour
 
     private void Awake()
     {
-        nbtMesh = new NBTMesh(65536);
+        nbtMesh = new NBTMesh(65536, chunk);
     }
 
     private void OnDestroy()

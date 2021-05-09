@@ -34,8 +34,7 @@ public class SettingsPanel : MonoBehaviour {
 
     public static int RenderDistance
     {
-        get { return 1; }
-        //get { return Mathf.Clamp(PlayerPrefs.GetInt(RENDER_DISTANCE_KEY, 8), MinChunkView, MaxChunkView); }
+        get { return Mathf.Clamp(PlayerPrefs.GetInt(RENDER_DISTANCE_KEY, 8), MinChunkView, MaxChunkView); }
         set { PlayerPrefs.SetInt(RENDER_DISTANCE_KEY, value); }
     }
 

@@ -7,6 +7,7 @@ using UnityEngine.Rendering;
 public class NBTPlant : NBTBlock
 {
     protected int plantIndex;
+    public virtual int GetPlantIndexByData(NBTChunk chunk, Vector3Int pos, int data) { return GetPlantIndexByData(chunk, data); }
 
     public virtual int GetPlantIndexByData(NBTChunk chunk, int data) { return GetPlantIndexByData(data); }
 
@@ -24,41 +25,31 @@ public class NBTPlant : NBTBlock
 
     public override void AddCube(NBTChunk chunk, byte blockData, byte skyLight, Vector3Int pos, NBTGameObject nbtGO)
     {
-        //this.pos = pos;
-        //vertices = nbtGO.vertexList;
-        //triangles = nbtGO.triangles;
+        plantIndex = GetPlantIndexByData(chunk, pos, blockData);
+        tintColor = GetTintColorByData(chunk, pos, blockData);
 
-        //plantIndex = GetPlantIndexByData(chunk, blockData);
-        //tintColor = GetTintColorByData(chunk, blockData);
-
-        //try
-        //{
-        //    AddDiagonalFace();
-        //    AddAntiDiagonalFace();
-        //}
-        //catch (System.Exception e)
-        //{
-        //    Debug.Log(e.ToString() + "\n" + "pos=" + pos + ",data=" + blockData);
-        //}
+        AddDiagonalFace(nbtGO.nbtMesh, pos);
+        AddAntiDiagonalFace(nbtGO.nbtMesh, pos);
     }
 
     protected Color tintColor;
 
-    protected virtual Color GetTintColorByData(NBTChunk chunk, Vector3Int pos, byte data) { return Color.white; }
+    protected virtual Color GetTintColorByData(NBTChunk chunk, Vector3Int pos, byte data) { return GetTintColorByData(chunk, data); }
+    protected virtual Color GetTintColorByData(NBTChunk chunk, byte data) { return Color.white; }
 
-    //public override Color GetFrontTintColorByData(NBTChunk chunk, Vector3Int pos, byte data)
-    //{
-    //    return GetTintColorByData(chunk, pos, data);
-    //}
-
-    void AddDiagonalFace()
+    public override Color GetFrontTintColorByData(NBTChunk chunk, Vector3Int pos, byte data)
     {
-        //AddFace(farBottomLeft, farTopLeft, nearTopRight, nearBottomRight, plantIndex, tintColor);
+        return GetTintColorByData(chunk, pos, data);
     }
 
-    void AddAntiDiagonalFace()
+    void AddDiagonalFace(NBTMesh mesh, Vector3Int pos)
     {
-        //AddFace(nearBottomLeft, nearTopLeft, farTopRight, farBottomRight, plantIndex, tintColor);
+        AddFace(mesh, pos, farBottomLeft, farTopLeft, nearTopRight, nearBottomRight, plantIndex, tintColor);
+    }
+
+    void AddAntiDiagonalFace(NBTMesh mesh, Vector3Int pos)
+    {
+        AddFace(mesh, pos, nearBottomLeft, nearTopLeft, farTopRight, farBottomRight, plantIndex, tintColor);
     }
     
     public override string pathPrefix { get { return "GUI/block/"; } }

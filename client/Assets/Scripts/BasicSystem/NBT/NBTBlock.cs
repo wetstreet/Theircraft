@@ -69,6 +69,8 @@ public abstract class NBTBlock : NBTObject
 
     public virtual string GetBreakEffectTexture(NBTChunk chunk, byte data) { return GetBreakEffectTexture(data); }
 
+    public virtual string GetBreakEffectTexture(NBTChunk chunk, Vector3Int pos, byte data) { return GetBreakEffectTexture(chunk, data); }
+
     protected Color topColor;
     protected Color bottomColor;
     protected Color frontColor;
@@ -76,13 +78,12 @@ public abstract class NBTBlock : NBTObject
     protected Color leftColor;
     protected Color rightColor;
 
-    public virtual Color GetTopTintColorByData(NBTChunk chunk, byte data) { return Color.white; }
-    public virtual Color GetBottomTintColorByData(NBTChunk chunk, byte data) { return Color.white; }
-    public virtual Color GetFrontTintColorByData(NBTChunk chunk, byte data) { return Color.white; }
-    public virtual Color GetBackTintColorByData(NBTChunk chunk, byte data) { return Color.white; }
-    public virtual Color GetLeftTintColorByData(NBTChunk chunk, byte data) { return Color.white; }
-    public virtual Color GetRightTintColorByData(NBTChunk chunk, byte data) { return Color.white; }
-
+    public virtual Color GetTopTintColorByData(NBTChunk chunk, Vector3Int pos, byte data) { return Color.white; }
+    public virtual Color GetBottomTintColorByData(NBTChunk chunk, Vector3Int pos, byte data) { return Color.white; }
+    public virtual Color GetFrontTintColorByData(NBTChunk chunk, Vector3Int pos, byte data) { return Color.white; }
+    public virtual Color GetBackTintColorByData(NBTChunk chunk, Vector3Int pos, byte data) { return Color.white; }
+    public virtual Color GetLeftTintColorByData(NBTChunk chunk, Vector3Int pos, byte data) { return Color.white; }
+    public virtual Color GetRightTintColorByData(NBTChunk chunk, Vector3Int pos, byte data) { return Color.white; }
 
     public virtual bool hasDropItem { get { return true; } }
 
@@ -112,12 +113,12 @@ public abstract class NBTBlock : NBTObject
             leftIndex = GetLeftIndexByData(chunk, blockData);
             rightIndex = GetRightIndexByData(chunk, blockData);
 
-            topColor = GetTopTintColorByData(chunk, blockData);
-            bottomColor = GetBottomTintColorByData(chunk, blockData);
-            frontColor = GetFrontTintColorByData(chunk, blockData);
-            backColor = GetBackTintColorByData(chunk, blockData);
-            leftColor = GetLeftTintColorByData(chunk, blockData);
-            rightColor = GetRightTintColorByData(chunk, blockData);
+            topColor = GetTopTintColorByData(chunk, pos, blockData);
+            bottomColor = GetBottomTintColorByData(chunk, pos, blockData);
+            frontColor = GetFrontTintColorByData(chunk, pos, blockData);
+            backColor = GetBackTintColorByData(chunk, pos, blockData);
+            leftColor = GetLeftTintColorByData(chunk, pos, blockData);
+            rightColor = GetRightTintColorByData(chunk, pos, blockData);
 
             NBTMesh nbtMesh = new NBTMesh(256);
 
@@ -154,12 +155,12 @@ public abstract class NBTBlock : NBTObject
         leftIndex = GetLeftIndexByData(chunk, blockData);
         rightIndex = GetRightIndexByData(chunk, blockData);
 
-        topColor = GetTopTintColorByData(chunk, blockData);
-        bottomColor = GetBottomTintColorByData(chunk, blockData);
-        frontColor = GetFrontTintColorByData(chunk, blockData);
-        backColor = GetBackTintColorByData(chunk, blockData);
-        leftColor = GetLeftTintColorByData(chunk, blockData);
-        rightColor = GetRightTintColorByData(chunk, blockData);
+        topColor = GetTopTintColorByData(chunk, pos, blockData);
+        bottomColor = GetBottomTintColorByData(chunk, pos, blockData);
+        frontColor = GetFrontTintColorByData(chunk, pos, blockData);
+        backColor = GetBackTintColorByData(chunk, pos, blockData);
+        leftColor = GetLeftTintColorByData(chunk, pos, blockData);
+        rightColor = GetRightTintColorByData(chunk, pos, blockData);
 
         UnityEngine.Profiling.Profiler.BeginSample("AddFaces");
 
@@ -215,7 +216,7 @@ public abstract class NBTBlock : NBTObject
         }
     }
 
-    void SetVertex(NBTMesh mesh, Vector4 pos, Vector2 texcoord, Vector4 color)
+    protected void SetVertex(NBTMesh mesh, Vector4 pos, Vector2 texcoord, Vector4 color)
     {
         Vertex vert = mesh.vertexArray[mesh.vertexCount];
         vert.pos = pos;

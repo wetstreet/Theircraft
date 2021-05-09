@@ -8,49 +8,45 @@ public class NBTStairs : NBTBlock
 
     public override bool isTransparent => true;
 
-    Mesh GetMesh()
+    Mesh GetMesh(byte blockData)
     {
         Mesh mesh = Resources.Load<Mesh>("Meshes/blocks/stair/stair_+y-x");
-        //switch (blockData)
-        //{
-        //    case 1:
-        //        mesh = Resources.Load<Mesh>("Meshes/blocks/stair/stair_+y+x");
-        //        break;
-        //    case 2:
-        //        mesh = Resources.Load<Mesh>("Meshes/blocks/stair/stair_+y-z");
-        //        break;
-        //    case 3:
-        //        mesh = Resources.Load<Mesh>("Meshes/blocks/stair/stair_+y+z");
-        //        break;
-        //}
+        switch (blockData)
+        {
+            case 1:
+                mesh = Resources.Load<Mesh>("Meshes/blocks/stair/stair_+y+x");
+                break;
+            case 2:
+                mesh = Resources.Load<Mesh>("Meshes/blocks/stair/stair_+y-z");
+                break;
+            case 3:
+                mesh = Resources.Load<Mesh>("Meshes/blocks/stair/stair_+y+z");
+                break;
+        }
         return mesh;
     }
 
     public override void AddCube(NBTChunk chunk, byte blockData, byte skyLight, Vector3Int pos, NBTGameObject nbtGO)
     {
-        //this.pos = pos;
-        //this.blockData = blockData;
-        //vertices = nbtGO.vertexList;
-        //triangles = nbtGO.triangles;
+        Mesh mesh = GetMesh(blockData);
 
-        //Mesh mesh = GetMesh();
+        int faceIndex = TextureArrayManager.GetIndexByName(stairsName);
 
-        //int faceIndex = TextureArrayManager.GetIndexByName(stairsName);
-
-        //int length = vertices.Count;
-        //for (int i = 0; i < mesh.vertices.Length; i++)
-        //{
-        //    vertices.Add(new Vertex { pos = ToVector4(mesh.vertices[i] + pos, faceIndex), texcoord = mesh.uv[i], color = Color.white });
-        //}
-        //foreach (int index in mesh.triangles)
-        //{
-        //    triangles.Add(index + length);
-        //}
+        NBTMesh nbtMesh = nbtGO.nbtMesh;
+        ushort startIndex = nbtMesh.vertexCount;
+        for (int i = 0; i < mesh.vertices.Length; i++)
+        {
+            SetVertex(nbtMesh, ToVector4(mesh.vertices[i] + pos, faceIndex), mesh.uv[i], Color.white);
+        }
+        foreach (int index in mesh.triangles)
+        {
+            nbtMesh.triangleArray[nbtMesh.triangleCount++] = (ushort)(startIndex + index);
+        }
     }
     
-    public override Mesh GetItemMesh(NBTChunk chunk, byte data)
+    public override Mesh GetItemMesh(NBTChunk chunk, byte blockData)
     {
-        return GetMesh();
+        return GetMesh(blockData);
     }
 
     public override Material GetItemMaterial(byte data)

@@ -392,49 +392,49 @@ public class PlayerController : MonoBehaviour
                     Vector3Int pos = Vector3Int.RoundToInt(hit.point - hit.normal / 10);
                     byte type = 0;
                     byte data = 0;
-                    //NBTHelper.GetBlockData(pos.x, pos.y, pos.z, ref type, ref data);
-                    //if (type != 0)
-                    //{
-                    //    if (pos != WireFrameHelper.pos)
-                    //    {
-                    //        breakTime = 0;
-                    //    }
-                        
-                    //    WireFrameHelper.render = true;
-                    //    WireFrameHelper.pos = pos;
-                    //    WireFrameHelper.hitPos = hit.point;
-                    //    WireFrameHelper.type = type;
-                    //    WireFrameHelper.data = data;
+                    NBTHelper.GetBlockData(pos.x, pos.y, pos.z, ref type, ref data);
+                    if (type != 0)
+                    {
+                        if (pos != WireFrameHelper.pos)
+                        {
+                            breakTime = 0;
+                        }
 
-                    //    if (leftMouseDown)
-                    //    {
-                    //        handAnimator.SetBool("isBreaking", true);
+                        WireFrameHelper.render = true;
+                        WireFrameHelper.pos = pos;
+                        WireFrameHelper.hitPos = hit.point;
+                        WireFrameHelper.type = type;
+                        WireFrameHelper.data = data;
 
-                    //        breakTime += Time.deltaTime;
+                        if (leftMouseDown)
+                        {
+                            handAnimator.SetBool("isBreaking", true);
 
-                    //        NBTBlock generator = NBTGeneratorManager.GetMeshGenerator(type);
-                    //        float breakNeedTime = generator.breakNeedTime;
-                    //        if (breakNeedTime == 0)
-                    //        {
-                    //            BreakBlock(pos);
-                    //        }
-                    //        else
-                    //        {
-                    //            int curStage = Mathf.FloorToInt(breakTime / (breakNeedTime / 12));
-                    //            if (stage != curStage)
-                    //            {
-                    //                stage = curStage;
-                    //                UpdateBreakingEffect(generator, pos, stage);
-                    //            }
-                    //            if (stage >= 10)
-                    //            {
-                    //                BreakBlock(pos);
-                    //            }
-                    //        }
+                            breakTime += Time.deltaTime;
 
-                    //        return;
-                    //    }
-                    //}
+                            NBTBlock generator = NBTGeneratorManager.GetMeshGenerator(type);
+                            float breakNeedTime = generator.breakNeedTime;
+                            if (breakNeedTime == 0)
+                            {
+                                BreakBlock(pos);
+                            }
+                            else
+                            {
+                                int curStage = Mathf.FloorToInt(breakTime / (breakNeedTime / 12));
+                                if (stage != curStage)
+                                {
+                                    stage = curStage;
+                                    UpdateBreakingEffect(generator, pos, stage);
+                                }
+                                if (stage >= 10)
+                                {
+                                    BreakBlock(pos);
+                                }
+                            }
+
+                            return;
+                        }
+                    }
                 }
             }
         }

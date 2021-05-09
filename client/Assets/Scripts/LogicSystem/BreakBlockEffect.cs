@@ -17,8 +17,8 @@ public class BreakBlockEffect : MonoBehaviour
 
         BreakBlockEffect effect = go.AddComponent<BreakBlockEffect>();
         NBTBlock block = NBTGeneratorManager.GetMeshGenerator(type);
-        effect.texturePath = block.GetBreakEffectTexture(chunk, data);
-        effect.tintColor = block.GetFrontTintColorByData(chunk, data);
+        effect.texturePath = block.GetBreakEffectTexture(chunk, Vector3Int.RoundToInt(pos), data);
+        effect.tintColor = block.GetFrontTintColorByData(chunk, Vector3Int.RoundToInt(pos), data);
     }
 
     public string texturePath;
