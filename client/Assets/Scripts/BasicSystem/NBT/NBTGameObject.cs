@@ -1,9 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Unity.Collections;
-using UnityEngine;
-using UnityEngine.Rendering;
-using static MeshGenerator;
+﻿using UnityEngine;
 
 public class NBTGameObject : MonoBehaviour
 {
@@ -11,7 +6,7 @@ public class NBTGameObject : MonoBehaviour
 
     bool isCollidable;
 
-    NBTChunk chunk;
+    public Material mat;
 
     public static NBTGameObject Create(string name, NBTChunk chunk, int layer, bool isCollidable = true)
     {
@@ -24,17 +19,18 @@ public class NBTGameObject : MonoBehaviour
             go.AddComponent<MeshCollider>();
         }
 
-        string matPath = "Materials/block";
+        Material mat = new Material(Shader.Find("Custom/TextureArrayShader"));
         if (layer == 12)
         {
-            matPath = "Materials/plant";
+            mat.SetFloat("_Culling", 0);
         }
-        go.AddComponent<MeshRenderer>().material = Resources.Load<Material>(matPath);
+        go.AddComponent<MeshRenderer>().sharedMaterial = mat;
         go.AddComponent<NavMeshSourceTag>();
+
         NBTGameObject nbtGO = go.AddComponent<NBTGameObject>();
+        nbtGO.mat = mat;
         nbtGO.nbtMesh.mesh.name = name;
         nbtGO.isCollidable = isCollidable;
-        nbtGO.chunk = chunk;
         return nbtGO;
     }
 
@@ -45,7 +41,7 @@ public class NBTGameObject : MonoBehaviour
 
     private void Awake()
     {
-        nbtMesh = new NBTMesh(65536, chunk);
+        nbtMesh = new NBTMesh(65536);
     }
 
     private void OnDestroy()

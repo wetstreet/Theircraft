@@ -26,7 +26,7 @@ public class NBTStairs : NBTBlock
         return mesh;
     }
 
-    public override void AddCube(NBTChunk chunk, byte blockData, byte skyLight, Vector3Int pos, NBTGameObject nbtGO)
+    public override void AddCube(NBTChunk chunk, byte blockData, Vector3Int pos, NBTGameObject nbtGO)
     {
         Mesh mesh = GetMesh(blockData);
 

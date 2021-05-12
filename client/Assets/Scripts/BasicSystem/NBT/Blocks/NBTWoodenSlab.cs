@@ -87,7 +87,7 @@ public class NBTWoodenSlab : NBTBlock
     protected static Vector3 nearMiddleRight = new Vector3(0.5f, 0, -0.5f);
     protected static Vector3 farMiddleRight = new Vector3(0.5f, 0, 0.5f);
     
-    public override void AddCube(NBTChunk chunk, byte blockData, byte skyLight, Vector3Int pos, NBTGameObject nbtGO)
+    public override void AddCube(NBTChunk chunk, byte blockData, Vector3Int pos, NBTGameObject nbtGO)
     {
         topIndex = GetTopIndexByData(chunk, blockData);
         bottomIndex = GetBottomIndexByData(chunk, blockData);

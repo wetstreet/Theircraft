@@ -22,23 +22,21 @@ Shader "Custom/TextureArrayShader"
 
             #pragma vertex vert
             #pragma fragment frag
-            // make fog work
-            #pragma multi_compile_fog
+
+            #pragma enable_d3d11_debug_symbols
 
             #include "Common.hlsl"
 
             struct appdata
             {
                 float4 vertex : POSITION;
-                float2 uv : TEXCOORD0;
-                // float3 normal : NORMAL;
+                float3 uv : TEXCOORD0;
                 float4 color : COLOR;
             };
 
             struct v2f
             {
-                float3 uv : TEXCOORD0;
-                // float3 worldNormal : TEXCOORD1;
+                float4 uv : TEXCOORD0;
                 float4 vertex : SV_POSITION;
                 half4 color : COLOR;
             };
@@ -48,15 +46,17 @@ Shader "Custom/TextureArrayShader"
             float _TileX;
             float _TileY;
             float _Cutoff;
+            
+            sampler2D skyLightTexture;
 
             v2f vert (appdata v)
             {
                 v2f o;
                 o.vertex = TransformObjectToHClip(v.vertex.xyz);
-                o.uv.xy = v.uv * float2(_TileX, _TileY);
+                o.uv.xy = v.uv.xy * float2(_TileX, _TileY);
                 o.uv.z = v.vertex.w;
+                o.uv.w = v.uv.z;
                 o.color = v.color;
-                // o.worldNormal = TransformObjectToWorldNormal(v.normal);
                 return o;
             }
 
@@ -64,11 +64,11 @@ Shader "Custom/TextureArrayShader"
             {
                 // sample the texture
                 half4 col = SAMPLE_TEXTURE2D_ARRAY(_Array, sampler_Array, i.uv.xy, i.uv.z) * i.color;
+
+                // skylight
+                col.rgb *= i.uv.w;
+
                 clip(col.a - _Cutoff);
-                
-                // float normal = i.worldNormal;
-                // float NdotL = max(dot(_MainLightPosition.xyz, normal), 0.2);
-                // col.rgb *= NdotL;
 
                 return col;
             }

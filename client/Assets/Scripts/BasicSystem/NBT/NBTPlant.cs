@@ -23,7 +23,7 @@ public class NBTPlant : NBTBlock
 
     public override bool hasDropItem { get { return false; } }
 
-    public override void AddCube(NBTChunk chunk, byte blockData, byte skyLight, Vector3Int pos, NBTGameObject nbtGO)
+    public override void AddCube(NBTChunk chunk, byte blockData, Vector3Int pos, NBTGameObject nbtGO)
     {
         plantIndex = GetPlantIndexByData(chunk, pos, blockData);
         tintColor = GetTintColorByData(chunk, pos, blockData);

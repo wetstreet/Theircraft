@@ -1,4 +1,5 @@
 ﻿using protocol.cs_theircraft;
+using Substrate.Nbt;
 using System.Collections.Generic;
 using Unity.Collections;
 using UnityEngine;
@@ -9,7 +10,7 @@ public struct Vertex
 {
     public Vector4 pos;
     public Vector4 color;
-    public Vector2 texcoord;
+    public Vector3 texcoord;
 }
 
 public enum Rotation
@@ -146,7 +147,7 @@ public abstract class NBTBlock : NBTObject
     protected virtual Rotation GetLeftRotationByData(byte data) { return Rotation.Zero; }
     protected virtual Rotation GetRightRotationByData(byte data) { return Rotation.Zero; }
 
-    public virtual void AddCube(NBTChunk chunk, byte blockData, byte skyLight, Vector3Int pos, NBTGameObject nbtGO)
+    public virtual void AddCube(NBTChunk chunk, byte blockData, Vector3Int pos, NBTGameObject nbtGO)
     {
         topIndex = GetTopIndexByData(chunk, blockData);
         bottomIndex = GetBottomIndexByData(chunk, blockData);
@@ -166,27 +167,33 @@ public abstract class NBTBlock : NBTObject
 
         if (!chunk.HasOpaqueBlock(pos.x, pos.y, pos.z - 1))
         {
-            AddFrontFace(nbtGO.nbtMesh, pos, blockData);
+            float skyLight = chunk.GetSkyLight(pos.x, pos.y, pos.z - 1);
+            AddFrontFace(nbtGO.nbtMesh, pos, blockData, skyLight);
         }
         if (!chunk.HasOpaqueBlock(pos.x + 1, pos.y, pos.z))
         {
-            AddRightFace(nbtGO.nbtMesh, pos, blockData);
+            float skyLight = chunk.GetSkyLight(pos.x + 1, pos.y, pos.z);
+            AddRightFace(nbtGO.nbtMesh, pos, blockData, skyLight);
         }
         if (!chunk.HasOpaqueBlock(pos.x - 1, pos.y, pos.z))
         {
-            AddLeftFace(nbtGO.nbtMesh, pos, blockData);
+            float skyLight = chunk.GetSkyLight(pos.x - 1, pos.y, pos.z);
+            AddLeftFace(nbtGO.nbtMesh, pos, blockData, skyLight);
         }
         if (!chunk.HasOpaqueBlock(pos.x, pos.y, pos.z + 1))
         {
-            AddBackFace(nbtGO.nbtMesh, pos, blockData);
+            float skyLight = chunk.GetSkyLight(pos.x, pos.y, pos.z + 1);
+            AddBackFace(nbtGO.nbtMesh, pos, blockData, skyLight);
         }
         if (!chunk.HasOpaqueBlock(pos.x, pos.y + 1, pos.z))
         {
-            AddTopFace(nbtGO.nbtMesh, pos, blockData);
+            float skyLight = chunk.GetSkyLight(pos.x, pos.y + 1, pos.z);
+            AddTopFace(nbtGO.nbtMesh, pos, blockData, skyLight);
         }
         if (!chunk.HasOpaqueBlock(pos.x, pos.y - 1, pos.z))
         {
-            AddBottomFace(nbtGO.nbtMesh, pos, blockData);
+            float skyLight = chunk.GetSkyLight(pos.x, pos.y - 1, pos.z);
+            AddBottomFace(nbtGO.nbtMesh, pos, blockData, skyLight);
         }
 
         UnityEngine.Profiling.Profiler.EndSample();
@@ -197,9 +204,14 @@ public abstract class NBTBlock : NBTObject
         return new Vector4(v3.x, v3.y, v3.z, w);
     }
 
+    protected Vector3 ToVector3(Vector2 v2, float z)
+    {
+        return new Vector3(v2.x, v2.y, z);
+    }
+
     protected void AddFace(NBTMesh mesh, Vector3Int pos, Vector3 pos1, Vector3 pos2, Vector3 pos3, Vector3 pos4, int faceIndex)
     {
-        AddFace(mesh, pos, pos1, pos2, pos3, pos4, faceIndex, Color.white);
+        AddFace(mesh, pos, pos1, pos2, pos3, pos4, faceIndex, Color.white, 1);
     }
 
     protected Rotation rotation = Rotation.Zero;
@@ -216,7 +228,7 @@ public abstract class NBTBlock : NBTObject
         }
     }
 
-    protected void SetVertex(NBTMesh mesh, Vector4 pos, Vector2 texcoord, Vector4 color)
+    protected void SetVertex(NBTMesh mesh, Vector4 pos, Vector3 texcoord, Vector4 color)
     {
         Vertex vert = mesh.vertexArray[mesh.vertexCount];
         vert.pos = pos;
@@ -225,14 +237,23 @@ public abstract class NBTBlock : NBTObject
         mesh.vertexArray[mesh.vertexCount++] = vert;
     }
 
-    protected void AddFace(NBTMesh mesh, Vector3Int pos, Vector3 pos1, Vector3 pos2, Vector3 pos3, Vector3 pos4, int faceIndex, Color color)
+    protected void AddFace(NBTMesh mesh, Vector3Int pos,
+        Vector3 pos1, Vector3 pos2, Vector3 pos3, Vector3 pos4,
+        int faceIndex, Color color)
+    {
+        AddFace(mesh, pos, pos1, pos2, pos3, pos4, faceIndex, color, 1);
+    }
+
+    protected void AddFace(NBTMesh mesh, Vector3Int pos,
+        Vector3 pos1, Vector3 pos2, Vector3 pos3, Vector3 pos4,
+        int faceIndex, Color color, float skyLight)
     {
         ushort startIndex = mesh.vertexCount;
 
-        SetVertex(mesh, ToVector4(pos1 + pos, faceIndex), uv[0], color);
-        SetVertex(mesh, ToVector4(pos2 + pos, faceIndex), uv[1], color);
-        SetVertex(mesh, ToVector4(pos3 + pos, faceIndex), uv[2], color);
-        SetVertex(mesh, ToVector4(pos4 + pos, faceIndex), uv[3], color);
+        SetVertex(mesh, ToVector4(pos1 + pos, faceIndex), ToVector3(uv[0], skyLight), color);
+        SetVertex(mesh, ToVector4(pos2 + pos, faceIndex), ToVector3(uv[1], skyLight), color);
+        SetVertex(mesh, ToVector4(pos3 + pos, faceIndex), ToVector3(uv[2], skyLight), color);
+        SetVertex(mesh, ToVector4(pos4 + pos, faceIndex), ToVector3(uv[3], skyLight), color);
 
         mesh.triangleArray[mesh.triangleCount++] = startIndex;
         mesh.triangleArray[mesh.triangleCount++] = (ushort)(startIndex + 1);
@@ -241,40 +262,64 @@ public abstract class NBTBlock : NBTObject
         mesh.triangleArray[mesh.triangleCount++] = (ushort)(startIndex + 2);
         mesh.triangleArray[mesh.triangleCount++] = (ushort)(startIndex + 3);
     }
-    
+
     protected virtual void AddFrontFace(NBTMesh mesh, Vector3Int pos, byte blockData)
     {
+        AddFrontFace(mesh, pos, blockData, 1);
+    }
+    protected virtual void AddFrontFace(NBTMesh mesh, Vector3Int pos, byte blockData, float skyLight)
+    {
         rotation = GetFrontRotationByData(blockData);
-        AddFace(mesh, pos, nearBottomLeft, nearTopLeft, nearTopRight, nearBottomRight, frontIndex, frontColor);
+        AddFace(mesh, pos, nearBottomLeft, nearTopLeft, nearTopRight, nearBottomRight, frontIndex, frontColor, skyLight);
     }
 
     protected virtual void AddBackFace(NBTMesh mesh, Vector3Int pos, byte blockData)
     {
+        AddBackFace(mesh, pos, blockData, 1);
+    }
+    protected virtual void AddBackFace(NBTMesh mesh, Vector3Int pos, byte blockData, float skyLight)
+    {
         rotation = GetBackRotationByData(blockData);
-        AddFace(mesh, pos, farBottomRight, farTopRight, farTopLeft, farBottomLeft, backIndex, backColor);
+        AddFace(mesh, pos, farBottomRight, farTopRight, farTopLeft, farBottomLeft, backIndex, backColor, skyLight);
     }
 
     protected virtual void AddTopFace(NBTMesh mesh, Vector3Int pos, byte blockData)
     {
+        AddTopFace(mesh, pos, blockData, 1);
+    }
+    protected virtual void AddTopFace(NBTMesh mesh, Vector3Int pos, byte blockData, float skyLight)
+    {
         rotation = GetTopRotationByData(blockData);
-        AddFace(mesh, pos, farTopRight, nearTopRight, nearTopLeft, farTopLeft, topIndex, topColor);
+        AddFace(mesh, pos, farTopRight, nearTopRight, nearTopLeft, farTopLeft, topIndex, topColor, skyLight);
     }
 
     protected virtual void AddBottomFace(NBTMesh mesh, Vector3Int pos, byte blockData)
     {
+        AddBottomFace(mesh, pos, blockData, 1);
+    }
+    protected virtual void AddBottomFace(NBTMesh mesh, Vector3Int pos, byte blockData, float skyLight)
+    {
         rotation = GetBottomRotationByData(blockData);
-        AddFace(mesh, pos, nearBottomRight, farBottomRight, farBottomLeft, nearBottomLeft, bottomIndex, bottomColor);
+        AddFace(mesh, pos, nearBottomRight, farBottomRight, farBottomLeft, nearBottomLeft, bottomIndex, bottomColor, skyLight);
     }
 
     protected virtual void AddLeftFace(NBTMesh mesh, Vector3Int pos, byte blockData)
     {
+        AddLeftFace(mesh, pos, blockData, 1);
+    }
+    protected virtual void AddLeftFace(NBTMesh mesh, Vector3Int pos, byte blockData, float skyLight)
+    {
         rotation = GetLeftRotationByData(blockData);
-        AddFace(mesh, pos, farBottomLeft, farTopLeft, nearTopLeft, nearBottomLeft, leftIndex, leftColor);
+        AddFace(mesh, pos, farBottomLeft, farTopLeft, nearTopLeft, nearBottomLeft, leftIndex, leftColor, skyLight);
     }
 
     protected virtual void AddRightFace(NBTMesh mesh, Vector3Int pos, byte blockData)
     {
+        AddRightFace(mesh, pos, blockData, 1);
+    }
+    protected virtual void AddRightFace(NBTMesh mesh, Vector3Int pos, byte blockData, float skyLight)
+    {
         rotation = GetRightRotationByData(blockData);
-        AddFace(mesh, pos, nearBottomRight, nearTopRight, farTopRight, farBottomRight, rightIndex, rightColor);
+        AddFace(mesh, pos, nearBottomRight, nearTopRight, farTopRight, farBottomRight, rightIndex, rightColor, skyLight);
     }
 }

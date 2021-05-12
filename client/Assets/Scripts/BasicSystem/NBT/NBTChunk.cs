@@ -200,11 +200,32 @@ public class NBTChunk
         return yInSection * 16 * 16 + zInSection * 16 + xInSection;
     }
 
-    ////input is local position
+    //input is local position
     public bool HasOpaqueBlock(int xInChunk, int worldY, int zInChunk)
     {
         byte type = GetBlockByte(xInChunk, worldY, zInChunk);
         return !NBTGeneratorManager.IsTransparent(type);
+    }
+
+    public float GetSkyLight(int xInChunk, int yInChunk, int zInChunk)
+    {
+        if (xInChunk < 0 || xInChunk > 15 || zInChunk < 0 || zInChunk > 15)
+        {
+            return 1;
+        }
+
+        int sectionIndex = yInChunk / 16;
+        int yInSection = yInChunk % 16;
+
+        int blockPos = yInSection * 16 * 16 + zInChunk * 16 + xInChunk;
+
+        TagNodeCompound Section = Sections[sectionIndex] as TagNodeCompound;
+        TagNodeByteArray SkyLight = Section["SkyLight"] as TagNodeByteArray;
+        byte skyLight = NBTHelper.GetNibble(SkyLight.Data, blockPos);
+
+        //Debug.Log("y=" + x + "," + z + ",section=" + sectionIndex);
+
+        return skyLight / 15f;
     }
 
     Vector3Int pos = new Vector3Int();
@@ -222,7 +243,6 @@ public class NBTChunk
             TagNodeCompound Section = Sections[sectionIndex] as TagNodeCompound;
             TagNodeByteArray Blocks = Section["Blocks"] as TagNodeByteArray;
             TagNodeByteArray Data = Section["Data"] as TagNodeByteArray;
-            TagNodeByteArray SkyLight = Section["SkyLight"] as TagNodeByteArray;
 
             for (int yInSection = 0; yInSection < 16; yInSection++)
             {
@@ -233,12 +253,13 @@ public class NBTChunk
                         int blockPos = yInSection * 16 * 16 + zInSection * 16 + xInSection;
                         byte rawType = Blocks.Data[blockPos];
                         NBTBlock generator = NBTGeneratorManager.GetMeshGenerator(rawType);
+
                         if (generator != null)
                         {
                             int worldY = yInSection + sectionIndex * 16;
                             pos.Set(xInSection, worldY, zInSection);
                             byte blockData = NBTHelper.GetNibble(Data.Data, blockPos);
-                            byte skyLight = NBTHelper.GetNibble(SkyLight.Data, blockPos);
+
                             try
                             {
                                 if (generator is NBTStationaryWater)
@@ -247,11 +268,11 @@ public class NBTChunk
                                 }
                                 else if (generator is NBTPlant)
                                 {
-                                    generator.AddCube(this, blockData, skyLight, pos, notCollidable);
+                                    generator.AddCube(this, blockData, pos, notCollidable);
                                 }
                                 else
                                 {
-                                    generator.AddCube(this, blockData, skyLight, pos, collidable);
+                                    generator.AddCube(this, blockData, pos, collidable);
                                 }
                             }
                             catch (System.Exception e)
@@ -267,6 +288,48 @@ public class NBTChunk
                 }
             }
         }
+
+        //for (int i = Sections.Count * 4096; i < 65536; i++)
+        //{
+        //    skyLightArray[i] = 15;
+        //}
+
+        ////Dictionary<uint, int> temp = new Dictionary<uint, int>();
+        ////for (int i = 0; i < Sections.Count * 4096; i++)
+        ////{
+        ////    if (temp.ContainsKey(skyLightArray[i]))
+        ////    {
+        ////        temp[skyLightArray[i]]++;
+        ////    }
+        ////    else
+        ////    {
+        ////        temp.Add(skyLightArray[i], 1);
+        ////    }
+        ////}
+
+        ////foreach (KeyValuePair<uint, int> pair in temp)
+        ////{
+        ////    Debug.Log("key=" + pair.Key + ",value=" + pair.Value);
+        ////}
+
+        //RenderTexture tex = new RenderTexture(256, 256, 0, RenderTextureFormat.ARGB32, 0);
+        //tex.enableRandomWrite = true;
+        //tex.Create();
+
+        //ComputeShader compute = Resources.Load<ComputeShader>("LightingCompute");
+        //int kernel = compute.FindKernel("CSMain");
+        //compute.SetTexture(kernel, "Result", tex);
+
+        //ComputeBuffer skyLightBuffer = new ComputeBuffer(65536, 4);
+        //skyLightBuffer.SetData(skyLightArray);
+
+        //compute.SetBuffer(kernel, "skyLightBuffer", skyLightBuffer);
+        //compute.Dispatch(kernel, 32, 32, 1);
+
+        //skyLightBuffer.Release();
+
+        //collidable.mat.SetTexture("skyLightTexture", tex);
+        //notCollidable.mat.SetTexture("skyLightTexture", tex);
 
         hasBuiltMesh = true;
         isDirty = false;

@@ -43,7 +43,7 @@ public class NBTWheat : NBTPlant
     protected static Vector3 farTopLeft_2 = new Vector3(-0.25f, 0.5f, 0.5f);
     protected static Vector3 farTopRight_2 = new Vector3(0.25f, 0.5f, 0.5f);
 
-    public override void AddCube(NBTChunk chunk, byte blockData, byte skyLight, Vector3Int pos, NBTGameObject nbtGO)
+    public override void AddCube(NBTChunk chunk, byte blockData, Vector3Int pos, NBTGameObject nbtGO)
     {
         plantIndex = GetPlantIndexByData(chunk, blockData);
         tintColor = GetTintColorByData(chunk, blockData);
