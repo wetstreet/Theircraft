@@ -30,14 +30,16 @@ Shader "Custom/TextureArrayShader"
             struct appdata
             {
                 float4 vertex : POSITION;
-                float3 uv : TEXCOORD0;
                 float4 color : COLOR;
+                float3 uv : TEXCOORD0;
+                float3 normal : NORMAL;
             };
 
             struct v2f
             {
-                float4 uv : TEXCOORD0;
                 float4 vertex : SV_POSITION;
+                float4 uv : TEXCOORD0;
+                float3 worldNormal : TEXCOORD1;
                 half4 color : COLOR;
             };
 
@@ -57,6 +59,9 @@ Shader "Custom/TextureArrayShader"
                 o.uv.z = v.vertex.w;
                 o.uv.w = v.uv.z;
                 o.color = v.color;
+
+                o.worldNormal = TransformObjectToWorldNormal(v.normal);
+
                 return o;
             }
 
@@ -66,7 +71,26 @@ Shader "Custom/TextureArrayShader"
                 half4 col = SAMPLE_TEXTURE2D_ARRAY(_Array, sampler_Array, i.uv.xy, i.uv.z) * i.color;
 
                 // skylight
-                col.rgb *= i.uv.w;
+                float skylight = i.uv.w;
+                float skyLightAtten = pow(skylight, 2 + 5 * skylight) + 0.002;
+                col.rgb *= saturate(skyLightAtten);
+
+                if (i.worldNormal.y == 1)
+                {
+                    col.rgb *= 1;
+                }
+                else if (i.worldNormal.z == 1 || i.worldNormal.z == -1)
+                {
+                    col.rgb *= 0.6;
+                }
+                else if (i.worldNormal.x == 1 || i.worldNormal.x == -1)
+                {
+                    col.rgb *= 0.3;
+                }
+                else if (i.worldNormal.y == -1)
+                {
+                    col.rgb *= 0.2;
+                }
 
                 clip(col.a - _Cutoff);
 
