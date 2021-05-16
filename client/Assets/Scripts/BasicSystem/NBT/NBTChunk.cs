@@ -209,14 +209,18 @@ public class NBTChunk
 
     public float GetSkyLight(int xInChunk, int yInChunk, int zInChunk)
     {
-        if (xInChunk < 0 || xInChunk > 15 || zInChunk < 0 || zInChunk > 15)
+        if (xInChunk < 0 || xInChunk > 15 || zInChunk < 0 || zInChunk > 15 || yInChunk < 0 || yInChunk > 255)
         {
             return 1;
         }
 
         int sectionIndex = yInChunk / 16;
-        int yInSection = yInChunk % 16;
+        if (sectionIndex >= Sections.Count)
+        {
+            return 1;
+        }
 
+        int yInSection = yInChunk % 16;
         int blockPos = yInSection * 16 * 16 + zInChunk * 16 + xInChunk;
 
         TagNodeCompound Section = Sections[sectionIndex] as TagNodeCompound;
@@ -277,7 +281,7 @@ public class NBTChunk
                             }
                             catch (System.Exception e)
                             {
-                                Debug.LogWarning(generator.GetType() + "\n" + e.ToString());
+                                Debug.LogError(generator.GetType() + "\n" + e.ToString());
                             }
                         }
                         else if (rawType != 0 && rawType != 11)

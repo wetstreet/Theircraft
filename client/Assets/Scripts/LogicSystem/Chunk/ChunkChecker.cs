@@ -25,7 +25,7 @@ public static class ChunkChecker
 
         tmpChunk = lastChunk;
 
-        List<Vector2Int> preloadChunks = Utilities.GetSurroudingChunks(lastChunk);
+        List<Vector2Int> preloadChunks = Utilities.GetSurroudingChunks(lastChunk, 2);
         ChunkManager.PreloadChunks(preloadChunks);
     }
     

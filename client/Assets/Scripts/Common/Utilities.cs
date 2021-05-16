@@ -51,10 +51,8 @@ public static class Utilities
         return new CSVector3Int { x = v.x, y = v.y, z = v.z };
     }
 
-    public static List<Vector2Int> GetSurroudingChunks(Vector2Int chunk)
+    public static List<Vector2Int> GetSurroudingChunks(Vector2Int chunk, int chunkRange)
     {
-        int chunkRange = SettingsPanel.RenderDistance;
-
         List<Vector2Int> list = new List<Vector2Int>();
         for (int i = chunk.x - chunkRange; i <= chunk.x + chunkRange; i++)
         {
@@ -64,6 +62,11 @@ public static class Utilities
             }
         }
         return list;
+    }
+
+    public static List<Vector2Int> GetSurroudingChunks(Vector2Int chunk)
+    {
+        return GetSurroudingChunks(chunk, SettingsPanel.RenderDistance);
     }
 
     public static void PrintList<T>(List<T> list)
