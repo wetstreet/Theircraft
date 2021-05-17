@@ -395,7 +395,7 @@ public class ChunkManager
             NBTChunk chunk = NBTHelper.LoadChunk(chunkPos.x, chunkPos.y);
             ChunkRefresher.Add(chunk);
         }
-        ChunkChecker.FinishRefresh();
+        ChunkRefresher.ForceRefreshAll();
     }
 
     #region enter/leave view

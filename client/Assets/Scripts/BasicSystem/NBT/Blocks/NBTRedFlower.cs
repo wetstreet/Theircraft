@@ -39,7 +39,7 @@ public class NBTRedFlower : NBTPlant
         {
             return TextureArrayManager.GetIndexByName("flower_oxeye_daisy");
         }
-        throw new System.Exception("no index");
+        throw new System.Exception("no index, data=" + data);
     }
 
     public override string GetBreakEffectTexture(byte data)
