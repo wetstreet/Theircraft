@@ -14,6 +14,27 @@ public class ChunkRefresher
     static float time;
     static float interval = 0.1f;
 
+    static NBTChunk GetFirstChunk(List<NBTChunk> list)
+    {
+        NBTChunk maxChunk = null;
+        float maxDot = -1;
+        int minDistance = 10;
+
+        for (int i = 0; i < list.Count; i++)
+        {
+            NBTChunk chunk = list[i];
+            float dot = PlayerController.GetChunkToFrontDot(chunk);
+            int distance = PlayerController.GetChunkDistance(chunk);
+            if (dot > 0.3f && (distance < minDistance || dot > maxDot))
+            {
+                maxChunk = list[i];
+                maxDot = dot;
+                minDistance = distance;
+            }
+        }
+        return maxChunk;
+    }
+
     public static void Update()
     {
         UnityEngine.Profiling.Profiler.BeginSample("ChunkRefresher.Update");
@@ -23,13 +44,13 @@ public class ChunkRefresher
             // remove empty
             refreshChunkList.RemoveAll((NBTChunk chunk) => { return chunk == null; });
 
-            refreshChunkList.Sort(ChunkComparer.instance);
-            NBTChunk chunk = refreshChunkList[0];
-            if (PlayerController.GetChunkToFrontDot(chunk) > 0 || PlayerController.IsNearByChunk(chunk))
+            NBTChunk chunk = GetFirstChunk(refreshChunkList);
+            if (chunk != null)
             {
                 chunk.RebuildMeshAsync();
-                refreshChunkList.RemoveAt(0);
+                refreshChunkList.Remove(chunk);
             }
+
             time = Time.time;
         }
 
