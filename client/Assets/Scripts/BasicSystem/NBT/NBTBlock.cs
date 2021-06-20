@@ -1,9 +1,4 @@
-﻿using protocol.cs_theircraft;
-using Substrate.Nbt;
-using System.Collections.Generic;
-using Unity.Collections;
-using UnityEngine;
-using UnityEngine.Rendering;
+﻿using UnityEngine;
 
 [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
 public struct Vertex
@@ -200,16 +195,6 @@ public abstract class NBTBlock : NBTObject
         UnityEngine.Profiling.Profiler.EndSample();
     }
 
-    protected Vector4 ToVector4(Vector3 v3, float w)
-    {
-        return new Vector4(v3.x, v3.y, v3.z, w);
-    }
-
-    protected Vector3 ToVector3(Vector2 v2, float z)
-    {
-        return new Vector3(v2.x, v2.y, z);
-    }
-
     protected Rotation rotation = Rotation.Zero;
     Vector2[] uv_zero = new Vector2[4] { Vector2.zero, Vector2.up, Vector2.one, Vector2.right };
     Vector2[] uv_right = new Vector2[4] { Vector2.up, Vector2.one, Vector2.right, Vector2.zero };
@@ -224,23 +209,19 @@ public abstract class NBTBlock : NBTObject
         }
     }
 
-    protected void SetVertex(NBTMesh mesh, Vector4 pos, Vector3 texcoord, Vector4 color)
-    {
-        SetVertex(mesh, pos, texcoord, color, Vector3.zero);
-    }
-    protected void SetVertex(NBTMesh mesh, Vector4 pos, Vector3 texcoord, Vector4 color, Vector3 normal)
+    protected void SetVertex(NBTMesh mesh, Vector3 pos, int faceIndex, Vector2 texcoord, float skyLight, Vector4 color, Vector3 normal)
     {
         Vertex vert = mesh.vertexArray[mesh.vertexCount];
-        vert.pos = pos;
-        vert.texcoord = texcoord;
+        vert.pos.x = pos.x;
+        vert.pos.y = pos.y;
+        vert.pos.z = pos.z;
+        vert.pos.w = faceIndex;
+        vert.texcoord.x = texcoord.x;
+        vert.texcoord.y = texcoord.y;
+        vert.texcoord.z = skyLight;
         vert.color = color;
         vert.normal = normal;
         mesh.vertexArray[mesh.vertexCount++] = vert;
-    }
-
-    protected void AddFace(NBTMesh mesh, Vector3Int pos, Vector3 pos1, Vector3 pos2, Vector3 pos3, Vector3 pos4, int faceIndex)
-    {
-        AddFace(mesh, pos, pos1, pos2, pos3, pos4, faceIndex, Color.white, 1, Vector3.zero);
     }
 
     protected void AddFace(NBTMesh mesh, Vector3Int pos,
@@ -256,10 +237,10 @@ public abstract class NBTBlock : NBTObject
     {
         ushort startIndex = mesh.vertexCount;
 
-        SetVertex(mesh, ToVector4(pos1 + pos, faceIndex), ToVector3(uv[0], skyLight), color, normal);
-        SetVertex(mesh, ToVector4(pos2 + pos, faceIndex), ToVector3(uv[1], skyLight), color, normal);
-        SetVertex(mesh, ToVector4(pos3 + pos, faceIndex), ToVector3(uv[2], skyLight), color, normal);
-        SetVertex(mesh, ToVector4(pos4 + pos, faceIndex), ToVector3(uv[3], skyLight), color, normal);
+        SetVertex(mesh, pos1 + pos, faceIndex, uv[0], skyLight, color, normal);
+        SetVertex(mesh, pos2 + pos, faceIndex, uv[1], skyLight, color, normal);
+        SetVertex(mesh, pos3 + pos, faceIndex, uv[2], skyLight, color, normal);
+        SetVertex(mesh, pos4 + pos, faceIndex, uv[3], skyLight, color, normal);
 
         mesh.triangleArray[mesh.triangleCount++] = startIndex;
         mesh.triangleArray[mesh.triangleCount++] = (ushort)(startIndex + 1);

@@ -140,10 +140,10 @@ public class NBTWoodenSlab : NBTBlock
     {
         ushort startIndex = mesh.vertexCount;
 
-        SetVertex(mesh, ToVector4(pos1 + pos, faceIndex), uv[0], color);
-        SetVertex(mesh, ToVector4(pos2 + pos, faceIndex), uv[1], color);
-        SetVertex(mesh, ToVector4(pos3 + pos, faceIndex), uv[2], color);
-        SetVertex(mesh, ToVector4(pos4 + pos, faceIndex), uv[3], color);
+        SetVertex(mesh, pos1 + pos, faceIndex, uv[0], 1, color, Vector3.zero);
+        SetVertex(mesh, pos2 + pos, faceIndex, uv[1], 1, color, Vector3.zero);
+        SetVertex(mesh, pos3 + pos, faceIndex, uv[2], 1, color, Vector3.zero);
+        SetVertex(mesh, pos4 + pos, faceIndex, uv[3], 1, color, Vector3.zero);
 
         mesh.triangleArray[mesh.triangleCount++] = startIndex;
         mesh.triangleArray[mesh.triangleCount++] = (ushort)(startIndex + 1);
