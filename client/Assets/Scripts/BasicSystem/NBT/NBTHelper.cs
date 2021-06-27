@@ -344,7 +344,7 @@ public class NBTHelper
 
     public static void SetBlockByte(Vector3Int pos, byte type, bool updateLighting = false) { SetBlockByte(pos.x, pos.y, pos.z, type, updateLighting); }
 
-    public static void SetBlockByte(int x, int y, int z, byte type, bool updateLighting = false)
+    public async static void SetBlockByte(int x, int y, int z, byte type, bool updateLighting = false)
     {
         int chunkX = Mathf.FloorToInt(x / 16f);
         int chunkZ = Mathf.FloorToInt(z / 16f);
@@ -357,12 +357,14 @@ public class NBTHelper
         if (updateLighting)
         {
             List<NBTChunk> list = new List<NBTChunk>();
-            list.Add(chunk);
-            NBTChunk playerChunk = GetChunk(PlayerController.GetCurrentChunkPos());
-            if (playerChunk != chunk)
-                list.Add(playerChunk);
-
-            UpdateLighting(list.ToArray());
+            for (int i = -1; i <= 1; i++)
+            {
+                for (int j = -1; j <= 1; j++)
+                {
+                    list.Add(GetChunk(chunk.x + i, chunk.z + j));
+                }
+            }
+            await Task.Run(() => UpdateLighting(list.ToArray(), false));
         }
         chunk.RebuildMesh();
 
@@ -396,7 +398,7 @@ public class NBTHelper
 
     public static void SetBlockData(Vector3Int pos, byte type, byte data, bool updateLighting = false) { SetBlockData(pos.x, pos.y, pos.z, type, data, updateLighting); }
 
-    public static void SetBlockData(int x, int y, int z, byte type, byte data, bool updateLighting = false)
+    public async static void SetBlockData(int x, int y, int z, byte type, byte data, bool updateLighting = false)
     {
         int chunkX = Mathf.FloorToInt(x / 16f);
         int chunkZ = Mathf.FloorToInt(z / 16f);
@@ -409,12 +411,14 @@ public class NBTHelper
         if (updateLighting)
         {
             List<NBTChunk> list = new List<NBTChunk>();
-            list.Add(chunk);
-            NBTChunk playerChunk = GetChunk(PlayerController.GetCurrentChunkPos());
-            if (playerChunk != chunk)
-                list.Add(playerChunk);
-
-            UpdateLighting(list.ToArray());
+            for (int i = -1; i <= 1; i++)
+            {
+                for (int j = -1; j <= 1; j++)
+                {
+                    list.Add(GetChunk(chunk.x + i, chunk.z + j));
+                }
+            }
+            await Task.Run(() => UpdateLighting(list.ToArray(), false));
         }
         chunk.RebuildMesh();
 
@@ -559,9 +563,14 @@ public class NBTHelper
         chunk.SetSkyLightByte(xInChunk, y, zInChunk, skyLight);
     }
 
-    public static void UpdateLighting(NBTChunk[] chunks)
+    public static void UpdateLighting(NBTChunk[] chunks, bool countTime = true)
     {
-        Debug.Log("update lighting for " + chunks.Length + " chunks");
+        float start = 0;
+        float end = 0;
+        if (countTime)
+        {
+            start = Time.realtimeSinceStartup;
+        }
         Queue<Vector3Int> skyLightQueue = new Queue<Vector3Int>();
 
         // init
@@ -622,6 +631,15 @@ public class NBTHelper
                     }
                 }
             }
+        }
+        if (countTime)
+        {
+            end = Time.realtimeSinceStartup;
+            Debug.Log("update lighting for " + chunks.Length + " chunks, time=" + (end - start));
+        }
+        else
+        {
+            Debug.Log("update lighting for " + chunks.Length + "chunks async");
         }
     }
 
