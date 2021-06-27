@@ -200,7 +200,7 @@ public class PlayerController : MonoBehaviour
             Item.CreateBlockDropItem(generator.GetDropItemByData(WireFrameHelper.data), generator.GetDropItemData(WireFrameHelper.data), pos);
         }
 
-        NBTHelper.SetBlockByte(WireFrameHelper.pos, 0);
+        NBTHelper.SetBlockByte(WireFrameHelper.pos, 0, true);
 
         //Item.CreateBlockDropItem(type, WireFrameHelper.pos);
         BreakBlockEffect.Create(WireFrameHelper.type, WireFrameHelper.data, WireFrameHelper.pos);
@@ -264,7 +264,7 @@ public class PlayerController : MonoBehaviour
 
                 byte type = NBTGeneratorManager.id2type[id];
                 byte data = (byte)InventorySystem.items[ItemSelectPanel.curIndex].damage;
-                NBTHelper.SetBlockData(pos, type, data);
+                NBTHelper.SetBlockData(pos, type, data, true);
 
                 InventorySystem.DecrementCurrent();
                 ItemSelectPanel.instance.RefreshUI();

@@ -342,9 +342,9 @@ public class NBTHelper
         return Mathf.FloorToInt(val / 32.0f);
     }
 
-    public static void SetBlockByte(Vector3Int pos, byte type) { SetBlockByte(pos.x, pos.y, pos.z, type); }
+    public static void SetBlockByte(Vector3Int pos, byte type, bool updateLighting = false) { SetBlockByte(pos.x, pos.y, pos.z, type, updateLighting); }
 
-    public static void SetBlockByte(int x, int y, int z, byte type)
+    public static void SetBlockByte(int x, int y, int z, byte type, bool updateLighting = false)
     {
         int chunkX = Mathf.FloorToInt(x / 16f);
         int chunkZ = Mathf.FloorToInt(z / 16f);
@@ -355,6 +355,10 @@ public class NBTHelper
         NBTChunk chunk = GetChunk(chunkX, chunkZ);
         chunk.SetBlockByte(xInChunk, y, zInChunk, type);
         chunk.RebuildMesh();
+        if (updateLighting)
+        {
+            chunk.UpdateLighting();
+        }
 
         if (type == 0)
         {
@@ -381,9 +385,9 @@ public class NBTHelper
         }
     }
 
-    public static void SetBlockData(Vector3Int pos, byte type, byte data) { SetBlockData(pos.x, pos.y, pos.z, type, data); }
+    public static void SetBlockData(Vector3Int pos, byte type, byte data, bool updateLighting = false) { SetBlockData(pos.x, pos.y, pos.z, type, data, updateLighting); }
 
-    public static void SetBlockData(int x, int y, int z, byte type, byte data)
+    public static void SetBlockData(int x, int y, int z, byte type, byte data, bool updateLighting = false)
     {
         int chunkX = Mathf.FloorToInt(x / 16f);
         int chunkZ = Mathf.FloorToInt(z / 16f);
@@ -394,6 +398,10 @@ public class NBTHelper
         NBTChunk chunk = GetChunk(chunkX, chunkZ);
         chunk.SetBlockData(xInChunk, y, zInChunk, type, data);
         chunk.RebuildMesh();
+        if (updateLighting)
+        {
+            chunk.UpdateLighting();
+        }
 
         if (type == 0)
         {

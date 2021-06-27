@@ -207,31 +207,6 @@ public class NBTChunk
         return !NBTGeneratorManager.IsTransparent(type);
     }
 
-    public float GetSkyLight(int xInChunk, int yInChunk, int zInChunk)
-    {
-        if (xInChunk < 0 || xInChunk > 15 || zInChunk < 0 || zInChunk > 15 || yInChunk < 0 || yInChunk > 255)
-        {
-            return 1;
-        }
-
-        int sectionIndex = yInChunk / 16;
-        if (sectionIndex >= Sections.Count)
-        {
-            return 1;
-        }
-
-        int yInSection = yInChunk % 16;
-        int blockPos = yInSection * 16 * 16 + zInChunk * 16 + xInChunk;
-
-        TagNodeCompound Section = Sections[sectionIndex] as TagNodeCompound;
-        TagNodeByteArray SkyLight = Section["SkyLight"] as TagNodeByteArray;
-        byte skyLight = NBTHelper.GetNibble(SkyLight.Data, blockPos);
-
-        //Debug.Log("y=" + x + "," + z + ",section=" + sectionIndex);
-
-        return skyLight / 15f;
-    }
-
     Vector3Int pos = new Vector3Int();
     public void RefreshMeshData()
     {
@@ -377,5 +352,119 @@ public class NBTChunk
         collidable.GetComponent<MeshFilter>().sharedMesh = null;
         notCollidable.GetComponent<MeshFilter>().sharedMesh = null;
         //water.GetComponent<MeshFilter>().sharedMesh = null;
+    }
+
+    public byte GetSkyLightByte(int xInChunk, int yInChunk, int zInChunk)
+    {
+        if (xInChunk < 0 || xInChunk > 15 || zInChunk < 0 || zInChunk > 15 || yInChunk < 0 || yInChunk > 255)
+        {
+            return 15;
+        }
+
+        int sectionIndex = yInChunk / 16;
+        if (sectionIndex >= Sections.Count)
+        {
+            return 15;
+        }
+
+        int yInSection = yInChunk % 16;
+        int blockPos = yInSection * 16 * 16 + zInChunk * 16 + xInChunk;
+
+        TagNodeCompound Section = Sections[sectionIndex] as TagNodeCompound;
+        TagNodeByteArray SkyLight = Section["SkyLight"] as TagNodeByteArray;
+        byte skyLight = NBTHelper.GetNibble(SkyLight.Data, blockPos);
+
+        //Debug.Log("y=" + x + "," + z + ",section=" + sectionIndex);
+
+        return skyLight;
+    }
+
+    public void SetSkyLightByte(int xInChunk, int yInChunk, int zInChunk, byte skyLight)
+    {
+        if (xInChunk < 0 || xInChunk > 15 || zInChunk < 0 || zInChunk > 15 || yInChunk < 0 || yInChunk > 255)
+        {
+            return;
+        }
+
+        int sectionIndex = yInChunk / 16;
+        if (sectionIndex >= Sections.Count)
+        {
+            return;
+        }
+
+        int yInSection = yInChunk % 16;
+        int blockPos = yInSection * 16 * 16 + zInChunk * 16 + xInChunk;
+
+        TagNodeCompound Section = Sections[sectionIndex] as TagNodeCompound;
+        TagNodeByteArray SkyLight = Section["SkyLight"] as TagNodeByteArray;
+        NBTHelper.SetNibble(SkyLight.Data, blockPos, skyLight);
+    }
+
+    public float GetSkyLight(int xInChunk, int yInChunk, int zInChunk)
+    {
+        return GetSkyLightByte(xInChunk, yInChunk, zInChunk) / 15f;
+    }
+
+    public void UpdateLighting()
+    {
+        Debug.Log("update lighting, chunk=" + x + "," + z);
+        Queue<Vector3Int> skyLightQueue = new Queue<Vector3Int>();
+
+        // init
+        for (int i = 0; i < 16; i++)
+        {
+            for (int j = 0; j < 16; j++)
+            {
+                for (int y = Sections.Count * 16 - 1; y >= 0; y--)
+                {
+                    SetSkyLightByte(i, y, j, 0);
+                }
+            }
+        }
+
+        // light from sun (vertical)
+        for (int i = 0; i < 16; i++)
+        {
+            for (int j = 0; j < 16; j++)
+            {
+                int y = Sections.Count * 16 - 1;
+                while (GetBlockByte(i, y, j) == 0)
+                {
+                    SetSkyLightByte(i, y, j, 15);
+                    skyLightQueue.Enqueue(new Vector3Int(i, y, j));
+                    if (y == 0)
+                        break;
+                    else
+                        y--;
+                }
+            }
+        }
+
+        // light propagation (use flood fill)
+        while (skyLightQueue.Count > 0)
+        {
+            Vector3Int p = skyLightQueue.Dequeue();
+            byte skyLight = GetSkyLightByte(p.x, p.y, p.z);
+            Vector3Int[] arr = new Vector3Int[] { p + Vector3Int.left, p + Vector3Int.right, p + Vector3Int.up, p + Vector3Int.down, p + Vector3Int.forward, p + Vector3Int.back };
+            for (int i = 0; i < 6; i++)
+            {
+                Vector3Int pos = arr[i];
+                if (GetBlockByte(pos.x, pos.y, pos.z) == 0)
+                {
+                    byte nextSkyLight = GetSkyLightByte(pos.x, pos.y, pos.z);
+                    if (nextSkyLight < skyLight - 1)
+                    {
+                        //Debug.Log("SetSkyLightByte,pos=" + pos.x + "," + pos.y + "," + pos.z);
+                        SetSkyLightByte(pos.x, pos.y, pos.z, (byte)(skyLight - 1));
+                        if (skyLight > 2)
+                            skyLightQueue.Enqueue(pos);
+                    }
+                }
+            }
+
+        }
+
+        isDirty = true;
+        RebuildMesh();
     }
 }
