@@ -356,7 +356,13 @@ public class NBTHelper
         chunk.SetBlockByte(xInChunk, y, zInChunk, type);
         if (updateLighting)
         {
-            chunk.UpdateLighting();
+            List<NBTChunk> list = new List<NBTChunk>();
+            list.Add(chunk);
+            NBTChunk playerChunk = GetChunk(PlayerController.GetCurrentChunkPos());
+            if (playerChunk != chunk)
+                list.Add(playerChunk);
+
+            UpdateLighting(list.ToArray());
         }
         chunk.RebuildMesh();
 
@@ -402,33 +408,39 @@ public class NBTHelper
         chunk.SetBlockData(xInChunk, y, zInChunk, type, data);
         if (updateLighting)
         {
-            chunk.UpdateLighting();
+            List<NBTChunk> list = new List<NBTChunk>();
+            list.Add(chunk);
+            NBTChunk playerChunk = GetChunk(PlayerController.GetCurrentChunkPos());
+            if (playerChunk != chunk)
+                list.Add(playerChunk);
+
+            UpdateLighting(list.ToArray());
         }
         chunk.RebuildMesh();
 
-        if (type == 0)
-        {
-            if (xInChunk == 0)
-            {
-                NBTChunk leftChunk = GetChunk(chunkX - 1, chunkZ);
-                leftChunk.RebuildMesh();
-            }
-            if (xInChunk == 15)
-            {
-                NBTChunk rightChunk = GetChunk(chunkX + 1, chunkZ);
-                rightChunk.RebuildMesh();
-            }
-            if (zInChunk == 0)
-            {
-                NBTChunk frontChunk = GetChunk(chunkX, chunkZ - 1);
-                frontChunk.RebuildMesh();
-            }
-            if (zInChunk == 15)
-            {
-                NBTChunk backChunk = GetChunk(chunkX, chunkZ + 1);
-                backChunk.RebuildMesh();
-            }
-        }
+        NBTChunk leftChunk = GetChunk(chunkX - 1, chunkZ);
+        if (xInChunk == 0)
+            leftChunk.RebuildMesh();
+        else
+            leftChunk.RebuildMeshAsync();
+
+        NBTChunk rightChunk = GetChunk(chunkX + 1, chunkZ);
+        if (xInChunk == 15)
+            rightChunk.RebuildMesh();
+        else
+            rightChunk.RebuildMeshAsync();
+
+        NBTChunk backChunk = GetChunk(chunkX, chunkZ - 1);
+        if (zInChunk == 0)
+            backChunk.RebuildMesh();
+        else
+            backChunk.RebuildMeshAsync();
+
+        NBTChunk frontChunk = GetChunk(chunkX, chunkZ + 1);
+        if (zInChunk == 15)
+            frontChunk.RebuildMesh();
+        else
+            frontChunk.RebuildMeshAsync();
     }
 
     public static byte GetBlockByte(Vector3Int pos) { return GetBlockByte(pos.x, pos.y, pos.z); }
@@ -521,6 +533,96 @@ public class NBTHelper
             //}
         }
         UnityEngine.Profiling.Profiler.EndSample();
+    }
+
+    public static byte GetSkyLightByte(int x, int y, int z)
+    {
+        int chunkX = Mathf.FloorToInt(x / 16f);
+        int chunkZ = Mathf.FloorToInt(z / 16f);
+
+        int xInChunk = x - chunkX * 16;
+        int zInChunk = z - chunkZ * 16;
+
+        NBTChunk chunk = GetChunk(chunkX, chunkZ);
+        return chunk.GetSkyLightByte(xInChunk, y, zInChunk);
+    }
+
+    public static void SetSkyLightByte(int x, int y, int z, byte skyLight)
+    {
+        int chunkX = Mathf.FloorToInt(x / 16f);
+        int chunkZ = Mathf.FloorToInt(z / 16f);
+
+        int xInChunk = x - chunkX * 16;
+        int zInChunk = z - chunkZ * 16;
+
+        NBTChunk chunk = GetChunk(chunkX, chunkZ);
+        chunk.SetSkyLightByte(xInChunk, y, zInChunk, skyLight);
+    }
+
+    public static void UpdateLighting(NBTChunk[] chunks)
+    {
+        Debug.Log("update lighting for " + chunks.Length + " chunks");
+        Queue<Vector3Int> skyLightQueue = new Queue<Vector3Int>();
+
+        // init
+        foreach (NBTChunk chunk in chunks)
+        {
+            for (int i = 0; i < 16; i++)
+            {
+                for (int j = 0; j < 16; j++)
+                {
+                    for (int y = chunk.Sections.Count * 16 - 1; y >= 0; y--)
+                    {
+                        chunk.SetSkyLightByte(i, y, j, 0);
+                    }
+                }
+            }
+        }
+
+        // light from sun (vertical)
+        foreach (NBTChunk chunk in chunks)
+        {
+            for (int i = 0; i < 16; i++)
+            {
+                for (int j = 0; j < 16; j++)
+                {
+                    int y = chunk.Sections.Count * 16 - 1;
+                    while (chunk.GetBlockByte(i, y, j) == 0)
+                    {
+                        chunk.SetSkyLightByte(i, y, j, 15);
+                        // global poss
+                        skyLightQueue.Enqueue(new Vector3Int(i + 16 * chunk.x, y, j + 16 * chunk.z));
+                        if (y == 0)
+                            break;
+                        else
+                            y--;
+                    }
+                }
+            }
+        }
+
+        // light propagation (use flood fill)
+        while (skyLightQueue.Count > 0)
+        {
+            Vector3Int p = skyLightQueue.Dequeue();
+            byte skyLight = GetSkyLightByte(p.x, p.y, p.z);
+            Vector3Int[] arr = new Vector3Int[] { p + Vector3Int.left, p + Vector3Int.right, p + Vector3Int.up, p + Vector3Int.down, p + Vector3Int.forward, p + Vector3Int.back };
+            for (int i = 0; i < 6; i++)
+            {
+                Vector3Int pos = arr[i];
+                if (GetBlockByte(pos.x, pos.y, pos.z) == 0)
+                {
+                    byte nextSkyLight = GetSkyLightByte(pos.x, pos.y, pos.z);
+                    if (nextSkyLight < skyLight - 1)
+                    {
+                        //Debug.Log("SetSkyLightByte,pos=" + pos.x + "," + pos.y + "," + pos.z);
+                        SetSkyLightByte(pos.x, pos.y, pos.z, (byte)(skyLight - 1));
+                        if (skyLight > 2)
+                            skyLightQueue.Enqueue(pos);
+                    }
+                }
+            }
+        }
     }
 
     public static void Uninit()
