@@ -354,15 +354,40 @@ public class NBTChunk
         //water.GetComponent<MeshFilter>().sharedMesh = null;
     }
 
-    public byte GetSkyLightByte(int xInChunk, int yInChunk, int zInChunk)
+    public byte GetSkyLightByte(int xInChunk, int yInChunk, int zInChunk, bool extends = false)
     {
-        if (xInChunk < 0 || xInChunk > 15 || zInChunk < 0 || zInChunk > 15 || yInChunk < 0 || yInChunk > 255)
+        if (xInChunk < 0 || xInChunk > 15 || zInChunk < 0 || zInChunk > 15)
         {
-            return 15;
+            if (extends)
+            {
+                int xOffset = 0;
+                int zOffset = 0;
+
+                if (xInChunk < 0)
+                    xOffset = -1;
+                else if (xInChunk > 15)
+                    xOffset = 1;
+
+                if (zInChunk < 0)
+                    zOffset = -1;
+                else if (zInChunk > 15)
+                    zOffset = 1;
+
+                NBTChunk chunk = NBTHelper.GetChunk(x + xOffset, z + zOffset);
+                if (chunk != null)
+                    return chunk.GetSkyLightByte(xInChunk - xOffset * 16, yInChunk, zInChunk - zOffset * 16);
+                else
+                    return 15;
+            }
+            else
+            {
+                return 15;
+            }
         }
 
+
         int sectionIndex = yInChunk / 16;
-        if (sectionIndex >= Sections.Count)
+        if (sectionIndex >= Sections.Count || yInChunk < 0 || yInChunk > 255)
         {
             return 15;
         }
@@ -379,15 +404,36 @@ public class NBTChunk
         return skyLight;
     }
 
-    public void SetSkyLightByte(int xInChunk, int yInChunk, int zInChunk, byte skyLight)
+    public void SetSkyLightByte(int xInChunk, int yInChunk, int zInChunk, byte skyLight, bool extends = false)
     {
-        if (xInChunk < 0 || xInChunk > 15 || zInChunk < 0 || zInChunk > 15 || yInChunk < 0 || yInChunk > 255)
+        if (xInChunk < 0 || xInChunk > 15 || zInChunk < 0 || zInChunk > 15)
         {
+            if (extends)
+            {
+                int xOffset = 0;
+                int zOffset = 0;
+
+                if (xInChunk < 0)
+                    xOffset = -1;
+                else if (xInChunk > 15)
+                    xOffset = 1;
+
+                if (zInChunk < 0)
+                    zOffset = -1;
+                else if (zInChunk > 15)
+                    zOffset = 1;
+
+                NBTChunk chunk = NBTHelper.GetChunk(x + xOffset, z + zOffset);
+                if (chunk != null)
+                {
+                    chunk.SetSkyLightByte(xInChunk - xOffset * 16, yInChunk, zInChunk - zOffset * 16, skyLight);
+                }
+            }
             return;
         }
 
         int sectionIndex = yInChunk / 16;
-        if (sectionIndex >= Sections.Count)
+        if (sectionIndex >= Sections.Count || yInChunk < 0 || yInChunk > 255)
         {
             return;
         }
@@ -444,18 +490,18 @@ public class NBTChunk
         while (skyLightQueue.Count > 0)
         {
             Vector3Int p = skyLightQueue.Dequeue();
-            byte skyLight = GetSkyLightByte(p.x, p.y, p.z);
+            byte skyLight = GetSkyLightByte(p.x, p.y, p.z, true);
             Vector3Int[] arr = new Vector3Int[] { p + Vector3Int.left, p + Vector3Int.right, p + Vector3Int.up, p + Vector3Int.down, p + Vector3Int.forward, p + Vector3Int.back };
             for (int i = 0; i < 6; i++)
             {
                 Vector3Int pos = arr[i];
                 if (GetBlockByte(pos.x, pos.y, pos.z) == 0)
                 {
-                    byte nextSkyLight = GetSkyLightByte(pos.x, pos.y, pos.z);
+                    byte nextSkyLight = GetSkyLightByte(pos.x, pos.y, pos.z, true);
                     if (nextSkyLight < skyLight - 1)
                     {
                         //Debug.Log("SetSkyLightByte,pos=" + pos.x + "," + pos.y + "," + pos.z);
-                        SetSkyLightByte(pos.x, pos.y, pos.z, (byte)(skyLight - 1));
+                        SetSkyLightByte(pos.x, pos.y, pos.z, (byte)(skyLight - 1), true);
                         if (skyLight > 2)
                             skyLightQueue.Enqueue(pos);
                     }
@@ -463,8 +509,5 @@ public class NBTChunk
             }
 
         }
-
-        isDirty = true;
-        RebuildMesh();
     }
 }

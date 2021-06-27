@@ -354,34 +354,37 @@ public class NBTHelper
 
         NBTChunk chunk = GetChunk(chunkX, chunkZ);
         chunk.SetBlockByte(xInChunk, y, zInChunk, type);
-        chunk.RebuildMesh();
         if (updateLighting)
         {
             chunk.UpdateLighting();
         }
+        chunk.RebuildMesh();
 
         if (type == 0)
         {
+            NBTChunk leftChunk = GetChunk(chunkX - 1, chunkZ);
             if (xInChunk == 0)
-            {
-                NBTChunk leftChunk = GetChunk(chunkX - 1, chunkZ);
                 leftChunk.RebuildMesh();
-            }
+            else
+                leftChunk.RebuildMeshAsync();
+
+            NBTChunk rightChunk = GetChunk(chunkX + 1, chunkZ);
             if (xInChunk == 15)
-            {
-                NBTChunk rightChunk = GetChunk(chunkX + 1, chunkZ);
                 rightChunk.RebuildMesh();
-            }
+            else
+                rightChunk.RebuildMeshAsync();
+
+            NBTChunk backChunk = GetChunk(chunkX, chunkZ - 1);
             if (zInChunk == 0)
-            {
-                NBTChunk frontChunk = GetChunk(chunkX, chunkZ - 1);
-                frontChunk.RebuildMesh();
-            }
-            if (zInChunk == 15)
-            {
-                NBTChunk backChunk = GetChunk(chunkX, chunkZ + 1);
                 backChunk.RebuildMesh();
-            }
+            else
+                backChunk.RebuildMeshAsync();
+
+            NBTChunk frontChunk = GetChunk(chunkX, chunkZ + 1);
+            if (zInChunk == 15)
+                frontChunk.RebuildMesh();
+            else
+                frontChunk.RebuildMeshAsync();
         }
     }
 
@@ -397,11 +400,11 @@ public class NBTHelper
 
         NBTChunk chunk = GetChunk(chunkX, chunkZ);
         chunk.SetBlockData(xInChunk, y, zInChunk, type, data);
-        chunk.RebuildMesh();
         if (updateLighting)
         {
             chunk.UpdateLighting();
         }
+        chunk.RebuildMesh();
 
         if (type == 0)
         {
