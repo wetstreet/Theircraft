@@ -168,7 +168,7 @@ public class PlayerController : MonoBehaviour
     public static void ShowBlock(NBTObject generator, short data)
     {
         instance.handMeshRenderer.enabled = false;
-        instance.blockMeshFilter.sharedMesh = generator.GetItemMesh(NBTHelper.GetChunk(GetCurrentBlock()), (byte)data);
+        instance.blockMeshFilter.sharedMesh = generator.GetItemMesh(NBTHelper.GetChunk(GetCurrentBlock()), Vector3Int.RoundToInt(instance.position), (byte)data);
         instance.blockMeshRenderer.GetComponent<MeshRenderer>().sharedMaterial = generator.GetItemMaterial((byte)data);
         instance.blockMeshFilter.transform.gameObject.SetActive(true);
     }
@@ -357,7 +357,7 @@ public class PlayerController : MonoBehaviour
         {
             breakingEffect.gameObject.SetActive(true);
             breakingEffect.transform.position = pos;
-            breakingEffectMesh.sharedMesh = generator.GetItemMesh(NBTHelper.GetChunk(GetCurrentChunkPos()), WireFrameHelper.data);
+            //breakingEffectMesh.sharedMesh = generator.GetItemMesh(NBTHelper.GetChunk(GetCurrentChunkPos()), WireFrameHelper.data);
 
             breakingEffect.sharedMaterial.mainTexture = Resources.Load<Texture2D>("GUI/block/destroy_stage_" + (stage - 1));
         }

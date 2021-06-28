@@ -57,6 +57,11 @@ public abstract class NBTObject
         }
     }
 
+    public virtual Mesh GetItemMesh(NBTChunk chunk, Vector3Int pos, byte data)
+    {
+        return GetItemMesh(chunk, data);
+    }
+
     public virtual Mesh GetItemMesh(NBTChunk chunk, byte data)
     {
         if (!itemMeshDict.ContainsKey(data))

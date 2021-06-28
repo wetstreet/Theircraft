@@ -97,43 +97,38 @@ public abstract class NBTBlock : NBTObject
     protected static Vector3 farTopLeft = new Vector3(-0.5f, 0.5f, 0.5f);
     protected static Vector3 farTopRight = new Vector3(0.5f, 0.5f, 0.5f);
 
-    public override Mesh GetItemMesh(NBTChunk chunk, byte blockData)
+    public override Mesh GetItemMesh(NBTChunk chunk, Vector3Int pos, byte blockData)
     {
-        if (!itemMeshDict.ContainsKey(blockData))
-        {
-            Vector3Int pos = Vector3Int.zero;
+        topIndex = GetTopIndexByData(chunk, blockData);
+        bottomIndex = GetBottomIndexByData(chunk, blockData);
+        frontIndex = GetFrontIndexByData(chunk, blockData);
+        backIndex = GetBackIndexByData(chunk, blockData);
+        leftIndex = GetLeftIndexByData(chunk, blockData);
+        rightIndex = GetRightIndexByData(chunk, blockData);
 
-            topIndex = GetTopIndexByData(chunk, blockData);
-            bottomIndex = GetBottomIndexByData(chunk, blockData);
-            frontIndex = GetFrontIndexByData(chunk, blockData);
-            backIndex = GetBackIndexByData(chunk, blockData);
-            leftIndex = GetLeftIndexByData(chunk, blockData);
-            rightIndex = GetRightIndexByData(chunk, blockData);
+        topColor = GetTopTintColorByData(chunk, pos, blockData);
+        bottomColor = GetBottomTintColorByData(chunk, pos, blockData);
+        frontColor = GetFrontTintColorByData(chunk, pos, blockData);
+        backColor = GetBackTintColorByData(chunk, pos, blockData);
+        leftColor = GetLeftTintColorByData(chunk, pos, blockData);
+        rightColor = GetRightTintColorByData(chunk, pos, blockData);
 
-            topColor = GetTopTintColorByData(chunk, pos, blockData);
-            bottomColor = GetBottomTintColorByData(chunk, pos, blockData);
-            frontColor = GetFrontTintColorByData(chunk, pos, blockData);
-            backColor = GetBackTintColorByData(chunk, pos, blockData);
-            leftColor = GetLeftTintColorByData(chunk, pos, blockData);
-            rightColor = GetRightTintColorByData(chunk, pos, blockData);
+        NBTMesh nbtMesh = new NBTMesh(256);
 
-            NBTMesh nbtMesh = new NBTMesh(256);
+        float skyLight = NBTHelper.GetSkyLightByte(pos.x, pos.y, pos.z) / 15f;
 
-            AddFrontFace(nbtMesh, pos, blockData);
-            AddRightFace(nbtMesh, pos, blockData);
-            AddLeftFace(nbtMesh, pos, blockData);
-            AddBackFace(nbtMesh, pos, blockData);
-            AddTopFace(nbtMesh, pos, blockData);
-            AddBottomFace(nbtMesh, pos, blockData);
+        AddFrontFace(nbtMesh, Vector3Int.zero, blockData, skyLight);
+        AddRightFace(nbtMesh, Vector3Int.zero, blockData, skyLight);
+        AddLeftFace(nbtMesh, Vector3Int.zero, blockData, skyLight);
+        AddBackFace(nbtMesh, Vector3Int.zero, blockData, skyLight);
+        AddTopFace(nbtMesh, Vector3Int.zero, blockData, skyLight);
+        AddBottomFace(nbtMesh, Vector3Int.zero, blockData, skyLight);
 
-            nbtMesh.Refresh();
+        nbtMesh.Refresh();
 
-            itemMeshDict.Add(blockData, nbtMesh.mesh);
+        nbtMesh.Dispose();
 
-            nbtMesh.Dispose();
-        }
-
-        return itemMeshDict[blockData];
+        return nbtMesh.mesh;
     }
 
     protected virtual Rotation GetTopRotationByData(byte data) { return Rotation.Zero; }

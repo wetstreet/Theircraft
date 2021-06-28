@@ -97,7 +97,7 @@ public class Item : MonoBehaviour
         meshTrans = transform.Find("mesh_parent/mesh");
         MeshFilter meshFilter = meshTrans.GetComponent<MeshFilter>();
         
-        meshFilter.sharedMesh = generator.GetItemMesh(NBTHelper.GetChunk(PlayerController.GetCurrentBlock()), blockData);
+        meshFilter.sharedMesh = generator.GetItemMesh(NBTHelper.GetChunk(PlayerController.GetCurrentBlock()), Vector3Int.RoundToInt(transform.position), blockData);
         if (generator is NBTBlock && !(generator is NBTPlant))
         {
             meshFilter.transform.localScale = Vector3.one / 2;
