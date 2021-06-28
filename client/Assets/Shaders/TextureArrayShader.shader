@@ -65,6 +65,8 @@ Shader "Custom/TextureArrayShader"
                 return o;
             }
 
+            half4 _SkyLightColor;
+
             half4 frag (v2f i) : SV_Target
             {
                 // sample the texture
@@ -73,7 +75,7 @@ Shader "Custom/TextureArrayShader"
                 // skylight
                 float skylight = i.uv.w;
                 float skyLightAtten = pow(skylight, 2 + 5 * skylight) + 0.002;
-                col.rgb *= saturate(skyLightAtten);
+                col.rgb *= saturate(skyLightAtten) * _SkyLightColor.rgb;
 
                 if (i.worldNormal.y == 1)
                 {

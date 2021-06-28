@@ -1,0 +1,77 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1449555098556319042
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1449555098556319043}
+  - component: {fileID: 1449555098556319044}
+  m_Layer: 0
+  m_Name: TimeOfDay
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1449555098556319043
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1449555098556319042}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1449555098556319044
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1449555098556319042}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b39ddfec716723449e37b288ae5fd66, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  time: 6
+  lightColor:
+    serializedVersion: 2
+    key0: {r: 0.34, g: 0.35, b: 0.54, a: 1}
+    key1: {r: 0.95, g: 0.95, b: 0.95, a: 1}
+    key2: {r: 0.89648134, g: 0.89730465, b: 0.9145953, a: 0}
+    key3: {r: 0.3, g: 0.31, b: 0.52, a: 0}
+    key4: {r: 0.0791982, g: 0.086762875, b: 0.17824426, a: 0}
+    key5: {r: 0.028, g: 0.035, b: 0.099, a: 0}
+    key6: {r: 0.05736902, g: 0.064651415, b: 0.14051197, a: 0}
+    key7: {r: 0.34, g: 0.35, b: 0.54, a: 0}
+    ctime0: 0
+    ctime1: 16384
+    ctime2: 27563
+    ctime3: 32768
+    ctime4: 38165
+    ctime5: 49151
+    ctime6: 60716
+    ctime7: 65535
+    atime0: 0
+    atime1: 65535
+    atime2: 0
+    atime3: 0
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 0
+    m_NumColorKeys: 8
+    m_NumAlphaKeys: 2
+  debug: 0
+  skylightcolor: {r: 1, g: 1, b: 1, a: 1}
