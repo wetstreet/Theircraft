@@ -364,7 +364,7 @@ public class NBTHelper
                     list.Add(GetChunk(chunk.x + i, chunk.z + j));
                 }
             }
-            await Task.Run(() => UpdateLighting(list.ToArray(), false));
+            UpdateLighting(list.ToArray());
         }
         chunk.RebuildMesh();
 
@@ -418,7 +418,7 @@ public class NBTHelper
                     list.Add(GetChunk(chunk.x + i, chunk.z + j));
                 }
             }
-            await Task.Run(() => UpdateLighting(list.ToArray(), false));
+            UpdateLighting(list.ToArray());
         }
         chunk.RebuildMesh();
 
@@ -565,12 +565,11 @@ public class NBTHelper
 
     public static void UpdateLighting(NBTChunk[] chunks, bool countTime = true)
     {
+        Debug.Log("update lighting for " + chunks.Length + " chunks");
         float start = 0;
         float end = 0;
-        if (countTime)
-        {
-            start = Time.realtimeSinceStartup;
-        }
+        start = Time.realtimeSinceStartup;
+
         Queue<Vector3Int> skyLightQueue = new Queue<Vector3Int>();
 
         // init
@@ -588,6 +587,12 @@ public class NBTHelper
             }
         }
 
+        end = Time.realtimeSinceStartup;
+        Debug.Log("init time cost =" + (end - start));
+        start = Time.realtimeSinceStartup;
+
+        HashSet<Vector3Int> skyLightSet = new HashSet<Vector3Int>();
+
         // light from sun (vertical)
         foreach (NBTChunk chunk in chunks)
         {
@@ -596,11 +601,10 @@ public class NBTHelper
                 for (int j = 0; j < 16; j++)
                 {
                     int y = chunk.Sections.Count * 16 - 1;
-                    while (chunk.GetBlockByte(i, y, j) == 0)
+                    while (NBTGeneratorManager.IsTransparent(chunk.GetBlockByte(i, y, j)))
                     {
                         chunk.SetSkyLightByte(i, y, j, 15);
-                        // global poss
-                        skyLightQueue.Enqueue(new Vector3Int(i + 16 * chunk.x, y, j + 16 * chunk.z));
+                        skyLightSet.Add(new Vector3Int(i + 16 * chunk.x, y, j + 16 * chunk.z));
                         if (y == 0)
                             break;
                         else
@@ -610,20 +614,41 @@ public class NBTHelper
             }
         }
 
+        foreach (Vector3Int skyLightPos in skyLightSet)
+        {
+            if (skyLightSet.Contains(skyLightPos + Vector3Int.left) &&
+                skyLightSet.Contains(skyLightPos + Vector3Int.right) &&
+                skyLightSet.Contains(skyLightPos + Vector3Int.forward) &&
+                skyLightSet.Contains(skyLightPos + Vector3Int.back))
+            {
+                continue;
+            }
+            skyLightQueue.Enqueue(new Vector3Int(skyLightPos.x, skyLightPos.y, skyLightPos.z));
+        }
+
+        end = Time.realtimeSinceStartup;
+        Debug.Log("sun time cost =" + (end - start));
+        start = Time.realtimeSinceStartup;
+        Debug.Log("needs to propagate count=" + skyLightQueue.Count);
+        int count = 0;
+        int setcount = 0;
+
         // light propagation (use flood fill)
         while (skyLightQueue.Count > 0)
         {
+            count++;
             Vector3Int p = skyLightQueue.Dequeue();
             byte skyLight = GetSkyLightByte(p.x, p.y, p.z);
             Vector3Int[] arr = new Vector3Int[] { p + Vector3Int.left, p + Vector3Int.right, p + Vector3Int.up, p + Vector3Int.down, p + Vector3Int.forward, p + Vector3Int.back };
             for (int i = 0; i < 6; i++)
             {
                 Vector3Int pos = arr[i];
-                if (GetBlockByte(pos.x, pos.y, pos.z) == 0)
+                if (NBTGeneratorManager.IsTransparent(GetBlockByte(pos.x, pos.y, pos.z)))
                 {
                     byte nextSkyLight = GetSkyLightByte(pos.x, pos.y, pos.z);
                     if (nextSkyLight < skyLight - 1)
                     {
+                        setcount++;
                         //Debug.Log("SetSkyLightByte,pos=" + pos.x + "," + pos.y + "," + pos.z);
                         SetSkyLightByte(pos.x, pos.y, pos.z, (byte)(skyLight - 1));
                         if (skyLight > 2)
@@ -632,15 +657,9 @@ public class NBTHelper
                 }
             }
         }
-        if (countTime)
-        {
-            end = Time.realtimeSinceStartup;
-            Debug.Log("update lighting for " + chunks.Length + " chunks, time=" + (end - start));
-        }
-        else
-        {
-            Debug.Log("update lighting for " + chunks.Length + "chunks async");
-        }
+
+        end = Time.realtimeSinceStartup;
+        Debug.Log("propagate time cost =" + (end - start) + ", actual propagation count=" + count + ",setcount=" + setcount);
     }
 
     public static void Uninit()
