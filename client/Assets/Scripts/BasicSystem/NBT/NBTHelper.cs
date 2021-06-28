@@ -565,10 +565,10 @@ public class NBTHelper
 
     public static void UpdateLighting(NBTChunk[] chunks, bool countTime = true)
     {
-        Debug.Log("update lighting for " + chunks.Length + " chunks");
-        float start = 0;
-        float end = 0;
-        start = Time.realtimeSinceStartup;
+        //Debug.Log("update lighting for " + chunks.Length + " chunks");
+        //float start = 0;
+        //float end = 0;
+        //start = Time.realtimeSinceStartup;
 
         Queue<Vector3Int> skyLightQueue = new Queue<Vector3Int>();
 
@@ -587,9 +587,9 @@ public class NBTHelper
             }
         }
 
-        end = Time.realtimeSinceStartup;
-        Debug.Log("init time cost =" + (end - start));
-        start = Time.realtimeSinceStartup;
+        //end = Time.realtimeSinceStartup;
+        //Debug.Log("init time cost =" + (end - start));
+        //start = Time.realtimeSinceStartup;
 
         HashSet<Vector3Int> skyLightSet = new HashSet<Vector3Int>();
 
@@ -626,10 +626,10 @@ public class NBTHelper
             skyLightQueue.Enqueue(new Vector3Int(skyLightPos.x, skyLightPos.y, skyLightPos.z));
         }
 
-        end = Time.realtimeSinceStartup;
-        Debug.Log("sun time cost =" + (end - start));
-        start = Time.realtimeSinceStartup;
-        Debug.Log("needs to propagate count=" + skyLightQueue.Count);
+        //end = Time.realtimeSinceStartup;
+        //Debug.Log("sun time cost =" + (end - start));
+        //start = Time.realtimeSinceStartup;
+        //Debug.Log("needs to propagate count=" + skyLightQueue.Count);
         int count = 0;
         int setcount = 0;
 
@@ -658,8 +658,8 @@ public class NBTHelper
             }
         }
 
-        end = Time.realtimeSinceStartup;
-        Debug.Log("propagate time cost =" + (end - start) + ", actual propagation count=" + count + ",setcount=" + setcount);
+        //end = Time.realtimeSinceStartup;
+        //Debug.Log("propagate time cost =" + (end - start) + ", actual propagation count=" + count + ",setcount=" + setcount);
     }
 
     public static void Uninit()

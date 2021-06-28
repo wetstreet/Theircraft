@@ -28,8 +28,10 @@ public class NBTPlant : NBTBlock
         plantIndex = GetPlantIndexByData(chunk, pos, blockData);
         tintColor = GetTintColorByData(chunk, pos, blockData);
 
-        AddDiagonalFace(nbtGO.nbtMesh, pos);
-        AddAntiDiagonalFace(nbtGO.nbtMesh, pos);
+        float skyLight = chunk.GetSkyLight(pos.x, pos.y, pos.z);
+
+        AddDiagonalFace(nbtGO.nbtMesh, pos, skyLight);
+        AddAntiDiagonalFace(nbtGO.nbtMesh, pos, skyLight);
     }
 
     protected Color tintColor;
@@ -42,14 +44,14 @@ public class NBTPlant : NBTBlock
         return GetTintColorByData(chunk, pos, data);
     }
 
-    void AddDiagonalFace(NBTMesh mesh, Vector3Int pos)
+    void AddDiagonalFace(NBTMesh mesh, Vector3Int pos, float skyLight)
     {
-        AddFace(mesh, pos, farBottomLeft, farTopLeft, nearTopRight, nearBottomRight, plantIndex, tintColor);
+        AddFace(mesh, pos, farBottomLeft, farTopLeft, nearTopRight, nearBottomRight, plantIndex, tintColor, skyLight, Vector3.zero);
     }
 
-    void AddAntiDiagonalFace(NBTMesh mesh, Vector3Int pos)
+    void AddAntiDiagonalFace(NBTMesh mesh, Vector3Int pos, float skyLight)
     {
-        AddFace(mesh, pos, nearBottomLeft, nearTopLeft, farTopRight, farBottomRight, plantIndex, tintColor);
+        AddFace(mesh, pos, nearBottomLeft, nearTopLeft, farTopRight, farBottomRight, plantIndex, tintColor, skyLight, Vector3.zero);
     }
     
     public override string pathPrefix { get { return "GUI/block/"; } }
