@@ -2,8 +2,8 @@
 
 Shader "Custom/Skybox" {
     Properties {
-        _Color ("Color", Color) = (1, 1, 1, 1)
-        _Color2 ("Color 2", Color) = (1, 1, 1, 1)
+        _Height1 ("Height 1", Float) = 1000
+        _Height2 ("Height 2", Float) = 2000
     }
 
     SubShader {
@@ -12,34 +12,46 @@ Shader "Custom/Skybox" {
 
         Pass {
 
-            CGPROGRAM
+            HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
 
-            #include "UnityCG.cginc"
+            #include "Common.hlsl"
 
-            fixed4 _Color;
-            fixed4 _Color2;
+            half4 _SkyTopColor;
+            half4 _SkyBottomColor;
+
+            float _SkyHeight;
+            float _SkyTransition;
+
+            struct appdata
+            {
+                float4 vertex : POSITION;
+                float2 uv : TEXCOORD0;
+            };
 
             struct v2f {
                 float4 pos : SV_POSITION;
                 float2 uv : TEXCOORD0;
+                float3 worldPos : TEXCOORD1;
             };
 
-            v2f vert(appdata_base v) {
+            v2f vert(appdata v) {
                 v2f o;
-                o.pos = UnityObjectToClipPos(v.vertex);
-                o.uv = v.texcoord;
+                o.pos = TransformObjectToHClip(v.vertex);
+                o.worldPos = mul(unity_ObjectToWorld, v.vertex);
+                o.uv = v.uv;
                 return o;
             }
 
-            fixed4 frag(v2f i) : SV_TARGET {
-                float val = saturate(i.uv.y);
-                return lerp(_Color2, _Color, pow(val, 0.5f));
+            half4 frag(v2f i) : SV_TARGET {
+                return lerp(_SkyBottomColor, _SkyTopColor, smoothstep(_SkyHeight, _SkyHeight + _SkyTransition, i.worldPos.y));
+                // float val = saturate(i.uv.y);
+                // return lerp(_Color2, _Color, pow(val, 0.5f));
                 // return pow(i.uv.y, 0.5f);
             }
 
-            ENDCG
+            ENDHLSL
         }
     }
 }

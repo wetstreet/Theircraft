@@ -4,29 +4,31 @@ using UnityEngine;
 
 public class TimeOfDay : MonoBehaviour
 {
-    // 0 = sunrise
-    // 6000 = highnoon
-    // 12000 = sunset
-    // 18000 = midnight
-    // 24000 = sunrise
-    float dayTime = 0;
+    [HideInInspector] public float tick;
 
-    [Range(0, 24)]
-    public float time = 6;
+    public bool elapse = true;
+
     public Gradient lightColor;
-
-    public bool debug = false;
-    public Color skylightcolor = Color.white;
+    public Gradient skyTopColor;
+    public Gradient skyBottomColor;
+    public float skyHeight = 1000;
+    public float skyTransition = 1000;
 
     private void Update()
     {
-        if (debug)
+        if (elapse)
         {
-            Shader.SetGlobalColor("_SkyLightColor", skylightcolor);
+            tick += Time.deltaTime * 20;
+
+            if (tick > 24000)
+                tick -= 24000;
         }
-        else
-        {
-            Shader.SetGlobalColor("_SkyLightColor", lightColor.Evaluate(time / 24));
-        }
+        float time01 = tick / 24000;
+
+        Shader.SetGlobalColor("_SkyLightColor", lightColor.Evaluate(time01));
+        Shader.SetGlobalColor("_SkyTopColor", skyTopColor.Evaluate(time01).linear);
+        Shader.SetGlobalColor("_SkyBottomColor", skyBottomColor.Evaluate(time01).linear);
+        Shader.SetGlobalFloat("_SkyHeight", skyHeight);
+        Shader.SetGlobalFloat("_SkyTransition", skyTransition);
     }
 }
