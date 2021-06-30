@@ -14,6 +14,11 @@ public class TimeOfDay : MonoBehaviour
     public float skyHeight = 1000;
     public float skyTransition = 1000;
 
+    private void Start()
+    {
+        tick = 6000;
+    }
+
     private void Update()
     {
         if (elapse)

@@ -25,11 +25,14 @@ public class ChunkRefresher
             NBTChunk chunk = list[i];
             float dot = PlayerController.GetChunkToFrontDot(chunk);
             int distance = PlayerController.GetChunkDistance(chunk);
-            if (dot > 0.3f && (distance < minDistance || dot > maxDot))
+            if (dot > 0.3f && distance <= minDistance)
             {
-                maxChunk = list[i];
-                maxDot = dot;
-                minDistance = distance;
+                if (distance < minDistance || dot > maxDot)
+                {
+                    maxChunk = list[i];
+                    maxDot = dot;
+                    minDistance = distance;
+                }
             }
         }
         return maxChunk;
@@ -55,6 +58,11 @@ public class ChunkRefresher
         }
 
         UnityEngine.Profiling.Profiler.EndSample();
+    }
+
+    public static void Add(List<NBTChunk> chunk)
+    {
+        refreshChunkList.AddRange(chunk);
     }
 
     public static void Add(NBTChunk chunk)

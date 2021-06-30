@@ -15,6 +15,7 @@ public class TimeOfDayInspector : Editor
         time -= 6;
         if (time < 0) time += 24;
         tod.tick = time * 1000;
-        serializedObject.DrawInspectorExcept("m_Script");
+
+        DrawPropertiesExcluding(serializedObject, new string[] { "m_Script" });
     }
 }

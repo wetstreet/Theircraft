@@ -140,13 +140,12 @@ public class PlayerController : MonoBehaviour
         return ChunkManager.GetChunk(GetCurrentChunkPos());
     }
 
-    static Vector3 _chunkPos = new Vector3();
     // get the dot product between the player front vector and chunk to player vector.
     public static float GetChunkToFrontDot(NBTChunk chunk)
     {
-        _chunkPos.Set(chunk.globalX, instance.position.y, chunk.globalZ);
-        Vector3 chunk2player = _chunkPos - instance.position;
-        return Vector3.Dot(instance.forward, chunk2player.normalized);
+        Vector2 chunk2player = new Vector2(chunk.globalX - instance.position.x, chunk.globalZ - instance.position.z);
+        Vector2 playerForward = new Vector2(instance.forward.x, instance.forward.z);
+        return Vector2.Dot(playerForward.normalized, chunk2player.normalized);
     }
 
     public static void ShowHand()

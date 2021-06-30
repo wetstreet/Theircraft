@@ -372,11 +372,13 @@ public class ChunkManager
 
     public async static void ChunksEnterLeaveViewReq(List<Vector2Int> enterViewChunks, List<Vector2Int> leaveViewChunks = null)
     {
+        List<NBTChunk> chunks = new List<NBTChunk>();
         foreach (Vector2Int chunkPos in enterViewChunks)
         {
             NBTChunk chunk = await NBTHelper.LoadChunkAsync(chunkPos.x, chunkPos.y);
-            ChunkRefresher.Add(chunk);
+            chunks.Add(chunk);
         }
+        ChunkRefresher.Add(chunks);
         ChunkChecker.FinishRefresh();
 
         if (leaveViewChunks != null)
