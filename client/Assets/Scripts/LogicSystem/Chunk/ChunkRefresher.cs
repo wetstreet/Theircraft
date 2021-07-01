@@ -77,14 +77,10 @@ public class ChunkRefresher
 
     public static void ForceRefreshAll()
     {
-
-        lock (refreshChunkList)
+        foreach (NBTChunk chunk in refreshChunkList)
         {
-            foreach (NBTChunk chunk in refreshChunkList)
-            {
-                chunk.RebuildMesh();
-            }
-            refreshChunkList.Clear();
+            chunk.RebuildMesh();
         }
+        refreshChunkList.Clear();
     }
 }

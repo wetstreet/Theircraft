@@ -27,6 +27,8 @@ public class NBTChunk
     public NBTGameObject notCollidable;
     public NBTGameObject water;
 
+    public bool isBorderChunk = false;
+
     public NBTChunk()
     {
         gameObject = new GameObject("chunk (" + x + "," + z + ")");
@@ -268,57 +270,63 @@ public class NBTChunk
             }
         }
 
-        //for (int i = Sections.Count * 4096; i < 65536; i++)
-        //{
-        //    skyLightArray[i] = 15;
-        //}
-
-        ////Dictionary<uint, int> temp = new Dictionary<uint, int>();
-        ////for (int i = 0; i < Sections.Count * 4096; i++)
-        ////{
-        ////    if (temp.ContainsKey(skyLightArray[i]))
-        ////    {
-        ////        temp[skyLightArray[i]]++;
-        ////    }
-        ////    else
-        ////    {
-        ////        temp.Add(skyLightArray[i], 1);
-        ////    }
-        ////}
-
-        ////foreach (KeyValuePair<uint, int> pair in temp)
-        ////{
-        ////    Debug.Log("key=" + pair.Key + ",value=" + pair.Value);
-        ////}
-
-        //RenderTexture tex = new RenderTexture(256, 256, 0, RenderTextureFormat.ARGB32, 0);
-        //tex.enableRandomWrite = true;
-        //tex.Create();
-
-        //ComputeShader compute = Resources.Load<ComputeShader>("LightingCompute");
-        //int kernel = compute.FindKernel("CSMain");
-        //compute.SetTexture(kernel, "Result", tex);
-
-        //ComputeBuffer skyLightBuffer = new ComputeBuffer(65536, 4);
-        //skyLightBuffer.SetData(skyLightArray);
-
-        //compute.SetBuffer(kernel, "skyLightBuffer", skyLightBuffer);
-        //compute.Dispatch(kernel, 32, 32, 1);
-
-        //skyLightBuffer.Release();
-
-        //collidable.mat.SetTexture("skyLightTexture", tex);
-        //notCollidable.mat.SetTexture("skyLightTexture", tex);
-
         hasBuiltMesh = true;
         isDirty = false;
 
         UnityEngine.Profiling.Profiler.EndSample();
     }
 
-    public void RebuildMesh(bool forceRefreshMeshData = true)
+    void CheckBorder()
+    {
+        NBTChunk leftChunk = NBTHelper.GetChunk(x - 1, z);
+        NBTChunk rightChunk = NBTHelper.GetChunk(x - 1, z);
+        NBTChunk frontChunk = NBTHelper.GetChunk(x, z + 1);
+        NBTChunk backChunk = NBTHelper.GetChunk(x, z - 1);
+
+        if (leftChunk == null || rightChunk == null || frontChunk == null || backChunk == null)
+        {
+            isBorderChunk = true;
+        }
+        else
+        {
+            if (isBorderChunk)
+            {
+                Debug.Log("border chunk=" + x + "," + z);
+                RebuildMeshAsync(true, false);
+            }
+            isBorderChunk = false;
+        }
+    }
+
+    public void RebuildMesh(bool forceRefreshMeshData = true, bool checkBorder = true)
     {
         UnityEngine.Profiling.Profiler.BeginSample("RebuildMesh");
+
+        if (checkBorder)
+        {
+            CheckBorder();
+            NBTChunk leftChunk = NBTHelper.GetChunk(x - 1, z);
+            NBTChunk rightChunk = NBTHelper.GetChunk(x - 1, z);
+            NBTChunk frontChunk = NBTHelper.GetChunk(x, z + 1);
+            NBTChunk backChunk = NBTHelper.GetChunk(x, z - 1);
+
+            if (leftChunk != null)
+            {
+                leftChunk.CheckBorder();
+            }
+            if (rightChunk != null)
+            {
+                rightChunk.CheckBorder();
+            }
+            if (frontChunk != null)
+            {
+                frontChunk.CheckBorder();
+            }
+            if (backChunk != null)
+            {
+                backChunk.CheckBorder();
+            }
+        }
 
         if (forceRefreshMeshData || isDirty)
         {
@@ -332,8 +340,34 @@ public class NBTChunk
         UnityEngine.Profiling.Profiler.EndSample();
     }
 
-    public async void RebuildMeshAsync(bool forceRefreshMeshData = true)
+    public async void RebuildMeshAsync(bool forceRefreshMeshData = true, bool checkBorder = true)
     {
+        if (checkBorder)
+        {
+            CheckBorder();
+            NBTChunk leftChunk = NBTHelper.GetChunk(x - 1, z);
+            NBTChunk rightChunk = NBTHelper.GetChunk(x - 1, z);
+            NBTChunk frontChunk = NBTHelper.GetChunk(x, z + 1);
+            NBTChunk backChunk = NBTHelper.GetChunk(x, z - 1);
+
+            if (leftChunk != null)
+            {
+                leftChunk.CheckBorder();
+            }
+            if (rightChunk != null)
+            {
+                rightChunk.CheckBorder();
+            }
+            if (frontChunk != null)
+            {
+                frontChunk.CheckBorder();
+            }
+            if (backChunk != null)
+            {
+                backChunk.CheckBorder();
+            }
+        }
+
         if (forceRefreshMeshData || isDirty)
         {
             await Task.Run(RefreshMeshData);
@@ -448,66 +482,6 @@ public class NBTChunk
 
     public float GetSkyLight(int xInChunk, int yInChunk, int zInChunk)
     {
-        return GetSkyLightByte(xInChunk, yInChunk, zInChunk) / 15f;
-    }
-
-    public void UpdateLighting()
-    {
-        Debug.Log("update lighting, chunk=" + x + "," + z);
-        Queue<Vector3Int> skyLightQueue = new Queue<Vector3Int>();
-
-        // init
-        for (int i = 0; i < 16; i++)
-        {
-            for (int j = 0; j < 16; j++)
-            {
-                for (int y = Sections.Count * 16 - 1; y >= 0; y--)
-                {
-                    SetSkyLightByte(i, y, j, 0);
-                }
-            }
-        }
-
-        // light from sun (vertical)
-        for (int i = 0; i < 16; i++)
-        {
-            for (int j = 0; j < 16; j++)
-            {
-                int y = Sections.Count * 16 - 1;
-                while (GetBlockByte(i, y, j) == 0)
-                {
-                    SetSkyLightByte(i, y, j, 15);
-                    skyLightQueue.Enqueue(new Vector3Int(i, y, j));
-                    if (y == 0)
-                        break;
-                    else
-                        y--;
-                }
-            }
-        }
-
-        // light propagation (use flood fill)
-        while (skyLightQueue.Count > 0)
-        {
-            Vector3Int p = skyLightQueue.Dequeue();
-            byte skyLight = GetSkyLightByte(p.x, p.y, p.z, true);
-            Vector3Int[] arr = new Vector3Int[] { p + Vector3Int.left, p + Vector3Int.right, p + Vector3Int.up, p + Vector3Int.down, p + Vector3Int.forward, p + Vector3Int.back };
-            for (int i = 0; i < 6; i++)
-            {
-                Vector3Int pos = arr[i];
-                if (GetBlockByte(pos.x, pos.y, pos.z) == 0)
-                {
-                    byte nextSkyLight = GetSkyLightByte(pos.x, pos.y, pos.z, true);
-                    if (nextSkyLight < skyLight - 1)
-                    {
-                        //Debug.Log("SetSkyLightByte,pos=" + pos.x + "," + pos.y + "," + pos.z);
-                        SetSkyLightByte(pos.x, pos.y, pos.z, (byte)(skyLight - 1), true);
-                        if (skyLight > 2)
-                            skyLightQueue.Enqueue(pos);
-                    }
-                }
-            }
-
-        }
+        return GetSkyLightByte(xInChunk, yInChunk, zInChunk, true) / 15f;
     }
 }
