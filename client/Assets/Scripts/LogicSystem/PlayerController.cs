@@ -159,9 +159,9 @@ public class PlayerController : MonoBehaviour
         return Mathf.Abs(chunk.x - chunkPos.x) <= 1 && Mathf.Abs(chunk.z - chunkPos.y) <= 1;
     }
     
-    public static int GetChunkDistance(NBTChunk chunk)
+    public static float GetChunkDistance(NBTChunk chunk)
     {
-        return Mathf.Max(Mathf.Abs(chunk.x - chunkPos.x), Mathf.Abs(chunk.z - chunkPos.y));
+        return Mathf.Sqrt(Mathf.Pow(chunk.x - chunkPos.x, 2) + Mathf.Pow(chunk.z - chunkPos.y, 2));
     }
 
     public static void ShowBlock(NBTObject generator, short data)

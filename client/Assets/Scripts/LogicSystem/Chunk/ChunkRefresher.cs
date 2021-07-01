@@ -18,13 +18,13 @@ public class ChunkRefresher
     {
         NBTChunk maxChunk = null;
         float maxDot = -1;
-        int minDistance = 10;
+        float minDistance = 1000;
 
         for (int i = 0; i < list.Count; i++)
         {
             NBTChunk chunk = list[i];
             float dot = PlayerController.GetChunkToFrontDot(chunk);
-            int distance = PlayerController.GetChunkDistance(chunk);
+            float distance = PlayerController.GetChunkDistance(chunk);
             if (dot > 0.3f && distance <= minDistance)
             {
                 if (distance < minDistance || dot > maxDot)
