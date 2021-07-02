@@ -17,10 +17,14 @@ public class BreakBlockEffect : MonoBehaviour
 
         BreakBlockEffect effect = go.AddComponent<BreakBlockEffect>();
         NBTBlock block = NBTGeneratorManager.GetMeshGenerator(type);
-        effect.texturePath = block.GetBreakEffectTexture(chunk, Vector3Int.RoundToInt(pos), data);
-        effect.tintColor = block.GetFrontTintColorByData(chunk, Vector3Int.RoundToInt(pos), data);
+
+        Vector3Int posInt = pos.ToVector3Int();
+        effect.texturePath = block.GetBreakEffectTexture(chunk, posInt, data);
+        effect.tintColor = block.GetFrontTintColorByData(chunk, posInt, data);
+        effect.skyLight = NBTHelper.GetSkyLightByte(posInt.x, posInt.y, posInt.z) / 15f;
     }
 
+    public float skyLight = 1;
     public string texturePath;
     public Color tintColor;
     // Start is called before the first frame update
@@ -29,5 +33,6 @@ public class BreakBlockEffect : MonoBehaviour
         GetComponent<Renderer>().material.SetTexture("_Array", TextureArrayManager.GetArray());
         GetComponent<Renderer>().material.SetInt("_Slice", TextureArrayManager.GetIndexByName(texturePath));
         GetComponent<Renderer>().material.SetColor("_Color", tintColor);
+        GetComponent<Renderer>().material.SetFloat("_SkyLight", skyLight);
     }
 }

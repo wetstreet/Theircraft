@@ -6,4 +6,8 @@ using UnityEngine;
 
 public static class Extensions
 {
+    public static Vector3Int ToVector3Int(this Vector3 v)
+    {
+        return Vector3Int.RoundToInt(v);
+    }
 }

@@ -24,6 +24,8 @@ Shader "Custom/BreakParticleShader"
             // make fog work
             #pragma multi_compile_fog
 
+            #pragma enable_d3d11_debug_symbols
+
             #include "Common.hlsl"
             #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"        
 
@@ -43,6 +45,7 @@ Shader "Custom/BreakParticleShader"
             float _Slice;
             float _Cutoff;
             half4 _Color;
+            float _SkyLight;
 
             v2f vert (appdata v)
             {
@@ -56,7 +59,12 @@ Shader "Custom/BreakParticleShader"
             {
                 half4 col = SAMPLE_TEXTURE2D_ARRAY(_Array, sampler_Array, i.uv, _Slice);
                 clip(col.a - _Cutoff);
+
+                col.rgb *= GetSkyLight(_SkyLight);
+
+                // color tint
                 col.rgb *= LinearToGamma22(_Color.rgb);
+
                 return col;
             }
 

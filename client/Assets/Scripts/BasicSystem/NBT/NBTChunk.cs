@@ -291,10 +291,34 @@ public class NBTChunk
         {
             if (isBorderChunk)
             {
-                Debug.Log("border chunk=" + x + "," + z);
                 RebuildMeshAsync(true, false);
             }
             isBorderChunk = false;
+        }
+    }
+
+    void CheckNearbyChunks()
+    {
+        NBTChunk leftChunk = NBTHelper.GetChunk(x - 1, z);
+        NBTChunk rightChunk = NBTHelper.GetChunk(x - 1, z);
+        NBTChunk frontChunk = NBTHelper.GetChunk(x, z + 1);
+        NBTChunk backChunk = NBTHelper.GetChunk(x, z - 1);
+
+        if (leftChunk != null)
+        {
+            leftChunk.CheckBorder();
+        }
+        if (rightChunk != null)
+        {
+            rightChunk.CheckBorder();
+        }
+        if (frontChunk != null)
+        {
+            frontChunk.CheckBorder();
+        }
+        if (backChunk != null)
+        {
+            backChunk.CheckBorder();
         }
     }
 
@@ -305,27 +329,7 @@ public class NBTChunk
         if (checkBorder)
         {
             CheckBorder();
-            NBTChunk leftChunk = NBTHelper.GetChunk(x - 1, z);
-            NBTChunk rightChunk = NBTHelper.GetChunk(x - 1, z);
-            NBTChunk frontChunk = NBTHelper.GetChunk(x, z + 1);
-            NBTChunk backChunk = NBTHelper.GetChunk(x, z - 1);
-
-            if (leftChunk != null)
-            {
-                leftChunk.CheckBorder();
-            }
-            if (rightChunk != null)
-            {
-                rightChunk.CheckBorder();
-            }
-            if (frontChunk != null)
-            {
-                frontChunk.CheckBorder();
-            }
-            if (backChunk != null)
-            {
-                backChunk.CheckBorder();
-            }
+            CheckNearbyChunks();
         }
 
         if (forceRefreshMeshData || isDirty)
@@ -345,27 +349,7 @@ public class NBTChunk
         if (checkBorder)
         {
             CheckBorder();
-            NBTChunk leftChunk = NBTHelper.GetChunk(x - 1, z);
-            NBTChunk rightChunk = NBTHelper.GetChunk(x - 1, z);
-            NBTChunk frontChunk = NBTHelper.GetChunk(x, z + 1);
-            NBTChunk backChunk = NBTHelper.GetChunk(x, z - 1);
-
-            if (leftChunk != null)
-            {
-                leftChunk.CheckBorder();
-            }
-            if (rightChunk != null)
-            {
-                rightChunk.CheckBorder();
-            }
-            if (frontChunk != null)
-            {
-                frontChunk.CheckBorder();
-            }
-            if (backChunk != null)
-            {
-                backChunk.CheckBorder();
-            }
+            CheckNearbyChunks();
         }
 
         if (forceRefreshMeshData || isDirty)
