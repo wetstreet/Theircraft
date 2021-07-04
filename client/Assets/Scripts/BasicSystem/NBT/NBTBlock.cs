@@ -68,12 +68,12 @@ public abstract class NBTBlock : NBTObject
 
     public virtual string GetBreakEffectTexture(NBTChunk chunk, Vector3Int pos, byte data) { return GetBreakEffectTexture(chunk, data); }
 
-    protected Color topColor;
-    protected Color bottomColor;
-    protected Color frontColor;
-    protected Color backColor;
-    protected Color leftColor;
-    protected Color rightColor;
+    protected Color topColor = Color.white;
+    protected Color bottomColor = Color.white;
+    protected Color frontColor = Color.white;
+    protected Color backColor = Color.white;
+    protected Color leftColor = Color.white;
+    protected Color rightColor = Color.white;
 
     public virtual Color GetTopTintColorByData(NBTChunk chunk, Vector3Int pos, byte data) { return Color.white; }
     public virtual Color GetBottomTintColorByData(NBTChunk chunk, Vector3Int pos, byte data) { return Color.white; }

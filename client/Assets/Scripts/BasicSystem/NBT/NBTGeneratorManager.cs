@@ -39,6 +39,7 @@ public class NBTGeneratorManager : MonoBehaviour
         { 60, new NBTFarmland() },
         { 67, new NBTCobblestoneStairs() },
         { 73, new NBTRedstoneOre() },
+        { 78, new NBTSnowLayer() },
         { 81, new NBTCactus() },
         { 82, new NBTClay() },
         { 83, new NBTSugarCane() },

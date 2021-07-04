@@ -10,6 +10,7 @@ public enum SoundMaterial
     Stone,
     Wood,
     Glass,
+    Snow,
 }
 
 public class SoundManager : MonoBehaviour
