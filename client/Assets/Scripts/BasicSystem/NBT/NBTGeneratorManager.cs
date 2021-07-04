@@ -49,6 +49,8 @@ public class NBTGeneratorManager : MonoBehaviour
         { 134, new NBTSpruceStairs() },
         { 135, new NBTBirchStairs() },
         { 136, new NBTJungleStairs() },
+        { 161, new NBTLeaves2() },
+        { 162, new NBTLog2() },
         { 175, new NBTLargeFlowers() },
     };
 

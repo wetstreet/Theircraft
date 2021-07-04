@@ -77,7 +77,7 @@ public class NBTLargeFlowers : NBTPlant
                 }
                 break;
         }
-        throw new System.Exception("no index");
+        throw new System.Exception("no index, data=" + data);
     }
 
     public override string GetBreakEffectTexture(NBTChunk chunk, Vector3Int pos, byte data)

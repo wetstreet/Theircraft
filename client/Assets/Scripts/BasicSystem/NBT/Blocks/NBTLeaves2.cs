@@ -3,14 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NBTLeaves : NBTBlock
+public class NBTLeaves2 : NBTBlock
 {
-    public override string name { get { return "Leaves"; } }
-    public override string id { get { return "minecraft:leaves"; } }
+    public override string name { get { return "Leaves (Acacia/Dark Oak)"; } }
+    public override string id { get { return "minecraft:leaves2"; } }
 
     public override void Init()
     {
-        UsedTextures = new string[] { "leaves_oak", "leaves_spruce", "leaves_birch", "leaves_jungle" };
+        UsedTextures = new string[] { "leaves_acacia", "leaves_big_oak" };
     }
     
     public override float hardness { get { return 0.2f; } }
@@ -20,13 +20,9 @@ public class NBTLeaves : NBTBlock
         switch (data % 4)
         {
             case 0:
-                return "OakLeaves";
+                return "AcaciaLeaves";
             case 1:
-                return "SpruceLeaves";
-            case 2:
-                return "BirchLeaves";
-            case 3:
-                return "JungleLeaves";
+                return "DarkOakLeaves";
         }
         return "OakLeaves";
     }
@@ -36,13 +32,9 @@ public class NBTLeaves : NBTBlock
         switch (data % 4)
         {
             case 0:
-                return "Oak Leaves";
+                return "Ancacia Leaves";
             case 1:
-                return "Spruce Leaves";
-            case 2:
-                return "Birch Leaves";
-            case 3:
-                return "Jungle Leaves";
+                return "Dark Oak Leaves";
         }
         return "Leaves";
     }
@@ -52,13 +44,9 @@ public class NBTLeaves : NBTBlock
         switch (data % 4)
         {
             case 0:
-                return TintManager.oakTintColor;
+                return TintManager.acaciaTintColor;
             case 1:
-                return TintManager.spruceTintColor;
-            case 2:
-                return TintManager.birchTintColor;
-            case 3:
-                return TintManager.jungleTintColor;
+                return TintManager.darkOakTintColor;
         }
         return TintManager.tintColor;
     }
@@ -75,13 +63,9 @@ public class NBTLeaves : NBTBlock
         switch (data % 4)
         {
             case 0:
-                return TextureArrayManager.GetIndexByName("leaves_oak");
+                return TextureArrayManager.GetIndexByName("leaves_acacia");
             case 1:
-                return TextureArrayManager.GetIndexByName("leaves_spruce");
-            case 2:
-                return TextureArrayManager.GetIndexByName("leaves_birch");
-            case 3:
-                return TextureArrayManager.GetIndexByName("leaves_jungle");
+                return TextureArrayManager.GetIndexByName("leaves_big_oak");
         }
         return TextureArrayManager.GetIndexByName("leaves_oak");
     }
@@ -103,16 +87,10 @@ public class NBTLeaves : NBTBlock
         switch (data % 4)
         {
             case 0:
-                texture = "leaves_oak";
+                texture = "leaves_acacia";
                 break;
             case 1:
-                texture = "leaves_spruce";
-                break;
-            case 2:
-                texture = "leaves_birch";
-                break;
-            case 3:
-                texture = "leaves_jungle";
+                texture = "leaves_big_oak";
                 break;
         }
         return texture;
