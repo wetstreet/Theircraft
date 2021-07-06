@@ -18,13 +18,15 @@ public class NBTHelper
 
     static string savePath { get
         {
-            //string path = Environment.ExpandEnvironmentVariables("%APPDATA%");
-            //path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            //path = Path.Combine(path, ".minecraft");
-            //path = Path.Combine(path, "saves");
-
+#if true
+            string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            path = Path.Combine(path, ".minecraft");
+            path = Path.Combine(path, "saves");
+            path = Path.Combine(path, "New World1");
+#else
             string path = Path.Combine(Application.streamingAssetsPath, "saves");
-            path = Path.Combine(path, save);
+            path = Path.Combine(path, "New World-");
+#endif
             return path;
         }
     }
