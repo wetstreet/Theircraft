@@ -60,6 +60,8 @@ public abstract class NBTBlock : NBTObject
 
     public virtual bool isTransparent { get { return false; } }
 
+    public virtual bool isFence { get { return false; } }
+
     public virtual bool isCollidable { get { return true; } }
 
     public virtual string GetBreakEffectTexture(byte data) { return string.Empty; }

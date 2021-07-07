@@ -51,6 +51,11 @@ public class NBTChunk
         ClearData();
     }
 
+    public byte GetBlockByte(Vector3Int pos)
+    {
+        return GetBlockByte(pos.x, pos.y, pos.z);
+    }
+
     //input is local position
     public byte GetBlockByte(int xInChunk, int worldY, int zInChunk)
     {

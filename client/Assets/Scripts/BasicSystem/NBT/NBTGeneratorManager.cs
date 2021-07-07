@@ -137,4 +137,13 @@ public class NBTGeneratorManager : MonoBehaviour
         }
         return false;
     }
+
+    public static bool IsFence(byte rawType)
+    {
+        if (generatorDict.ContainsKey(rawType))
+        {
+            return generatorDict[rawType].isFence;
+        }
+        return false;
+    }
 }
