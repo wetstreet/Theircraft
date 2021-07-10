@@ -10,25 +10,25 @@ public class NBTFence : NBTBlock
 
     public override float hardness => 2;
 
-    Mesh[] meshes = new Mesh[16];
+    MeshData[] meshes = new MeshData[16];
     public override void Init()
     {
-        meshes[0] = Resources.Load<Mesh>("Meshes/blocks/fence/wall_0000");
-        meshes[1] = Resources.Load<Mesh>("Meshes/blocks/fence/wall_0001");
-        meshes[2] = Resources.Load<Mesh>("Meshes/blocks/fence/wall_0010");
-        meshes[3] = Resources.Load<Mesh>("Meshes/blocks/fence/wall_0011");
-        meshes[4] = Resources.Load<Mesh>("Meshes/blocks/fence/wall_0100");
-        meshes[5] = Resources.Load<Mesh>("Meshes/blocks/fence/wall_0101");
-        meshes[6] = Resources.Load<Mesh>("Meshes/blocks/fence/wall_0110");
-        meshes[7] = Resources.Load<Mesh>("Meshes/blocks/fence/wall_0111");
-        meshes[8] = Resources.Load<Mesh>("Meshes/blocks/fence/wall_1000");
-        meshes[9] = Resources.Load<Mesh>("Meshes/blocks/fence/wall_1001");
-        meshes[10] = Resources.Load<Mesh>("Meshes/blocks/fence/wall_1010");
-        meshes[11] = Resources.Load<Mesh>("Meshes/blocks/fence/wall_1011");
-        meshes[12] = Resources.Load<Mesh>("Meshes/blocks/fence/wall_1100");
-        meshes[13] = Resources.Load<Mesh>("Meshes/blocks/fence/wall_1101");
-        meshes[14] = Resources.Load<Mesh>("Meshes/blocks/fence/wall_1110");
-        meshes[15] = Resources.Load<Mesh>("Meshes/blocks/fence/wall_1111");
+        meshes[0] = Resources.Load<Mesh>("Meshes/blocks/fence/wall_0000").ToMeshData();
+        meshes[1] = Resources.Load<Mesh>("Meshes/blocks/fence/wall_0001").ToMeshData();
+        meshes[2] = Resources.Load<Mesh>("Meshes/blocks/fence/wall_0010").ToMeshData();
+        meshes[3] = Resources.Load<Mesh>("Meshes/blocks/fence/wall_0011").ToMeshData();
+        meshes[4] = Resources.Load<Mesh>("Meshes/blocks/fence/wall_0100").ToMeshData();
+        meshes[5] = Resources.Load<Mesh>("Meshes/blocks/fence/wall_0101").ToMeshData();
+        meshes[6] = Resources.Load<Mesh>("Meshes/blocks/fence/wall_0110").ToMeshData();
+        meshes[7] = Resources.Load<Mesh>("Meshes/blocks/fence/wall_0111").ToMeshData();
+        meshes[8] = Resources.Load<Mesh>("Meshes/blocks/fence/wall_1000").ToMeshData();
+        meshes[9] = Resources.Load<Mesh>("Meshes/blocks/fence/wall_1001").ToMeshData();
+        meshes[10] = Resources.Load<Mesh>("Meshes/blocks/fence/wall_1010").ToMeshData();
+        meshes[11] = Resources.Load<Mesh>("Meshes/blocks/fence/wall_1011").ToMeshData();
+        meshes[12] = Resources.Load<Mesh>("Meshes/blocks/fence/wall_1100").ToMeshData();
+        meshes[13] = Resources.Load<Mesh>("Meshes/blocks/fence/wall_1101").ToMeshData();
+        meshes[14] = Resources.Load<Mesh>("Meshes/blocks/fence/wall_1110").ToMeshData();
+        meshes[15] = Resources.Load<Mesh>("Meshes/blocks/fence/wall_1111").ToMeshData();
     }
 
     public override SoundMaterial soundMaterial { get { return SoundMaterial.Wood; } }
@@ -41,7 +41,7 @@ public class NBTFence : NBTBlock
 
     public override bool isFence => true;
 
-    Mesh GetMesh(NBTChunk chunk, Vector3Int pos)
+    MeshData GetMesh(NBTChunk chunk, Vector3Int pos)
     {
         byte eastType = chunk.GetBlockByte(pos + Vector3Int.right);
         bool eastConnect = !NBTGeneratorManager.IsTransparent(eastType) || NBTGeneratorManager.IsFence(eastType);
@@ -65,7 +65,7 @@ public class NBTFence : NBTBlock
     {
         int faceIndex = TextureArrayManager.GetIndexByName(fenceName);
 
-        Mesh mesh = GetMesh(chunk, pos);
+        MeshData mesh = GetMesh(chunk, pos);
 
         float skyLight = chunk.GetSkyLight(pos.x, pos.y, pos.z);
 
@@ -83,7 +83,7 @@ public class NBTFence : NBTBlock
 
     public override Mesh GetItemMesh(NBTChunk chunk, byte blockData)
     {
-        return meshes[0];
+        return meshes[0].mesh;
     }
 
     public override Material GetItemMaterial(byte data)

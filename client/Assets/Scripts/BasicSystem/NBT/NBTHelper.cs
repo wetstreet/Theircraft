@@ -18,7 +18,7 @@ public class NBTHelper
 
     static string savePath { get
         {
-#if true
+#if false
             string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             path = Path.Combine(path, ".minecraft");
             path = Path.Combine(path, "saves");

@@ -10,4 +10,9 @@ public static class Extensions
     {
         return Vector3Int.RoundToInt(v);
     }
+
+    public static MeshData ToMeshData(this Mesh mesh)
+    {
+        return new MeshData(mesh);
+    }
 }
