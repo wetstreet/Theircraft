@@ -15,6 +15,8 @@ Shader "Custom/Cloud"
             #pragma vertex vert
             #pragma fragment frag
 
+            #pragma enable_d3d11_debug_symbols
+
             #include "Common.hlsl"
 
             struct appdata
@@ -25,6 +27,7 @@ Shader "Custom/Cloud"
             struct v2f
             {
                 float4 vertex : SV_POSITION;
+                float3 worldPos : TEXCOORD0;
             };
 
             half4 _Color;
@@ -33,6 +36,7 @@ Shader "Custom/Cloud"
             {
                 v2f o;
                 o.vertex = TransformObjectToHClip(v.vertex.xyz);
+                o.worldPos = mul(unity_ObjectToWorld, v.vertex.xyz);
                 return o;
             }
 
@@ -40,6 +44,9 @@ Shader "Custom/Cloud"
             {
                 half4 color = _Color;
                 color.rgb *= _SkyLightColor.rgb;
+
+                float pos = max(max(i.worldPos.x, i.worldPos.y),i.worldPos.z);
+                clip(1 - pos);
                 return color;
             }
             ENDHLSL

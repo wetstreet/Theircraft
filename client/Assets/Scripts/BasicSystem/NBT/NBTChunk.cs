@@ -342,8 +342,15 @@ public class NBTChunk
             RefreshMeshData();
         }
 
-        collidable.Refresh();
-        notCollidable.Refresh();
+        try
+        {
+            collidable.Refresh();
+            notCollidable.Refresh();
+        }
+        catch (System.Exception e)
+        {
+            Debug.Log("RebuildMesh chunk=" + x + ",z=" + z);
+        }
         //water.Refresh();
 
         UnityEngine.Profiling.Profiler.EndSample();
@@ -361,8 +368,22 @@ public class NBTChunk
         {
             await Task.Run(RefreshMeshData);
         }
-        collidable.Refresh();
-        notCollidable.Refresh();
+        try
+        {
+            collidable.Refresh();
+        }
+        catch (System.Exception e)
+        {
+            Debug.Log("RebuildMeshAsync collidable chunk=" + x + ",z=" + z);
+        }
+        try
+        {
+            notCollidable.Refresh();
+        }
+        catch (System.Exception e)
+        {
+            Debug.Log("RebuildMeshAsync notCollidable chunk=" + x + ",z=" + z);
+        }
     }
 
     public void ClearData()

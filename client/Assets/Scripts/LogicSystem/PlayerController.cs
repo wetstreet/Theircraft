@@ -356,7 +356,7 @@ public class PlayerController : MonoBehaviour
         {
             breakingEffect.gameObject.SetActive(true);
             breakingEffect.transform.position = pos;
-            //breakingEffectMesh.sharedMesh = generator.GetItemMesh(NBTHelper.GetChunk(GetCurrentChunkPos()), WireFrameHelper.data);
+            breakingEffectMesh.sharedMesh = generator.GetItemMesh(NBTHelper.GetChunk(GetCurrentChunkPos()), pos, WireFrameHelper.data);
 
             breakingEffect.sharedMaterial.mainTexture = Resources.Load<Texture2D>("GUI/block/destroy_stage_" + (stage - 1));
         }
@@ -686,6 +686,7 @@ public class PlayerController : MonoBehaviour
             v = 0;
             h = 0;
         }
+        //Debug.Log("rawV="+ rawV+",rawH="+rawH+",v=" + v + ",h=" + h);
         ProcessMovement(v, h);
         if (hasInput)
         {

@@ -44,18 +44,33 @@ public class NBTMesh
             if (vertexAttributes == null)
             {
                 vertexAttributes = new[] {
-                new VertexAttributeDescriptor(VertexAttribute.Position, VertexAttributeFormat.Float32, 4),
-                new VertexAttributeDescriptor(VertexAttribute.Normal, VertexAttributeFormat.Float32, 3),
-                new VertexAttributeDescriptor(VertexAttribute.Color, VertexAttributeFormat.Float32, 4),
-                new VertexAttributeDescriptor(VertexAttribute.TexCoord0, VertexAttributeFormat.Float32, 3),
+                new VertexAttributeDescriptor(VertexAttribute.Position, VertexAttributeFormat.Float32, 4, 0),
+                new VertexAttributeDescriptor(VertexAttribute.Normal, VertexAttributeFormat.Float32, 3, 0),
+                new VertexAttributeDescriptor(VertexAttribute.Color, VertexAttributeFormat.Float32, 4, 0),
+                new VertexAttributeDescriptor(VertexAttribute.TexCoord0, VertexAttributeFormat.Float32, 3, 0),
             };
             }
 
             mesh.SetVertexBufferParams(vertexCount, vertexAttributes);
-            mesh.SetVertexBufferData(vertexArray, 0, 0, vertexCount);
+            try
+            {
+                mesh.SetVertexBufferData(vertexArray, 0, 0, vertexCount, 0);
+            }
+            catch (System.Exception e)
+            {
+                Debug.Log(e.Message + "\nlength=" + vertexArray.Length + ",vertexcount=" + vertexCount + ",bytes=" + (14 * 4 * vertexCount));
+            }
 
             mesh.SetIndexBufferParams(triangleCount, IndexFormat.UInt16);
-            mesh.SetIndexBufferData(triangleArray, 0, 0, triangleCount);
+            try
+            {
+                mesh.SetIndexBufferData(triangleArray, 0, 0, triangleCount);
+            }
+            catch (System.Exception e)
+            {
+                Debug.Log(e.Message + "\nlength=" + triangleArray.Length + ",triangleCount=" + triangleCount + ",vertexcount=" + vertexCount);
+                throw e;
+            }
 
             mesh.subMeshCount = 1;
             SubMeshDescriptor desc = new SubMeshDescriptor();
