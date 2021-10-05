@@ -27,6 +27,8 @@ public class NBTSnowLayer : NBTBlock
 
     public override string GetBreakEffectTexture(byte data) { return "snow"; }
 
+    public override float topOffset { get { return -0.374f; } }
+
 
     protected static Vector3 nearMiddleLeft = new Vector3(-0.5f, -0.375f, -0.5f);
     protected static Vector3 farMiddleLeft = new Vector3(-0.5f, -0.375f, 0.5f);

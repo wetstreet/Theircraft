@@ -27,28 +27,11 @@ public class WireFrameHelper : MonoBehaviour
         }
     }
 
-    float unit = 0.501f;
-
     public static bool render = false;
     public static Vector3Int pos;
     public static Vector3 hitPos;
     public static byte type;
     public static byte data;
-
-    float topOffset
-    {
-        get
-        {
-            if (type == 78)
-            {
-                return -0.374f;
-            }
-            else
-            {
-                return 0.501f;
-            }
-        }
-    }
 
     private void OnRenderObject()
     {
@@ -65,46 +48,53 @@ public class WireFrameHelper : MonoBehaviour
         GL.Begin(GL.LINES);
         GL.Color(Color.black);
 
-        CSBlockType type = ChunkManager.GetBlockType(pos.x, pos.y, pos.z);
+        NBTBlock generator = NBTGeneratorManager.GetMeshGenerator(type);
+
+        float topOffset = generator.topOffset;
+        float bottomOffset = generator.bottomOffset;
+        float leftOffset = generator.useRadius ? -generator.radius : generator.leftOffset;
+        float rightOffset = generator.useRadius ? generator.radius : generator.rightOffset;
+        float frontOffset = generator.useRadius ? -generator.radius : generator.frontOffset;
+        float backOffset = generator.useRadius ? generator.radius : generator.backOffset;
 
         // bottom lines
-        GL.Vertex3(pos.x - unit, pos.y - unit, pos.z - unit);
-        GL.Vertex3(pos.x + unit, pos.y - unit, pos.z - unit);
+        GL.Vertex3(pos.x + leftOffset, pos.y + bottomOffset, pos.z + frontOffset);
+        GL.Vertex3(pos.x + rightOffset, pos.y + bottomOffset, pos.z + frontOffset);
 
-        GL.Vertex3(pos.x - unit, pos.y - unit, pos.z + unit);
-        GL.Vertex3(pos.x + unit, pos.y - unit, pos.z + unit);
+        GL.Vertex3(pos.x + leftOffset, pos.y + bottomOffset, pos.z + backOffset);
+        GL.Vertex3(pos.x + rightOffset, pos.y + bottomOffset, pos.z + backOffset);
 
-        GL.Vertex3(pos.x - unit, pos.y - unit, pos.z - unit);
-        GL.Vertex3(pos.x - unit, pos.y - unit, pos.z + unit);
+        GL.Vertex3(pos.x + leftOffset, pos.y + bottomOffset, pos.z + frontOffset);
+        GL.Vertex3(pos.x + leftOffset, pos.y + bottomOffset, pos.z + backOffset);
 
-        GL.Vertex3(pos.x + unit, pos.y - unit, pos.z - unit);
-        GL.Vertex3(pos.x + unit, pos.y - unit, pos.z + unit);
+        GL.Vertex3(pos.x + rightOffset, pos.y + bottomOffset, pos.z + frontOffset);
+        GL.Vertex3(pos.x + rightOffset, pos.y + bottomOffset, pos.z + backOffset);
 
         // top lines
-        GL.Vertex3(pos.x - unit, pos.y + topOffset, pos.z - unit);
-        GL.Vertex3(pos.x + unit, pos.y + topOffset, pos.z - unit);
+        GL.Vertex3(pos.x + leftOffset, pos.y + topOffset, pos.z + frontOffset);
+        GL.Vertex3(pos.x + rightOffset, pos.y + topOffset, pos.z + frontOffset);
 
-        GL.Vertex3(pos.x - unit, pos.y + topOffset, pos.z + unit);
-        GL.Vertex3(pos.x + unit, pos.y + topOffset, pos.z + unit);
+        GL.Vertex3(pos.x + leftOffset, pos.y + topOffset, pos.z + backOffset);
+        GL.Vertex3(pos.x + rightOffset, pos.y + topOffset, pos.z + backOffset);
 
-        GL.Vertex3(pos.x - unit, pos.y + topOffset, pos.z - unit);
-        GL.Vertex3(pos.x - unit, pos.y + topOffset, pos.z + unit);
+        GL.Vertex3(pos.x + leftOffset, pos.y + topOffset, pos.z + frontOffset);
+        GL.Vertex3(pos.x + leftOffset, pos.y + topOffset, pos.z + backOffset);
 
-        GL.Vertex3(pos.x + unit, pos.y + topOffset, pos.z - unit);
-        GL.Vertex3(pos.x + unit, pos.y + topOffset, pos.z + unit);
+        GL.Vertex3(pos.x + rightOffset, pos.y + topOffset, pos.z + frontOffset);
+        GL.Vertex3(pos.x + rightOffset, pos.y + topOffset, pos.z + backOffset);
 
         // vertical lines
-        GL.Vertex3(pos.x + unit, pos.y + topOffset, pos.z + unit);
-        GL.Vertex3(pos.x + unit, pos.y - unit, pos.z + unit);
+        GL.Vertex3(pos.x + rightOffset, pos.y + topOffset, pos.z + backOffset);
+        GL.Vertex3(pos.x + rightOffset, pos.y + bottomOffset, pos.z + backOffset);
 
-        GL.Vertex3(pos.x + unit, pos.y + topOffset, pos.z - unit);
-        GL.Vertex3(pos.x + unit, pos.y - unit, pos.z - unit);
+        GL.Vertex3(pos.x + rightOffset, pos.y + topOffset, pos.z + frontOffset);
+        GL.Vertex3(pos.x + rightOffset, pos.y + bottomOffset, pos.z + frontOffset);
 
-        GL.Vertex3(pos.x - unit, pos.y + topOffset, pos.z + unit);
-        GL.Vertex3(pos.x - unit, pos.y - unit, pos.z + unit);
+        GL.Vertex3(pos.x + leftOffset, pos.y + topOffset, pos.z + backOffset);
+        GL.Vertex3(pos.x + leftOffset, pos.y + bottomOffset, pos.z + backOffset);
 
-        GL.Vertex3(pos.x - unit, pos.y + topOffset, pos.z - unit);
-        GL.Vertex3(pos.x - unit, pos.y - unit, pos.z - unit);
+        GL.Vertex3(pos.x + leftOffset, pos.y + topOffset, pos.z + frontOffset);
+        GL.Vertex3(pos.x + leftOffset, pos.y + bottomOffset, pos.z + frontOffset);
 
         GL.End();
     }

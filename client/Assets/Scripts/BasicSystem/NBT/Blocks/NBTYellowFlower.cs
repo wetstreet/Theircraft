@@ -7,6 +7,9 @@ public class NBTYellowFlower : NBTPlant
 {
     public override string name { get { return "Yellow Flower"; } }
     public override string id { get { return "minecraft:yellow_flower"; } }
+    public override float topOffset => 0f;
+    public override float radius => 0.1875f;
+    public override bool useRadius => true;
 
     public override void Init()
     {

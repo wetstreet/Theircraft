@@ -344,6 +344,19 @@ public class NBTHelper
         return Mathf.FloorToInt(val / 32.0f);
     }
 
+    public static void SetBlockByteNoUpdate(Vector3Int pos, byte type) { SetBlockByteNoUpdate(pos.x, pos.y, pos.z, type); }
+    public static void SetBlockByteNoUpdate(int x, int y, int z, byte type)
+    {
+        int chunkX = Mathf.FloorToInt(x / 16f);
+        int chunkZ = Mathf.FloorToInt(z / 16f);
+
+        int xInChunk = x - chunkX * 16;
+        int zInChunk = z - chunkZ * 16;
+
+        NBTChunk chunk = GetChunk(chunkX, chunkZ);
+        chunk.SetBlockByte(xInChunk, y, zInChunk, type);
+    }
+
     public static void SetBlockByte(Vector3Int pos, byte type, bool updateLighting = false) { SetBlockByte(pos.x, pos.y, pos.z, type, updateLighting); }
 
     public async static void SetBlockByte(int x, int y, int z, byte type, bool updateLighting = false)

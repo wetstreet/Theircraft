@@ -199,6 +199,17 @@ public class PlayerController : MonoBehaviour
             Item.CreateBlockDropItem(generator.GetDropItemByData(WireFrameHelper.data), generator.GetDropItemData(WireFrameHelper.data), pos);
         }
 
+        Vector3Int topPos = WireFrameHelper.pos + Vector3Int.up;
+        byte topType = 0;
+        byte topData = 0;
+        NBTHelper.GetBlockData(topPos.x, topPos.y, topPos.z, ref topType, ref topData);
+        NBTBlock topGenerator = NBTGeneratorManager.GetMeshGenerator(topType);
+        if (topGenerator != null && topGenerator.isTransparent)
+        {
+            BreakBlockEffect.Create(topType, topData, topPos);
+            NBTHelper.SetBlockByteNoUpdate(topPos, 0);
+        }
+
         NBTHelper.SetBlockByte(WireFrameHelper.pos, 0, true);
 
         //Item.CreateBlockDropItem(type, WireFrameHelper.pos);

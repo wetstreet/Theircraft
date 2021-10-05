@@ -99,6 +99,16 @@ public abstract class NBTBlock : NBTObject
     protected static Vector3 farTopLeft = new Vector3(-0.5f, 0.5f, 0.5f);
     protected static Vector3 farTopRight = new Vector3(0.5f, 0.5f, 0.5f);
 
+    // wireframe
+    public virtual float topOffset { get { return 0.501f; } }
+    public virtual float bottomOffset { get { return -0.501f; } }
+    public virtual float leftOffset { get { return -0.501f; } }
+    public virtual float rightOffset { get { return 0.501f; } }
+    public virtual float frontOffset { get { return 0.501f; } }
+    public virtual float backOffset { get { return -0.501f; } }
+    public virtual float radius { get { return -0.501f; } }
+    public virtual bool useRadius { get { return false; } }
+
     public override Mesh GetItemMesh(NBTChunk chunk, Vector3Int pos, byte blockData)
     {
         topIndex = GetTopIndexByData(chunk, blockData);
