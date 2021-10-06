@@ -20,6 +20,27 @@ public class ChatPanel : MonoBehaviour
 
     static ChatPanel instance;
 
+    void OnEnable()
+    {
+        Application.logMessageReceived += HandleLog;
+    }
+
+    void OnDisable()
+    {
+        Application.logMessageReceived -= HandleLog;
+    }
+
+    void HandleLog(string logString, string stackTrace, LogType type)
+    {
+        if (type == LogType.Log)
+        {
+            AddLine("<Log>" + logString);
+        } else if (type == LogType.Error)
+        {
+            AddLine("<Error>" + logString);
+        }
+    }
+
     public static void ShowChatPanel()
     {
         if (instance == null)
