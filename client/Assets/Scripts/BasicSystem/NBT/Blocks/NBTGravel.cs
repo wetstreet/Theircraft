@@ -6,6 +6,7 @@ using UnityEngine;
 public class NBTGravel : NBTBlock
 {
     public override string name { get { return "Gravel"; } }
+    public override string id { get { return "minecraft:gravel"; } }
 
     public override string topName { get { return "gravel"; } }
     public override string bottomName { get { return "gravel"; } }

@@ -58,7 +58,7 @@ public class NBTMesh
             }
             catch (System.Exception e)
             {
-                Debug.Log(e.Message + "\nlength=" + vertexArray.Length + ",vertexcount=" + vertexCount + ",bytes=" + (14 * 4 * vertexCount));
+                Debug.LogError(e.Message + "\nlength=" + vertexArray.Length + ",vertexcount=" + vertexCount + ",bytes=" + (14 * 4 * vertexCount));
             }
 
             mesh.SetIndexBufferParams(triangleCount, IndexFormat.UInt16);
@@ -68,7 +68,7 @@ public class NBTMesh
             }
             catch (System.Exception e)
             {
-                Debug.Log(e.Message + "\nlength=" + triangleArray.Length + ",triangleCount=" + triangleCount + ",vertexcount=" + vertexCount);
+                Debug.LogError(e.Message + "\nlength=" + triangleArray.Length + ",triangleCount=" + triangleCount + ",vertexcount=" + vertexCount);
                 throw e;
             }
 

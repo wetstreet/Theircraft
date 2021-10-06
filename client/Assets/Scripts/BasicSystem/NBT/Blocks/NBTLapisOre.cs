@@ -6,6 +6,9 @@ using UnityEngine;
 public class NBTLapisOre : NBTBlock
 {
     public override string name { get { return "Lapis Ore"; } }
+    public override string id { get { return "minecraft:lapis_ore"; } }
+
+    public override string GetDropItemByData(byte data) { return "minecraft:lapis_lazuli"; }
 
     public override string topName { get { return "lapis_ore"; } }
     public override string bottomName { get { return "lapis_ore"; } }

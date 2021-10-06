@@ -22,7 +22,7 @@ public class NBTGeneratorManager : MonoBehaviour
         { 17, new NBTLog() },
         { 18, new NBTLeaves() },
         { 20, new NBTGlass() },
-        { 21, new NBTRedstoneOre() },
+        { 21, new NBTLapisOre() },
         { 24, new NBTSandStone() },
         { 31, new NBTTallGrass() },
         { 32, new NBTDeadBush() },
@@ -65,6 +65,7 @@ public class NBTGeneratorManager : MonoBehaviour
         new NBTWoodenPickaxe(),
         new NBTStick(),
         new NBTBucket(),
+        new NBTCoal(),
     };
 
     public static Dictionary<string, NBTBlock> id2generator = new Dictionary<string, NBTBlock>();

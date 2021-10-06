@@ -6,6 +6,9 @@ using UnityEngine;
 public class NBTCoalOre : NBTBlock
 {
     public override string name { get { return "CoalOre"; } }
+    public override string id { get { return "minecraft:coal_ore"; } }
+
+    public override string GetDropItemByData(byte data) { return "minecraft:coal"; }
 
     public override string topName { get { return "coal_ore"; } }
     public override string bottomName { get { return "coal_ore"; } }

@@ -12,15 +12,10 @@ public class ChunkPool
 
     public static void Init()
     {
-        chunks = new Queue<NBTChunk>(1000);
+        chunks = new Queue<NBTChunk>(100);
         instance = new GameObject("ChunkPool");
         chunkParent = new GameObject("Chunks").transform;
         instance.transform.localPosition = new Vector3(0, -100, 0);
-        for (int i = 0; i < 1000; i++)
-        {
-            NBTChunk chunk = new NBTChunk();
-            Recover(chunk);
-        }
         isInited = true;
     }
 
@@ -29,6 +24,15 @@ public class ChunkPool
         if (!isInited)
         {
             Init();
+        }
+
+        if (chunks.Count <= 0)
+        {
+            for (int i = 0; i < 100; i++)
+            {
+                NBTChunk temp = new NBTChunk();
+                Recover(temp);
+            }
         }
         NBTChunk chunk = chunks.Dequeue();
         chunk.transform.parent = chunkParent;

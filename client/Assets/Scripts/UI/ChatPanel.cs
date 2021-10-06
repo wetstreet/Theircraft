@@ -34,10 +34,10 @@ public class ChatPanel : MonoBehaviour
     {
         if (type == LogType.Log)
         {
-            AddLine("<Log>" + logString);
+            AddLine("<Log>" + logString.Replace('\n',' '));
         } else if (type == LogType.Error)
         {
-            AddLine("<Error>" + logString);
+            AddLine("<color=red><Error>" + logString.Replace('\n', ' '));
         }
     }
 
