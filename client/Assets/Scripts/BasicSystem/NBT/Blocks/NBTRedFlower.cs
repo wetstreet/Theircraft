@@ -10,6 +10,8 @@ public class NBTRedFlower : NBTPlant
     public override float topOffset => 0.1875f;
     public override float radius => 0.25f;
     public override bool useRadius => true;
+    protected override int size => 4;
+    protected override int height => 12;
 
     public override void Init()
     {

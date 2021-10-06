@@ -4,6 +4,22 @@ using Unity.Collections;
 using UnityEngine;
 using UnityEngine.Rendering;
 
+public class PlantCorners
+{
+    public Vector3 nearBottomLeft;
+    public Vector3 nearBottomRight;
+    public Vector3 nearTopLeft;
+    public Vector3 nearTopRight;
+    public Vector3 farBottomLeft;
+    public Vector3 farBottomRight;
+    public Vector3 farTopLeft;
+    public Vector3 farTopRight;
+    public Vector2 bottomLeftUV;
+    public Vector2 bottomRightUV;
+    public Vector2 topLeftUV;
+    public Vector2 topRightUV;
+}
+
 public class NBTPlant : NBTBlock
 {
     protected int plantIndex;
@@ -23,8 +39,34 @@ public class NBTPlant : NBTBlock
 
     public override bool hasDropItem { get { return false; } }
 
+
+    protected PlantCorners corners;
+    protected virtual int size { get { return 8; } }
+    protected virtual int height { get { return 16; } }
+
+
     public override void AddCube(NBTChunk chunk, byte blockData, Vector3Int pos, NBTGameObject nbtGO)
     {
+        if (corners == null)
+        {
+            float unit = size * 0.0625f;
+            float top = -0.5f + height * 0.0625f;
+            corners = new PlantCorners
+            {
+                nearBottomLeft = new Vector3(-unit, -0.5f, -unit),
+                nearBottomRight = new Vector3(unit, -0.5f, -unit),
+                nearTopLeft = new Vector3(-unit, top, -unit),
+                nearTopRight = new Vector3(unit, top, -unit),
+                farBottomLeft = new Vector3(-unit, -0.5f, unit),
+                farBottomRight = new Vector3(unit, -0.5f, unit),
+                farTopLeft = new Vector3(-unit, top, unit),
+                farTopRight = new Vector3(unit, top, unit),
+                bottomLeftUV = new Vector2(0.5f - size * 0.0625f, 0),
+                bottomRightUV = new Vector2(0.5f + size * 0.0625f, 0),
+                topLeftUV = new Vector2(0.5f - size * 0.0625f, height * 0.0625f),
+                topRightUV = new Vector2(0.5f + size * 0.0625f, height * 0.0625f),
+            };
+        }
         plantIndex = GetPlantIndexByData(chunk, pos, blockData);
         tintColor = GetTintColorByData(chunk, pos, blockData);
 
@@ -44,14 +86,33 @@ public class NBTPlant : NBTBlock
         return GetTintColorByData(chunk, pos, data);
     }
 
+    protected void AddPlantFace(NBTMesh mesh, Vector3Int pos,
+        Vector3 pos1, Vector3 pos2, Vector3 pos3, Vector3 pos4,
+        int faceIndex, Color color, float skyLight, Vector3 normal)
+    {
+        ushort startIndex = mesh.vertexCount;
+
+        SetVertex(mesh, pos1 + pos, faceIndex, corners.bottomLeftUV, skyLight, color, normal);
+        SetVertex(mesh, pos2 + pos, faceIndex, corners.topLeftUV, skyLight, color, normal);
+        SetVertex(mesh, pos3 + pos, faceIndex, corners.topRightUV, skyLight, color, normal);
+        SetVertex(mesh, pos4 + pos, faceIndex, corners.bottomRightUV, skyLight, color, normal);
+
+        mesh.triangleArray[mesh.triangleCount++] = startIndex;
+        mesh.triangleArray[mesh.triangleCount++] = (ushort)(startIndex + 1);
+        mesh.triangleArray[mesh.triangleCount++] = (ushort)(startIndex + 2);
+        mesh.triangleArray[mesh.triangleCount++] = startIndex;
+        mesh.triangleArray[mesh.triangleCount++] = (ushort)(startIndex + 2);
+        mesh.triangleArray[mesh.triangleCount++] = (ushort)(startIndex + 3);
+    }
+
     void AddDiagonalFace(NBTMesh mesh, Vector3Int pos, float skyLight)
     {
-        AddFace(mesh, pos, farBottomLeft, farTopLeft, nearTopRight, nearBottomRight, plantIndex, tintColor, skyLight, Vector3.zero);
+        AddPlantFace(mesh, pos, corners.farBottomLeft, corners.farTopLeft, corners.nearTopRight, corners.nearBottomRight, plantIndex, tintColor, skyLight, Vector3.zero);
     }
 
     void AddAntiDiagonalFace(NBTMesh mesh, Vector3Int pos, float skyLight)
     {
-        AddFace(mesh, pos, nearBottomLeft, nearTopLeft, farTopRight, farBottomRight, plantIndex, tintColor, skyLight, Vector3.zero);
+        AddPlantFace(mesh, pos, corners.nearBottomLeft, corners.nearTopLeft, corners.farTopRight, corners.farBottomRight, plantIndex, tintColor, skyLight, Vector3.zero);
     }
     
     public override string pathPrefix { get { return "GUI/block/"; } }
