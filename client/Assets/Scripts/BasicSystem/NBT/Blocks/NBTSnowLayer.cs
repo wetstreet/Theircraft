@@ -21,13 +21,13 @@ public class NBTSnowLayer : NBTBlock
     public override string leftName { get { return "snow"; } }
     public override string rightName { get { return "snow"; } }
 
-    public override float hardness { get { return 0.6f; } }
+    public override float hardness => 0.1f;
 
     public override SoundMaterial soundMaterial { get { return SoundMaterial.Snow; } }
 
     public override string GetBreakEffectTexture(byte data) { return "snow"; }
 
-    public override float topOffset { get { return -0.374f; } }
+    public override float topOffset => -0.374f;
 
 
     protected static Vector3 nearMiddleLeft = new Vector3(-0.5f, -0.375f, -0.5f);
@@ -37,41 +37,36 @@ public class NBTSnowLayer : NBTBlock
 
     public override void AddCube(NBTChunk chunk, byte blockData, Vector3Int pos, NBTGameObject nbtGO)
     {
-        topIndex = GetTopIndexByData(chunk, blockData);
-        bottomIndex = GetBottomIndexByData(chunk, blockData);
-        frontIndex = GetFrontIndexByData(chunk, blockData);
-        backIndex = GetBackIndexByData(chunk, blockData);
-        leftIndex = GetLeftIndexByData(chunk, blockData);
-        rightIndex = GetRightIndexByData(chunk, blockData);
+        CubeAttributes ca = InitCubeAttributes(chunk, blockData, pos);
 
         if (!chunk.HasOpaqueBlock(pos.x, pos.y, pos.z - 1))
         {
             float skyLight = chunk.GetSkyLight(pos.x, pos.y, pos.z - 1);
-            AddFrontFace(nbtGO.nbtMesh, pos, blockData, skyLight);
+            AddFrontFace(nbtGO.nbtMesh, ca, skyLight);
         }
         if (!chunk.HasOpaqueBlock(pos.x + 1, pos.y, pos.z))
         {
             float skyLight = chunk.GetSkyLight(pos.x + 1, pos.y, pos.z);
-            AddRightFace(nbtGO.nbtMesh, pos, blockData, skyLight);
+            AddRightFace(nbtGO.nbtMesh, ca, skyLight);
         }
         if (!chunk.HasOpaqueBlock(pos.x - 1, pos.y, pos.z))
         {
             float skyLight = chunk.GetSkyLight(pos.x - 1, pos.y, pos.z);
-            AddLeftFace(nbtGO.nbtMesh, pos, blockData, skyLight);
+            AddLeftFace(nbtGO.nbtMesh, ca, skyLight);
         }
         if (!chunk.HasOpaqueBlock(pos.x, pos.y, pos.z + 1))
         {
             float skyLight = chunk.GetSkyLight(pos.x, pos.y, pos.z + 1);
-            AddBackFace(nbtGO.nbtMesh, pos, blockData, skyLight);
+            AddBackFace(nbtGO.nbtMesh, ca, skyLight);
         }
 
         float selfSkyLight = chunk.GetSkyLight(pos.x, pos.y, pos.z);
-        AddTopFace(nbtGO.nbtMesh, pos, blockData, selfSkyLight);
+        AddTopFace(nbtGO.nbtMesh, ca, selfSkyLight);
 
         if (!chunk.HasOpaqueBlock(pos.x, pos.y - 1, pos.z))
         {
             float skyLight = chunk.GetSkyLight(pos.x, pos.y - 1, pos.z);
-            AddBottomFace(nbtGO.nbtMesh, pos, blockData, skyLight);
+            AddBottomFace(nbtGO.nbtMesh, ca, skyLight);
         }
     }
 
@@ -100,39 +95,39 @@ public class NBTSnowLayer : NBTBlock
         mesh.triangleArray[mesh.triangleCount++] = (ushort)(startIndex + 3);
     }
 
-    protected override void AddFrontFace(NBTMesh mesh, Vector3Int pos, byte blockData, float skyLight)
+    protected override void AddFrontFace(NBTMesh mesh, CubeAttributes ca, float skyLight)
     {
-        rotation = GetFrontRotationByData(blockData);
-        AddFace(mesh, pos, nearBottomLeft, nearMiddleLeft, nearMiddleRight, nearBottomRight, uv_bot, frontIndex, frontColor, skyLight, Vector3.forward);
+        rotation = GetFrontRotationByData(ca.blockData);
+        AddFace(mesh, ca.pos, nearBottomLeft, nearMiddleLeft, nearMiddleRight, nearBottomRight, uv_bot, ca.frontIndex, ca.frontColor, skyLight, Vector3.forward);
     }
 
-    protected override void AddBackFace(NBTMesh mesh, Vector3Int pos, byte blockData, float skyLight)
+    protected override void AddBackFace(NBTMesh mesh, CubeAttributes ca, float skyLight)
     {
-        rotation = GetBackRotationByData(blockData);
-        AddFace(mesh, pos, farBottomRight, farMiddleRight, farMiddleLeft, farBottomLeft, uv_bot, backIndex, backColor, skyLight, Vector3.back);
+        rotation = GetBackRotationByData(ca.blockData);
+        AddFace(mesh, ca.pos, farBottomRight, farMiddleRight, farMiddleLeft, farBottomLeft, uv_bot, ca.backIndex, ca.backColor, skyLight, Vector3.back);
     }
 
-    protected override void AddTopFace(NBTMesh mesh, Vector3Int pos, byte blockData, float skyLight)
+    protected override void AddTopFace(NBTMesh mesh, CubeAttributes ca, float skyLight)
     {
-        rotation = GetTopRotationByData(blockData);
-        AddFace(mesh, pos, farMiddleRight, nearMiddleRight, nearMiddleLeft, farMiddleLeft, uv_full, topIndex, topColor, skyLight, Vector3.up);
+        rotation = GetTopRotationByData(ca.blockData);
+        AddFace(mesh, ca.pos, farMiddleRight, nearMiddleRight, nearMiddleLeft, farMiddleLeft, uv_full, ca.topIndex, ca.topColor, skyLight, Vector3.up);
     }
 
-    protected override void AddBottomFace(NBTMesh mesh, Vector3Int pos, byte blockData, float skyLight)
+    protected override void AddBottomFace(NBTMesh mesh, CubeAttributes ca, float skyLight)
     {
-        rotation = GetBottomRotationByData(blockData);
-        AddFace(mesh, pos, nearBottomRight, farBottomRight, farBottomLeft, nearBottomLeft, uv_full, bottomIndex, bottomColor, skyLight, Vector3.down);
+        rotation = GetBottomRotationByData(ca.blockData);
+        AddFace(mesh, ca.pos, nearBottomRight, farBottomRight, farBottomLeft, nearBottomLeft, uv_full, ca.bottomIndex, ca.bottomColor, skyLight, Vector3.down);
     }
 
-    protected override void AddLeftFace(NBTMesh mesh, Vector3Int pos, byte blockData, float skyLight)
+    protected override void AddLeftFace(NBTMesh mesh, CubeAttributes ca, float skyLight)
     {
-        rotation = GetLeftRotationByData(blockData);
-        AddFace(mesh, pos, farBottomLeft, farMiddleLeft, nearMiddleLeft, nearBottomLeft, uv_bot, leftIndex, leftColor, skyLight, Vector3.left);
+        rotation = GetLeftRotationByData(ca.blockData);
+        AddFace(mesh, ca.pos, farBottomLeft, farMiddleLeft, nearMiddleLeft, nearBottomLeft, uv_bot, ca.leftIndex, ca.leftColor, skyLight, Vector3.left);
     }
 
-    protected override void AddRightFace(NBTMesh mesh, Vector3Int pos, byte blockData, float skyLight)
+    protected override void AddRightFace(NBTMesh mesh, CubeAttributes ca, float skyLight)
     {
-        rotation = GetRightRotationByData(blockData);
-        AddFace(mesh, pos, nearBottomRight, nearMiddleRight, farMiddleRight, farBottomRight, uv_bot, rightIndex, rightColor, skyLight, Vector3.right);
+        rotation = GetRightRotationByData(ca.blockData);
+        AddFace(mesh, ca.pos, nearBottomRight, nearMiddleRight, farMiddleRight, farBottomRight, uv_bot, ca.rightIndex, ca.rightColor, skyLight, Vector3.right);
     }
 }

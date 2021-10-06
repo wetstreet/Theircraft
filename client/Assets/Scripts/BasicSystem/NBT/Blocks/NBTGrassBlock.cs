@@ -27,65 +27,81 @@ public class NBTGrassBlock : NBTBlock
     public override float hardness { get { return 0.6f; } }
 
     public override Color GetTopTintColorByData(NBTChunk chunk, Vector3Int pos, byte data) { return TintManager.tintColor; }
-
+     
     public override SoundMaterial soundMaterial { get { return SoundMaterial.Grass; } }
 
     public override string GetBreakEffectTexture(byte data) { return "dirt"; }
 
-    public override void AddCube(NBTChunk chunk, byte blockData, Vector3Int pos, NBTGameObject nbtGO)
+    protected override CubeAttributes InitCubeAttributes(NBTChunk chunk, byte blockData, Vector3Int pos)
     {
+        CubeAttributes ca = new CubeAttributes()
+        {
+            pos = pos,
+            blockData = blockData,
+            bottomColor = Color.white,
+            frontColor = Color.white,
+            backColor = Color.white,
+            leftColor = Color.white,
+            rightColor = Color.white,
+        };
+
         bool topIsSnow = chunk.GetBlockByte(pos.x, pos.y + 1, pos.z) == 78;
         if (topIsSnow)
         {
-            topIndex = TextureArrayManager.GetIndexByName("snow");
-            frontIndex = TextureArrayManager.GetIndexByName("grass_side_snowed");
-            backIndex = TextureArrayManager.GetIndexByName("grass_side_snowed");
-            leftIndex = TextureArrayManager.GetIndexByName("grass_side_snowed");
-            rightIndex = TextureArrayManager.GetIndexByName("grass_side_snowed");
+            ca.topIndex = TextureArrayManager.GetIndexByName("snow");
+            ca.frontIndex = TextureArrayManager.GetIndexByName("grass_side_snowed");
+            ca.backIndex = TextureArrayManager.GetIndexByName("grass_side_snowed");
+            ca.leftIndex = TextureArrayManager.GetIndexByName("grass_side_snowed");
+            ca.rightIndex = TextureArrayManager.GetIndexByName("grass_side_snowed");
         }
         else
         {
-            topIndex = TextureArrayManager.GetIndexByName("grass_top");
-            frontIndex = TextureArrayManager.GetIndexByName("grass_side");
-            backIndex = TextureArrayManager.GetIndexByName("grass_side");
-            leftIndex = TextureArrayManager.GetIndexByName("grass_side");
-            rightIndex = TextureArrayManager.GetIndexByName("grass_side");
-
+            ca.topIndex = TextureArrayManager.GetIndexByName("grass_top");
+            ca.frontIndex = TextureArrayManager.GetIndexByName("grass_side");
+            ca.backIndex = TextureArrayManager.GetIndexByName("grass_side");
+            ca.leftIndex = TextureArrayManager.GetIndexByName("grass_side");
+            ca.rightIndex = TextureArrayManager.GetIndexByName("grass_side");
         }
-        topColor = GetTopTintColorByData(chunk, pos, blockData);
-        bottomIndex = TextureArrayManager.GetIndexByName("dirt");
+        ca.topColor = GetTopTintColorByData(chunk, pos, blockData);
+        ca.bottomIndex = TextureArrayManager.GetIndexByName("dirt");
+        return ca;
+    }
+
+    public override void AddCube(NBTChunk chunk, byte blockData, Vector3Int pos, NBTGameObject nbtGO)
+    {
+        CubeAttributes ca = InitCubeAttributes(chunk, blockData, pos);
 
         UnityEngine.Profiling.Profiler.BeginSample("AddFaces");
 
         if (!chunk.HasOpaqueBlock(pos.x, pos.y, pos.z - 1))
         {
             float skyLight = chunk.GetSkyLight(pos.x, pos.y, pos.z - 1);
-            AddFrontFace(nbtGO.nbtMesh, pos, blockData, skyLight);
+            AddFrontFace(nbtGO.nbtMesh, ca, skyLight);
         }
         if (!chunk.HasOpaqueBlock(pos.x + 1, pos.y, pos.z))
         {
             float skyLight = chunk.GetSkyLight(pos.x + 1, pos.y, pos.z);
-            AddRightFace(nbtGO.nbtMesh, pos, blockData, skyLight);
+            AddRightFace(nbtGO.nbtMesh, ca, skyLight);
         }
         if (!chunk.HasOpaqueBlock(pos.x - 1, pos.y, pos.z))
         {
             float skyLight = chunk.GetSkyLight(pos.x - 1, pos.y, pos.z);
-            AddLeftFace(nbtGO.nbtMesh, pos, blockData, skyLight);
+            AddLeftFace(nbtGO.nbtMesh, ca, skyLight);
         }
         if (!chunk.HasOpaqueBlock(pos.x, pos.y, pos.z + 1))
         {
             float skyLight = chunk.GetSkyLight(pos.x, pos.y, pos.z + 1);
-            AddBackFace(nbtGO.nbtMesh, pos, blockData, skyLight);
+            AddBackFace(nbtGO.nbtMesh, ca, skyLight);
         }
         if (!chunk.HasOpaqueBlock(pos.x, pos.y + 1, pos.z))
         {
             float skyLight = chunk.GetSkyLight(pos.x, pos.y + 1, pos.z);
-            AddTopFace(nbtGO.nbtMesh, pos, blockData, skyLight);
+            AddTopFace(nbtGO.nbtMesh, ca, skyLight);
         }
         if (!chunk.HasOpaqueBlock(pos.x, pos.y - 1, pos.z))
         {
             float skyLight = chunk.GetSkyLight(pos.x, pos.y - 1, pos.z);
-            AddBottomFace(nbtGO.nbtMesh, pos, blockData, skyLight);
+            AddBottomFace(nbtGO.nbtMesh, ca, skyLight);
         }
 
         UnityEngine.Profiling.Profiler.EndSample();

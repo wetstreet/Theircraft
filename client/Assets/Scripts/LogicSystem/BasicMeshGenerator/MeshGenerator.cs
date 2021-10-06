@@ -104,31 +104,31 @@ public class MeshGenerator : MonoBehaviour
 
     static void AddFrontFace()
     {
-        AddFace(nearBottomLeft, nearTopLeft, nearTopRight, nearBottomRight, generator.frontIndex);
+        //AddFace(nearBottomLeft, nearTopLeft, nearTopRight, nearBottomRight, generator.frontIndex);
     }
 
     static void AddBackFace()
     {
-        AddFace(farBottomRight, farTopRight, farTopLeft, farBottomLeft, generator.backIndex);
+        //AddFace(farBottomRight, farTopRight, farTopLeft, farBottomLeft, generator.backIndex);
     }
 
     static void AddTopFace()
     {
-        AddFace(farTopRight, nearTopRight, nearTopLeft, farTopLeft, generator.topIndex);
+        //AddFace(farTopRight, nearTopRight, nearTopLeft, farTopLeft, generator.topIndex);
     }
 
     static void AddBottomFace()
     {
-        AddFace(nearBottomRight, farBottomRight, farBottomLeft, nearBottomLeft, generator.bottomIndex);
+        //AddFace(nearBottomRight, farBottomRight, farBottomLeft, nearBottomLeft, generator.bottomIndex);
     }
 
     static void AddLeftFace()
     {
-        AddFace(farBottomLeft, farTopLeft, nearTopLeft, nearBottomLeft, generator.leftIndex);
+        //AddFace(farBottomLeft, farTopLeft, nearTopLeft, nearBottomLeft, generator.leftIndex);
     }
 
     static void AddRightFace()
     {
-        AddFace(nearBottomRight, nearTopRight, farTopRight, farBottomRight, generator.rightIndex);
+        //AddFace(nearBottomRight, nearTopRight, farTopRight, farBottomRight, generator.rightIndex);
     }
 }

@@ -66,6 +66,7 @@ public class TextureArrayManager
     {
         Texture2DArray newArray = new Texture2DArray(size, size, textures.Length, TextureFormat.ARGB32, true);
         newArray.filterMode = FilterMode.Point;
+        newArray.wrapMode = TextureWrapMode.Clamp;
         newArray.anisoLevel = 3;
 
         try
