@@ -18,6 +18,8 @@ public class ChatPanel : MonoBehaviour
 
     static Queue<string> _message = new Queue<string>();
 
+    public static readonly string ErrorCode = "<color=#FF5555>";
+
     static ChatPanel instance;
 
     void OnEnable()
@@ -37,7 +39,7 @@ public class ChatPanel : MonoBehaviour
             AddLine("<Log>" + logString.Replace('\n',' '));
         } else if (type == LogType.Error)
         {
-            AddLine("<color=red><Error>" + logString.Replace('\n', ' '));
+            AddLine(ErrorCode + "<Error>" + logString.Replace('\n', ' '));
         }
     }
 
@@ -134,7 +136,14 @@ public class ChatPanel : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.T))
             {
+                inputField.text = "";
                 ShowInput();
+            }
+            else if (Input.GetKeyDown(KeyCode.Slash))
+            {
+                ShowInput();
+                inputField.text = "/";
+                inputField.caretPosition = inputField.text.Length;
             }
         }
     }
@@ -185,10 +194,9 @@ public class ChatPanel : MonoBehaviour
     {
         if (inputField.text != "")
         {
-            if (inputField.text == "@test")
+            if (inputField.text.StartsWith("/"))
             {
-                // process gm
-                GM.Test();
+                GM.Process(inputField.text);
 
                 inputField.text = "";
                 inputField.ActivateInputField();

@@ -14,9 +14,17 @@ public class TimeOfDay : MonoBehaviour
     public float skyHeight = 1000;
     public float skyTransition = 1000;
 
+    public static TimeOfDay instance;
+
     private void Start()
     {
+        instance = this;
         tick = 6000;
+    }
+
+    private void OnDestroy()
+    {
+        instance = null;
     }
 
     private void Update()
@@ -26,7 +34,7 @@ public class TimeOfDay : MonoBehaviour
             tick += Time.deltaTime * 20;
 
             if (tick > 24000)
-                tick -= 24000;
+                tick = 0;
         }
         float time01 = tick / 24000;
 
