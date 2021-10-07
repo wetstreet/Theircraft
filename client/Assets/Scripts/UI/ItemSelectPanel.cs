@@ -7,12 +7,32 @@ using TMPro;
 
 public class ItemSelectPanel : MonoBehaviour
 {
+    struct SlotItem
+    {
+        public RawImage icon;
+        public GameObject select;
+        public TextMeshProUGUI count;
+    }
+
     public static uint curIndex;
     public static CSBlockType curBlockType { get { return dataList[curIndex]; } }
 
     private SlotItem[] itemList = new SlotItem[9];
     public static CSBlockType[] dataList = new CSBlockType[9];
     public static int[] countList = new int[9];
+
+    // health and food level
+    struct SlotUnit
+    {
+        public Image full;
+        public Image half;
+    }
+
+    SlotUnit[] heartList = new SlotUnit[10];
+    SlotUnit[] meatList = new SlotUnit[10];
+
+    TextMeshProUGUI level;
+    Image exp;
 
     public static void Init(uint index, List<CSItem> items)
     {
@@ -82,13 +102,6 @@ public class ItemSelectPanel : MonoBehaviour
         instance.RefreshUI();
     }
 
-    struct SlotItem
-    {
-        public RawImage icon;
-        public GameObject select;
-        public TextMeshProUGUI count;
-    }
-
     public static ItemSelectPanel instance;
     public static void Show()
     {
@@ -115,6 +128,76 @@ public class ItemSelectPanel : MonoBehaviour
             item.icon.gameObject.SetActive(false);
             item.select.SetActive(false);
             itemList[i] = item;
+        }
+
+        Transform heartGrid = transform.Find("container/survival/health_grid");
+        Transform heartUnit = heartGrid.Find("heart_bg_unit");
+        for (int i = 0; i < 10; i++)
+        {
+            Transform heartTrans = Instantiate(heartUnit);
+            heartTrans.parent = heartGrid;
+            heartTrans.localScale = Vector3.one;
+            SlotUnit heart = new SlotUnit
+            {
+                full = heartTrans.Find("heart").GetComponent<Image>(),
+                half = heartTrans.Find("heart_half").GetComponent<Image>(),
+            };
+            heartList[i] = heart;
+        }
+        heartUnit.gameObject.SetActive(false);
+
+        Transform meatGrid = transform.Find("container/survival/meat_grid");
+        Transform meatUnit = meatGrid.Find("meat_bg_unit");
+        for (int i = 0; i < 10; i++)
+        {
+            Transform meatTrans = Instantiate(meatUnit);
+            meatTrans.parent = meatGrid;
+            meatTrans.localScale = Vector3.one;
+            SlotUnit meat = new SlotUnit
+            {
+                full = meatTrans.Find("meat").GetComponent<Image>(),
+                half = meatTrans.Find("meat_half").GetComponent<Image>(),
+            };
+            meatList[i] = meat;
+        }
+        meatUnit.gameObject.SetActive(false);
+
+        level = transform.Find("container/survival/level").GetComponent<TextMeshProUGUI>();
+        exp = transform.Find("container/survival/exp_bg/exp").GetComponent<Image>();
+    }
+
+    public void RefreshStatus()
+    {
+        float heart = Mathf.Clamp(PlayerController.instance.Health, 0, 20) / 2.0f;
+        for (int i = 0; i < 10; i++)
+        {
+            heartList[i].full.gameObject.SetActive(false);
+            heartList[i].half.gameObject.SetActive(false);
+        }
+        for (int i = 0; i < (int)heart; i++)
+        {
+            heartList[i].full.gameObject.SetActive(true);
+        }
+        float fraction = heart - (int)heart;
+        if (fraction >= 0.5f)
+        {
+            heartList[(int)heart].half.gameObject.SetActive(true);
+        }
+
+        float meat = Mathf.Clamp(PlayerController.instance.foodLevel, 0, 20) / 2.0f;
+        for (int i = 0; i < 10; i++)
+        {
+            meatList[i].full.gameObject.SetActive(false);
+            meatList[i].half.gameObject.SetActive(false);
+        }
+        for (int i = 0; i < (int)meat; i++)
+        {
+            meatList[i].full.gameObject.SetActive(true);
+        }
+        float meatFraction = meat - (int)meat;
+        if (meatFraction >= 0.5f)
+        {
+            meatList[(int)meat].half.gameObject.SetActive(true);
         }
     }
 

@@ -10,6 +10,9 @@ public class PlayerController : MonoBehaviour
     public float verticalScale = 1;
     public Transform camera;
 
+    public float Health = 20f;
+    public int foodLevel = 20;
+
     private Vector3 verticalSpeed;
     private Vector3 horizontalSpeed;
     private CharacterController cc;
