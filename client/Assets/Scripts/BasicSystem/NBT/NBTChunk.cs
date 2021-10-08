@@ -35,7 +35,7 @@ public class NBTChunk
         transform = gameObject.transform;
 
         collidable = NBTGameObject.Create("Collidable", this, LayerMask.NameToLayer("Chunk"));
-        notCollidable = NBTGameObject.Create("NotCollidable", this, LayerMask.NameToLayer("Plant"));
+        notCollidable = NBTGameObject.Create("NotCollidable", this, LayerMask.NameToLayer("Plant"), false);
         //water = NBTGameObject.Create("Water", transform, LayerMask.NameToLayer("Water"), false);
     }
 
@@ -252,7 +252,7 @@ public class NBTChunk
                                 {
                                     //generator.GenerateMeshInChunk(this, blockData, pos, water);
                                 }
-                                else if (generator is NBTPlant)
+                                else if (generator is NBTPlant || generator is NBTSnowLayer)
                                 {
                                     generator.AddCube(this, blockData, pos, notCollidable);
                                 }

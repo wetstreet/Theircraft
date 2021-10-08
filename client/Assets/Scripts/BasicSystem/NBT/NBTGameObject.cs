@@ -4,19 +4,19 @@ public class NBTGameObject : MonoBehaviour
 {
     public NBTMesh nbtMesh;
 
-    bool isCollidable;
+    bool isCollidable = true;
 
     public Material mat;
 
-    public static NBTGameObject Create(string name, NBTChunk chunk, int layer, bool isCollidable = true)
+    public static NBTGameObject Create(string name, NBTChunk chunk, int layer, bool navigate = true)
     {
         GameObject go = new GameObject(name);
         go.transform.parent = chunk.transform;
         go.AddComponent<MeshFilter>();
         go.layer = layer;
-        if (isCollidable)
+        if (navigate)
         {
-            go.AddComponent<MeshCollider>();
+            go.AddComponent<NavMeshSourceTag>();
         }
 
         Material mat = new Material(Shader.Find("Custom/TextureArrayShader"));
@@ -25,12 +25,11 @@ public class NBTGameObject : MonoBehaviour
             mat.SetFloat("_Culling", 0);
         }
         go.AddComponent<MeshRenderer>().sharedMaterial = mat;
-        go.AddComponent<NavMeshSourceTag>();
+        go.AddComponent<MeshCollider>();
 
         NBTGameObject nbtGO = go.AddComponent<NBTGameObject>();
         nbtGO.mat = mat;
         nbtGO.nbtMesh.mesh.name = name;
-        nbtGO.isCollidable = isCollidable;
         return nbtGO;
     }
 

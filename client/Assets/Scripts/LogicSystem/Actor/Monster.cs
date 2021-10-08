@@ -15,7 +15,7 @@ public class Monster : MonoBehaviour
 
     private int currTargetIndex;
 
-    public float speed = 5f;
+    public float speed = 2f;
     public float jumpSpeed = 9;
     public float gravity = 28;
     Vector3 moveDir = Vector3.zero;
@@ -81,7 +81,7 @@ public class Monster : MonoBehaviour
     }
 
     static Vector3 offset = new Vector3(0, 1.38f, 0);
-    private void Update()
+    void MoveByPath()
     {
         LookAt(PlayerController.instance.position + offset);
 
@@ -130,6 +130,39 @@ public class Monster : MonoBehaviour
         moveDir.y -= gravity * Time.deltaTime;
 
         cc.Move(moveDir * Time.deltaTime);
+    }
+
+    float attackInterval = 1f;
+    float lastAttackTime;
+    private void Update()
+    {
+        float dist = (PlayerController.instance.position - transform.position).magnitude;
+        if (dist < 10)
+        {
+            Move(PlayerController.instance.position);
+        }
+
+        if (dist < 1 && Time.time - lastAttackTime > attackInterval)
+        {
+            Attack();
+        }
+
+        if (dist >= 0.5f)
+        {
+            MoveByPath();
+        }
+    }
+
+    public float attackStrength = 5f;
+    void Attack()
+    {
+        PlayerController.instance.Health -= 1;
+        ItemSelectPanel.instance.RefreshStatus();
+
+        Vector3 hitForce = transform.forward + Vector3.up;
+        PlayerController.instance.AddForce(hitForce * attackStrength);
+
+        lastAttackTime = Time.time;
     }
 
     bool shouldJump = false;

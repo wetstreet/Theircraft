@@ -285,12 +285,32 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public void AddForce(Vector3 force)
+    {
+        horizontalSpeed.x += force.x;
+        verticalSpeed.y += force.y;
+        horizontalSpeed.z += force.z;
+    }
+
+    Monster zombie;
+    void UpdateZombie()
+    {
+        if (Input.GetKeyDown(KeyCode.F5))
+        {
+            if (zombie == null)
+            {
+                zombie = Monster.CreateMonster(1, transform.position);
+            }
+        }
+    }
+
     float timeInterval = 0.2f;
     bool needUpdate;
     float lastUpdateTime;
     float lastSpace;
     void Update()
     {
+        UpdateZombie();
         DrawWireFrame();
         PositionCorrection();
 
@@ -372,7 +392,7 @@ public class PlayerController : MonoBehaviour
             breakingEffect.transform.position = pos;
             breakingEffectMesh.sharedMesh = generator.GetItemMesh(NBTHelper.GetChunk(GetCurrentChunkPos()), pos, WireFrameHelper.data);
 
-            breakingEffect.sharedMaterial.mainTexture = Resources.Load<Texture2D>("GUI/block/destroy_stage_" + (stage - 1));
+            breakingEffect.material.mainTexture = Resources.Load<Texture2D>("GUI/block/destroy_stage_" + (stage - 1));
         }
     }
 

@@ -14,6 +14,11 @@ public class ChunkRefresher
     static float time;
     static float interval = 0.1f;
 
+    public static int GetChunkUpdatesCount()
+    {
+        return refreshChunkList.Count;
+    }
+
     static NBTChunk GetFirstChunk(List<NBTChunk> list)
     {
         NBTChunk maxChunk = null;

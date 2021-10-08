@@ -51,7 +51,6 @@ public static class ChunkChecker
             // and unload chunks out of render distance
             List<Vector2Int> loadChunks = NBTHelper.GetLoadChunks(curChunk);
             List<Vector2Int> unloadChunks = NBTHelper.GetUnloadChunks(curChunk, SettingsPanel.RenderDistance);
-            Debug.Log(curChunk + "," + lastChunk + "," + loadChunks.Count + "," + unloadChunks.Count);
 
             if (loadChunks.Count > 0 || unloadChunks.Count > 0)
             {

@@ -28,10 +28,12 @@ public class DebugUI : MonoBehaviour
     }
 
     TextMeshProUGUI label;
+    TextMeshProUGUI label2;
     // Start is called before the first frame update
     void Start()
     {
         label = transform.Find("Text").GetComponent<TextMeshProUGUI>();
+        label2 = transform.Find("topright").GetComponent<TextMeshProUGUI>();
     }
 
     int frameCount;
@@ -115,6 +117,8 @@ public class DebugUI : MonoBehaviour
         }
 
         label.text = sb.ToString();
+
+        label2.text = ChunkRefresher.GetChunkUpdatesCount() + " chunk updates";
     }
 
     public static void HandleInput()

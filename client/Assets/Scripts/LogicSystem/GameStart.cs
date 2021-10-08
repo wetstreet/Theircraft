@@ -20,6 +20,7 @@ public class GameStart : MonoBehaviour
         ChunkChecker.Init();
 
         PlayerController.Init();
+        LocalNavMeshBuilder.Init();
         ChunkRefresher.ForceRefreshAll();
     }
 
