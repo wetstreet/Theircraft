@@ -10,7 +10,22 @@ public class PlayerController : MonoBehaviour
     public float verticalScale = 1;
     public Transform camera;
 
-    public float Health = 20f;
+    public float healthInternal = 20f;
+    public float Health
+    {
+        get { return healthInternal; }
+        set
+        {
+            healthInternal = value;
+
+            ItemSelectPanel.instance.RefreshStatus();
+
+            if (healthInternal <= 0)
+            {
+                DeathUI.Show();
+            }
+        }
+    }
     public int foodLevel = 20;
 
     private Vector3 verticalSpeed;

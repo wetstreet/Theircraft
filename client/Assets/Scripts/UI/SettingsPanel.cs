@@ -131,7 +131,7 @@ public class SettingsPanel : MonoBehaviour {
         HandleInput();
     }
 
-    void OnClickQuit()
+    public static void OnClickQuit()
     {
         NBTHelper.Save();
         LocalServer.SaveData();

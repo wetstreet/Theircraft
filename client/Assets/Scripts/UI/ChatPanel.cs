@@ -196,11 +196,13 @@ public class ChatPanel : MonoBehaviour
         {
             if (inputField.text.StartsWith("/"))
             {
-                GM.Process(inputField.text);
+                string text = inputField.text;
 
                 inputField.text = "";
                 inputField.ActivateInputField();
                 HideInput();
+
+                GM.Process(text);
             }
             else
                 SendMessageReq(inputField.text);

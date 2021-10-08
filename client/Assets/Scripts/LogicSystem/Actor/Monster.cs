@@ -154,13 +154,13 @@ public class Monster : MonoBehaviour
     }
 
     public float attackStrength = 5f;
+    public float attackDamage = 1f;
     void Attack()
     {
-        PlayerController.instance.Health -= 1;
-        ItemSelectPanel.instance.RefreshStatus();
-
         Vector3 hitForce = transform.forward + Vector3.up;
         PlayerController.instance.AddForce(hitForce * attackStrength);
+
+        PlayerController.instance.Health -= attackDamage;
 
         lastAttackTime = Time.time;
     }

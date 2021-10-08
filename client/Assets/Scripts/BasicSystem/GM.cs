@@ -15,11 +15,18 @@ public class GM
             case "time":
                 Time(gm_params);
                 break;
+            case "die":
+                Suicide();
+                break;
             default:
                 ChatPanel.AddLine(ChatPanel.ErrorCode + "Unknown command.");
                 break;
         }
+    }
 
+    static void Suicide()
+    {
+        PlayerController.instance.Health = 0;
     }
 
     static void Time(string[] gm_params)
