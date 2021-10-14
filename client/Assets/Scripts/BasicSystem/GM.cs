@@ -15,8 +15,11 @@ public class GM
             case "time":
                 Time(gm_params);
                 break;
-            case "die":
-                Suicide();
+            case "kill":
+                Kill();
+                break;
+            case "zombie":
+                Zombie();
                 break;
             default:
                 ChatPanel.AddLine(ChatPanel.ErrorCode + "Unknown command.");
@@ -24,7 +27,12 @@ public class GM
         }
     }
 
-    static void Suicide()
+    static void Zombie()
+    {
+        Monster.CreateMonster(1, PlayerController.instance.transform.position);
+    }
+
+    static void Kill()
     {
         PlayerController.instance.Health = 0;
     }

@@ -15,12 +15,28 @@ public class Monster : MonoBehaviour
 
     private int currTargetIndex;
 
+    Material dynamicMat;
+
     public float speed = 2f;
     public float jumpSpeed = 9;
     public float gravity = 28;
     Vector3 moveDir = Vector3.zero;
 
     public float angularSpeed = 300f;
+
+    float healthInternal = 20;
+    public float health
+    {
+        get { return healthInternal; }
+        set
+        {
+            healthInternal = value;
+            if (healthInternal <= 0)
+            {
+                Die();
+            }
+        }
+    }
 
     public static Monster CreateMonster(uint id, Vector3 position)
     {
@@ -40,11 +56,35 @@ public class Monster : MonoBehaviour
         cc = transform.GetComponent<CharacterController>();
         path = new NavMeshPath();
 
+        Renderer[] renderers = GetComponentsInChildren<Renderer>();
+        dynamicMat = Instantiate(renderers[0].sharedMaterial);
+        foreach (Renderer renderer in renderers)
+        {
+            renderer.sharedMaterial = dynamicMat;
+        }
+
         transform.position = position;
         //transform.localEulerAngles = new Vector3(0, rotation.y, 0);
         //head.transform.localEulerAngles = new Vector3(0, 0, rotation.z);
 
         Move();
+    }
+
+    private void OnDestroy()
+    {
+        Destroy(dynamicMat);
+    }
+
+    void Die()
+    {
+        Destroy(gameObject);
+    }
+
+    public void AddForce(Vector3 force)
+    {
+        //horizontalSpeed.x += force.x;
+        moveDir.y += force.y;
+        //horizontalSpeed.z += force.z;
     }
 
     Vector3 realForward;
@@ -80,7 +120,26 @@ public class Monster : MonoBehaviour
 
     }
 
+    Color colorHit = new Color(2.19f, 0.27f, 0.36f);
+    Color colorNormal = new Color(0.52f, 0.52f, 0.52f);
+    float hitTime;
+    float hitColorExistTime = 0.45f;
+    public void OnHit()
+    {
+        dynamicMat.color = colorHit;
+        hitTime = Time.time;
+    }
+
+    void UpdateColor()
+    {
+        if (Time.time - hitTime > hitColorExistTime)
+        {
+            dynamicMat.color = colorNormal;
+        }
+    }
+
     static Vector3 offset = new Vector3(0, 1.38f, 0);
+    public float attenuation = 0.75f;
     void MoveByPath()
     {
         LookAt(PlayerController.instance.position + offset);
@@ -111,10 +170,18 @@ public class Monster : MonoBehaviour
                 transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(horizontalDir, Vector3.up), angularSpeed * Time.deltaTime);
             }
         }
+        //else
+        //{
+        //    horizontalDir *= attenuation;
+        //}
         horizontalDir = horizontalDir.normalized;
         horizontalDir *= speed;
 
         moveDir = new Vector3(horizontalDir.x, moveDir.y, horizontalDir.z);
+
+        moveDir.y -= gravity * Time.deltaTime;
+
+        cc.Move(moveDir * Time.deltaTime);
 
         if (cc.isGrounded)
         {
@@ -126,10 +193,6 @@ public class Monster : MonoBehaviour
                 moveDir.y = jumpSpeed;
             }
         }
-
-        moveDir.y -= gravity * Time.deltaTime;
-
-        cc.Move(moveDir * Time.deltaTime);
     }
 
     float attackInterval = 1f;
@@ -151,6 +214,8 @@ public class Monster : MonoBehaviour
         {
             MoveByPath();
         }
+
+        UpdateColor();
     }
 
     public float attackStrength = 5f;
@@ -161,6 +226,7 @@ public class Monster : MonoBehaviour
         PlayerController.instance.AddForce(hitForce * attackStrength);
 
         PlayerController.instance.Health -= attackDamage;
+        SoundManager.Play3DSound("Player_Hit", PlayerController.instance.gameObject);
 
         lastAttackTime = Time.time;
     }

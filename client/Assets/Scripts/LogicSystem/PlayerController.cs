@@ -190,17 +190,19 @@ public class PlayerController : MonoBehaviour
         instance.blockMeshFilter.transform.gameObject.SetActive(true);
     }
 
+    Vector3 lastPosOnGround;
     void PositionCorrection()
     {
-        if (transform.localPosition.y < -100)
+        if (cc.isGrounded)
         {
-            Vector3 pos = transform.localPosition;
-            transform.localPosition = new Vector3(pos.x, 100, pos.z);
+            lastPosOnGround = transform.position;
+        }
+        if (transform.position.y < -10)
+        {
+            transform.position = lastPosOnGround;
             FastTips.Show("Position has been corrected!");
         }
     }
-
-    bool leftMouseDown = false;
 
     void BreakBlock(Vector3Int pos)
     {
@@ -237,14 +239,11 @@ public class PlayerController : MonoBehaviour
 
     void OnLeftMouseDown()
     {
-        leftMouseDown = true;
-
         handAnimator.SetTrigger("interactTrigger");
     }
 
     void OnLeftMouseUp()
     {
-        leftMouseDown = false;
         breakTime = 0;
         HideBreakingEffect();
 
@@ -307,15 +306,69 @@ public class PlayerController : MonoBehaviour
         horizontalSpeed.z += force.z;
     }
 
-    Monster zombie;
-    void UpdateZombie()
+    float attackInterval = 0.5f;
+    float lastAttackTime;
+    public float attackStrength = 5f;
+    public float attackDamage = 10f;
+    void OnLeftMousePressed()
     {
-        if (Input.GetKeyDown(KeyCode.F5))
+        Debug.Log(ChatPanel.HideCode + "OnLeftMousePressed");
+
+        int layerMask = 1 << LayerMask.NameToLayer("Monster");
+        if (Physics.Raycast(Camera.main.ScreenPointToRay(center), out RaycastHit hit, 5f, layerMask))
         {
-            if (zombie == null)
+            if (Time.time - lastAttackTime > attackInterval)
             {
-                zombie = Monster.CreateMonster(1, transform.position);
+                Monster monster = hit.transform.GetComponent<Monster>();
+                monster.health -= attackDamage;
+                Vector3 hitForce = transform.forward + Vector3.up;
+                monster.AddForce(hitForce * attackStrength);
+                monster.OnHit();
+
+                if (monster.health <= 0)
+                {
+                    SoundManager.Play3DSound("Zombie_Death", monster.gameObject);
+                }
+                else
+                {
+                    SoundManager.Play3DSound("Zombie_Hurt", monster.gameObject);
+                }
+                Debug.Log("monster health = " + monster.health);
+
+                lastAttackTime = Time.time;
             }
+        }
+
+        if (WireFrameHelper.render)
+        {
+            handAnimator.SetBool("isBreaking", true);
+
+            breakTime += Time.deltaTime;
+
+            NBTBlock generator = NBTGeneratorManager.GetMeshGenerator(WireFrameHelper.type);
+            float breakNeedTime = generator.breakNeedTime;
+            if (breakNeedTime == 0)
+            {
+                BreakBlock(WireFrameHelper.pos);
+            }
+            else
+            {
+                int curStage = Mathf.FloorToInt(breakTime / (breakNeedTime / 12));
+                if (stage != curStage)
+                {
+                    stage = curStage;
+                    UpdateBreakingEffect(generator, WireFrameHelper.pos, stage);
+                }
+                if (stage >= 10)
+                {
+                    BreakBlock(WireFrameHelper.pos);
+                }
+            }
+        }
+        else
+        {
+            breakTime = 0;
+            HideBreakingEffect();
         }
     }
 
@@ -325,7 +378,6 @@ public class PlayerController : MonoBehaviour
     float lastSpace;
     void Update()
     {
-        UpdateZombie();
         DrawWireFrame();
         PositionCorrection();
 
@@ -333,6 +385,10 @@ public class PlayerController : MonoBehaviour
         {
             RotateView();
             
+            if (Input.GetKey(KeyCode.Mouse0))
+            {
+                OnLeftMousePressed();
+            }
             if (Input.GetKeyDown(KeyCode.Mouse0))
             {
                 OnLeftMouseDown();
@@ -419,14 +475,14 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+
+    Vector3 center = new Vector3(Screen.width / 2, Screen.height / 2, 0);
     RaycastHit hit;
     float breakTime;
     int stage;
     void DrawWireFrame()
     {
         WireFrameHelper.render = false;
-
-        Vector3 center = new Vector3(Screen.width / 2, Screen.height / 2, 0);
         int cubeLayerIndex = LayerMask.NameToLayer("Chunk");
         int otherPlayerLayerIndex = LayerMask.NameToLayer("OtherPlayer");
         int plantLayerIndex = LayerMask.NameToLayer("Plant");
@@ -453,35 +509,6 @@ public class PlayerController : MonoBehaviour
                         WireFrameHelper.hitPos = hit.point;
                         WireFrameHelper.type = type;
                         WireFrameHelper.data = data;
-
-                        if (leftMouseDown)
-                        {
-                            handAnimator.SetBool("isBreaking", true);
-
-                            breakTime += Time.deltaTime;
-
-                            NBTBlock generator = NBTGeneratorManager.GetMeshGenerator(type);
-                            float breakNeedTime = generator.breakNeedTime;
-                            if (breakNeedTime == 0)
-                            {
-                                BreakBlock(pos);
-                            }
-                            else
-                            {
-                                int curStage = Mathf.FloorToInt(breakTime / (breakNeedTime / 12));
-                                if (stage != curStage)
-                                {
-                                    stage = curStage;
-                                    UpdateBreakingEffect(generator, pos, stage);
-                                }
-                                if (stage >= 10)
-                                {
-                                    BreakBlock(pos);
-                                }
-                            }
-
-                            return;
-                        }
                     }
                 }
             }

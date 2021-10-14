@@ -1,0 +1,467 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WwiseDocument Type="WorkUnit" ID="{3CEA6CAF-8F04-4F5A-9267-86CB7295AC35}" SchemaVersion="94">
+	<AudioObjects>
+		<WorkUnit Name="Monster" ID="{3CEA6CAF-8F04-4F5A-9267-86CB7295AC35}" PersistMode="Standalone">
+			<ChildrenList>
+				<Folder Name="zombie" ID="{C00161CE-D02E-479A-8AC0-A3704F5AD44F}" ShortID="36542127">
+					<ChildrenList>
+						<Sound Name="death" ID="{57227D58-6559-4CD1-BCFC-CBC5A4B7B715}" ShortID="618425103">
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{8FE6169C-E8A6-40BD-9B00-64A732E05B65}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{C5EA3446-E89E-499D-B686-418636AA991A}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="death" ID="{92D01CE4-C19D-4FB7-A683-1D97B516BC9E}" ShortID="285483140">
+									<Language>SFX</Language>
+									<AudioFile>zombie\death.wav</AudioFile>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="death" ID="{92D01CE4-C19D-4FB7-A683-1D97B516BC9E}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+						<Sound Name="infect" ID="{D48FD9AB-DB9D-480A-A4EF-0E434448CEC7}" ShortID="521907298">
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{8FE6169C-E8A6-40BD-9B00-64A732E05B65}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{C5EA3446-E89E-499D-B686-418636AA991A}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="infect" ID="{8243571D-744F-4027-8E69-497B4F1B533F}" ShortID="328054765">
+									<Language>SFX</Language>
+									<AudioFile>zombie\infect.wav</AudioFile>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="infect" ID="{8243571D-744F-4027-8E69-497B4F1B533F}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+						<Sound Name="metal1" ID="{C65CA20A-712A-4374-8EF7-0944525969C9}" ShortID="471651909">
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{8FE6169C-E8A6-40BD-9B00-64A732E05B65}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{C5EA3446-E89E-499D-B686-418636AA991A}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="metal1" ID="{29564AC6-E3A3-46C7-8DC6-BD00243298F9}" ShortID="979074981">
+									<Language>SFX</Language>
+									<AudioFile>zombie\metal1.wav</AudioFile>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="metal1" ID="{29564AC6-E3A3-46C7-8DC6-BD00243298F9}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+						<Sound Name="metal2" ID="{B6CA1A72-DBE8-4A85-B790-A4904FD5F991}" ShortID="292391516">
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{8FE6169C-E8A6-40BD-9B00-64A732E05B65}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{C5EA3446-E89E-499D-B686-418636AA991A}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="metal2" ID="{1F84BE0A-E18A-4691-9461-E1ABB66CE125}" ShortID="494926122">
+									<Language>SFX</Language>
+									<AudioFile>zombie\metal2.wav</AudioFile>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="metal2" ID="{1F84BE0A-E18A-4691-9461-E1ABB66CE125}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+						<Sound Name="metal3" ID="{5800483A-E1A3-4104-84EB-7B6462A380B2}" ShortID="489945168">
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{8FE6169C-E8A6-40BD-9B00-64A732E05B65}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{C5EA3446-E89E-499D-B686-418636AA991A}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="metal3" ID="{668E7197-AFD8-4F78-B668-B42878C386B4}" ShortID="113598847">
+									<Language>SFX</Language>
+									<AudioFile>zombie\metal3.wav</AudioFile>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="metal3" ID="{668E7197-AFD8-4F78-B668-B42878C386B4}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+						<Sound Name="remedy" ID="{262B5573-FFD7-4E00-8106-60240FF1364C}" ShortID="668455907">
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{8FE6169C-E8A6-40BD-9B00-64A732E05B65}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{C5EA3446-E89E-499D-B686-418636AA991A}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="remedy" ID="{248B5B4E-F6FF-4675-B38B-9491429460C1}" ShortID="808736856">
+									<Language>SFX</Language>
+									<AudioFile>zombie\remedy.wav</AudioFile>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="remedy" ID="{248B5B4E-F6FF-4675-B38B-9491429460C1}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+						<Sound Name="unfect" ID="{EF7BFB7E-82A2-400E-B442-AFEE54D30538}" ShortID="899051973">
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{8FE6169C-E8A6-40BD-9B00-64A732E05B65}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{C5EA3446-E89E-499D-B686-418636AA991A}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="unfect" ID="{FCCD3DE2-E68D-4DA0-B652-4FED1623E965}" ShortID="263935481">
+									<Language>SFX</Language>
+									<AudioFile>zombie\unfect.wav</AudioFile>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="unfect" ID="{FCCD3DE2-E68D-4DA0-B652-4FED1623E965}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+						<Sound Name="wood1" ID="{EA42643A-3624-4560-AB06-9B47DD922ED0}" ShortID="657103305">
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{8FE6169C-E8A6-40BD-9B00-64A732E05B65}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{C5EA3446-E89E-499D-B686-418636AA991A}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="wood1" ID="{D2CD8C37-64AC-4BAB-ADA5-6369CA8C2C18}" ShortID="980799993">
+									<Language>SFX</Language>
+									<AudioFile>zombie\wood1.wav</AudioFile>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="wood1" ID="{D2CD8C37-64AC-4BAB-ADA5-6369CA8C2C18}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+						<Sound Name="wood2" ID="{FA248AFA-39D2-4923-A525-D41431C37FC5}" ShortID="158281947">
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{8FE6169C-E8A6-40BD-9B00-64A732E05B65}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{C5EA3446-E89E-499D-B686-418636AA991A}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="wood2" ID="{9BD51C0A-2111-4759-B391-9C39BADD5DD2}" ShortID="20871085">
+									<Language>SFX</Language>
+									<AudioFile>zombie\wood2.wav</AudioFile>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="wood2" ID="{9BD51C0A-2111-4759-B391-9C39BADD5DD2}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+						<Sound Name="wood3" ID="{A367BD8C-0664-4520-ACF8-D12C8B0587BE}" ShortID="1068064311">
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{8FE6169C-E8A6-40BD-9B00-64A732E05B65}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{C5EA3446-E89E-499D-B686-418636AA991A}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="wood3" ID="{FA19A63C-2F09-4FF2-9B1B-A875FADAD8CF}" ShortID="957009484">
+									<Language>SFX</Language>
+									<AudioFile>zombie\wood3.wav</AudioFile>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="wood3" ID="{FA19A63C-2F09-4FF2-9B1B-A875FADAD8CF}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+						<Sound Name="wood4" ID="{9525762B-2644-4CBE-937E-776DC72E60EB}" ShortID="509961462">
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{8FE6169C-E8A6-40BD-9B00-64A732E05B65}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{C5EA3446-E89E-499D-B686-418636AA991A}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="wood4" ID="{19510B23-A951-4B95-9518-4730171FDB7D}" ShortID="434731164">
+									<Language>SFX</Language>
+									<AudioFile>zombie\wood4.wav</AudioFile>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="wood4" ID="{19510B23-A951-4B95-9518-4730171FDB7D}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+						<Sound Name="woodbreak" ID="{9CEE6C78-9AC2-4500-AEA5-E5BF751D898D}" ShortID="246102982">
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{8FE6169C-E8A6-40BD-9B00-64A732E05B65}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{C5EA3446-E89E-499D-B686-418636AA991A}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="woodbreak" ID="{A59ECE6B-07A0-424E-8B89-51914EC6020D}" ShortID="1020288661">
+									<Language>SFX</Language>
+									<AudioFile>zombie\woodbreak.wav</AudioFile>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="woodbreak" ID="{A59ECE6B-07A0-424E-8B89-51914EC6020D}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+						<RandomSequenceContainer Name="Hurt" ID="{B2B3DB4F-9E21-4106-AE6F-3AF209F1587A}" ShortID="627576410">
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{8FE6169C-E8A6-40BD-9B00-64A732E05B65}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{C5EA3446-E89E-499D-B686-418636AA991A}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<Sound Name="hurt2" ID="{FD828B0C-20B9-4391-8019-D29D2D4F380F}" ShortID="880986633">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{8FE6169C-E8A6-40BD-9B00-64A732E05B65}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{C5EA3446-E89E-499D-B686-418636AA991A}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="hurt2" ID="{197B197E-2CF7-43BC-98C8-54B0361B9DE3}" ShortID="46165826">
+											<Language>SFX</Language>
+											<AudioFile>zombie\hurt2.wav</AudioFile>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="hurt2" ID="{197B197E-2CF7-43BC-98C8-54B0361B9DE3}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="hurt1" ID="{A6B026B5-A771-456C-821E-327DAEB298EC}" ShortID="763476920">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{8FE6169C-E8A6-40BD-9B00-64A732E05B65}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{C5EA3446-E89E-499D-B686-418636AA991A}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="hurt1" ID="{25BFCBE5-8F98-4DBC-BA8E-6301D91F5D33}" ShortID="143924696">
+											<Language>SFX</Language>
+											<AudioFile>zombie\hurt1.wav</AudioFile>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="hurt1" ID="{25BFCBE5-8F98-4DBC-BA8E-6301D91F5D33}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+							</ChildrenList>
+						</RandomSequenceContainer>
+						<RandomSequenceContainer Name="Say" ID="{36BC5EFF-6E43-4408-830B-C7C2E631DF65}" ShortID="960685692">
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{8FE6169C-E8A6-40BD-9B00-64A732E05B65}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{C5EA3446-E89E-499D-B686-418636AA991A}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<Sound Name="say1" ID="{1D992F64-A647-4F65-AEEA-DE114282316D}" ShortID="1031457621">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{8FE6169C-E8A6-40BD-9B00-64A732E05B65}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{C5EA3446-E89E-499D-B686-418636AA991A}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="say1" ID="{97A0B454-F9F3-48C6-9683-22FF6D3DD227}" ShortID="1064847257">
+											<Language>SFX</Language>
+											<AudioFile>zombie\say1.wav</AudioFile>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="say1" ID="{97A0B454-F9F3-48C6-9683-22FF6D3DD227}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="say2" ID="{8A371002-7BED-42DD-A04C-40B3DDB24355}" ShortID="297365888">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{8FE6169C-E8A6-40BD-9B00-64A732E05B65}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{C5EA3446-E89E-499D-B686-418636AA991A}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="say2" ID="{1E971C4A-D793-4268-905E-9DC46C1B427D}" ShortID="262732319">
+											<Language>SFX</Language>
+											<AudioFile>zombie\say2.wav</AudioFile>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="say2" ID="{1E971C4A-D793-4268-905E-9DC46C1B427D}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="say3" ID="{3FF2DE11-76DC-4E65-B283-1C1598C10A1D}" ShortID="877773909">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{8FE6169C-E8A6-40BD-9B00-64A732E05B65}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{C5EA3446-E89E-499D-B686-418636AA991A}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="say3" ID="{91F4A3D8-181B-4A35-831F-7E7DAE968533}" ShortID="506439816">
+											<Language>SFX</Language>
+											<AudioFile>zombie\say3.wav</AudioFile>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="say3" ID="{91F4A3D8-181B-4A35-831F-7E7DAE968533}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+							</ChildrenList>
+						</RandomSequenceContainer>
+						<RandomSequenceContainer Name="Step" ID="{81DBE6B5-8A0C-4E6B-80FE-D7888E75B691}" ShortID="516164816">
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{8FE6169C-E8A6-40BD-9B00-64A732E05B65}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{C5EA3446-E89E-499D-B686-418636AA991A}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<Sound Name="step5" ID="{3A435CC2-AD15-4E95-940A-66B93E98D214}" ShortID="909568905">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{8FE6169C-E8A6-40BD-9B00-64A732E05B65}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{C5EA3446-E89E-499D-B686-418636AA991A}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="step5" ID="{021E0D63-ED77-43BC-95B9-65D008508971}" ShortID="339321615">
+											<Language>SFX</Language>
+											<AudioFile>zombie\step5.wav</AudioFile>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="step5" ID="{021E0D63-ED77-43BC-95B9-65D008508971}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="step1" ID="{23D9418D-ABA3-40A2-8A36-39C1208F271D}" ShortID="65572476">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{8FE6169C-E8A6-40BD-9B00-64A732E05B65}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{C5EA3446-E89E-499D-B686-418636AA991A}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="step1" ID="{89F2554B-14BF-4DEC-9856-A6221D4F43ED}" ShortID="285676303">
+											<Language>SFX</Language>
+											<AudioFile>zombie\step1.wav</AudioFile>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="step1" ID="{89F2554B-14BF-4DEC-9856-A6221D4F43ED}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="step2" ID="{65C4DF53-E56F-46AB-A03B-476543E66325}" ShortID="543188447">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{8FE6169C-E8A6-40BD-9B00-64A732E05B65}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{C5EA3446-E89E-499D-B686-418636AA991A}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="step2" ID="{BC73525B-2AA8-4254-9C03-951E546309B9}" ShortID="550238838">
+											<Language>SFX</Language>
+											<AudioFile>zombie\step2.wav</AudioFile>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="step2" ID="{BC73525B-2AA8-4254-9C03-951E546309B9}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="step4" ID="{0A50D667-C87D-4A40-B2F7-6AA6748F1706}" ShortID="751933816">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{8FE6169C-E8A6-40BD-9B00-64A732E05B65}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{C5EA3446-E89E-499D-B686-418636AA991A}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="step4" ID="{44D5F2C2-2119-4977-84ED-5EEA2833DE30}" ShortID="562160452">
+											<Language>SFX</Language>
+											<AudioFile>zombie\step4.wav</AudioFile>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="step4" ID="{44D5F2C2-2119-4977-84ED-5EEA2833DE30}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="step3" ID="{CEBFC1AA-C85F-4EFB-8FB9-8F831176DD3E}" ShortID="65450899">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{8FE6169C-E8A6-40BD-9B00-64A732E05B65}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{C5EA3446-E89E-499D-B686-418636AA991A}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="step3" ID="{5C33498B-E6E8-4A16-A285-23716CA644EA}" ShortID="368049139">
+											<Language>SFX</Language>
+											<AudioFile>zombie\step3.wav</AudioFile>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="step3" ID="{5C33498B-E6E8-4A16-A285-23716CA644EA}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+							</ChildrenList>
+						</RandomSequenceContainer>
+					</ChildrenList>
+				</Folder>
+			</ChildrenList>
+		</WorkUnit>
+	</AudioObjects>
+</WwiseDocument>

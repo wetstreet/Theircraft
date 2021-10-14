@@ -19,6 +19,7 @@ public class ChatPanel : MonoBehaviour
     static Queue<string> _message = new Queue<string>();
 
     public static readonly string ErrorCode = "<color=#FF5555>";
+    public static readonly string HideCode = "[hide]";
 
     static ChatPanel instance;
 
@@ -36,7 +37,10 @@ public class ChatPanel : MonoBehaviour
     {
         if (type == LogType.Log)
         {
-            AddLine("<Log>" + logString.Replace('\n',' '));
+            if (!logString.StartsWith(HideCode))
+            {
+                AddLine("<Log>" + logString.Replace('\n', ' '));
+            }
         } else if (type == LogType.Error)
         {
             AddLine(ErrorCode + "<Error>" + logString.Replace('\n', ' '));
@@ -130,6 +134,10 @@ public class ChatPanel : MonoBehaviour
             else if (Input.GetKeyDown(KeyCode.Escape))
             {
                 HideInput();
+            }
+            else if (Input.GetKeyDown(KeyCode.UpArrow))
+            {
+                // last command
             }
         }
         else

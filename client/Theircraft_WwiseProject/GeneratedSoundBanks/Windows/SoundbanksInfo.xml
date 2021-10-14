@@ -23,9 +23,12 @@
 			<IncludedEvents>
 				<Event Id="1114612066" Name="Player_Break" ObjectPath="\Events\Player\Player_Break"/>
 				<Event Id="2453392179" Name="Player_Footstep" ObjectPath="\Events\Player\Player_Footstep"/>
+				<Event Id="871813740" Name="Player_Hit" ObjectPath="\Events\Player\Player_Hit"/>
 				<Event Id="2463044974" Name="Player_Place" ObjectPath="\Events\Player\Player_Place"/>
 				<Event Id="1505523378" Name="Player_Pop" ObjectPath="\Events\Player\Player_Pop"/>
 				<Event Id="2249769530" Name="UI_Click" ObjectPath="\Events\UI\UI_Click"/>
+				<Event Id="2474416884" Name="Zombie_Death" ObjectPath="\Events\Monster\Zombie\Zombie_Death"/>
+				<Event Id="1361217281" Name="Zombie_Hurt" ObjectPath="\Events\Monster\Zombie\Zombie_Hurt"/>
 			</IncludedEvents>
 			<IncludedMemoryFiles>
 				<File Id="3325749" Language="SFX">
@@ -39,6 +42,10 @@
 				<File Id="45979538" Language="SFX">
 					<ShortName>stone3.wav</ShortName>
 					<Path>SFX\stone3_10C4C929.wem</Path>
+				</File>
+				<File Id="46165826" Language="SFX">
+					<ShortName>zombie\hurt2.wav</ShortName>
+					<Path>SFX\zombie\hurt2_10C4C929.wem</Path>
 				</File>
 				<File Id="68047471" Language="SFX">
 					<ShortName>28_wav_files (online-audio-converter.com)\gravel3.wav</ShortName>
@@ -80,6 +87,10 @@
 					<ShortName>28_wav_files (online-audio-converter.com)\snow3.wav</ShortName>
 					<Path>SFX\28_wav_files (online-audio-converter.com)\snow3_10C4C929.wem</Path>
 				</File>
+				<File Id="143924696" Language="SFX">
+					<ShortName>zombie\hurt1.wav</ShortName>
+					<Path>SFX\zombie\hurt1_10C4C929.wem</Path>
+				</File>
 				<File Id="183760107" Language="SFX">
 					<ShortName>gravel3.wav</ShortName>
 					<Path>SFX\gravel3_10C4C929.wem</Path>
@@ -119,6 +130,10 @@
 				<File Id="285353348" Language="SFX">
 					<ShortName>stone1.wav</ShortName>
 					<Path>SFX\stone1_10C4C929.wem</Path>
+				</File>
+				<File Id="285483140" Language="SFX">
+					<ShortName>zombie\death.wav</ShortName>
+					<Path>SFX\zombie\death_10C4C929.wem</Path>
 				</File>
 				<File Id="308283446" Language="SFX">
 					<ShortName>cloth1.wav</ShortName>
@@ -220,6 +235,10 @@
 					<ShortName>28_wav_files (online-audio-converter.com)\grass1.wav</ShortName>
 					<Path>SFX\28_wav_files (online-audio-converter.com)\grass1_10C4C929.wem</Path>
 				</File>
+				<File Id="688732897" Language="SFX">
+					<ShortName>damage\hit1.wav</ShortName>
+					<Path>SFX\damage\hit1_10C4C929.wem</Path>
+				</File>
 				<File Id="701843054" Language="SFX">
 					<ShortName>28_wav_files (online-audio-converter.com)\wood4.wav</ShortName>
 					<Path>SFX\28_wav_files (online-audio-converter.com)\wood4_10C4C929.wem</Path>
@@ -227,6 +246,10 @@
 				<File Id="724834478" Language="SFX">
 					<ShortName>sand1.wav</ShortName>
 					<Path>SFX\sand1_10C4C929.wem</Path>
+				</File>
+				<File Id="741513873" Language="SFX">
+					<ShortName>damage\hit2.wav</ShortName>
+					<Path>SFX\damage\hit2_10C4C929.wem</Path>
 				</File>
 				<File Id="741673184" Language="SFX">
 					<ShortName>28_wav_files (online-audio-converter.com)\sand3.wav</ShortName>
@@ -279,6 +302,10 @@
 				<File Id="933902631" Language="SFX">
 					<ShortName>28_wav_files (online-audio-converter.com)\sand2.wav</ShortName>
 					<Path>SFX\28_wav_files (online-audio-converter.com)\sand2_10C4C929.wem</Path>
+				</File>
+				<File Id="939266993" Language="SFX">
+					<ShortName>damage\hit3.wav</ShortName>
+					<Path>SFX\damage\hit3_10C4C929.wem</Path>
 				</File>
 				<File Id="952819959" Language="SFX">
 					<ShortName>28_wav_files (online-audio-converter.com)\cloth4.wav</ShortName>

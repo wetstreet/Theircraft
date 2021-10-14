@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WwiseDocument Type="WorkUnit" ID="{FA1A1EE3-D173-458B-A12C-228DF28DF381}" SchemaVersion="94">
+	<Events>
+		<WorkUnit Name="Monster" ID="{FA1A1EE3-D173-458B-A12C-228DF28DF381}" PersistMode="Standalone">
+			<ChildrenList>
+				<WorkUnit Name="Zombie" ID="{5D1DA0BD-DCEE-43E2-ACFA-3A0EC3E5CD54}" PersistMode="Reference"/>
+			</ChildrenList>
+		</WorkUnit>
+	</Events>
+</WwiseDocument>

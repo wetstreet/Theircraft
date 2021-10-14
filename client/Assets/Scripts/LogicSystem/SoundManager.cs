@@ -69,4 +69,9 @@ public class SoundManager : MonoBehaviour
     {
         AkSoundEngine.PostEvent("Player_Pop", Camera.main.gameObject);
     }
+
+    public static void Play3DSound(string name, GameObject obj)
+    {
+        AkSoundEngine.PostEvent(name, obj);
+    }
 }

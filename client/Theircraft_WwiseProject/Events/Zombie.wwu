@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WwiseDocument Type="WorkUnit" ID="{5D1DA0BD-DCEE-43E2-ACFA-3A0EC3E5CD54}" SchemaVersion="94" RootDocumentID="{FA1A1EE3-D173-458B-A12C-228DF28DF381}">
+	<Events>
+		<WorkUnit Name="Zombie" ID="{5D1DA0BD-DCEE-43E2-ACFA-3A0EC3E5CD54}" OwnerID="{FA1A1EE3-D173-458B-A12C-228DF28DF381}" PersistMode="Nested">
+			<ChildrenList>
+				<Event Name="Zombie_Hurt" ID="{605B2731-75B0-490E-8C62-0C2959AAD0D7}">
+					<ChildrenList>
+						<Action Name="" ID="{920CD321-48E2-43AB-94EF-63F51ECADFF4}" ShortID="462288378">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="Hurt" ID="{B2B3DB4F-9E21-4106-AE6F-3AF209F1587A}" WorkUnitID="{3CEA6CAF-8F04-4F5A-9267-86CB7295AC35}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Zombie_Death" ID="{1631EB84-5EB3-492B-9041-D80CD0D3A6F7}">
+					<ChildrenList>
+						<Action Name="" ID="{DCFD589F-E20F-423E-A9F1-BC8F2BF657D4}" ShortID="564767408">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="death" ID="{57227D58-6559-4CD1-BCFC-CBC5A4B7B715}" WorkUnitID="{3CEA6CAF-8F04-4F5A-9267-86CB7295AC35}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+			</ChildrenList>
+		</WorkUnit>
+	</Events>
+</WwiseDocument>

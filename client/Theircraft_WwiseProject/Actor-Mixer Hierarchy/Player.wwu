@@ -2698,6 +2698,117 @@
 						</GroupingList>
 					</GroupingInfo>
 				</SwitchContainer>
+				<RandomSequenceContainer Name="Hit" ID="{54BF8FE3-C04A-425F-B2B0-DD715C4F58F9}" ShortID="305441182">
+					<ReferenceList>
+						<Reference Name="Conversion">
+							<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{8FE6169C-E8A6-40BD-9B00-64A732E05B65}"/>
+						</Reference>
+						<Reference Name="OutputBus">
+							<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{C5EA3446-E89E-499D-B686-418636AA991A}"/>
+						</Reference>
+					</ReferenceList>
+					<ChildrenList>
+						<Sound Name="hit2" ID="{5955B18B-F9BF-4093-80D1-4937EEE90F42}" ShortID="358777900">
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{8FE6169C-E8A6-40BD-9B00-64A732E05B65}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{C5EA3446-E89E-499D-B686-418636AA991A}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="hit2" ID="{A05A948A-77DD-467A-B62A-16A9005894BF}" ShortID="741513873">
+									<Language>SFX</Language>
+									<AudioFile>damage\hit2.wav</AudioFile>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="hit2" ID="{A05A948A-77DD-467A-B62A-16A9005894BF}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+						<Sound Name="hit1" ID="{4734844C-AB57-4A69-AAC1-61673E45727A}" ShortID="819882674">
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{8FE6169C-E8A6-40BD-9B00-64A732E05B65}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{C5EA3446-E89E-499D-B686-418636AA991A}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="hit1" ID="{6ACEFE56-4651-46F8-9CD9-8BAD0181EA98}" ShortID="688732897">
+									<Language>SFX</Language>
+									<AudioFile>damage\hit1.wav</AudioFile>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="hit1" ID="{6ACEFE56-4651-46F8-9CD9-8BAD0181EA98}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+						<Sound Name="hit3" ID="{6ADADBC4-AD27-45A3-8410-F69B3C24694D}" ShortID="476966154">
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{8FE6169C-E8A6-40BD-9B00-64A732E05B65}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{C5EA3446-E89E-499D-B686-418636AA991A}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="hit3" ID="{CE16D008-38A5-4DAD-ABA1-2A320DC220C1}" ShortID="939266993">
+									<Language>SFX</Language>
+									<AudioFile>damage\hit3.wav</AudioFile>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="hit3" ID="{CE16D008-38A5-4DAD-ABA1-2A320DC220C1}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+					</ChildrenList>
+				</RandomSequenceContainer>
+				<Folder Name="damage" ID="{0AB1456D-69CE-4C3E-B10E-E2517E7B8CA9}" ShortID="315937017">
+					<ChildrenList>
+						<Sound Name="fallbig" ID="{8150B19B-D4AD-43A1-BAAC-E43E00586CE6}" ShortID="215121435">
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{8FE6169C-E8A6-40BD-9B00-64A732E05B65}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{C5EA3446-E89E-499D-B686-418636AA991A}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="fallbig" ID="{80BF1BF7-DB0A-4E17-863E-FE70B886A79F}" ShortID="371552168">
+									<Language>SFX</Language>
+									<AudioFile>damage\fallbig.wav</AudioFile>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="fallbig" ID="{80BF1BF7-DB0A-4E17-863E-FE70B886A79F}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+						<Sound Name="fallsmall" ID="{D1471614-A64B-44D1-AC7C-32AC908B0330}" ShortID="559115472">
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{8FE6169C-E8A6-40BD-9B00-64A732E05B65}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{C5EA3446-E89E-499D-B686-418636AA991A}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="fallsmall" ID="{56CD5A57-57C6-4A78-8AAA-FDC2D2EB75D8}" ShortID="544114521">
+									<Language>SFX</Language>
+									<AudioFile>damage\fallsmall.wav</AudioFile>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="fallsmall" ID="{56CD5A57-57C6-4A78-8AAA-FDC2D2EB75D8}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+					</ChildrenList>
+				</Folder>
 			</ChildrenList>
 		</WorkUnit>
 	</AudioObjects>

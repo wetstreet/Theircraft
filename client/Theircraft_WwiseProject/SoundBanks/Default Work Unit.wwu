@@ -5,11 +5,9 @@
 			<ChildrenList>
 				<SoundBank Name="Main" ID="{C325FD94-0B64-4644-A87B-C7DB7C99C861}">
 					<ObjectInclusionList>
-						<ObjectRef Name="Player_Place" ID="{024D871E-A846-4356-80F4-18942A480026}" WorkUnitID="{848B0ABB-C491-4AB3-A832-E5E2C7B675EA}" Filter="7" Origin="Manual"/>
 						<ObjectRef Name="UI_Click" ID="{528C67B4-D153-4409-9E26-3503085437BE}" WorkUnitID="{1E75170E-0F7D-4854-B39C-6E2DA6476971}" Filter="7" Origin="Manual"/>
-						<ObjectRef Name="Player_Break" ID="{B33D558D-E782-4658-AB98-5E458BF61F64}" WorkUnitID="{848B0ABB-C491-4AB3-A832-E5E2C7B675EA}" Filter="7" Origin="Manual"/>
-						<ObjectRef Name="Player_Pop" ID="{81E63486-5BC2-47FD-8EEF-D1D5DA68D85B}" WorkUnitID="{848B0ABB-C491-4AB3-A832-E5E2C7B675EA}" Filter="7" Origin="Manual"/>
-						<ObjectRef Name="Player_Footstep" ID="{9AD64A4E-B25E-48A3-9B97-85D0B49FBC80}" WorkUnitID="{848B0ABB-C491-4AB3-A832-E5E2C7B675EA}" Filter="7" Origin="Manual"/>
+						<ObjectRef Name="Monster" ID="{FA1A1EE3-D173-458B-A12C-228DF28DF381}" WorkUnitID="{FA1A1EE3-D173-458B-A12C-228DF28DF381}" Filter="7" Origin="Manual"/>
+						<ObjectRef Name="Player" ID="{848B0ABB-C491-4AB3-A832-E5E2C7B675EA}" WorkUnitID="{848B0ABB-C491-4AB3-A832-E5E2C7B675EA}" Filter="7" Origin="Manual"/>
 					</ObjectInclusionList>
 					<ObjectExclusionList/>
 					<GameSyncExclusionList/>
