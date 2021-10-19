@@ -15,6 +15,7 @@ public class SettingsPanel : MonoBehaviour {
     TextMeshProUGUI vsyncLabel;
     Slider framerateSlider;
     TextMeshProUGUI framerateLabel;
+    TextMeshProUGUI showLogLabel;
 
     static readonly string MASTER_VOLUME_KEY = "MASTER_VOLUME_KEY";
     static readonly string RENDER_DISTANCE_KEY = "RENDER_DISTANCE_KEY";
@@ -22,6 +23,7 @@ public class SettingsPanel : MonoBehaviour {
     static readonly string VSYNC_KEY = "VSYNC_KEY";
     static readonly string GRAPHICS_LEVEL_KEY = "GRAPHICS_LEVEL_KEY";
     static readonly string LANGUAGE_KEY = "LANGUAGE_KEY";
+    static readonly string SHOW_LOG_KEY = "SHOW_LOG_KEY";
 
     public static int MasterVolume
     {
@@ -60,6 +62,12 @@ public class SettingsPanel : MonoBehaviour {
     {
         get { return (Language)PlayerPrefs.GetInt(LANGUAGE_KEY, 0); }
         set { PlayerPrefs.SetInt(LANGUAGE_KEY, (int)value); }
+    }
+
+    public static int ShowLog
+    {
+        get { return PlayerPrefs.GetInt(SHOW_LOG_KEY, 0); }
+        set { PlayerPrefs.SetInt(SHOW_LOG_KEY, value); }
     }
 
     public static int FrameRate
@@ -173,6 +181,10 @@ public class SettingsPanel : MonoBehaviour {
         Utilities.SetClickCallback(transform, "grid/btn_vsync", OnClickVSync);
         vsyncLabel = transform.Find("grid/btn_vsync/label").GetComponent<TextMeshProUGUI>();
         RefreshVSyncLabel();
+
+        Utilities.SetClickCallback(transform, "grid/btn_show_log", OnClickShowLog);
+        showLogLabel = transform.Find("grid/btn_show_log/label").GetComponent<TextMeshProUGUI>();
+        RefreshShowLogLabel();
 
         Utilities.SetClickCallback(transform, "grid/btn_graphics", OnClickGraphics);
         graphicsLabel = transform.Find("grid/btn_graphics/label").GetComponent<TextMeshProUGUI>();
@@ -297,6 +309,17 @@ public class SettingsPanel : MonoBehaviour {
         VSync = VSync == 1 ? 0 : 1;
         RefreshVSync();
         RefreshVSyncLabel();
+    }
+
+    void OnClickShowLog()
+    {
+        ShowLog = ShowLog == 1 ? 0 : 1;
+        RefreshShowLogLabel();
+    }
+
+    void RefreshShowLogLabel()
+    {
+        showLogLabel.text = "Show Log: " + (ShowLog == 1 ? "On" : "Off");
     }
 
     void RefreshRenderDistanceLabel()

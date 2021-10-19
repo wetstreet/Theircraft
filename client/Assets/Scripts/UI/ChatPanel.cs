@@ -35,6 +35,11 @@ public class ChatPanel : MonoBehaviour
 
     void HandleLog(string logString, string stackTrace, LogType type)
     {
+        if (SettingsPanel.ShowLog == 0)
+        {
+            return;
+        }
+
         if (type == LogType.Log)
         {
             if (!logString.StartsWith(HideCode))

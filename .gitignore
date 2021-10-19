@@ -11,3 +11,4 @@ Assets/test.cs
 Flatbuffers/python/excel2fbs.pyc
 Logs
 .vsconfig
+.cache

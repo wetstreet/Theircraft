@@ -1,3 +1,4 @@
+using Substrate.Nbt;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -19,7 +20,11 @@ public class TimeOfDay : MonoBehaviour
     private void Start()
     {
         instance = this;
-        tick = 6000;
+
+        TagNodeCompound levelDat = NBTHelper.GetLevelDat();
+        TagNodeLong dayTimeNode = levelDat["DayTime"] as TagNodeLong;
+        int dayTime = (int)dayTimeNode.Data;
+        tick = dayTime;
     }
 
     private void OnDestroy()

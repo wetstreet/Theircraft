@@ -40,13 +40,7 @@ public class DeathUI : MonoBehaviour
 
     void OnClickRespawn()
     {
-        PlayerController.instance.transform.position = new Vector3(124, 64, 228);
-
-        List<Vector2Int> preloadChunks = Utilities.GetSurroudingChunks(PlayerController.GetCurrentChunkPos(), 1);
-        ChunkManager.PreloadChunks(preloadChunks);
-
-        Time.timeScale = 1;
-        PlayerController.instance.Health = 20;
+        PlayerController.instance.Respawn();
 
         Hide();
     }

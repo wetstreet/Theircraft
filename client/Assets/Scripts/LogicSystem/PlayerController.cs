@@ -1,5 +1,7 @@
 ﻿using protocol.cs_enum;
 using protocol.cs_theircraft;
+using Substrate.Nbt;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -281,9 +283,7 @@ public class PlayerController : MonoBehaviour
         string id = InventorySystem.items[ItemSelectPanel.curIndex].id;
         if (WireFrameHelper.render && id != null)
         {
-            Vector3Int pos = WireFrameHelper.pos;
-
-            pos = WireFrameHelper.pos + Vector3Int.RoundToInt(hit.normal);
+            Vector3Int pos = WireFrameHelper.pos + Vector3Int.RoundToInt(hit.normal);
 
             if (CanAddBlock(pos))
             {
@@ -297,6 +297,22 @@ public class PlayerController : MonoBehaviour
                 ItemSelectPanel.instance.RefreshUI();
             }
         }
+    }
+
+    public void Respawn()
+    {
+        TagNodeCompound levelDat = NBTHelper.GetLevelDat();
+        int x = levelDat["SpawnX"] as TagNodeInt;
+        int y = levelDat["SpawnY"] as TagNodeInt;
+        int z = levelDat["SpawnZ"] as TagNodeInt;
+        Vector3 spawnVec = new Vector3(x, y + 5, z);
+        transform.position = spawnVec;
+
+        List<Vector2Int> preloadChunks = Utilities.GetSurroudingChunks(GetCurrentChunkPos(), 1);
+        ChunkManager.PreloadChunks(preloadChunks);
+
+        Time.timeScale = 1;
+        Health = 20;
     }
 
     public void AddForce(Vector3 force)

@@ -48,6 +48,12 @@ public class NBTHelper
             playerData.WriteTo(stream);
         }
 
+        levelDat["DayTime"] = (TagNodeLong)TimeOfDay.instance.tick;
+        using (Stream stream = levelFile.GetDataOutputStream())
+        {
+            levelTree.WriteTo(stream);
+        }
+
         foreach (KeyValuePair<Vector2Int, NbtTree> kvPair in chunkDictNBT)
         {
             int chunkX = kvPair.Key.x;
@@ -311,6 +317,22 @@ public class NBTHelper
             int newData = (arr[index / 2] & 0x0F) | (data << 4 & 0xF0);
             arr[index / 2] = (byte)newData;
         }
+    }
+
+    static NBTFile levelFile;
+    static NbtTree levelTree;
+    static TagNodeCompound levelDat;
+    public static TagNodeCompound GetLevelDat()
+    {
+        if (levelDat == null)
+        {
+            string path = Path.Combine(savePath, "level.dat");
+            levelFile = new NBTFile(path);
+            levelTree = new NbtTree();
+            levelTree.ReadFrom(levelFile.GetDataInputStream());
+            levelDat = levelTree.Root["Data"] as TagNodeCompound;
+        }
+        return levelDat;
     }
 
     public static Dictionary<Vector2Int, RegionFile> regionDict = new Dictionary<Vector2Int, RegionFile>();
