@@ -141,7 +141,7 @@ public class SettingsPanel : MonoBehaviour {
 
     public static void OnClickQuit()
     {
-        NBTHelper.Save();
+        NBTHelper.SaveToDisk();
         LocalServer.SaveData();
         NetworkManager.Clear();
         SceneManager.LoadScene("LoginScene");

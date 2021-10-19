@@ -144,7 +144,8 @@ public class ChatPanel : MonoBehaviour
             }
             else if (Input.GetKeyDown(KeyCode.UpArrow))
             {
-                // last command
+                inputField.text = lastSendText;
+                inputField.caretPosition = inputField.text.Length;
             }
         }
         else
@@ -205,10 +206,13 @@ public class ChatPanel : MonoBehaviour
         Destroy(floatingItem.gameObject, 10);
     }
 
+    string lastSendText;
     void OnClickSendButton()
     {
         if (inputField.text != "")
         {
+            lastSendText = inputField.text;
+
             if (inputField.text.StartsWith("/"))
             {
                 string text = inputField.text;

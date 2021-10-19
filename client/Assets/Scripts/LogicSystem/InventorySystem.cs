@@ -72,6 +72,17 @@ public class InventorySystem
         }
     }
 
+    public static void HandleInput()
+    {
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            if (GameModeManager.isCreative)
+                CreativeInventory.Show();
+            else
+                SurvivalInventory.Show();
+        }
+    }
+
     public static void MouseGrabItem(int index)
     {
         InventoryItem tempItem = grabItem;

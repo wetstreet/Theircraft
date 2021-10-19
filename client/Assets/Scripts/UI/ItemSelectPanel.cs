@@ -281,6 +281,7 @@ public class ItemSelectPanel : MonoBehaviour
         Init();
 
         RefreshUI();
+        RefreshStatus();
     }
 
     public void HandleInput()

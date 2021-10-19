@@ -18,7 +18,7 @@ public class NBTHelper
 
     static string savePath { get
         {
-#if false
+#if UNITY_EDITOR
             string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             path = Path.Combine(path, ".minecraft");
             path = Path.Combine(path, "saves");
@@ -31,7 +31,7 @@ public class NBTHelper
         }
     }
 
-    public static void Save()
+    public static void SaveToDisk()
     {
         TagNodeList Pos = playerData.Root["Pos"] as TagNodeList;
         Pos[0] = (TagNodeDouble)PlayerController.instance.transform.position.x;
@@ -48,7 +48,12 @@ public class NBTHelper
             playerData.WriteTo(stream);
         }
 
+        TagNodeCompound player = levelDat["Player"] as TagNodeCompound;
+        TagNodeCompound abilities = player["abilities"] as TagNodeCompound;
+        abilities["flying"] = (TagNodeByte)(PlayerController.instance.isFlying ? 1 : 0);
         levelDat["DayTime"] = (TagNodeLong)TimeOfDay.instance.tick;
+        int mode = (int)GameModeManager.mode;
+        levelDat["GameType"] = (TagNodeInt)mode;
         using (Stream stream = levelFile.GetDataOutputStream())
         {
             levelTree.WriteTo(stream);

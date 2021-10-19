@@ -48,8 +48,11 @@ MonoBehaviour:
   position: {x: 0, y: 0, z: 0}
   forward: {x: 0, y: 0, z: 0}
   horizontalScale: 4
+  runSpeed: 6
   verticalScale: 1
   camera: {fileID: 0}
+  healthInternal: 20
+  foodLevel: 20
   m_RunstepLenghten: 0.7
   m_HeadBob:
     HorizontalBobRange: 0.1
@@ -106,6 +109,9 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
     VerticaltoHorizontalRatio: 2
+  attackStrength: 5
+  attackDamage: 10
+  isFlying: 0
   jumpSpeed: {x: 0, y: 9, z: 0}
   fallSpeed: {x: 0, y: -28, z: 0}
   bobSpeed: 5
@@ -114,6 +120,7 @@ MonoBehaviour:
   flyVerticalSpeed: 5
   flyHorizontalSpeed: 2
   footstepInterval: 0.4
+  sensitivity: 2
   accumulation: 0.025
 --- !u!143 &143223878412349064
 CharacterController:
@@ -191,7 +198,10 @@ MonoBehaviour:
     NearClipPlane: 0.1
     FarClipPlane: 1000
     Dutch: 0
+    ModeOverride: 0
     LensShift: {x: 0, y: 0}
+    GateFit: 0
+    m_SensorSize: {x: 1, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
@@ -290,7 +300,10 @@ MonoBehaviour:
     NearClipPlane: 0.1
     FarClipPlane: 1000
     Dutch: 0
+    ModeOverride: 0
     LensShift: {x: 0, y: 0}
+    GateFit: 0
+    m_SensorSize: {x: 1, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0

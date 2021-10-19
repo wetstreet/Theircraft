@@ -64,14 +64,6 @@ public class SurvivalInventory : MonoBehaviour
         }
     }
 
-    public static void HandleInput()
-    {
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            Show();
-        }
-    }
-
     void HandleInputUpdate()
     {
         if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.E))

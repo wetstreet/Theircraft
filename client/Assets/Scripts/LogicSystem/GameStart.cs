@@ -15,6 +15,7 @@ public class GameStart : MonoBehaviour
         ItemSelectPanel.Show();
         ChatPanel.ShowChatPanel();
         InventorySystem.Init();
+        GameModeManager.Init();
 
         // load chunk here
         ChunkChecker.Init();

@@ -8,7 +8,8 @@ public class PlayerController : MonoBehaviour
 {
     public Vector3 position = new Vector3();
     public Vector3 forward = new Vector3();
-    public float horizontalScale = 1;
+    public float horizontalScale = 4;
+    public float runSpeed = 8;
     public float verticalScale = 1;
     public Transform camera;
 
@@ -103,6 +104,12 @@ public class PlayerController : MonoBehaviour
         handAnimator = Camera.main.transform.Find("hand").GetComponent<Animator>();
 
         m_HeadBob.Setup(camera, 5);
+
+        TagNodeCompound levelDat = NBTHelper.GetLevelDat();
+        TagNodeCompound player = levelDat["Player"] as TagNodeCompound;
+        TagNodeCompound abilities = player["abilities"] as TagNodeCompound;
+        TagNodeByte flying = abilities["flying"] as TagNodeByte;
+        isFlying = flying == 1 ? true : false;
 
         transform.position = DataCenter.spawnPosition;
         transform.localEulerAngles = new Vector3(0, -DataCenter.spawnRotation.y, 0);
@@ -403,10 +410,13 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    bool isRun = false;
+
     float timeInterval = 0.2f;
     bool needUpdate;
     float lastUpdateTime;
     float lastSpace;
+    float lastW;
     void Update()
     {
         DrawWireFrame();
@@ -431,6 +441,27 @@ public class PlayerController : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Mouse1))
             {
                 OnRightClick();
+            }
+            if (!isFlying)
+            {
+                if (Input.GetKeyDown(KeyCode.W))
+                {
+                    if (Time.time - lastW < timeInterval)
+                    {
+                        isRun = true;
+                        vcamWide.SetActive(true);
+                        lastW = 0;
+                    }
+                    else
+                    {
+                        lastW = Time.time;
+                    }
+                }
+                if (Input.GetKeyUp(KeyCode.W))
+                {
+                    isRun = false;
+                    vcamWide.SetActive(false);
+                }
             }
             if (Input.GetKeyDown(KeyCode.Space))
             {
@@ -548,7 +579,7 @@ public class PlayerController : MonoBehaviour
         handAnimator.SetBool("isBreaking", false);
     }
 
-    bool isFlying = false;
+    public bool isFlying = false;
 
     public Vector3 jumpSpeed = new Vector3(0, 9f, 0);
     public Vector3 fallSpeed = new Vector3(0, -28f, 0);
@@ -632,8 +663,11 @@ public class PlayerController : MonoBehaviour
             {
                 horizontalSpeed *= attenuation;
             }
-            isFlying = false;
-            vcamWide.SetActive(false);
+            if (isFlying)
+            {
+                isFlying = false;
+                vcamWide.SetActive(false);
+            }
         }
         else
         {
@@ -708,7 +742,7 @@ public class PlayerController : MonoBehaviour
                 isMoving = false;
             }
         }
-        cc.Move(horizontalMovement * horizontalScale + verticalMovement * verticalScale);
+        cc.Move(horizontalMovement * (isRun ? runSpeed : horizontalScale) + verticalMovement * verticalScale);
 
         position = transform.position;
         forward = transform.forward;

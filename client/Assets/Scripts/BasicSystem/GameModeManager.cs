@@ -1,3 +1,4 @@
+using Substrate.Nbt;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -26,10 +27,18 @@ public class GameModeManager : MonoBehaviour
         get { return _mode == GameMode.Survival; }
     }
 
+    public static void Init()
+    {
+        TagNodeCompound levelDat = NBTHelper.GetLevelDat();
+        int gameMode = levelDat["GameType"] as TagNodeInt;
+        _mode = (GameMode)gameMode;
+    }
+
     public static void SetSurvival()
     {
         _mode = GameMode.Survival;
         ItemSelectPanel.instance.RefreshStatus();
+        PlayerController.instance.isFlying = false;
     }
 
     public static void SetCreative()

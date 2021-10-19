@@ -14,8 +14,7 @@ public class InputManager : MonoBehaviour {
 
         RegisterCallback(SettingsPanel.HandleInput);
         RegisterCallback(DebugUI.HandleInput);
-        //RegisterCallback(CreativeInventory.HandleInput);
-        RegisterCallback(SurvivalInventory.HandleInput);
+        RegisterCallback(InventorySystem.HandleInput);
         RegisterCallback(ItemSelectPanel.instance.HandleInput);
     }
 	
