@@ -21,9 +21,37 @@ public class GM
             case "zombie":
                 Zombie();
                 break;
+            case "gamemode":
+                GameMode(gm_params);
+                break;
             default:
                 ChatPanel.AddLine(ChatPanel.ErrorCode + "Unknown command.");
                 break;
+        }
+    }
+
+    static void GameMode(string[] gm_params)
+    {
+        if (gm_params.Length == 2)
+        {
+            if (gm_params[1] == "1" || gm_params[1] == "c" || gm_params[1] == "creative")
+            {
+                GameModeManager.SetCreative();
+                ChatPanel.AddLine("Your game mode has been updated to <color=#AAAAAA>Creative Mode");
+            }
+            else if (gm_params[1] == "0" || gm_params[1] == "s" || gm_params[1] == "survival")
+            {
+                GameModeManager.SetSurvival();
+                ChatPanel.AddLine("Your game mode has been updated to <color=#AAAAAA>Survival Mode");
+            }
+            else
+            {
+                ChatPanel.AddLine(ChatPanel.ErrorCode + '\'' + gm_params[2] + "\' is not a valid number");
+            }
+        }
+        else
+        {
+            ChatPanel.AddLine(ChatPanel.ErrorCode + "Usage: /gamemode <mode>");
         }
     }
 

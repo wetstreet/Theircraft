@@ -331,38 +331,10 @@ public class ChunkManager
         dependenceDict.Remove(pos);
     }
 
-    static List<Vector3Int> removeList = new List<Vector3Int>();
-    //public static void RemoveDependingBlocks(Vector3Int pos)
-    //{
-    //    removeList.Clear();
-    //    foreach(KeyValuePair<Vector3Int, Vector3Int> kvPair in dependenceDict)
-    //    {
-    //        if (kvPair.Value == pos)
-    //        {
-    //            removeList.Add(kvPair.Key);
-    //        }
-    //    }
-
-    //    for(int i = 0; i < removeList.Count; i++)
-    //    {
-    //        Vector3Int rmpos = removeList[i];
-    //        RemoveBlock(rmpos.x, rmpos.y, rmpos.z, false, false);
-    //    }
-    //}
-
     public static Vector3Int GetBlockDependence(Vector3Int pos)
     {
         return dependenceDict[pos];
     }
-
-    //public static void LoadChunk(CSChunk csChunk)
-    //{
-    //    //Debug.Log("loadChunk,x=" + csChunk.Position.x + ",z=" + csChunk.Position.y);
-    //    Chunk chunk = ChunkPool.GetChunk();
-    //    chunk.SetData(csChunk.Position.x, csChunk.Position.y, csChunk.BlocksInBytes);
-    //    AddToChunkDict(chunk);
-    //    ChunkRefresher.Add(chunk);
-    //}
 
     public static void UnloadChunk(int x, int z)
     {

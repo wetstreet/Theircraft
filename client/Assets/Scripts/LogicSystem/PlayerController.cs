@@ -108,8 +108,8 @@ public class PlayerController : MonoBehaviour
         transform.localEulerAngles = new Vector3(0, -DataCenter.spawnRotation.y, 0);
         camera.transform.localEulerAngles = new Vector3(DataCenter.spawnRotation.z, 0, 0);
         
-        NetworkManager.Register(ENUM_CMD.CS_ADD_BLOCK_NOTIFY, OnAddBlockNotify);
-        NetworkManager.Register(ENUM_CMD.CS_DELETE_BLOCK_NOTIFY, OnDeleteBlockNotify);
+        //NetworkManager.Register(ENUM_CMD.CS_ADD_BLOCK_NOTIFY, OnAddBlockNotify);
+        //NetworkManager.Register(ENUM_CMD.CS_DELETE_BLOCK_NOTIFY, OnDeleteBlockNotify);
 
         LoadingUI.Close();
         CrossHair.Show();
@@ -197,12 +197,27 @@ public class PlayerController : MonoBehaviour
     {
         if (cc.isGrounded)
         {
+            float fallDistance = lastPosOnGround.y - transform.position.y;
+            if (fallDistance > 4)
+            {
+                int fallDamage = (int)fallDistance - 3;
+                OnHit(fallDamage);
+            }
             lastPosOnGround = transform.position;
         }
         if (transform.position.y < -10)
         {
             transform.position = lastPosOnGround;
             FastTips.Show("Position has been corrected!");
+        }
+    }
+
+    public void OnHit(float damage)
+    {
+        if (GameModeManager.isSurvival)
+        {
+            Health -= damage;
+            SoundManager.Play3DSound("Player_Hit", gameObject);
         }
     }
 
@@ -307,9 +322,9 @@ public class PlayerController : MonoBehaviour
         int z = levelDat["SpawnZ"] as TagNodeInt;
         Vector3 spawnVec = new Vector3(x, y + 5, z);
         transform.position = spawnVec;
+        lastPosOnGround = spawnVec;
 
-        List<Vector2Int> preloadChunks = Utilities.GetSurroudingChunks(GetCurrentChunkPos(), 1);
-        ChunkManager.PreloadChunks(preloadChunks);
+        NBTHelper.RespawnRefreshChunks();
 
         Time.timeScale = 1;
         Health = 20;
@@ -534,7 +549,6 @@ public class PlayerController : MonoBehaviour
     }
 
     bool isFlying = false;
-    bool isCreative = false;
 
     public Vector3 jumpSpeed = new Vector3(0, 9f, 0);
     public Vector3 fallSpeed = new Vector3(0, -28f, 0);
@@ -545,7 +559,7 @@ public class PlayerController : MonoBehaviour
             verticalSpeed = jumpSpeed;
         }
 
-        if (isCreative)
+        if (GameModeManager.isCreative)
         {
             if (Time.time - lastSpace <= 0.3f)
             {
@@ -786,107 +800,107 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void AddBlockReq(Vector3Int pos, CSBlockType type, CSBlockOrientation orient = CSBlockOrientation.Default)
-    {
-        CSAddBlockReq addBlockReq = new CSAddBlockReq
-        {
-            block = new CSBlock
-            {
-                position = new CSVector3Int
-                {
-                    x = pos.x,
-                    y = pos.y,
-                    z = pos.z
-                },
-                type = type,
-                orient = orient,
-            }
-        };
-        NetworkManager.SendPkgToServer(ENUM_CMD.CS_ADD_BLOCK_REQ, addBlockReq, AddBlockRes);
-    }
+    //void AddBlockReq(Vector3Int pos, CSBlockType type, CSBlockOrientation orient = CSBlockOrientation.Default)
+    //{
+    //    CSAddBlockReq addBlockReq = new CSAddBlockReq
+    //    {
+    //        block = new CSBlock
+    //        {
+    //            position = new CSVector3Int
+    //            {
+    //                x = pos.x,
+    //                y = pos.y,
+    //                z = pos.z
+    //            },
+    //            type = type,
+    //            orient = orient,
+    //        }
+    //    };
+    //    NetworkManager.SendPkgToServer(ENUM_CMD.CS_ADD_BLOCK_REQ, addBlockReq, AddBlockRes);
+    //}
 
-    void AddBlockReq(Vector3Int pos, CSBlockType type, Vector3Int dependPos)
-    {
-        CSAddBlockReq addBlockReq = new CSAddBlockReq
-        {
-            block = new CSBlock
-            {
-                position = new CSVector3Int
-                {
-                    x = pos.x,
-                    y = pos.y,
-                    z = pos.z
-                },
-                type = type,
-                depentPos = dependPos.ToCSVector3Int(),
-            }
-        };
-        NetworkManager.SendPkgToServer(ENUM_CMD.CS_ADD_BLOCK_REQ, addBlockReq, AddBlockRes);
-    }
+    //void AddBlockReq(Vector3Int pos, CSBlockType type, Vector3Int dependPos)
+    //{
+    //    CSAddBlockReq addBlockReq = new CSAddBlockReq
+    //    {
+    //        block = new CSBlock
+    //        {
+    //            position = new CSVector3Int
+    //            {
+    //                x = pos.x,
+    //                y = pos.y,
+    //                z = pos.z
+    //            },
+    //            type = type,
+    //            depentPos = dependPos.ToCSVector3Int(),
+    //        }
+    //    };
+    //    NetworkManager.SendPkgToServer(ENUM_CMD.CS_ADD_BLOCK_REQ, addBlockReq, AddBlockRes);
+    //}
 
-    void AddBlockRes(object data)
-    {
-        CSAddBlockRes rsp = NetworkManager.Deserialize<CSAddBlockRes>(data);
-        //Debug.Log("AddBlockRes,retCode=" + rsp.RetCode);
-        if (rsp.RetCode == 0)
-        {
-            ChunkManager.AddBlock(rsp.block);
-            //SoundManager.PlayPlaceSound(rsp.block.type, gameObject);
-        }
-        else
-        {
-            FastTips.Show(rsp.RetCode);
-        }
-    }
+    //void AddBlockRes(object data)
+    //{
+    //    CSAddBlockRes rsp = NetworkManager.Deserialize<CSAddBlockRes>(data);
+    //    //Debug.Log("AddBlockRes,retCode=" + rsp.RetCode);
+    //    if (rsp.RetCode == 0)
+    //    {
+    //        ChunkManager.AddBlock(rsp.block);
+    //        //SoundManager.PlayPlaceSound(rsp.block.type, gameObject);
+    //    }
+    //    else
+    //    {
+    //        FastTips.Show(rsp.RetCode);
+    //    }
+    //}
 
-    void OnAddBlockNotify(object data)
-    {
-        //Debug.Log("OnAddBlockNotify");
-        CSAddBlockNotify notify = NetworkManager.Deserialize<CSAddBlockNotify>(data);
-        ChunkManager.AddBlock(notify.block);
-    }
+    //void OnAddBlockNotify(object data)
+    //{
+    //    //Debug.Log("OnAddBlockNotify");
+    //    CSAddBlockNotify notify = NetworkManager.Deserialize<CSAddBlockNotify>(data);
+    //    ChunkManager.AddBlock(notify.block);
+    //}
 
-    void DeleteBlockReq(Vector3 pos)
-    {
-        CSDeleteBlockReq req = new CSDeleteBlockReq
-        {
-            position = new CSVector3Int
-            {
-                x = Mathf.RoundToInt(pos.x),
-                y = Mathf.RoundToInt(pos.y),
-                z = Mathf.RoundToInt(pos.z)
-            }
-        };
-        NetworkManager.SendPkgToServer(ENUM_CMD.CS_DELETE_BLOCK_REQ, req, DeleteBlockRes);
-    }
+    //void DeleteBlockReq(Vector3 pos)
+    //{
+    //    CSDeleteBlockReq req = new CSDeleteBlockReq
+    //    {
+    //        position = new CSVector3Int
+    //        {
+    //            x = Mathf.RoundToInt(pos.x),
+    //            y = Mathf.RoundToInt(pos.y),
+    //            z = Mathf.RoundToInt(pos.z)
+    //        }
+    //    };
+    //    NetworkManager.SendPkgToServer(ENUM_CMD.CS_DELETE_BLOCK_REQ, req, DeleteBlockRes);
+    //}
 
-    void DeleteBlockRes(object data)
-    {
-        CSDeleteBlockRes rsp = NetworkManager.Deserialize<CSDeleteBlockRes>(data);
-        //Debug.Log("DeleteBlockRes,retCode=" + rsp.RetCode);
-        if (rsp.RetCode == 0)
-        {
-            foreach (CSVector3Int pos in rsp.position)
-            {
-                ChunkManager.RemoveBlock(pos.ToVector3Int());
-            }
-            ChunkManager.RebuildChunks();
-        }
-        else
-        {
-            FastTips.Show(rsp.RetCode);
-        }
-    }
+    //void DeleteBlockRes(object data)
+    //{
+    //    CSDeleteBlockRes rsp = NetworkManager.Deserialize<CSDeleteBlockRes>(data);
+    //    //Debug.Log("DeleteBlockRes,retCode=" + rsp.RetCode);
+    //    if (rsp.RetCode == 0)
+    //    {
+    //        foreach (CSVector3Int pos in rsp.position)
+    //        {
+    //            ChunkManager.RemoveBlock(pos.ToVector3Int());
+    //        }
+    //        ChunkManager.RebuildChunks();
+    //    }
+    //    else
+    //    {
+    //        FastTips.Show(rsp.RetCode);
+    //    }
+    //}
 
-    void OnDeleteBlockNotify(object data)
-    {
-        //Debug.Log("OnDeleteBlockNotify");
-        CSDeleteBlockNotify notify = NetworkManager.Deserialize<CSDeleteBlockNotify>(data);
-        foreach (CSVector3Int _pos in notify.position)
-        {
-            Vector3Int pos = _pos.ToVector3Int();
-            ChunkManager.RemoveBlock(pos);
-        }
-        ChunkManager.RebuildChunks();
-    }
+    //void OnDeleteBlockNotify(object data)
+    //{
+    //    //Debug.Log("OnDeleteBlockNotify");
+    //    CSDeleteBlockNotify notify = NetworkManager.Deserialize<CSDeleteBlockNotify>(data);
+    //    foreach (CSVector3Int _pos in notify.position)
+    //    {
+    //        Vector3Int pos = _pos.ToVector3Int();
+    //        ChunkManager.RemoveBlock(pos);
+    //    }
+    //    ChunkManager.RebuildChunks();
+    //}
 }

@@ -214,6 +214,22 @@ public class NBTHelper
         return shouldLoadChunks.Except(chunkDict.Keys).ToList();
     }
 
+    public static void RespawnRefreshChunks()
+    {
+        var preloadChunks = Utilities.GetSurroudingChunks(PlayerController.GetCurrentChunkPos(), 1);
+        var unloadChunks = chunkDict.Keys.Except(preloadChunks).ToList();
+        foreach (Vector2Int chunk in unloadChunks)
+        {
+            NBTHelper.RemoveChunk(chunk.x, chunk.y);
+        }
+        foreach (Vector2Int chunkPos in preloadChunks)
+        {
+            NBTChunk chunk = NBTHelper.LoadChunk(chunkPos.x, chunkPos.y);
+            ChunkRefresher.Add(chunk);
+        }
+        ChunkRefresher.ForceRefreshAll();
+    }
+
     // get the chunks to be unload (any chunks in the loaded chunks dict whose distance to the centerChunkPos is bigger than chunkRadius should be unloaded)
     public static List<Vector2Int> GetUnloadChunks(Vector2Int centerChunkPos, int chunkRadius)
     {

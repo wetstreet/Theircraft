@@ -145,7 +145,7 @@ public class Monster : MonoBehaviour
         LookAt(PlayerController.instance.position + offset);
 
         Vector3 horizontalDir = Vector3.zero;
-        if (path.corners.Length > 0 && currTargetIndex != path.corners.Length)
+        if (GameModeManager.isSurvival && path.corners.Length > 0 && currTargetIndex != path.corners.Length)
         {
             Vector3 player2target = path.corners[currTargetIndex] - transform.position;
             horizontalDir = new Vector3(player2target.x, 0, player2target.z);
@@ -195,9 +195,7 @@ public class Monster : MonoBehaviour
         }
     }
 
-    float attackInterval = 1f;
-    float lastAttackTime;
-    private void Update()
+    void Navigate()
     {
         float dist = (PlayerController.instance.position - transform.position).magnitude;
         if (dist < 10)
@@ -214,6 +212,13 @@ public class Monster : MonoBehaviour
         {
             MoveByPath();
         }
+    }
+
+    float attackInterval = 1f;
+    float lastAttackTime;
+    private void Update()
+    {
+        Navigate();
 
         UpdateColor();
     }
@@ -222,13 +227,15 @@ public class Monster : MonoBehaviour
     public float attackDamage = 1f;
     void Attack()
     {
-        Vector3 hitForce = transform.forward + Vector3.up;
-        PlayerController.instance.AddForce(hitForce * attackStrength);
+        if (GameModeManager.isSurvival)
+        {
+            Vector3 hitForce = transform.forward + Vector3.up;
+            PlayerController.instance.AddForce(hitForce * attackStrength);
 
-        PlayerController.instance.Health -= attackDamage;
-        SoundManager.Play3DSound("Player_Hit", PlayerController.instance.gameObject);
+            PlayerController.instance.OnHit(attackDamage);
 
-        lastAttackTime = Time.time;
+            lastAttackTime = Time.time;
+        }
     }
 
     bool shouldJump = false;

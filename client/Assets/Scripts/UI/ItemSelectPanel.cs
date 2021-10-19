@@ -33,6 +33,7 @@ public class ItemSelectPanel : MonoBehaviour
 
     TextMeshProUGUI level;
     Image exp;
+    Transform survival;
 
     public static void Init(uint index, List<CSItem> items)
     {
@@ -130,7 +131,9 @@ public class ItemSelectPanel : MonoBehaviour
             itemList[i] = item;
         }
 
-        Transform heartGrid = transform.Find("container/survival/health_grid");
+        survival = transform.Find("container/survival");
+
+        Transform heartGrid = survival.Find("health_grid");
         Transform heartUnit = heartGrid.Find("heart_bg_unit");
         for (int i = 0; i < 10; i++)
         {
@@ -146,7 +149,7 @@ public class ItemSelectPanel : MonoBehaviour
         }
         heartUnit.gameObject.SetActive(false);
 
-        Transform meatGrid = transform.Find("container/survival/meat_grid");
+        Transform meatGrid = survival.Find("meat_grid");
         Transform meatUnit = meatGrid.Find("meat_bg_unit");
         for (int i = 0; i < 10; i++)
         {
@@ -162,12 +165,22 @@ public class ItemSelectPanel : MonoBehaviour
         }
         meatUnit.gameObject.SetActive(false);
 
-        level = transform.Find("container/survival/level").GetComponent<TextMeshProUGUI>();
-        exp = transform.Find("container/survival/exp_bg/exp").GetComponent<Image>();
+        level = survival.Find("level").GetComponent<TextMeshProUGUI>();
+        exp = survival.Find("exp_bg/exp").GetComponent<Image>();
     }
 
     public void RefreshStatus()
     {
+        if (GameModeManager.isCreative)
+        {
+            survival.gameObject.SetActive(false);
+            return;
+        }
+        else
+        {
+            survival.gameObject.SetActive(true);
+        }
+
         float heart = Mathf.Clamp(PlayerController.instance.Health, 0, 20) / 2.0f;
         for (int i = 0; i < 10; i++)
         {

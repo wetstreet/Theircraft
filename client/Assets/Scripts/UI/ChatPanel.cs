@@ -97,6 +97,8 @@ public class ChatPanel : MonoBehaviour
             AddLineItem(content);
         }
 
+        scrollview.sizeDelta = new Vector2(width, 0);
+
         scrollview.gameObject.SetActive(false);
         floatingScrollview.gameObject.SetActive(true);
     }
