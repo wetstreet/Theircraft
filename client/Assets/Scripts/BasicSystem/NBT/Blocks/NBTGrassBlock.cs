@@ -32,76 +32,58 @@ public class NBTGrassBlock : NBTBlock
 
     public override string GetBreakEffectTexture(byte data) { return "dirt"; }
 
-    protected override CubeAttributes InitCubeAttributes(NBTChunk chunk, byte blockData, Vector3Int pos)
+
+    public override void AddCube(NBTChunk chunk, byte blockData, Vector3Int pos, NBTGameObject nbtGO)
     {
         CubeAttributes ca = new CubeAttributes()
         {
             pos = pos,
             blockData = blockData,
-            bottomColor = Color.white,
-            frontColor = Color.white,
-            backColor = Color.white,
-            leftColor = Color.white,
-            rightColor = Color.white,
         };
 
         bool topIsSnow = chunk.GetBlockByte(pos.x, pos.y + 1, pos.z) == 78;
-        if (topIsSnow)
-        {
-            ca.topIndex = TextureArrayManager.GetIndexByName("snow");
-            ca.frontIndex = TextureArrayManager.GetIndexByName("grass_side_snowed");
-            ca.backIndex = TextureArrayManager.GetIndexByName("grass_side_snowed");
-            ca.leftIndex = TextureArrayManager.GetIndexByName("grass_side_snowed");
-            ca.rightIndex = TextureArrayManager.GetIndexByName("grass_side_snowed");
-        }
-        else
-        {
-            ca.topIndex = TextureArrayManager.GetIndexByName("grass_top");
-            ca.frontIndex = TextureArrayManager.GetIndexByName("grass_side");
-            ca.backIndex = TextureArrayManager.GetIndexByName("grass_side");
-            ca.leftIndex = TextureArrayManager.GetIndexByName("grass_side");
-            ca.rightIndex = TextureArrayManager.GetIndexByName("grass_side");
-        }
-        ca.topColor = GetTopTintColorByData(chunk, pos, blockData);
-        ca.bottomIndex = TextureArrayManager.GetIndexByName("dirt");
-        return ca;
-    }
-
-    public override void AddCube(NBTChunk chunk, byte blockData, Vector3Int pos, NBTGameObject nbtGO)
-    {
-        CubeAttributes ca = InitCubeAttributes(chunk, blockData, pos);
 
         UnityEngine.Profiling.Profiler.BeginSample("AddFaces");
 
         if (!chunk.HasOpaqueBlock(pos.x, pos.y, pos.z - 1))
         {
-            float skyLight = chunk.GetSkyLight(pos.x, pos.y, pos.z - 1);
-            AddFrontFace(nbtGO.nbtMesh, ca, skyLight);
+            FaceAttributes fa = GetFrontFaceAttributes(chunk, nbtGO.nbtMesh, ca);
+            if (topIsSnow)
+                fa.faceIndex = TextureArrayManager.GetIndexByName("grass_side_snowed");
+            AddFace(nbtGO.nbtMesh, fa, ca);
         }
         if (!chunk.HasOpaqueBlock(pos.x + 1, pos.y, pos.z))
         {
-            float skyLight = chunk.GetSkyLight(pos.x + 1, pos.y, pos.z);
-            AddRightFace(nbtGO.nbtMesh, ca, skyLight);
+            FaceAttributes fa = GetRightFaceAttributes(chunk, nbtGO.nbtMesh, ca);
+            if (topIsSnow)
+                fa.faceIndex = TextureArrayManager.GetIndexByName("grass_side_snowed");
+            AddFace(nbtGO.nbtMesh, fa, ca);
         }
         if (!chunk.HasOpaqueBlock(pos.x - 1, pos.y, pos.z))
         {
-            float skyLight = chunk.GetSkyLight(pos.x - 1, pos.y, pos.z);
-            AddLeftFace(nbtGO.nbtMesh, ca, skyLight);
+            FaceAttributes fa = GetLeftFaceAttributes(chunk, nbtGO.nbtMesh, ca);
+            if (topIsSnow)
+                fa.faceIndex = TextureArrayManager.GetIndexByName("grass_side_snowed");
+            AddFace(nbtGO.nbtMesh, fa, ca);
         }
         if (!chunk.HasOpaqueBlock(pos.x, pos.y, pos.z + 1))
         {
-            float skyLight = chunk.GetSkyLight(pos.x, pos.y, pos.z + 1);
-            AddBackFace(nbtGO.nbtMesh, ca, skyLight);
+            FaceAttributes fa = GetBackFaceAttributes(chunk, nbtGO.nbtMesh, ca);
+            if (topIsSnow)
+                fa.faceIndex = TextureArrayManager.GetIndexByName("grass_side_snowed");
+            AddFace(nbtGO.nbtMesh, fa, ca);
         }
         if (!chunk.HasOpaqueBlock(pos.x, pos.y + 1, pos.z))
         {
-            float skyLight = chunk.GetSkyLight(pos.x, pos.y + 1, pos.z);
-            AddTopFace(nbtGO.nbtMesh, ca, skyLight);
+            FaceAttributes fa = GetTopFaceAttributes(chunk, nbtGO.nbtMesh, ca);
+            if (topIsSnow)
+                fa.faceIndex = TextureArrayManager.GetIndexByName("snow");
+            AddFace(nbtGO.nbtMesh, fa, ca);
         }
         if (!chunk.HasOpaqueBlock(pos.x, pos.y - 1, pos.z))
         {
-            float skyLight = chunk.GetSkyLight(pos.x, pos.y - 1, pos.z);
-            AddBottomFace(nbtGO.nbtMesh, ca, skyLight);
+            FaceAttributes fa = GetBottomFaceAttributes(chunk, nbtGO.nbtMesh, ca);
+            AddFace(nbtGO.nbtMesh, fa, ca);
         }
 
         UnityEngine.Profiling.Profiler.EndSample();

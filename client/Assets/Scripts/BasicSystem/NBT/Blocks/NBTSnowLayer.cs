@@ -37,97 +37,142 @@ public class NBTSnowLayer : NBTBlock
 
     public override void AddCube(NBTChunk chunk, byte blockData, Vector3Int pos, NBTGameObject nbtGO)
     {
-        CubeAttributes ca = InitCubeAttributes(chunk, blockData, pos);
+        CubeAttributes ca = new CubeAttributes();
+        ca.pos = pos;
+        ca.blockData = blockData;
 
         if (!chunk.HasOpaqueBlock(pos.x, pos.y, pos.z - 1))
         {
-            float skyLight = chunk.GetSkyLight(pos.x, pos.y, pos.z - 1);
-            AddFrontFace(nbtGO.nbtMesh, ca, skyLight);
+            FaceAttributes fa = GetFrontFaceAttributes(chunk, nbtGO.nbtMesh, ca);
+            AddFace(nbtGO.nbtMesh, fa, ca);
         }
         if (!chunk.HasOpaqueBlock(pos.x + 1, pos.y, pos.z))
         {
-            float skyLight = chunk.GetSkyLight(pos.x + 1, pos.y, pos.z);
-            AddRightFace(nbtGO.nbtMesh, ca, skyLight);
+            FaceAttributes fa = GetRightFaceAttributes(chunk, nbtGO.nbtMesh, ca);
+            AddFace(nbtGO.nbtMesh, fa, ca);
         }
         if (!chunk.HasOpaqueBlock(pos.x - 1, pos.y, pos.z))
         {
-            float skyLight = chunk.GetSkyLight(pos.x - 1, pos.y, pos.z);
-            AddLeftFace(nbtGO.nbtMesh, ca, skyLight);
+            FaceAttributes fa = GetLeftFaceAttributes(chunk, nbtGO.nbtMesh, ca);
+            AddFace(nbtGO.nbtMesh, fa, ca);
         }
         if (!chunk.HasOpaqueBlock(pos.x, pos.y, pos.z + 1))
         {
-            float skyLight = chunk.GetSkyLight(pos.x, pos.y, pos.z + 1);
-            AddBackFace(nbtGO.nbtMesh, ca, skyLight);
+            FaceAttributes fa = GetBackFaceAttributes(chunk, nbtGO.nbtMesh, ca);
+            AddFace(nbtGO.nbtMesh, fa, ca);
         }
 
-        float selfSkyLight = chunk.GetSkyLight(pos.x, pos.y, pos.z);
-        AddTopFace(nbtGO.nbtMesh, ca, selfSkyLight);
+        AddFace(nbtGO.nbtMesh, GetTopFaceAttributes(chunk, nbtGO.nbtMesh, ca), ca);
 
         if (!chunk.HasOpaqueBlock(pos.x, pos.y - 1, pos.z))
         {
-            float skyLight = chunk.GetSkyLight(pos.x, pos.y - 1, pos.z);
-            AddBottomFace(nbtGO.nbtMesh, ca, skyLight);
+            FaceAttributes fa = GetBottomFaceAttributes(chunk, nbtGO.nbtMesh, ca);
+            AddFace(nbtGO.nbtMesh, fa, ca);
         }
     }
 
     static Vector2 leftMid = new Vector2(0, 0.125f);
     static Vector2 rightMid = new Vector2(1, 0.125f);
 
-    Vector2[] uv_full = new Vector2[4] { Vector2.zero, Vector2.up, Vector2.one, Vector2.right };
-    Vector2[] uv_bot = new Vector2[4] { Vector2.zero, leftMid, rightMid, Vector2.right };
+    static Vector2[] uv_full = new Vector2[4] { Vector2.zero, Vector2.up, Vector2.one, Vector2.right };
+    static Vector2[] uv_bot = new Vector2[4] { Vector2.zero, leftMid, rightMid, Vector2.right };
 
-    protected void AddFace(NBTMesh mesh, Vector3Int pos,
-        Vector3 pos1, Vector3 pos2, Vector3 pos3, Vector3 pos4,
-        Vector2[] uv, int faceIndex, Color color, float skyLight, Vector3 normal)
+    static Vector3[] frontVertices_snow = new Vector3[] { nearBottomLeft, nearMiddleLeft, nearMiddleRight, nearBottomRight };
+    static Vector3[] backVertices_snow = new Vector3[] { farBottomRight, farMiddleRight, farMiddleLeft, farBottomLeft };
+    static Vector3[] topVertices_snow = new Vector3[] { farMiddleRight, nearMiddleRight, nearMiddleLeft, farMiddleLeft };
+    static Vector3[] bottomVertices_snow = new Vector3[] { nearBottomRight, farBottomRight, farBottomLeft, nearBottomLeft };
+    static Vector3[] leftVertices_snow = new Vector3[] { farBottomLeft, farMiddleLeft, nearMiddleLeft, nearBottomLeft };
+    static Vector3[] rightVertices_snow = new Vector3[] { nearBottomRight, nearMiddleRight, farMiddleRight, farBottomRight };
+
+
+    protected override FaceAttributes GetFrontFaceAttributes(NBTChunk chunk, NBTMesh mesh, CubeAttributes ca)
     {
-        ushort startIndex = mesh.vertexCount;
+        chunk.GetLights(ca.pos.x, ca.pos.y, ca.pos.z - 1, out byte skyLight, out byte blockLight);
 
-        SetVertex(mesh, pos1 + pos, faceIndex, uv[0], skyLight, color, normal);
-        SetVertex(mesh, pos2 + pos, faceIndex, uv[1], skyLight, color, normal);
-        SetVertex(mesh, pos3 + pos, faceIndex, uv[2], skyLight, color, normal);
-        SetVertex(mesh, pos4 + pos, faceIndex, uv[3], skyLight, color, normal);
+        FaceAttributes fa = new FaceAttributes();
+        fa.pos = frontVertices_snow;
+        fa.faceIndex = GetFrontIndexByData(chunk, ca.blockData);
+        fa.color = GetFrontTintColorByData(chunk, ca.pos, ca.blockData);
+        fa.skyLight = skyLight;
+        fa.blockLight = blockLight;
+        fa.normal = Vector3.forward;
+        fa.uv = uv_bot;
 
-        mesh.triangleArray[mesh.triangleCount++] = startIndex;
-        mesh.triangleArray[mesh.triangleCount++] = (ushort)(startIndex + 1);
-        mesh.triangleArray[mesh.triangleCount++] = (ushort)(startIndex + 2);
-        mesh.triangleArray[mesh.triangleCount++] = startIndex;
-        mesh.triangleArray[mesh.triangleCount++] = (ushort)(startIndex + 2);
-        mesh.triangleArray[mesh.triangleCount++] = (ushort)(startIndex + 3);
+        return fa;
     }
-
-    protected override void AddFrontFace(NBTMesh mesh, CubeAttributes ca, float skyLight)
+    protected override FaceAttributes GetBackFaceAttributes(NBTChunk chunk, NBTMesh mesh, CubeAttributes ca)
     {
-        rotation = GetFrontRotationByData(ca.blockData);
-        AddFace(mesh, ca.pos, nearBottomLeft, nearMiddleLeft, nearMiddleRight, nearBottomRight, uv_bot, ca.frontIndex, ca.frontColor, skyLight, Vector3.forward);
+        chunk.GetLights(ca.pos.x, ca.pos.y, ca.pos.z + 1, out byte skyLight, out byte blockLight);
+
+        FaceAttributes fa = new FaceAttributes();
+        fa.pos = backVertices_snow;
+        fa.faceIndex = GetBackIndexByData(chunk, ca.blockData);
+        fa.color = GetBackTintColorByData(chunk, ca.pos, ca.blockData);
+        fa.skyLight = skyLight;
+        fa.blockLight = blockLight;
+        fa.normal = Vector3.back;
+        fa.uv = uv_bot;
+
+        return fa;
     }
-
-    protected override void AddBackFace(NBTMesh mesh, CubeAttributes ca, float skyLight)
+    protected override FaceAttributes GetTopFaceAttributes(NBTChunk chunk, NBTMesh mesh, CubeAttributes ca)
     {
-        rotation = GetBackRotationByData(ca.blockData);
-        AddFace(mesh, ca.pos, farBottomRight, farMiddleRight, farMiddleLeft, farBottomLeft, uv_bot, ca.backIndex, ca.backColor, skyLight, Vector3.back);
+        chunk.GetLights(ca.pos.x, ca.pos.y + 1, ca.pos.z, out byte skyLight, out byte blockLight);
+
+        FaceAttributes fa = new FaceAttributes();
+        fa.pos = topVertices_snow;
+        fa.faceIndex = GetTopIndexByData(chunk, ca.blockData);
+        fa.color = GetTopTintColorByData(chunk, ca.pos, ca.blockData);
+        fa.skyLight = skyLight;
+        fa.blockLight = blockLight;
+        fa.normal = Vector3.up;
+        fa.uv = uv_full;
+
+        return fa;
     }
-
-    protected override void AddTopFace(NBTMesh mesh, CubeAttributes ca, float skyLight)
+    protected override FaceAttributes GetBottomFaceAttributes(NBTChunk chunk, NBTMesh mesh, CubeAttributes ca)
     {
-        rotation = GetTopRotationByData(ca.blockData);
-        AddFace(mesh, ca.pos, farMiddleRight, nearMiddleRight, nearMiddleLeft, farMiddleLeft, uv_full, ca.topIndex, ca.topColor, skyLight, Vector3.up);
+        chunk.GetLights(ca.pos.x, ca.pos.y - 1, ca.pos.z, out byte skyLight, out byte blockLight);
+
+        FaceAttributes fa;
+        fa.pos = bottomVertices_snow;
+        fa.faceIndex = GetBottomIndexByData(chunk, ca.blockData);
+        fa.color = GetBottomTintColorByData(chunk, ca.pos, ca.blockData);
+        fa.skyLight = skyLight;
+        fa.blockLight = blockLight;
+        fa.normal = Vector3.down;
+        fa.uv = uv_full;
+
+        return fa;
     }
-
-    protected override void AddBottomFace(NBTMesh mesh, CubeAttributes ca, float skyLight)
+    protected override FaceAttributes GetLeftFaceAttributes(NBTChunk chunk, NBTMesh mesh, CubeAttributes ca)
     {
-        rotation = GetBottomRotationByData(ca.blockData);
-        AddFace(mesh, ca.pos, nearBottomRight, farBottomRight, farBottomLeft, nearBottomLeft, uv_full, ca.bottomIndex, ca.bottomColor, skyLight, Vector3.down);
+        chunk.GetLights(ca.pos.x - 1, ca.pos.y, ca.pos.z, out byte skyLight, out byte blockLight);
+
+        FaceAttributes fa;
+        fa.pos = leftVertices_snow;
+        fa.faceIndex = GetLeftIndexByData(chunk, ca.blockData);
+        fa.color = GetLeftTintColorByData(chunk, ca.pos, ca.blockData);
+        fa.skyLight = skyLight;
+        fa.blockLight = blockLight;
+        fa.normal = Vector3.left;
+        fa.uv = uv_bot;
+
+        return fa;
     }
-
-    protected override void AddLeftFace(NBTMesh mesh, CubeAttributes ca, float skyLight)
+    protected override FaceAttributes GetRightFaceAttributes(NBTChunk chunk, NBTMesh mesh, CubeAttributes ca)
     {
-        rotation = GetLeftRotationByData(ca.blockData);
-        AddFace(mesh, ca.pos, farBottomLeft, farMiddleLeft, nearMiddleLeft, nearBottomLeft, uv_bot, ca.leftIndex, ca.leftColor, skyLight, Vector3.left);
-    }
+        chunk.GetLights(ca.pos.x + 1, ca.pos.y, ca.pos.z, out byte skyLight, out byte blockLight);
 
-    protected override void AddRightFace(NBTMesh mesh, CubeAttributes ca, float skyLight)
-    {
-        rotation = GetRightRotationByData(ca.blockData);
-        AddFace(mesh, ca.pos, nearBottomRight, nearMiddleRight, farMiddleRight, farBottomRight, uv_bot, ca.rightIndex, ca.rightColor, skyLight, Vector3.right);
+        FaceAttributes fa;
+        fa.pos = rightVertices_snow;
+        fa.faceIndex = GetRightIndexByData(chunk, ca.blockData);
+        fa.color = GetRightTintColorByData(chunk, ca.pos, ca.blockData);
+        fa.skyLight = skyLight;
+        fa.blockLight = blockLight;
+        fa.normal = Vector3.right;
+        fa.uv = uv_bot;
+
+        return fa;
     }
 }

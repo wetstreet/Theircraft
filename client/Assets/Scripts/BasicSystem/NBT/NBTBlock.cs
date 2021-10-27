@@ -6,7 +6,7 @@ public struct Vertex
     public Vector4 pos;
     public Vector3 normal;
     public Vector4 color;
-    public Vector3 texcoord;
+    public Vector4 texcoord;
 }
 
 public enum Rotation
@@ -19,18 +19,17 @@ public struct CubeAttributes
 {
     public Vector3Int pos;
     public byte blockData;
-    public int topIndex;
-    public int bottomIndex;
-    public int frontIndex;
-    public int backIndex;
-    public int leftIndex;
-    public int rightIndex;
-    public Color topColor;
-    public Color bottomColor;
-    public Color frontColor;
-    public Color backColor;
-    public Color leftColor;
-    public Color rightColor;
+}
+
+public struct FaceAttributes
+{
+    public Vector3[] pos;
+    public Vector2[] uv;
+    public int faceIndex;
+    public Color color;
+    public float skyLight;
+    public float blockLight;
+    public Vector3 normal;
 }
 
 public abstract class NBTBlock : NBTObject
@@ -46,6 +45,8 @@ public abstract class NBTBlock : NBTObject
     public virtual float hardness { get { return 1; } }
 
     public virtual float speedMultiplier { get { return 3; } }
+
+    public virtual bool isSpecialMaterial { get { return false; } }
 
     public virtual float breakNeedTime {
         get {
@@ -103,6 +104,16 @@ public abstract class NBTBlock : NBTObject
     protected static Vector3 farTopLeft = new Vector3(-0.5f, 0.5f, 0.5f);
     protected static Vector3 farTopRight = new Vector3(0.5f, 0.5f, 0.5f);
 
+    protected static Vector3[] frontVertices = new Vector3[] { nearBottomLeft, nearTopLeft, nearTopRight, nearBottomRight };
+    protected static Vector3[] backVertices = new Vector3[] { farBottomRight, farTopRight, farTopLeft, farBottomLeft };
+    protected static Vector3[] topVertices = new Vector3[] { farTopRight, nearTopRight, nearTopLeft, farTopLeft };
+    protected static Vector3[] bottomVertices = new Vector3[] { nearBottomRight, farBottomRight, farBottomLeft, nearBottomLeft };
+    protected static Vector3[] leftVertices = new Vector3[] { farBottomLeft, farTopLeft, nearTopLeft, nearBottomLeft };
+    protected static Vector3[] rightVertices = new Vector3[] { nearBottomRight, nearTopRight, farTopRight, farBottomRight };
+
+    protected static Vector2[] uv_zero = new Vector2[4] { Vector2.zero, Vector2.up, Vector2.one, Vector2.right };
+    protected static Vector2[] uv_right = new Vector2[4] { Vector2.up, Vector2.one, Vector2.right, Vector2.zero };
+
     // wireframe
     public virtual float topOffset { get { return 0.501f; } }
     public virtual float bottomOffset { get { return -0.501f; } }
@@ -115,18 +126,18 @@ public abstract class NBTBlock : NBTObject
 
     public override Mesh GetItemMesh(NBTChunk chunk, Vector3Int pos, byte blockData)
     {
-        CubeAttributes ca = InitCubeAttributes(chunk, blockData, Vector3Int.zero);
+        CubeAttributes ca = new CubeAttributes();
+        ca.pos = pos;
+        ca.blockData = blockData;
 
         NBTMesh nbtMesh = new NBTMesh(256);
 
-        float skyLight = NBTHelper.GetSkyLightByte(pos.x, pos.y, pos.z) / 15f;
-
-        AddFrontFace(nbtMesh, ca, skyLight);
-        AddRightFace(nbtMesh, ca, skyLight);
-        AddLeftFace(nbtMesh, ca, skyLight);
-        AddBackFace(nbtMesh, ca, skyLight);
-        AddTopFace(nbtMesh, ca, skyLight);
-        AddBottomFace(nbtMesh, ca, skyLight);
+        AddFace(nbtMesh, GetFrontFaceAttributes(chunk, nbtMesh, ca), ca);
+        AddFace(nbtMesh, GetBackFaceAttributes(chunk, nbtMesh, ca), ca);
+        AddFace(nbtMesh, GetTopFaceAttributes(chunk, nbtMesh, ca), ca);
+        AddFace(nbtMesh, GetBottomFaceAttributes(chunk, nbtMesh, ca), ca);
+        AddFace(nbtMesh, GetLeftFaceAttributes(chunk, nbtMesh, ca), ca);
+        AddFace(nbtMesh, GetRightFaceAttributes(chunk, nbtMesh, ca), ca);
 
         nbtMesh.Refresh();
 
@@ -142,82 +153,49 @@ public abstract class NBTBlock : NBTObject
     protected virtual Rotation GetLeftRotationByData(byte data) { return Rotation.Zero; }
     protected virtual Rotation GetRightRotationByData(byte data) { return Rotation.Zero; }
 
-    protected virtual CubeAttributes InitCubeAttributes(NBTChunk chunk, byte blockData, Vector3Int pos)
-    {
-        return new CubeAttributes()
-        {
-            pos = pos,
-            blockData = blockData,
-            topIndex = GetTopIndexByData(chunk, blockData),
-            bottomIndex = GetBottomIndexByData(chunk, blockData),
-            frontIndex = GetFrontIndexByData(chunk, blockData),
-            backIndex = GetBackIndexByData(chunk, blockData),
-            leftIndex = GetLeftIndexByData(chunk, blockData),
-            rightIndex = GetRightIndexByData(chunk, blockData),
-            topColor = GetTopTintColorByData(chunk, pos, blockData),
-            bottomColor = GetBottomTintColorByData(chunk, pos, blockData),
-            frontColor = GetFrontTintColorByData(chunk, pos, blockData),
-            backColor = GetBackTintColorByData(chunk, pos, blockData),
-            leftColor = GetLeftTintColorByData(chunk, pos, blockData),
-            rightColor = GetRightTintColorByData(chunk, pos, blockData),
-        };
-    }
-
     public virtual void AddCube(NBTChunk chunk, byte blockData, Vector3Int pos, NBTGameObject nbtGO)
     {
-        CubeAttributes ca = InitCubeAttributes(chunk, blockData, pos);
+        CubeAttributes ca = new CubeAttributes();
+        ca.pos = pos;
+        ca.blockData = blockData;
 
         UnityEngine.Profiling.Profiler.BeginSample("AddFaces");
 
         if (!chunk.HasOpaqueBlock(pos.x, pos.y, pos.z - 1))
         {
-            float skyLight = chunk.GetSkyLight(pos.x, pos.y, pos.z - 1);
-            AddFrontFace(nbtGO.nbtMesh, ca, skyLight);
+            FaceAttributes fa = GetFrontFaceAttributes(chunk, nbtGO.nbtMesh, ca);
+            AddFace(nbtGO.nbtMesh, fa, ca);
         }
         if (!chunk.HasOpaqueBlock(pos.x + 1, pos.y, pos.z))
         {
-            float skyLight = chunk.GetSkyLight(pos.x + 1, pos.y, pos.z);
-            AddRightFace(nbtGO.nbtMesh, ca, skyLight);
+            FaceAttributes fa = GetRightFaceAttributes(chunk, nbtGO.nbtMesh, ca);
+            AddFace(nbtGO.nbtMesh, fa, ca);
         }
         if (!chunk.HasOpaqueBlock(pos.x - 1, pos.y, pos.z))
         {
-            float skyLight = chunk.GetSkyLight(pos.x - 1, pos.y, pos.z);
-            AddLeftFace(nbtGO.nbtMesh, ca, skyLight);
+            FaceAttributes fa = GetLeftFaceAttributes(chunk, nbtGO.nbtMesh, ca);
+            AddFace(nbtGO.nbtMesh, fa, ca);
         }
         if (!chunk.HasOpaqueBlock(pos.x, pos.y, pos.z + 1))
         {
-            float skyLight = chunk.GetSkyLight(pos.x, pos.y, pos.z + 1);
-            AddBackFace(nbtGO.nbtMesh, ca, skyLight);
+            FaceAttributes fa = GetBackFaceAttributes(chunk, nbtGO.nbtMesh, ca);
+            AddFace(nbtGO.nbtMesh, fa, ca);
         }
         if (!chunk.HasOpaqueBlock(pos.x, pos.y + 1, pos.z))
         {
-            float skyLight = chunk.GetSkyLight(pos.x, pos.y + 1, pos.z);
-            AddTopFace(nbtGO.nbtMesh, ca, skyLight);
+            FaceAttributes fa = GetTopFaceAttributes(chunk, nbtGO.nbtMesh, ca);
+            AddFace(nbtGO.nbtMesh, fa, ca);
         }
         if (!chunk.HasOpaqueBlock(pos.x, pos.y - 1, pos.z))
         {
-            float skyLight = chunk.GetSkyLight(pos.x, pos.y - 1, pos.z);
-            AddBottomFace(nbtGO.nbtMesh, ca, skyLight);
+            FaceAttributes fa = GetBottomFaceAttributes(chunk, nbtGO.nbtMesh, ca);
+            AddFace(nbtGO.nbtMesh, fa, ca);
         }
 
         UnityEngine.Profiling.Profiler.EndSample();
     }
 
-    protected Rotation rotation = Rotation.Zero;
-    Vector2[] uv_zero = new Vector2[4] { Vector2.zero, Vector2.up, Vector2.one, Vector2.right };
-    Vector2[] uv_right = new Vector2[4] { Vector2.up, Vector2.one, Vector2.right, Vector2.zero };
-    Vector2[] uv {
-        get {
-            if (rotation == Rotation.Zero) {
-                return uv_zero;
-            } else if (rotation == Rotation.Right) {
-                return uv_right;
-            }
-            return uv_zero;
-        }
-    }
-
-    protected void SetVertex(NBTMesh mesh, Vector3 pos, int faceIndex, Vector2 texcoord, float skyLight, Vector4 color, Vector3 normal)
+    protected void SetVertex(NBTMesh mesh, Vector3 pos, int faceIndex, Vector2 texcoord, float skyLight, float blockLight, Vector4 color, Vector3 normal)
     {
         Vertex vert = mesh.vertexArray[mesh.vertexCount];
         vert.pos.x = pos.x;
@@ -227,21 +205,20 @@ public abstract class NBTBlock : NBTObject
         vert.texcoord.x = texcoord.x;
         vert.texcoord.y = texcoord.y;
         vert.texcoord.z = skyLight;
+        vert.texcoord.w = blockLight;
         vert.color = color;
         vert.normal = normal;
         mesh.vertexArray[mesh.vertexCount++] = vert;
     }
 
-    protected void AddFace(NBTMesh mesh, Vector3Int pos,
-        Vector3 pos1, Vector3 pos2, Vector3 pos3, Vector3 pos4,
-        int faceIndex, Color color, float skyLight, Vector3 normal)
+    protected void AddFace(NBTMesh mesh, FaceAttributes fa, CubeAttributes ca)
     {
         ushort startIndex = mesh.vertexCount;
 
-        SetVertex(mesh, pos1 + pos, faceIndex, uv[0], skyLight, color, normal);
-        SetVertex(mesh, pos2 + pos, faceIndex, uv[1], skyLight, color, normal);
-        SetVertex(mesh, pos3 + pos, faceIndex, uv[2], skyLight, color, normal);
-        SetVertex(mesh, pos4 + pos, faceIndex, uv[3], skyLight, color, normal);
+        SetVertex(mesh, fa.pos[0] + ca.pos, fa.faceIndex, fa.uv[0], fa.skyLight, fa.blockLight, fa.color, fa.normal);
+        SetVertex(mesh, fa.pos[1] + ca.pos, fa.faceIndex, fa.uv[1], fa.skyLight, fa.blockLight, fa.color, fa.normal);
+        SetVertex(mesh, fa.pos[2] + ca.pos, fa.faceIndex, fa.uv[2], fa.skyLight, fa.blockLight, fa.color, fa.normal);
+        SetVertex(mesh, fa.pos[3] + ca.pos, fa.faceIndex, fa.uv[3], fa.skyLight, fa.blockLight, fa.color, fa.normal);
 
         mesh.triangleArray[mesh.triangleCount++] = startIndex;
         mesh.triangleArray[mesh.triangleCount++] = (ushort)(startIndex + 1);
@@ -251,34 +228,124 @@ public abstract class NBTBlock : NBTObject
         mesh.triangleArray[mesh.triangleCount++] = (ushort)(startIndex + 3);
     }
 
-    protected virtual void AddFrontFace(NBTMesh mesh, CubeAttributes ca, float skyLight)
+    protected virtual FaceAttributes GetFrontFaceAttributes(NBTChunk chunk, NBTMesh mesh, CubeAttributes ca)
     {
-        rotation = GetFrontRotationByData(ca.blockData);
-        AddFace(mesh, ca.pos, nearBottomLeft, nearTopLeft, nearTopRight, nearBottomRight, ca.frontIndex, ca.frontColor, skyLight, Vector3.forward);
+        chunk.GetLights(ca.pos.x, ca.pos.y, ca.pos.z - 1, out byte skyLight, out byte blockLight);
+
+        FaceAttributes fa = new FaceAttributes();
+        fa.pos = frontVertices;
+        fa.faceIndex = GetFrontIndexByData(chunk, ca.blockData);
+        fa.color = GetFrontTintColorByData(chunk, ca.pos, ca.blockData);
+        fa.skyLight = skyLight;
+        fa.blockLight = blockLight;
+        fa.normal = Vector3.forward;
+
+        Rotation rotation = GetFrontRotationByData(ca.blockData);
+        if (rotation == Rotation.Right)
+            fa.uv = uv_right;
+        else
+            fa.uv = uv_zero;
+
+        return fa;
     }
-    protected virtual void AddBackFace(NBTMesh mesh, CubeAttributes ca, float skyLight)
+    protected virtual FaceAttributes GetBackFaceAttributes(NBTChunk chunk, NBTMesh mesh, CubeAttributes ca)
     {
-        rotation = GetBackRotationByData(ca.blockData);
-        AddFace(mesh, ca.pos, farBottomRight, farTopRight, farTopLeft, farBottomLeft, ca.backIndex, ca.backColor, skyLight, Vector3.back);
+        chunk.GetLights(ca.pos.x, ca.pos.y, ca.pos.z + 1, out byte skyLight, out byte blockLight);
+
+        FaceAttributes fa = new FaceAttributes();
+        fa.pos = backVertices;
+        fa.faceIndex = GetBackIndexByData(chunk, ca.blockData);
+        fa.color = GetBackTintColorByData(chunk, ca.pos, ca.blockData);
+        fa.skyLight = skyLight;
+        fa.blockLight = blockLight;
+        fa.normal = Vector3.back;
+
+        Rotation rotation = GetFrontRotationByData(ca.blockData);
+        if (rotation == Rotation.Right)
+            fa.uv = uv_right;
+        else
+            fa.uv = uv_zero;
+
+        return fa;
     }
-    protected virtual void AddTopFace(NBTMesh mesh, CubeAttributes ca, float skyLight)
+    protected virtual FaceAttributes GetTopFaceAttributes(NBTChunk chunk, NBTMesh mesh, CubeAttributes ca)
     {
-        rotation = GetTopRotationByData(ca.blockData);
-        AddFace(mesh, ca.pos, farTopRight, nearTopRight, nearTopLeft, farTopLeft, ca.topIndex, ca.topColor, skyLight, Vector3.up);
+        chunk.GetLights(ca.pos.x, ca.pos.y + 1, ca.pos.z, out byte skyLight, out byte blockLight);
+
+        FaceAttributes fa = new FaceAttributes();
+        fa.pos = topVertices;
+        fa.faceIndex = GetTopIndexByData(chunk, ca.blockData);
+        fa.color = GetTopTintColorByData(chunk, ca.pos, ca.blockData);
+        fa.skyLight = skyLight;
+        fa.blockLight = blockLight;
+        fa.normal = Vector3.up;
+
+        Rotation rotation = GetFrontRotationByData(ca.blockData);
+        if (rotation == Rotation.Right)
+            fa.uv = uv_right;
+        else
+            fa.uv = uv_zero;
+
+        return fa;
     }
-    protected virtual void AddBottomFace(NBTMesh mesh, CubeAttributes ca, float skyLight)
+    protected virtual FaceAttributes GetBottomFaceAttributes(NBTChunk chunk, NBTMesh mesh, CubeAttributes ca)
     {
-        rotation = GetBottomRotationByData(ca.blockData);
-        AddFace(mesh, ca.pos, nearBottomRight, farBottomRight, farBottomLeft, nearBottomLeft, ca.bottomIndex, ca.bottomColor, skyLight, Vector3.down);
+        chunk.GetLights(ca.pos.x, ca.pos.y - 1, ca.pos.z, out byte skyLight, out byte blockLight);
+
+        FaceAttributes fa;
+        fa.pos = bottomVertices;
+        fa.faceIndex = GetBottomIndexByData(chunk, ca.blockData);
+        fa.color = GetBottomTintColorByData(chunk, ca.pos, ca.blockData);
+        fa.skyLight = skyLight;
+        fa.blockLight = blockLight;
+        fa.normal = Vector3.down;
+
+        Rotation rotation = GetFrontRotationByData(ca.blockData);
+        if (rotation == Rotation.Right)
+            fa.uv = uv_right;
+        else
+            fa.uv = uv_zero;
+
+        return fa;
     }
-    protected virtual void AddLeftFace(NBTMesh mesh, CubeAttributes ca, float skyLight)
+    protected virtual FaceAttributes GetLeftFaceAttributes(NBTChunk chunk, NBTMesh mesh, CubeAttributes ca)
     {
-        rotation = GetLeftRotationByData(ca.blockData);
-        AddFace(mesh, ca.pos, farBottomLeft, farTopLeft, nearTopLeft, nearBottomLeft, ca.leftIndex, ca.leftColor, skyLight, Vector3.left);
+        chunk.GetLights(ca.pos.x - 1, ca.pos.y, ca.pos.z, out byte skyLight, out byte blockLight);
+
+        FaceAttributes fa;
+        fa.pos = leftVertices;
+        fa.faceIndex = GetLeftIndexByData(chunk, ca.blockData);
+        fa.color = GetLeftTintColorByData(chunk, ca.pos, ca.blockData);
+        fa.skyLight = skyLight;
+        fa.blockLight = blockLight;
+        fa.normal = Vector3.left;
+
+        Rotation rotation = GetFrontRotationByData(ca.blockData);
+        if (rotation == Rotation.Right)
+            fa.uv = uv_right;
+        else
+            fa.uv = uv_zero;
+
+        return fa;
     }
-    protected virtual void AddRightFace(NBTMesh mesh, CubeAttributes ca, float skyLight)
+    protected virtual FaceAttributes GetRightFaceAttributes(NBTChunk chunk, NBTMesh mesh, CubeAttributes ca)
     {
-        rotation = GetRightRotationByData(ca.blockData);
-        AddFace(mesh, ca.pos, nearBottomRight, nearTopRight, farTopRight, farBottomRight, ca.rightIndex, ca.rightColor, skyLight, Vector3.right);
+        chunk.GetLights(ca.pos.x + 1, ca.pos.y, ca.pos.z, out byte skyLight, out byte blockLight);
+
+        FaceAttributes fa;
+        fa.pos = rightVertices;
+        fa.faceIndex = GetRightIndexByData(chunk, ca.blockData);
+        fa.color = GetRightTintColorByData(chunk, ca.pos, ca.blockData);
+        fa.skyLight = skyLight;
+        fa.blockLight = blockLight;
+        fa.normal = Vector3.right;
+
+        Rotation rotation = GetFrontRotationByData(ca.blockData);
+        if (rotation == Rotation.Right)
+            fa.uv = uv_right;
+        else
+            fa.uv = uv_zero;
+
+        return fa;
     }
 }

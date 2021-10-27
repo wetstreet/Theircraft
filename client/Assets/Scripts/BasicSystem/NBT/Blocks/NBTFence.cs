@@ -67,13 +67,13 @@ public class NBTFence : NBTBlock
 
         MeshData mesh = GetMesh(chunk, pos);
 
-        float skyLight = chunk.GetSkyLight(pos.x, pos.y, pos.z);
+        chunk.GetLights(pos.x, pos.y, pos.z, out byte skyLight, out byte blockLight);
 
         NBTMesh nbtMesh = nbtGO.nbtMesh;
         ushort startIndex = nbtMesh.vertexCount;
         for (int i = 0; i < mesh.vertices.Length; i++)
         {
-            SetVertex(nbtMesh, mesh.vertices[i] + pos, faceIndex, mesh.uv[i], skyLight, Color.white, mesh.normals[i]);
+            SetVertex(nbtMesh, mesh.vertices[i] + pos, faceIndex, mesh.uv[i], skyLight, blockLight, Color.white, mesh.normals[i]);
         }
         foreach (int index in mesh.triangles)
         {

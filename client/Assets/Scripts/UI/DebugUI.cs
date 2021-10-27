@@ -98,7 +98,13 @@ public class DebugUI : MonoBehaviour
         sb.Append(chunkY);
         sb.Append(" ");
         sb.Append(chunkZ);
-        
+
+        Vector3Int posInt = pos.ToVector3Int();
+        byte light = NBTHelper.GetLightByte(posInt.x, posInt.y, posInt.z);
+        sb.Append("\nLight: ");
+        sb.Append(light);
+
+
         if (WireFrameHelper.render)
         {
             sb.Append("\nLooking at: ");

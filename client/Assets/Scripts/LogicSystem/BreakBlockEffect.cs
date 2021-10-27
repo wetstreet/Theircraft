@@ -21,7 +21,7 @@ public class BreakBlockEffect : MonoBehaviour
         Vector3Int posInt = pos.ToVector3Int();
         effect.texturePath = block.GetBreakEffectTexture(chunk, posInt, data);
         effect.tintColor = block.GetFrontTintColorByData(chunk, posInt, data);
-        effect.skyLight = NBTHelper.GetSkyLightByte(posInt.x, posInt.y, posInt.z) / 15f;
+        effect.skyLight = NBTHelper.GetLightByte(posInt.x, posInt.y, posInt.z) / 15f;
     }
 
     public float skyLight = 1;

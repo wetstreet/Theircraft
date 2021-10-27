@@ -323,11 +323,12 @@ public class PlayerController : MonoBehaviour
 
     public void Respawn()
     {
-        TagNodeCompound levelDat = NBTHelper.GetLevelDat();
-        int x = levelDat["SpawnX"] as TagNodeInt;
-        int y = levelDat["SpawnY"] as TagNodeInt;
-        int z = levelDat["SpawnZ"] as TagNodeInt;
-        Vector3 spawnVec = new Vector3(x, y + 5, z);
+        TagNodeCompound player = NBTHelper.GetPlayerData();
+        int x = player["SpawnX"] as TagNodeInt;
+        int y = player["SpawnY"] as TagNodeInt;
+        int z = player["SpawnZ"] as TagNodeInt;
+
+        Vector3 spawnVec = new Vector3(x, y, z);
         transform.position = spawnVec;
         lastPosOnGround = spawnVec;
 

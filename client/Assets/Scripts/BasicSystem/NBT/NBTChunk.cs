@@ -26,6 +26,7 @@ public class NBTChunk
     public NBTGameObject collidable;
     public NBTGameObject notCollidable;
     public NBTGameObject water;
+    public GameObject special;
 
     public bool isBorderChunk = false;
 
@@ -37,15 +38,18 @@ public class NBTChunk
         collidable = NBTGameObject.Create("Collidable", this, LayerMask.NameToLayer("Chunk"));
         notCollidable = NBTGameObject.Create("NotCollidable", this, LayerMask.NameToLayer("Plant"), false);
         //water = NBTGameObject.Create("Water", transform, LayerMask.NameToLayer("Water"), false);
+        special = new GameObject("special");
+        special.transform.parent = transform;
+        special.transform.localPosition = Vector3.zero;
     }
 
-    public void SetData(int _x, int _z, TagNodeList sections)
+    public void SetData(int _x, int _z, TagNodeCompound Level)
     {
         x = _x;
         z = _z;
         globalX = x * 16;
         globalZ = z * 16;
-        Sections = sections;
+        Sections = Level["Sections"] as TagNodeList;
         gameObject.name = "chunk (" + x + "," + z + ")";
         transform.localPosition = new Vector3(x * 16, 0, z * 16);
         ClearData();
@@ -248,17 +252,24 @@ public class NBTChunk
 
                             try
                             {
-                                if (generator is NBTStationaryWater)
-                                {
-                                    //generator.GenerateMeshInChunk(this, blockData, pos, water);
-                                }
-                                else if (generator is NBTPlant || generator is NBTSnowLayer)
+                                if (generator.isSpecialMaterial)
                                 {
                                     generator.AddCube(this, blockData, pos, notCollidable);
                                 }
                                 else
                                 {
-                                    generator.AddCube(this, blockData, pos, collidable);
+                                    if (generator is NBTStationaryWater)
+                                    {
+                                        //generator.GenerateMeshInChunk(this, blockData, pos, water);
+                                    }
+                                    else if (generator is NBTPlant || generator is NBTSnowLayer)
+                                    {
+                                        generator.AddCube(this, blockData, pos, notCollidable);
+                                    }
+                                    else
+                                    {
+                                        generator.AddCube(this, blockData, pos, collidable);
+                                    }
                                 }
                             }
                             catch (System.Exception e)
@@ -493,5 +504,112 @@ public class NBTChunk
     public float GetSkyLight(int xInChunk, int yInChunk, int zInChunk)
     {
         return GetSkyLightByte(xInChunk, yInChunk, zInChunk, true) / 15f;
+    }
+
+    public byte GetLightByte(int xInChunk, int yInChunk, int zInChunk, bool extends = false)
+    {
+        if (xInChunk < 0 || xInChunk > 15 || zInChunk < 0 || zInChunk > 15)
+        {
+            if (extends)
+            {
+                int xOffset = 0;
+                int zOffset = 0;
+
+                if (xInChunk < 0)
+                    xOffset = -1;
+                else if (xInChunk > 15)
+                    xOffset = 1;
+
+                if (zInChunk < 0)
+                    zOffset = -1;
+                else if (zInChunk > 15)
+                    zOffset = 1;
+
+                NBTChunk chunk = NBTHelper.GetChunk(x + xOffset, z + zOffset);
+                if (chunk != null)
+                    return chunk.GetLightByte(xInChunk - xOffset * 16, yInChunk, zInChunk - zOffset * 16);
+                else
+                    return 15;
+            }
+            else
+            {
+                return 15;
+            }
+        }
+
+        int sectionIndex = yInChunk / 16;
+        if (sectionIndex >= Sections.Count || yInChunk < 0 || yInChunk > 255)
+        {
+            return 15;
+        }
+
+        int yInSection = yInChunk % 16;
+        int blockPos = yInSection * 16 * 16 + zInChunk * 16 + xInChunk;
+
+        TagNodeCompound Section = Sections[sectionIndex] as TagNodeCompound;
+        TagNodeByteArray SkyLight = Section["SkyLight"] as TagNodeByteArray;
+        byte skyLight = NBTHelper.GetNibble(SkyLight.Data, blockPos);
+        TagNodeByteArray BlockLight = Section["BlockLight"] as TagNodeByteArray;
+        byte blockLight = NBTHelper.GetNibble(BlockLight.Data, blockPos);
+
+        //Debug.Log("y=" + x + "," + z + ",section=" + sectionIndex);
+
+        return skyLight > blockLight ? skyLight : blockLight;
+    }
+
+    public float GetLight(int xInChunk, int yInChunk, int zInChunk)
+    {
+        return GetLightByte(xInChunk, yInChunk, zInChunk, true) / 15f;
+    }
+
+    public void GetLights(int xInChunk, int yInChunk, int zInChunk, out byte skyLight, out byte blockLight)
+    {
+        GetLightsByte(xInChunk, yInChunk, zInChunk, out skyLight, out blockLight, true);
+    }
+
+    public void GetLightsByte(int xInChunk, int yInChunk, int zInChunk, out byte skyLight, out byte blockLight, bool extends = false)
+    {
+        skyLight = 15;
+        blockLight = 0;
+        if (xInChunk < 0 || xInChunk > 15 || zInChunk < 0 || zInChunk > 15)
+        {
+            if (extends)
+            {
+                int xOffset = 0;
+                int zOffset = 0;
+
+                if (xInChunk < 0)
+                    xOffset = -1;
+                else if (xInChunk > 15)
+                    xOffset = 1;
+
+                if (zInChunk < 0)
+                    zOffset = -1;
+                else if (zInChunk > 15)
+                    zOffset = 1;
+
+                NBTChunk chunk = NBTHelper.GetChunk(x + xOffset, z + zOffset);
+                if (chunk != null)
+                {
+                    chunk.GetLightsByte(xInChunk - xOffset * 16, yInChunk, zInChunk - zOffset * 16, out skyLight, out blockLight);
+                }
+            }
+            return;
+        }
+
+        int sectionIndex = yInChunk / 16;
+        if (sectionIndex >= Sections.Count || yInChunk < 0 || yInChunk > 255)
+        {
+            return;
+        }
+
+        int yInSection = yInChunk % 16;
+        int blockPos = yInSection * 16 * 16 + zInChunk * 16 + xInChunk;
+
+        TagNodeCompound Section = Sections[sectionIndex] as TagNodeCompound;
+        TagNodeByteArray SkyLight = Section["SkyLight"] as TagNodeByteArray;
+        skyLight = NBTHelper.GetNibble(SkyLight.Data, blockPos);
+        TagNodeByteArray BlockLight = Section["BlockLight"] as TagNodeByteArray;
+        blockLight = NBTHelper.GetNibble(BlockLight.Data, blockPos);
     }
 }

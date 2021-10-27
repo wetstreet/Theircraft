@@ -158,10 +158,8 @@ public class NBTHelper
             if (Chunk != null)
             {
                 TagNodeCompound Level = Chunk["Level"] as TagNodeCompound;
-
-                TagNodeList Sections = Level["Sections"] as TagNodeList;
                 NBTChunk chunk = ChunkPool.GetChunk();
-                chunk.SetData(chunkX, chunkZ, Sections);
+                chunk.SetData(chunkX, chunkZ, Level);
                 chunkDict.Add(key, chunk);
             }
         }
@@ -184,10 +182,8 @@ public class NBTHelper
             if (Chunk != null)
             {
                 TagNodeCompound Level = Chunk["Level"] as TagNodeCompound;
-
-                TagNodeList Sections = Level["Sections"] as TagNodeList;
                 NBTChunk chunk = ChunkPool.GetChunk();
-                chunk.SetData(chunkX, chunkZ, Sections);
+                chunk.SetData(chunkX, chunkZ, Level);
                 chunkDict.Add(key, chunk);
             }
         }
@@ -593,6 +589,18 @@ public class NBTHelper
         return chunk.GetSkyLightByte(xInChunk, y, zInChunk);
     }
 
+    public static byte GetLightByte(int x, int y, int z)
+    {
+        int chunkX = Mathf.FloorToInt(x / 16f);
+        int chunkZ = Mathf.FloorToInt(z / 16f);
+
+        int xInChunk = x - chunkX * 16;
+        int zInChunk = z - chunkZ * 16;
+
+        NBTChunk chunk = GetChunk(chunkX, chunkZ);
+        return chunk.GetLightByte(xInChunk, y, zInChunk);
+    }
+
     public static void SetSkyLightByte(int x, int y, int z, byte skyLight)
     {
         int chunkX = Mathf.FloorToInt(x / 16f);
@@ -611,13 +619,14 @@ public class NBTHelper
         //float start = Time.realtimeSinceStartup;
 
         Queue<Vector3Int> skyLightQueue = new Queue<Vector3Int>();
+        Vector3Int p = new Vector3Int();
 
         // init
         for (int i = -15; i <= 15; i++)
         {
             for (int j = -15; j <= 15; j++)
             {
-                Vector3Int p = new Vector3Int(x + i, y, z + j);
+                p.Set(x + i, y, z + j);
 
                 int chunkX = Mathf.FloorToInt(p.x / 16f);
                 int chunkZ = Mathf.FloorToInt(p.z / 16f);
@@ -640,7 +649,7 @@ public class NBTHelper
         {
             for (int j = -15; j <= 15; j++)
             {
-                Vector3Int p = new Vector3Int(x + i, y, z + j);
+                p.Set(x + i, y, z + j);
 
                 int chunkX = Mathf.FloorToInt(p.x / 16f);
                 int chunkZ = Mathf.FloorToInt(p.z / 16f);
@@ -678,12 +687,20 @@ public class NBTHelper
         int setcount = 0;
 
         // light propagation (use flood fill)
+        Vector3Int[] arr = new Vector3Int[6];
         while (skyLightQueue.Count > 0)
         {
             count++;
-            Vector3Int p = skyLightQueue.Dequeue();
+            p = skyLightQueue.Dequeue();
             byte skyLight = GetSkyLightByte(p.x, p.y, p.z);
-            Vector3Int[] arr = new Vector3Int[] { p + Vector3Int.left, p + Vector3Int.right, p + Vector3Int.up, p + Vector3Int.down, p + Vector3Int.forward, p + Vector3Int.back };
+
+            arr[0] = p + Vector3Int.left;
+            arr[1] = p + Vector3Int.right;
+            arr[2] = p + Vector3Int.up;
+            arr[3] = p + Vector3Int.down;
+            arr[4] = p + Vector3Int.forward;
+            arr[5] = p + Vector3Int.back;
+
             for (int i = 0; i < 6; i++)
             {
                 Vector3Int nextPos = arr[i];

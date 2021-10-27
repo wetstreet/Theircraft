@@ -32,8 +32,9 @@
             struct v2f
             {
                 float4 positionCS : SV_POSITION;
-                float2 uv : TEXCOORD0;
-				float3 color : COLOR;
+                float4 uv : TEXCOORD0;
+                float3 worldNormal : TEXCOORD1;
+                half4 color : COLOR;
             };
 
             sampler2D _MainTex;
@@ -49,18 +50,43 @@
             {
                 v2f o;
                 o.positionCS = TransformObjectToHClip(v.positionOS.xyz);
-                o.uv = TRANSFORM_TEX(v.texcoord, _MainTex);
+                o.uv.xy = TRANSFORM_TEX(v.texcoord, _MainTex);
 
-                o.color = v.color.rgb;
+                o.color = v.color;
+                o.worldNormal = TransformObjectToWorldNormal(v.normal);
 
                 return o;
             }
 
             half4 frag (v2f i) : SV_Target
             {
-                half4 col = tex2D(_MainTex, i.uv);
+                half4 col = tex2D(_MainTex, i.uv.xy);
+
+                i.uv.w = 1.f;
+                // skylight
+                float skylight = i.uv.w;
+                col.rgb *= GetSkyLight(skylight);
+
+                if (i.worldNormal.y == 1)
+                {
+                    col.rgb *= 1;
+                }
+                else if (i.worldNormal.z == 1 || i.worldNormal.z == -1)
+                {
+                    col.rgb *= 0.6;
+                }
+                else if (i.worldNormal.x == 1 || i.worldNormal.x == -1)
+                {
+                    col.rgb *= 0.3;
+                }
+                else if (i.worldNormal.y == -1)
+                {
+                    col.rgb *= 0.2;
+                }
+
                 clip(col.a - _Cutoff);
-                return half4(col.rgb * _Color.rgb, col.a);
+
+                return col;
             }
 
             ENDHLSL
