@@ -132,12 +132,19 @@ public abstract class NBTBlock : NBTObject
 
         NBTMesh nbtMesh = new NBTMesh(256);
 
-        AddFace(nbtMesh, GetFrontFaceAttributes(chunk, nbtMesh, ca), ca);
-        AddFace(nbtMesh, GetBackFaceAttributes(chunk, nbtMesh, ca), ca);
-        AddFace(nbtMesh, GetTopFaceAttributes(chunk, nbtMesh, ca), ca);
-        AddFace(nbtMesh, GetBottomFaceAttributes(chunk, nbtMesh, ca), ca);
-        AddFace(nbtMesh, GetLeftFaceAttributes(chunk, nbtMesh, ca), ca);
-        AddFace(nbtMesh, GetRightFaceAttributes(chunk, nbtMesh, ca), ca);
+        try
+        {
+            AddFace(nbtMesh, GetFrontFaceAttributes(chunk, nbtMesh, ca), ca);
+            AddFace(nbtMesh, GetBackFaceAttributes(chunk, nbtMesh, ca), ca);
+            AddFace(nbtMesh, GetTopFaceAttributes(chunk, nbtMesh, ca), ca);
+            AddFace(nbtMesh, GetBottomFaceAttributes(chunk, nbtMesh, ca), ca);
+            AddFace(nbtMesh, GetLeftFaceAttributes(chunk, nbtMesh, ca), ca);
+            AddFace(nbtMesh, GetRightFaceAttributes(chunk, nbtMesh, ca), ca);
+        }
+        catch (System.Exception e)
+        {
+            Debug.Log("GetItemMesh error,message=\n" + e.Message);
+        }
 
         nbtMesh.Refresh();
 
@@ -230,7 +237,7 @@ public abstract class NBTBlock : NBTObject
 
     protected virtual FaceAttributes GetFrontFaceAttributes(NBTChunk chunk, NBTMesh mesh, CubeAttributes ca)
     {
-        chunk.GetLights(ca.pos.x, ca.pos.y, ca.pos.z - 1, out byte skyLight, out byte blockLight);
+        chunk.GetLights(ca.pos.x, ca.pos.y, ca.pos.z - 1, out float skyLight, out float blockLight);
 
         FaceAttributes fa = new FaceAttributes();
         fa.pos = frontVertices;
@@ -250,7 +257,7 @@ public abstract class NBTBlock : NBTObject
     }
     protected virtual FaceAttributes GetBackFaceAttributes(NBTChunk chunk, NBTMesh mesh, CubeAttributes ca)
     {
-        chunk.GetLights(ca.pos.x, ca.pos.y, ca.pos.z + 1, out byte skyLight, out byte blockLight);
+        chunk.GetLights(ca.pos.x, ca.pos.y, ca.pos.z + 1, out float skyLight, out float blockLight);
 
         FaceAttributes fa = new FaceAttributes();
         fa.pos = backVertices;
@@ -270,7 +277,7 @@ public abstract class NBTBlock : NBTObject
     }
     protected virtual FaceAttributes GetTopFaceAttributes(NBTChunk chunk, NBTMesh mesh, CubeAttributes ca)
     {
-        chunk.GetLights(ca.pos.x, ca.pos.y + 1, ca.pos.z, out byte skyLight, out byte blockLight);
+        chunk.GetLights(ca.pos.x, ca.pos.y + 1, ca.pos.z, out float skyLight, out float blockLight);
 
         FaceAttributes fa = new FaceAttributes();
         fa.pos = topVertices;
@@ -290,7 +297,7 @@ public abstract class NBTBlock : NBTObject
     }
     protected virtual FaceAttributes GetBottomFaceAttributes(NBTChunk chunk, NBTMesh mesh, CubeAttributes ca)
     {
-        chunk.GetLights(ca.pos.x, ca.pos.y - 1, ca.pos.z, out byte skyLight, out byte blockLight);
+        chunk.GetLights(ca.pos.x, ca.pos.y - 1, ca.pos.z, out float skyLight, out float blockLight);
 
         FaceAttributes fa;
         fa.pos = bottomVertices;
@@ -310,7 +317,7 @@ public abstract class NBTBlock : NBTObject
     }
     protected virtual FaceAttributes GetLeftFaceAttributes(NBTChunk chunk, NBTMesh mesh, CubeAttributes ca)
     {
-        chunk.GetLights(ca.pos.x - 1, ca.pos.y, ca.pos.z, out byte skyLight, out byte blockLight);
+        chunk.GetLights(ca.pos.x - 1, ca.pos.y, ca.pos.z, out float skyLight, out float blockLight);
 
         FaceAttributes fa;
         fa.pos = leftVertices;
@@ -330,7 +337,7 @@ public abstract class NBTBlock : NBTObject
     }
     protected virtual FaceAttributes GetRightFaceAttributes(NBTChunk chunk, NBTMesh mesh, CubeAttributes ca)
     {
-        chunk.GetLights(ca.pos.x + 1, ca.pos.y, ca.pos.z, out byte skyLight, out byte blockLight);
+        chunk.GetLights(ca.pos.x + 1, ca.pos.y, ca.pos.z, out float skyLight, out float blockLight);
 
         FaceAttributes fa;
         fa.pos = rightVertices;

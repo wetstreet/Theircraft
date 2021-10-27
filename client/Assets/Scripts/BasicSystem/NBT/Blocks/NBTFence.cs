@@ -67,7 +67,7 @@ public class NBTFence : NBTBlock
 
         MeshData mesh = GetMesh(chunk, pos);
 
-        chunk.GetLights(pos.x, pos.y, pos.z, out byte skyLight, out byte blockLight);
+        chunk.GetLights(pos.x, pos.y, pos.z, out float skyLight, out float blockLight);
 
         NBTMesh nbtMesh = nbtGO.nbtMesh;
         ushort startIndex = nbtMesh.vertexCount;

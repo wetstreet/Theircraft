@@ -153,7 +153,7 @@ public class NBTWoodenSlab : NBTBlock
 
     protected override FaceAttributes GetFrontFaceAttributes(NBTChunk chunk, NBTMesh mesh, CubeAttributes ca)
     {
-        chunk.GetLights(ca.pos.x, ca.pos.y, ca.pos.z - 1, out byte skyLight, out byte blockLight);
+        chunk.GetLights(ca.pos.x, ca.pos.y, ca.pos.z - 1, out float skyLight, out float blockLight);
 
         FaceAttributes fa = new FaceAttributes();
         if (ca.blockData >= 8)
@@ -176,7 +176,7 @@ public class NBTWoodenSlab : NBTBlock
     }
     protected override FaceAttributes GetBackFaceAttributes(NBTChunk chunk, NBTMesh mesh, CubeAttributes ca)
     {
-        chunk.GetLights(ca.pos.x, ca.pos.y, ca.pos.z + 1, out byte skyLight, out byte blockLight);
+        chunk.GetLights(ca.pos.x, ca.pos.y, ca.pos.z + 1, out float skyLight, out float blockLight);
 
         FaceAttributes fa = new FaceAttributes();
         if (ca.blockData >= 8)
@@ -199,7 +199,7 @@ public class NBTWoodenSlab : NBTBlock
     }
     protected override FaceAttributes GetTopFaceAttributes(NBTChunk chunk, NBTMesh mesh, CubeAttributes ca)
     {
-        chunk.GetLights(ca.pos.x, ca.pos.y + 1, ca.pos.z, out byte skyLight, out byte blockLight);
+        chunk.GetLights(ca.pos.x, ca.pos.y + 1, ca.pos.z, out float skyLight, out float blockLight);
 
         FaceAttributes fa = new FaceAttributes();
         if (ca.blockData >= 8)
@@ -218,7 +218,7 @@ public class NBTWoodenSlab : NBTBlock
 
     protected override FaceAttributes GetBottomFaceAttributes(NBTChunk chunk, NBTMesh mesh, CubeAttributes ca)
     {
-        chunk.GetLights(ca.pos.x, ca.pos.y - 1, ca.pos.z, out byte skyLight, out byte blockLight);
+        chunk.GetLights(ca.pos.x, ca.pos.y - 1, ca.pos.z, out float skyLight, out float blockLight);
 
         FaceAttributes fa;
         if (ca.blockData >= 8)
@@ -237,7 +237,7 @@ public class NBTWoodenSlab : NBTBlock
     }
     protected override FaceAttributes GetLeftFaceAttributes(NBTChunk chunk, NBTMesh mesh, CubeAttributes ca)
     {
-        chunk.GetLights(ca.pos.x - 1, ca.pos.y, ca.pos.z, out byte skyLight, out byte blockLight);
+        chunk.GetLights(ca.pos.x - 1, ca.pos.y, ca.pos.z, out float skyLight, out float blockLight);
 
         FaceAttributes fa;
         if (ca.blockData >= 8)
@@ -260,7 +260,7 @@ public class NBTWoodenSlab : NBTBlock
     }
     protected override FaceAttributes GetRightFaceAttributes(NBTChunk chunk, NBTMesh mesh, CubeAttributes ca)
     {
-        chunk.GetLights(ca.pos.x + 1, ca.pos.y, ca.pos.z, out byte skyLight, out byte blockLight);
+        chunk.GetLights(ca.pos.x + 1, ca.pos.y, ca.pos.z, out float skyLight, out float blockLight);
 
         FaceAttributes fa;
         if (ca.blockData >= 8)

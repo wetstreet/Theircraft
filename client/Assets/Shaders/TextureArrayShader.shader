@@ -31,7 +31,7 @@ Shader "Custom/TextureArrayShader"
             {
                 float4 vertex : POSITION;
                 float4 color : COLOR;
-                float3 uv : TEXCOORD0;
+                float4 uv : TEXCOORD0;
                 float3 normal : NORMAL;
             };
 
@@ -39,7 +39,7 @@ Shader "Custom/TextureArrayShader"
             {
                 float4 vertex : SV_POSITION;
                 float4 uv : TEXCOORD0;
-                float3 worldNormal : TEXCOORD1;
+                float4 worldNormal : TEXCOORD1;
                 half4 color : COLOR;
             };
 
@@ -48,6 +48,10 @@ Shader "Custom/TextureArrayShader"
             float _TileX;
             float _TileY;
             float _Cutoff;
+
+            sampler2D _DayLightTexture;
+            sampler2D _NightLightTexture;
+            float _DayNight01;
 
             v2f vert (appdata v)
             {
@@ -58,7 +62,8 @@ Shader "Custom/TextureArrayShader"
                 o.uv.w = v.uv.z;
                 o.color = v.color;
 
-                o.worldNormal = TransformObjectToWorldNormal(v.normal);
+                o.worldNormal.xyz = TransformObjectToWorldNormal(v.normal);
+                o.worldNormal.w = v.uv.w;
 
                 return o;
             }
@@ -70,7 +75,13 @@ Shader "Custom/TextureArrayShader"
 
                 // skylight
                 float skylight = i.uv.w;
-                col.rgb *= GetSkyLight(skylight);
+                half blockLight = i.worldNormal.w;
+
+                half4 dayLight = tex2D(_DayLightTexture, half2(blockLight, 1 - skylight));
+                half4 nightLight = tex2D(_NightLightTexture, half2(blockLight, 1 - skylight));
+
+                // col.rgb *= GetSkyLight(skylight);
+                col.rgb *= lerp(dayLight.rgb, nightLight.rgb, saturate(_DayNight01));
 
                 if (i.worldNormal.y == 1)
                 {

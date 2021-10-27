@@ -26,7 +26,7 @@
                 float4 positionOS : POSITION;
                 float4 color : COLOR;
                 float3 normal : NORMAL;
-                float2 texcoord : TEXCOORD0;
+                float4 texcoord : TEXCOORD0;
             };
 
             struct v2f
@@ -46,11 +46,14 @@
 
             half4 _Color;
 
+            sampler2D _DayLightTexture;
+
             v2f vert (appdata v)
             {
                 v2f o;
                 o.positionCS = TransformObjectToHClip(v.positionOS.xyz);
                 o.uv.xy = TRANSFORM_TEX(v.texcoord, _MainTex);
+                o.uv.zw = v.texcoord.zw;
 
                 o.color = v.color;
                 o.worldNormal = TransformObjectToWorldNormal(v.normal);

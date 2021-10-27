@@ -92,7 +92,7 @@ public class NBTPlant : NBTBlock
 
     void AddDiagonalFace(NBTChunk chunk, NBTMesh mesh, CubeAttributes ca)
     {
-        chunk.GetLights(ca.pos.x, ca.pos.y, ca.pos.z, out byte skyLight, out byte blockLight);
+        chunk.GetLights(ca.pos.x, ca.pos.y, ca.pos.z, out float skyLight, out float blockLight);
 
         FaceAttributes fa = new FaceAttributes();
         fa.pos = diagonalFace;
@@ -108,7 +108,7 @@ public class NBTPlant : NBTBlock
 
     void AddAntiDiagonalFace(NBTChunk chunk, NBTMesh mesh, CubeAttributes ca)
     {
-        chunk.GetLights(ca.pos.x, ca.pos.y, ca.pos.z, out byte skyLight, out byte blockLight);
+        chunk.GetLights(ca.pos.x, ca.pos.y, ca.pos.z, out float skyLight, out float blockLight);
 
         FaceAttributes fa = new FaceAttributes();
         fa.pos = antiDiagonalFace;

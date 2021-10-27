@@ -54,7 +54,7 @@ public class NBTWheat : NBTPlant
         ca.pos = pos;
         ca.blockData = blockData;
 
-        chunk.GetLights(pos.x, pos.y, pos.z, out byte skyLight, out byte blockLight);
+        chunk.GetLights(pos.x, pos.y, pos.z, out float skyLight, out float blockLight);
 
         FaceAttributes fa;
         fa.faceIndex = GetPlantIndexByData(chunk, blockData);

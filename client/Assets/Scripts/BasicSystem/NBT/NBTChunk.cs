@@ -562,9 +562,11 @@ public class NBTChunk
         return GetLightByte(xInChunk, yInChunk, zInChunk, true) / 15f;
     }
 
-    public void GetLights(int xInChunk, int yInChunk, int zInChunk, out byte skyLight, out byte blockLight)
+    public void GetLights(int xInChunk, int yInChunk, int zInChunk, out float skyLight, out float blockLight)
     {
-        GetLightsByte(xInChunk, yInChunk, zInChunk, out skyLight, out blockLight, true);
+        GetLightsByte(xInChunk, yInChunk, zInChunk, out byte skyLightByte, out byte blockLightByte, true);
+        skyLight = skyLightByte / 15f;
+        blockLight = blockLightByte / 15f;
     }
 
     public void GetLightsByte(int xInChunk, int yInChunk, int zInChunk, out byte skyLight, out byte blockLight, bool extends = false)
