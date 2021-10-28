@@ -34,7 +34,6 @@ public struct FaceAttributes
 
 public abstract class NBTBlock : NBTObject
 {
-
     public virtual string topName { get; }
     public virtual string bottomName { get; }
     public virtual string frontName { get; }
@@ -57,13 +56,6 @@ public abstract class NBTBlock : NBTObject
         }
     }
 
-    public virtual int GetTopIndexByData(NBTChunk chunk, int data) { return TextureArrayManager.GetIndexByName(topName); }
-    public virtual int GetBottomIndexByData(NBTChunk chunk, int data) { return TextureArrayManager.GetIndexByName(bottomName); }
-    public virtual int GetFrontIndexByData(NBTChunk chunk, int data) { return TextureArrayManager.GetIndexByName(frontName); }
-    public virtual int GetBackIndexByData(NBTChunk chunk, int data) { return TextureArrayManager.GetIndexByName(backName); }
-    public virtual int GetLeftIndexByData(NBTChunk chunk, int data) { return TextureArrayManager.GetIndexByName(leftName); }
-    public virtual int GetRightIndexByData(NBTChunk chunk, int data) { return TextureArrayManager.GetIndexByName(rightName); }
-
     public virtual void Init() { }
 
     public string[] UsedTextures;
@@ -82,12 +74,26 @@ public abstract class NBTBlock : NBTObject
 
     public virtual string GetBreakEffectTexture(NBTChunk chunk, Vector3Int pos, byte data) { return GetBreakEffectTexture(chunk, data); }
 
+    public virtual int GetTopIndexByData(NBTChunk chunk, int data) { return TextureArrayManager.GetIndexByName(topName); }
+    public virtual int GetBottomIndexByData(NBTChunk chunk, int data) { return TextureArrayManager.GetIndexByName(bottomName); }
+    public virtual int GetFrontIndexByData(NBTChunk chunk, int data) { return TextureArrayManager.GetIndexByName(frontName); }
+    public virtual int GetBackIndexByData(NBTChunk chunk, int data) { return TextureArrayManager.GetIndexByName(backName); }
+    public virtual int GetLeftIndexByData(NBTChunk chunk, int data) { return TextureArrayManager.GetIndexByName(leftName); }
+    public virtual int GetRightIndexByData(NBTChunk chunk, int data) { return TextureArrayManager.GetIndexByName(rightName); }
+
     public virtual Color GetTopTintColorByData(NBTChunk chunk, Vector3Int pos, byte data) { return Color.white; }
     public virtual Color GetBottomTintColorByData(NBTChunk chunk, Vector3Int pos, byte data) { return Color.white; }
     public virtual Color GetFrontTintColorByData(NBTChunk chunk, Vector3Int pos, byte data) { return Color.white; }
     public virtual Color GetBackTintColorByData(NBTChunk chunk, Vector3Int pos, byte data) { return Color.white; }
     public virtual Color GetLeftTintColorByData(NBTChunk chunk, Vector3Int pos, byte data) { return Color.white; }
     public virtual Color GetRightTintColorByData(NBTChunk chunk, Vector3Int pos, byte data) { return Color.white; }
+
+    protected virtual Rotation GetTopRotationByData(byte data) { return Rotation.Zero; }
+    protected virtual Rotation GetBottomRotationByData(byte data) { return Rotation.Zero; }
+    protected virtual Rotation GetFrontRotationByData(byte data) { return Rotation.Zero; }
+    protected virtual Rotation GetBackRotationByData(byte data) { return Rotation.Zero; }
+    protected virtual Rotation GetLeftRotationByData(byte data) { return Rotation.Zero; }
+    protected virtual Rotation GetRightRotationByData(byte data) { return Rotation.Zero; }
 
     public virtual bool hasDropItem { get { return true; } }
 
@@ -124,6 +130,68 @@ public abstract class NBTBlock : NBTObject
     public virtual float radius { get { return -0.501f; } }
     public virtual bool useRadius { get { return false; } }
 
+    public virtual Mesh GetItemMesh(byte data = 0)
+    {
+        CubeAttributes ca = new CubeAttributes();
+
+        NBTMesh nbtMesh = new NBTMesh(256);
+
+        FaceAttributes fa = new FaceAttributes();
+        fa.skyLight = 1;
+        fa.blockLight = 1;
+        fa.color = Color.white;
+
+        try
+        {
+            fa.pos = frontVertices;
+            fa.normal = Vector3.forward;
+            fa.faceIndex = GetFrontIndexByData(null, data);
+            fa.uv = GetFrontRotationByData(data) == Rotation.Right ? uv_right : uv_zero;
+            AddFace(nbtMesh, fa, ca);
+
+            fa.pos = backVertices;
+            fa.normal = Vector3.back;
+            fa.faceIndex = GetBackIndexByData(null, data);
+            fa.uv = GetBackRotationByData(data) == Rotation.Right ? uv_right : uv_zero;
+            AddFace(nbtMesh, fa, ca);
+
+            fa.pos = topVertices;
+            fa.normal = Vector3.up;
+            fa.faceIndex = GetTopIndexByData(null, data);
+            fa.uv = GetTopRotationByData(data) == Rotation.Right ? uv_right : uv_zero;
+            AddFace(nbtMesh, fa, ca);
+
+            fa.pos = bottomVertices;
+            fa.normal = Vector3.down;
+            fa.faceIndex = GetBottomIndexByData(null, data);
+            fa.uv = GetBottomRotationByData(data) == Rotation.Right ? uv_right : uv_zero;
+            AddFace(nbtMesh, fa, ca);
+
+            fa.pos = leftVertices;
+            fa.normal = Vector3.left;
+            fa.faceIndex = GetLeftIndexByData(null, data);
+            fa.uv = GetLeftRotationByData(data) == Rotation.Right ? uv_right : uv_zero;
+            AddFace(nbtMesh, fa, ca);
+
+            fa.pos = rightVertices;
+            fa.normal = Vector3.right;
+            fa.faceIndex = GetRightIndexByData(null, data);
+            fa.uv = GetRightRotationByData(data) == Rotation.Right ? uv_right : uv_zero;
+            AddFace(nbtMesh, fa, ca);
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError("GetItemMesh error,generator=" + GetType() + ",message=\n" + e.Message);
+        }
+
+        nbtMesh.Refresh();
+
+        nbtMesh.Dispose();
+
+        return nbtMesh.mesh;
+    }
+
+    // for break effect & drop item (will be affected by light)
     public override Mesh GetItemMesh(NBTChunk chunk, Vector3Int pos, byte blockData)
     {
         CubeAttributes ca = new CubeAttributes();
@@ -135,8 +203,6 @@ public abstract class NBTBlock : NBTObject
         chunk.GetLights(pos.x, pos.y, pos.z, out float skyLight, out float blockLight);
 
         FaceAttributes fa = new FaceAttributes();
-        fa.faceIndex = GetFrontIndexByData(chunk, ca.blockData);
-        fa.color = GetFrontTintColorByData(chunk, pos, ca.blockData);
         fa.skyLight = skyLight;
         fa.blockLight = blockLight;
 
@@ -150,26 +216,38 @@ public abstract class NBTBlock : NBTObject
         {
             fa.pos = frontVertices;
             fa.normal = Vector3.forward;
+            fa.faceIndex = GetFrontIndexByData(chunk, ca.blockData);
+            fa.color = GetFrontTintColorByData(chunk, pos, ca.blockData);
             AddFace(nbtMesh, fa, ca);
 
             fa.pos = backVertices;
             fa.normal = Vector3.back;
+            fa.faceIndex = GetBackIndexByData(chunk, ca.blockData);
+            fa.color = GetBackTintColorByData(chunk, pos, ca.blockData);
             AddFace(nbtMesh, fa, ca);
 
             fa.pos = topVertices;
             fa.normal = Vector3.up;
+            fa.faceIndex = GetTopIndexByData(chunk, ca.blockData);
+            fa.color = GetTopTintColorByData(chunk, pos, ca.blockData);
             AddFace(nbtMesh, fa, ca);
 
             fa.pos = bottomVertices;
             fa.normal = Vector3.down;
+            fa.faceIndex = GetBottomIndexByData(chunk, ca.blockData);
+            fa.color = GetBottomTintColorByData(chunk, pos, ca.blockData);
             AddFace(nbtMesh, fa, ca);
 
             fa.pos = leftVertices;
             fa.normal = Vector3.left;
+            fa.faceIndex = GetLeftIndexByData(chunk, ca.blockData);
+            fa.color = GetLeftTintColorByData(chunk, pos, ca.blockData);
             AddFace(nbtMesh, fa, ca);
 
             fa.pos = rightVertices;
             fa.normal = Vector3.right;
+            fa.faceIndex = GetRightIndexByData(chunk, ca.blockData);
+            fa.color = GetRightTintColorByData(chunk, pos, ca.blockData);
             AddFace(nbtMesh, fa, ca);
         }
         catch (System.Exception e)
@@ -183,13 +261,6 @@ public abstract class NBTBlock : NBTObject
 
         return nbtMesh.mesh;
     }
-
-    protected virtual Rotation GetTopRotationByData(byte data) { return Rotation.Zero; }
-    protected virtual Rotation GetBottomRotationByData(byte data) { return Rotation.Zero; }
-    protected virtual Rotation GetFrontRotationByData(byte data) { return Rotation.Zero; }
-    protected virtual Rotation GetBackRotationByData(byte data) { return Rotation.Zero; }
-    protected virtual Rotation GetLeftRotationByData(byte data) { return Rotation.Zero; }
-    protected virtual Rotation GetRightRotationByData(byte data) { return Rotation.Zero; }
 
     public virtual void AddCube(NBTChunk chunk, byte blockData, Vector3Int pos, NBTGameObject nbtGO)
     {

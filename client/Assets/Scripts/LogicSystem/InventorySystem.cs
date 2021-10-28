@@ -233,23 +233,6 @@ public class InventorySystem
 
     static void CheckCanCraft()
     {
-        items[40].id = null;
-        items[40].damage = 0;
-        items[40].count = 0;
-
-        if (UpperLeft is NBTPlanks && UpperRight is NBTPlanks && BottomLeft is NBTPlanks && BottomRight is NBTPlanks)
-        {
-            items[40].id = "minecraft:crafting_table";
-            items[40].damage = 0;
-            items[40].count = 1;
-        }
-        else if ((UpperLeft is NBTPlanks && UpperRight is null && BottomLeft is NBTPlanks && BottomRight is null) ||
-            (UpperLeft is null && BottomLeft is NBTPlanks && UpperRight is null && BottomRight is NBTPlanks))
-        {
-            items[40].id = "minecraft:stick";
-            items[40].damage = 0;
-            items[40].count = 4;
-        }
     }
 
     public static void SaveData(TagNodeList Inventory)

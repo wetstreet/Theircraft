@@ -13,7 +13,5 @@ public class NBTOakStairs : NBTStairs
 
     public override SoundMaterial soundMaterial { get { return SoundMaterial.Wood; } }
 
-    public override string GetIconPathByData(short data) { return "OakWoodStairs"; }
-
     public override string GetBreakEffectTexture(NBTChunk chunk, byte data) { return "planks_oak"; }
 }

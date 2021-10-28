@@ -42,6 +42,11 @@ public class NBTChest : NBTBlock
         chest.transform.localPosition = pos;
     }
 
+    public override Mesh GetItemMesh(byte blockData)
+    {
+        return GetMesh(blockData);
+    }
+
     public override Mesh GetItemMesh(NBTChunk chunk, Vector3Int pos, byte blockData)
     {
         return GetMesh(blockData);

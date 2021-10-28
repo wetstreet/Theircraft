@@ -7,35 +7,26 @@ using UnityEngine;
 
 public class IconGenerator : ScriptableWizard
 {
-    public CSBlockType type = CSBlockType.Dirt;
-    public int TypeInt = 1;
-    public bool UseInt = false;
-
-    public bool DestroyAfterFinish = true;
+    public byte type = 2;
+    public byte data = 0;
 
     [MenuItem("GameObject/Create Icon Wizard")]
     static void CreateWizard()
     {
-        DisplayWizard<IconGenerator>("创建icon", "创建", "全部创建");
+        NBTGeneratorManager.Init();
+        TextureArrayManager.Init();
+        DisplayWizard<IconGenerator>("创建icon", "创建", "批量创建");
     }
 
     public int size = 128;
 
-    string Render(CSBlockType type, string dir = null)
+    string Render(NBTBlock generator, byte data = 0, string dir = null, bool destroyAfterFinish = false)
     {
-        GameObject go = null;
-        if (type != CSBlockType.Chest)
-        {
-            go = new GameObject();
-            go.AddComponent<MeshFilter>().sharedMesh = ChunkMeshGenerator.GetBlockMesh(type);
-            go.AddComponent<MeshRenderer>().sharedMaterial = new Material(Shader.Find("Custom/CutoutDiffuse"));
-            go.GetComponent<MeshRenderer>().sharedMaterial.mainTexture = ChunkMeshGenerator.GetBlockTexture(type);
-        }
-        else
-        {
-            GameObject prefab = Resources.Load<GameObject>("Prefabs/Entity/Chest");
-            go = Instantiate(prefab);
-        }
+        Mesh mesh = generator.GetItemMesh(data);
+
+        GameObject go = new GameObject();
+        go.AddComponent<MeshFilter>().sharedMesh = mesh;
+        go.AddComponent<MeshRenderer>().sharedMaterial = generator.GetItemMaterial(0);
 
         RenderTexture rt = RenderTexture.GetTemporary(size * 2, size * 2, 24, RenderTextureFormat.ARGB32);
         Camera.main.targetTexture = rt;
@@ -59,7 +50,7 @@ public class IconGenerator : ScriptableWizard
         string path = "";
         if (dir == null)
         {
-            path = EditorUtility.SaveFilePanel("保存", "", type.ToString(), "png");
+            path = EditorUtility.SaveFilePanel("保存", "", generator.GetIconPathByData(data), "png");
             if (path.Length == 0)
             {
                 DestroyImmediate(tex);
@@ -70,7 +61,7 @@ public class IconGenerator : ScriptableWizard
         }
         else
         {
-            path = dir + "/" + type.ToString() + ".png";
+            path = dir + "/" + generator.GetIconPathByData(data) + ".png";
             path = path.Substring(path.IndexOf("Assets"));
         }
 
@@ -82,12 +73,13 @@ public class IconGenerator : ScriptableWizard
         TextureI.textureCompression = TextureImporterCompression.Uncompressed;
         TextureI.mipmapEnabled = false;
         TextureI.wrapMode = TextureWrapMode.Clamp;
+        TextureI.textureType = TextureImporterType.Sprite;
         AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceUpdate);
 
         AssetDatabase.Refresh();
 
         DestroyImmediate(tex);
-        if (DestroyAfterFinish)
+        if (destroyAfterFinish)
         {
             DestroyImmediate(go);
         }
@@ -97,36 +89,88 @@ public class IconGenerator : ScriptableWizard
 
     void OnWizardCreate()
     {
-        string path = null;
+        NBTBlock generator = NBTGeneratorManager.GetMeshGenerator(type);
+        if (generator != null)
+        {
+            string path = Render(generator, data);
 
-        if (UseInt)
-        {
-            path = Render((CSBlockType)TypeInt);
-        }
-        else
-        {
-            path = Render(type);
-        }
-
-        if (path != null)
-        {
-            Texture2D tex = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
-            Selection.activeObject = tex;
+            if (!string.IsNullOrEmpty(path))
+            {
+                Texture2D tex = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+                Selection.activeObject = tex;
+            }
         }
     }
 
     private void OnWizardOtherButton()
     {
-        string dir = EditorUtility.OpenFolderPanel("选择文件夹", "", "");
+        string dir = EditorUtility.OpenFolderPanel("选择文件夹", Application.dataPath + "Assets/Resources/GUI/icon", "");
         dir = dir.Substring(dir.IndexOf("Assets"));
 
-        var types = Enum.GetValues(typeof(CSBlockType));
-        for (int i = 0; i < types.Length; i++)
-        {
-            Render((CSBlockType)types.GetValue(i), dir);
-            EditorUtility.DisplayProgressBar("提示", "创建中.." + i + "/" + types.Length, (float)i / types.Length);
-        }
-        EditorUtility.ClearProgressBar();
+        Render(NBTGeneratorManager.GetMeshGenerator(1), 0, dir, true);
+        Render(NBTGeneratorManager.GetMeshGenerator(2), 0, dir, true);
+        Render(NBTGeneratorManager.GetMeshGenerator(3), 0, dir, true);
+        Render(NBTGeneratorManager.GetMeshGenerator(4), 0, dir, true);
+        Render(NBTGeneratorManager.GetMeshGenerator(5), 0, dir, true);
+        Render(NBTGeneratorManager.GetMeshGenerator(5), 1, dir, true);
+        Render(NBTGeneratorManager.GetMeshGenerator(5), 2, dir, true);
+        Render(NBTGeneratorManager.GetMeshGenerator(5), 3, dir, true);
+        Render(NBTGeneratorManager.GetMeshGenerator(7), 0, dir, true);
+        Render(NBTGeneratorManager.GetMeshGenerator(12), 0, dir, true);
+        Render(NBTGeneratorManager.GetMeshGenerator(13), 0, dir, true);
+        Render(NBTGeneratorManager.GetMeshGenerator(14), 0, dir, true);
+        Render(NBTGeneratorManager.GetMeshGenerator(15), 0, dir, true);
+        Render(NBTGeneratorManager.GetMeshGenerator(16), 0, dir, true);
+        Render(NBTGeneratorManager.GetMeshGenerator(17), 0, dir, true);
+        Render(NBTGeneratorManager.GetMeshGenerator(17), 1, dir, true);
+        Render(NBTGeneratorManager.GetMeshGenerator(17), 2, dir, true);
+        Render(NBTGeneratorManager.GetMeshGenerator(17), 3, dir, true);
+        Render(NBTGeneratorManager.GetMeshGenerator(18), 0, dir, true);
+        Render(NBTGeneratorManager.GetMeshGenerator(18), 1, dir, true);
+        Render(NBTGeneratorManager.GetMeshGenerator(18), 2, dir, true);
+        Render(NBTGeneratorManager.GetMeshGenerator(18), 3, dir, true);
+        Render(NBTGeneratorManager.GetMeshGenerator(20), 0, dir, true);
+        Render(NBTGeneratorManager.GetMeshGenerator(21), 0, dir, true);
+        Render(NBTGeneratorManager.GetMeshGenerator(24), 0, dir, true);
+        //Render(NBTGeneratorManager.GetMeshGenerator(26), 0, dir, true);
+        Render(NBTGeneratorManager.GetMeshGenerator(35), 0, dir, true);
+        Render(NBTGeneratorManager.GetMeshGenerator(35), 1, dir, true);
+        Render(NBTGeneratorManager.GetMeshGenerator(35), 2, dir, true);
+        Render(NBTGeneratorManager.GetMeshGenerator(35), 3, dir, true);
+        Render(NBTGeneratorManager.GetMeshGenerator(35), 4, dir, true);
+        Render(NBTGeneratorManager.GetMeshGenerator(35), 5, dir, true);
+        Render(NBTGeneratorManager.GetMeshGenerator(35), 6, dir, true);
+        Render(NBTGeneratorManager.GetMeshGenerator(35), 7, dir, true);
+        Render(NBTGeneratorManager.GetMeshGenerator(35), 8, dir, true);
+        Render(NBTGeneratorManager.GetMeshGenerator(35), 9, dir, true);
+        Render(NBTGeneratorManager.GetMeshGenerator(35), 10, dir, true);
+        Render(NBTGeneratorManager.GetMeshGenerator(35), 11, dir, true);
+        Render(NBTGeneratorManager.GetMeshGenerator(35), 12, dir, true);
+        Render(NBTGeneratorManager.GetMeshGenerator(35), 13, dir, true);
+        Render(NBTGeneratorManager.GetMeshGenerator(35), 14, dir, true);
+        Render(NBTGeneratorManager.GetMeshGenerator(35), 15, dir, true);
+        Render(NBTGeneratorManager.GetMeshGenerator(45), 0, dir, true);
+        Render(NBTGeneratorManager.GetMeshGenerator(49), 0, dir, true);
+        Render(NBTGeneratorManager.GetMeshGenerator(53), 0, dir, true);
+        //Render(NBTGeneratorManager.GetMeshGenerator(54), 0, dir, true);
+        Render(NBTGeneratorManager.GetMeshGenerator(56), 0, dir, true);
+        Render(NBTGeneratorManager.GetMeshGenerator(58), 0, dir, true);
+        Render(NBTGeneratorManager.GetMeshGenerator(67), 0, dir, true);
+        Render(NBTGeneratorManager.GetMeshGenerator(73), 0, dir, true);
+        Render(NBTGeneratorManager.GetMeshGenerator(81), 0, dir, true);
+        Render(NBTGeneratorManager.GetMeshGenerator(82), 0, dir, true);
+        Render(NBTGeneratorManager.GetMeshGenerator(85), 0, dir, true);
+        Render(NBTGeneratorManager.GetMeshGenerator(108), 0, dir, true);
+        Render(NBTGeneratorManager.GetMeshGenerator(125), 0, dir, true);
+        Render(NBTGeneratorManager.GetMeshGenerator(126), 0, dir, true);
+        Render(NBTGeneratorManager.GetMeshGenerator(134), 0, dir, true);
+        Render(NBTGeneratorManager.GetMeshGenerator(135), 0, dir, true);
+        Render(NBTGeneratorManager.GetMeshGenerator(136), 0, dir, true);
+        Render(NBTGeneratorManager.GetMeshGenerator(161), 0, dir, true);
+        Render(NBTGeneratorManager.GetMeshGenerator(161), 1, dir, true);
+        Render(NBTGeneratorManager.GetMeshGenerator(162), 0, dir, true);
+        Render(NBTGeneratorManager.GetMeshGenerator(162), 1, dir, true);
+
     }
 
     void OnWizardUpdate()

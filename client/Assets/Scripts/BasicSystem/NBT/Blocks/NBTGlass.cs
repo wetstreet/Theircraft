@@ -6,6 +6,7 @@ using UnityEngine;
 public class NBTGlass : NBTBlock
 {
     public override string name { get { return "Glass"; } }
+    public override string id { get { return "minecraft:glass"; } }
 
     public override string topName { get { return "glass"; } }
     public override string bottomName { get { return "glass"; } }

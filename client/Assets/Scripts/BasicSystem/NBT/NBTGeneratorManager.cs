@@ -27,6 +27,7 @@ public class NBTGeneratorManager : MonoBehaviour
         { 26, new NBTBed() },
         { 31, new NBTTallGrass() },
         { 32, new NBTDeadBush() },
+        { 35, new NBTWool() },
         { 37, new NBTYellowFlower() },
         { 38, new NBTRedFlower() },
         { 39, new NBTBrownMushroom() },

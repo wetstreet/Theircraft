@@ -7,11 +7,6 @@ public class NBTCraftingTable : NBTBlock
     public override string name { get { return "Crafting Table"; } }
     public override string id { get { return "minecraft:crafting_table"; } }
 
-    public override string GetIconPathByData(short data)
-    {
-        return "CraftingTable";
-    }
-
     public override float hardness { get { return 2.5f; } }
 
     public override void Init()

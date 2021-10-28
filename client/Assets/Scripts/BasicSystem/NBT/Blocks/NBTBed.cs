@@ -78,9 +78,29 @@ public class NBTBed : NBTBlock
         bed.layer = LayerMask.NameToLayer("Chunk");
     }
 
+    Mesh combinedMesh;
+    public override Mesh GetItemMesh(byte blockData)
+    {
+        if (combinedMesh == null)
+        {
+            Mesh head = GetMesh(8);
+            Mesh foot = GetMesh(0);
+
+            CombineInstance[] combine = new CombineInstance[2];
+            combine[0].mesh = head;
+            combine[0].transform = Matrix4x4.Translate(Vector3.forward);
+            combine[1].mesh = foot;
+            combine[1].transform = Matrix4x4.identity;
+
+            combinedMesh = new Mesh();
+            combinedMesh.CombineMeshes(combine);
+        }
+        return combinedMesh;
+    }
+
     public override Mesh GetItemMesh(NBTChunk chunk, Vector3Int pos, byte blockData)
     {
-        return GetMesh(0);
+        return GetItemMesh(blockData);
     }
 
     public override Material GetItemMaterial(byte data)

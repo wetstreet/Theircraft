@@ -8,8 +8,6 @@ public class NBTGrassBlock : NBTBlock
     public override string name { get { return "Grass Block"; } }
     public override string id { get { return "minecraft:grass"; } }
 
-    public override string GetIconPathByData(short data) { return "GrassBlock"; }
-
     public override string GetDropItemByData(byte data) { return "minecraft:dirt"; }
 
     public override void Init()
@@ -87,5 +85,63 @@ public class NBTGrassBlock : NBTBlock
         }
 
         UnityEngine.Profiling.Profiler.EndSample();
+    }
+
+    public override Mesh GetItemMesh(byte data = 0)
+    {
+        CubeAttributes ca = new CubeAttributes();
+
+        NBTMesh nbtMesh = new NBTMesh(256);
+
+        FaceAttributes fa = new FaceAttributes();
+        fa.skyLight = 1;
+        fa.blockLight = 1;
+        fa.color = Color.white;
+        fa.uv = uv_zero;
+
+        try
+        {
+            fa.pos = frontVertices;
+            fa.normal = Vector3.forward;
+            fa.faceIndex = TextureArrayManager.GetIndexByName(frontName);
+            AddFace(nbtMesh, fa, ca);
+
+            fa.pos = backVertices;
+            fa.normal = Vector3.back;
+            fa.faceIndex = TextureArrayManager.GetIndexByName(backName);
+            AddFace(nbtMesh, fa, ca);
+
+            fa.pos = topVertices;
+            fa.normal = Vector3.up;
+            fa.faceIndex = TextureArrayManager.GetIndexByName(topName);
+            fa.color = TintManager.tintColor;
+            AddFace(nbtMesh, fa, ca);
+            fa.color = Color.white;
+
+            fa.pos = bottomVertices;
+            fa.normal = Vector3.down;
+            fa.faceIndex = TextureArrayManager.GetIndexByName(bottomName);
+            AddFace(nbtMesh, fa, ca);
+
+            fa.pos = leftVertices;
+            fa.normal = Vector3.left;
+            fa.faceIndex = TextureArrayManager.GetIndexByName(leftName);
+            AddFace(nbtMesh, fa, ca);
+
+            fa.pos = rightVertices;
+            fa.normal = Vector3.right;
+            fa.faceIndex = TextureArrayManager.GetIndexByName(rightName);
+            AddFace(nbtMesh, fa, ca);
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError("GetItemMesh error,generator=" + GetType() + ",message=\n" + e.Message);
+        }
+
+        nbtMesh.Refresh();
+
+        nbtMesh.Dispose();
+
+        return nbtMesh.mesh;
     }
 }

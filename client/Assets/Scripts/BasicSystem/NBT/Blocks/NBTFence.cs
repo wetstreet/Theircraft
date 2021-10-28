@@ -33,8 +33,6 @@ public class NBTFence : NBTBlock
 
     public override SoundMaterial soundMaterial { get { return SoundMaterial.Wood; } }
 
-    public override string GetIconPathByData(short data) { return "BirchWoodStairs"; }
-
     public override string GetBreakEffectTexture(NBTChunk chunk, byte data) { return "planks_birch"; }
 
     public override bool isTransparent => true;

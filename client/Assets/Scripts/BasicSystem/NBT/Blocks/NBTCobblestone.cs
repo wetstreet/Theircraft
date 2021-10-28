@@ -18,7 +18,5 @@ public class NBTCobblestone : NBTBlock
 
     public override SoundMaterial soundMaterial { get { return SoundMaterial.Stone; } }
 
-    public override string GetIconPathByData(short data) { return "Cobblestone"; }
-
     public override string GetBreakEffectTexture(byte data) { return "cobblestone"; }
 }
