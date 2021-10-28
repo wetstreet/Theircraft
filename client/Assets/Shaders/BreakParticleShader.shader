@@ -11,7 +11,6 @@ Shader "Custom/BreakParticleShader"
     SubShader
     {
         Tags { "RenderType"="Opaque" }
-        LOD 100
 
         Pass
         {
@@ -46,6 +45,11 @@ Shader "Custom/BreakParticleShader"
             float _Cutoff;
             half4 _Color;
             float _SkyLight;
+            float _BlockLight;
+
+            sampler2D _DayLightTexture;
+            sampler2D _NightLightTexture;
+            float _DayNight01;
 
             v2f vert (appdata v)
             {
@@ -60,7 +64,10 @@ Shader "Custom/BreakParticleShader"
                 half4 col = SAMPLE_TEXTURE2D_ARRAY(_Array, sampler_Array, i.uv, _Slice);
                 clip(col.a - _Cutoff);
 
-                col.rgb *= GetSkyLight(_SkyLight);
+                half4 dayLight = tex2D(_DayLightTexture, half2(_BlockLight, 1 - _SkyLight));
+                half4 nightLight = tex2D(_NightLightTexture, half2(_BlockLight, 1 - _SkyLight));
+
+                col.rgb *= lerp(dayLight.rgb, nightLight.rgb, saturate(_DayNight01));
 
                 // color tint
                 col.rgb *= LinearToGamma22(_Color.rgb);

@@ -46,7 +46,7 @@ public abstract class NBTBlock : NBTObject
 
     public virtual float speedMultiplier { get { return 3; } }
 
-    public virtual bool isSpecialMaterial { get { return false; } }
+    public virtual bool isTileEntity { get { return false; } } // tile entity block has its own material
 
     public virtual float breakNeedTime {
         get {
@@ -127,23 +127,54 @@ public abstract class NBTBlock : NBTObject
     public override Mesh GetItemMesh(NBTChunk chunk, Vector3Int pos, byte blockData)
     {
         CubeAttributes ca = new CubeAttributes();
-        ca.pos = pos;
+        //ca.pos = pos;
         ca.blockData = blockData;
 
         NBTMesh nbtMesh = new NBTMesh(256);
 
+        chunk.GetLights(pos.x, pos.y, pos.z, out float skyLight, out float blockLight);
+
+        FaceAttributes fa = new FaceAttributes();
+        fa.faceIndex = GetFrontIndexByData(chunk, ca.blockData);
+        fa.color = GetFrontTintColorByData(chunk, pos, ca.blockData);
+        fa.skyLight = skyLight;
+        fa.blockLight = blockLight;
+
+        Rotation rotation = GetFrontRotationByData(ca.blockData);
+        if (rotation == Rotation.Right)
+            fa.uv = uv_right;
+        else
+            fa.uv = uv_zero;
+
         try
         {
-            AddFace(nbtMesh, GetFrontFaceAttributes(chunk, nbtMesh, ca), ca);
-            AddFace(nbtMesh, GetBackFaceAttributes(chunk, nbtMesh, ca), ca);
-            AddFace(nbtMesh, GetTopFaceAttributes(chunk, nbtMesh, ca), ca);
-            AddFace(nbtMesh, GetBottomFaceAttributes(chunk, nbtMesh, ca), ca);
-            AddFace(nbtMesh, GetLeftFaceAttributes(chunk, nbtMesh, ca), ca);
-            AddFace(nbtMesh, GetRightFaceAttributes(chunk, nbtMesh, ca), ca);
+            fa.pos = frontVertices;
+            fa.normal = Vector3.forward;
+            AddFace(nbtMesh, fa, ca);
+
+            fa.pos = backVertices;
+            fa.normal = Vector3.back;
+            AddFace(nbtMesh, fa, ca);
+
+            fa.pos = topVertices;
+            fa.normal = Vector3.up;
+            AddFace(nbtMesh, fa, ca);
+
+            fa.pos = bottomVertices;
+            fa.normal = Vector3.down;
+            AddFace(nbtMesh, fa, ca);
+
+            fa.pos = leftVertices;
+            fa.normal = Vector3.left;
+            AddFace(nbtMesh, fa, ca);
+
+            fa.pos = rightVertices;
+            fa.normal = Vector3.right;
+            AddFace(nbtMesh, fa, ca);
         }
         catch (System.Exception e)
         {
-            Debug.Log("GetItemMesh error,message=\n" + e.Message);
+            Debug.LogError("GetItemMesh error,generator="+GetType()+",message=\n" + e.Message);
         }
 
         nbtMesh.Refresh();

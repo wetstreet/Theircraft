@@ -13,7 +13,7 @@ public class NBTTorch : NBTBlock
 
     public override SoundMaterial soundMaterial => SoundMaterial.Wood;
 
-    public override bool isSpecialMaterial => true;
+    public override bool isTileEntity => true;
 
     public override bool isTransparent => true;
 
@@ -42,7 +42,7 @@ public class NBTTorch : NBTBlock
         torch.transform.localPosition = pos;
     }
 
-    public override Mesh GetItemMesh(NBTChunk chunk, byte blockData)
+    public override Mesh GetItemMesh(NBTChunk chunk, Vector3Int pos, byte blockData)
     {
         return GetMesh(blockData);
     }

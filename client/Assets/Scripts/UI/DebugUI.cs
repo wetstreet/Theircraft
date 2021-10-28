@@ -100,9 +100,15 @@ public class DebugUI : MonoBehaviour
         sb.Append(chunkZ);
 
         Vector3Int posInt = pos.ToVector3Int();
-        byte light = NBTHelper.GetLightByte(posInt.x, posInt.y, posInt.z);
+        NBTHelper.GetLightsByte(posInt.x, posInt.y, posInt.z, out byte skyLight, out byte blockLight);
+        byte maxLight = skyLight > blockLight ? skyLight : blockLight;
         sb.Append("\nLight: ");
-        sb.Append(light);
+        sb.Append(maxLight);
+        sb.Append(" (");
+        sb.Append(skyLight);
+        sb.Append(" sky, ");
+        sb.Append(blockLight);
+        sb.Append(" block)");
 
 
         if (WireFrameHelper.render)

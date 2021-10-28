@@ -589,7 +589,7 @@ public class NBTHelper
         return chunk.GetSkyLightByte(xInChunk, y, zInChunk);
     }
 
-    public static byte GetLightByte(int x, int y, int z)
+    public static void GetLightsByte(int x, int y, int z, out byte skyLight, out byte blockLight)
     {
         int chunkX = Mathf.FloorToInt(x / 16f);
         int chunkZ = Mathf.FloorToInt(z / 16f);
@@ -598,7 +598,7 @@ public class NBTHelper
         int zInChunk = z - chunkZ * 16;
 
         NBTChunk chunk = GetChunk(chunkX, chunkZ);
-        return chunk.GetLightByte(xInChunk, y, zInChunk);
+        chunk.GetLightsByte(xInChunk, y, zInChunk, out skyLight, out blockLight);
     }
 
     public static void SetSkyLightByte(int x, int y, int z, byte skyLight)

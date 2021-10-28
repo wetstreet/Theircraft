@@ -46,6 +46,7 @@ public class NBTEditorWindow : EditorWindow
     byte biomeType;
     byte blockdata;
     byte skyLight;
+    byte blockLight;
     Color c;
     float AdjTemp;
     float AdjRainfall;
@@ -59,6 +60,7 @@ public class NBTEditorWindow : EditorWindow
         GUILayout.Label("data=" + blockdata);
         GUILayout.Label("biome=" + biomeType);
         GUILayout.Label("skyLight=" + skyLight);
+        GUILayout.Label("blockLight=" + blockLight);
         if (GUILayout.Button("Update"))
         {
             int chunkX = Mathf.FloorToInt(pos.x / 16f);
@@ -122,6 +124,9 @@ public class NBTEditorWindow : EditorWindow
 
                     TagNodeByteArray SkyLight = section["SkyLight"] as TagNodeByteArray;
                     skyLight = NBTHelper.GetNibble(SkyLight.Data, blockPos);
+
+                    TagNodeByteArray BlockLight = section["BlockLight"] as TagNodeByteArray;
+                    blockLight = NBTHelper.GetNibble(BlockLight.Data, blockPos);
                 }
 
                 TagNodeByteArray Biomes = Level["Biomes"] as TagNodeByteArray;

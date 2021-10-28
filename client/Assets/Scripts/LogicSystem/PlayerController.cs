@@ -194,7 +194,14 @@ public class PlayerController : MonoBehaviour
     public static void ShowBlock(NBTObject generator, short data)
     {
         instance.handMeshRenderer.enabled = false;
-        instance.blockMeshFilter.sharedMesh = generator.GetItemMesh(NBTHelper.GetChunk(GetCurrentBlock()), Vector3Int.RoundToInt(instance.position), (byte)data);
+        try
+        {
+            instance.blockMeshFilter.sharedMesh = generator.GetItemMesh(NBTHelper.GetChunk(GetCurrentBlock()), Vector3Int.RoundToInt(instance.position), (byte)data);
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError("showblock error, generator=" + generator + ",message=\n" + e.Message);
+        }
         instance.blockMeshRenderer.GetComponent<MeshRenderer>().sharedMaterial = generator.GetItemMaterial((byte)data);
         instance.blockMeshFilter.transform.gameObject.SetActive(true);
     }
@@ -232,15 +239,20 @@ public class PlayerController : MonoBehaviour
     {
         breakTime = 0;
 
-        handAnimator.SetBool("isBreaking", false);
-
         HideBreakingEffect();
         //DeleteBlockReq(WireFrameHelper.pos);
 
         NBTBlock generator = NBTGeneratorManager.GetMeshGenerator(WireFrameHelper.type);
         if (generator.hasDropItem)
         {
-            Item.CreateBlockDropItem(generator.GetDropItemByData(WireFrameHelper.data), generator.GetDropItemData(WireFrameHelper.data), pos);
+            try
+            {
+                Item.CreateBlockDropItem(generator.GetDropItemByData(WireFrameHelper.data), generator.GetDropItemData(WireFrameHelper.data), pos);
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError("create item error, id=" + generator.GetDropItemByData(WireFrameHelper.data) + ",generator=" + generator);
+            }
         }
 
         Vector3Int topPos = WireFrameHelper.pos + Vector3Int.up;
@@ -263,15 +275,13 @@ public class PlayerController : MonoBehaviour
 
     void OnLeftMouseDown()
     {
-        handAnimator.SetTrigger("interactTrigger");
+        handAnimator.Play("hand-interact", -1, 0);
     }
 
     void OnLeftMouseUp()
     {
         breakTime = 0;
         HideBreakingEffect();
-
-        handAnimator.SetBool("isBreaking", false);
     }
 
     bool CanAddBlock(Vector3Int pos)
@@ -351,7 +361,7 @@ public class PlayerController : MonoBehaviour
     public float attackDamage = 10f;
     void OnLeftMousePressed()
     {
-        Debug.Log(ChatPanel.HideCode + "OnLeftMousePressed");
+        //Debug.Log(ChatPanel.HideCode + "OnLeftMousePressed");
 
         int layerMask = 1 << LayerMask.NameToLayer("Monster");
         if (Physics.Raycast(Camera.main.ScreenPointToRay(center), out RaycastHit hit, 5f, layerMask))
@@ -380,7 +390,7 @@ public class PlayerController : MonoBehaviour
 
         if (WireFrameHelper.render)
         {
-            handAnimator.SetBool("isBreaking", true);
+            handAnimator.CrossFade("hand-interact", 0);
 
             breakTime += Time.deltaTime;
 
@@ -576,8 +586,6 @@ public class PlayerController : MonoBehaviour
                 }
             }
         }
-
-        handAnimator.SetBool("isBreaking", false);
     }
 
     public bool isFlying = false;

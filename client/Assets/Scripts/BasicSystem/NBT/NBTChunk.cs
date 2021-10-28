@@ -16,12 +16,10 @@ public class NBTChunk
     public GameObject gameObject;
     public bool isDirty = false;
     public TagNodeList Sections;
+    public TagNodeList TileEntities;
 
-    public bool hasBuiltMesh = false;
-    public int lightGenerationCount = 0;
-    public int meshBuildCount = 0;
-
-    public List<Vector3Int> torchList = new List<Vector3Int>();
+    public HashSet<Vector3Int> tileEntityList = new HashSet<Vector3Int>();
+    public Dictionary<Vector3Int, GameObject> tileEntityObjs = new Dictionary<Vector3Int, GameObject>();
 
     public NBTGameObject collidable;
     public NBTGameObject notCollidable;
@@ -50,6 +48,7 @@ public class NBTChunk
         globalX = x * 16;
         globalZ = z * 16;
         Sections = Level["Sections"] as TagNodeList;
+        TileEntities = Level["TileEntities"] as TagNodeList;
         gameObject.name = "chunk (" + x + "," + z + ")";
         transform.localPosition = new Vector3(x * 16, 0, z * 16);
         ClearData();
@@ -65,27 +64,6 @@ public class NBTChunk
     {
         if (xInChunk < 0 || xInChunk > 15 || zInChunk < 0 || zInChunk > 15)
         {
-            //if (xInChunk < 0)
-            //{
-            //    NBTChunk chunk = NBTHelper.GetChunk(x - 1, z);
-            //    return chunk.GetBlockByte(xInChunk + 16, worldY, zInChunk);
-            //}
-            //else if (xInChunk > 15)
-            //{
-            //    NBTChunk chunk = NBTHelper.GetChunk(x + 1, z);
-            //    return chunk.GetBlockByte(xInChunk - 16, worldY, zInChunk);
-            //}
-            //else if (zInChunk < 0)
-            //{
-            //    NBTChunk chunk = NBTHelper.GetChunk(x, z - 1);
-            //    return chunk.GetBlockByte(xInChunk, worldY, zInChunk + 16);
-            //}
-            //else if (zInChunk > 15)
-            //{
-            //    NBTChunk chunk = NBTHelper.GetChunk(x, z + 1);
-            //    return chunk.GetBlockByte(xInChunk, worldY, zInChunk - 16);
-            //}
-
             return NBTHelper.GetBlockByte(xInChunk + 16 * x, worldY, zInChunk + 16 * z);
         }
 
@@ -151,27 +129,6 @@ public class NBTChunk
     {
         if (xInChunk < 0 || xInChunk > 15 || worldY < 0 || worldY > 255 || zInChunk < 0 || zInChunk > 15)
         {
-            //if (xInChunk < 0)
-            //{
-            //    NBTChunk chunk = NBTHelper.GetChunk(x - 1, z);
-            //    chunk.GetBlockData(xInChunk + 16, worldY, zInChunk, ref blockType, ref blockData);
-            //}
-            //else if (xInChunk > 15)
-            //{
-            //    NBTChunk chunk = NBTHelper.GetChunk(x + 1, z);
-            //    chunk.GetBlockData(xInChunk - 16, worldY, zInChunk, ref blockType, ref blockData);
-            //}
-            //else if (zInChunk < 0)
-            //{
-            //    NBTChunk chunk = NBTHelper.GetChunk(x, z - 1);
-            //    chunk.GetBlockData(xInChunk, worldY, zInChunk + 16, ref blockType, ref blockData);
-            //}
-            //else if (zInChunk > 15)
-            //{
-            //    NBTChunk chunk = NBTHelper.GetChunk(x, z + 1);
-            //    chunk.GetBlockData(xInChunk, worldY, zInChunk - 16, ref blockType, ref blockData);
-            //}
-
             //NBTHelper.GetBlockData(xInChunk + 16 * x, worldY, zInChunk + 16 * z, ref blockType, ref blockData);
             return;
         }
@@ -252,9 +209,9 @@ public class NBTChunk
 
                             try
                             {
-                                if (generator.isSpecialMaterial)
+                                if (generator.isTileEntity)
                                 {
-                                    generator.AddCube(this, blockData, pos, notCollidable);
+                                    tileEntityList.Add(pos);
                                 }
                                 else
                                 {
@@ -285,9 +242,6 @@ public class NBTChunk
                 }
             }
         }
-
-        hasBuiltMesh = true;
-        isDirty = false;
 
         UnityEngine.Profiling.Profiler.EndSample();
     }
@@ -338,6 +292,33 @@ public class NBTChunk
         }
     }
 
+    bool hasInitTileEntity = false;
+    void InitTileEntity()
+    {
+        if (hasInitTileEntity)
+            return;
+
+        foreach (Vector3Int pos in tileEntityList)
+        {
+            if (!tileEntityObjs.ContainsKey(pos))
+            {
+                int sectionIndex = pos.y / 16;
+                TagNodeCompound Section = Sections[sectionIndex] as TagNodeCompound;
+                TagNodeByteArray Blocks = Section["Blocks"] as TagNodeByteArray;
+                TagNodeByteArray Data = Section["Data"] as TagNodeByteArray;
+
+                int yInSection = pos.y % 16;
+                int blockPos = yInSection * 16 * 16 + pos.z * 16 + pos.x;
+                byte rawType = Blocks.Data[blockPos];
+                NBTBlock generator = NBTGeneratorManager.GetMeshGenerator(rawType);
+                byte blockData = NBTHelper.GetNibble(Data.Data, blockPos);
+                generator.AddCube(this, blockData, pos, collidable);
+            }
+        }
+
+        hasInitTileEntity = true;
+    }
+
     public void RebuildMesh(bool forceRefreshMeshData = true, bool checkBorder = true)
     {
         UnityEngine.Profiling.Profiler.BeginSample("RebuildMesh");
@@ -348,13 +329,14 @@ public class NBTChunk
             CheckNearbyChunks();
         }
 
-        if (forceRefreshMeshData || isDirty)
+        if (forceRefreshMeshData)
         {
             RefreshMeshData();
         }
 
         try
         {
+            InitTileEntity();
             collidable.Refresh();
             notCollidable.Refresh();
         }
@@ -375,12 +357,13 @@ public class NBTChunk
             CheckNearbyChunks();
         }
 
-        if (forceRefreshMeshData || isDirty)
+        if (forceRefreshMeshData)
         {
             await Task.Run(RefreshMeshData);
         }
         try
         {
+            InitTileEntity();
             collidable.Refresh();
         }
         catch (System.Exception e)
@@ -399,11 +382,6 @@ public class NBTChunk
 
     public void ClearData()
     {
-        hasBuiltMesh = false;
-        lightGenerationCount = 0;
-        meshBuildCount = 0;
-        torchList.Clear();
-
         collidable.GetComponent<MeshFilter>().sharedMesh = null;
         notCollidable.GetComponent<MeshFilter>().sharedMesh = null;
         //water.GetComponent<MeshFilter>().sharedMesh = null;
@@ -555,11 +533,6 @@ public class NBTChunk
         //Debug.Log("y=" + x + "," + z + ",section=" + sectionIndex);
 
         return skyLight > blockLight ? skyLight : blockLight;
-    }
-
-    public float GetLight(int xInChunk, int yInChunk, int zInChunk)
-    {
-        return GetLightByte(xInChunk, yInChunk, zInChunk, true) / 15f;
     }
 
     public void GetLights(int xInChunk, int yInChunk, int zInChunk, out float skyLight, out float blockLight)

@@ -14,6 +14,8 @@ public class NBTGlass : NBTBlock
     public override string leftName { get { return "glass"; } }
     public override string rightName { get { return "glass"; } }
 
+    public override bool isTransparent => true;
+
     public override SoundMaterial soundMaterial { get { return SoundMaterial.Glass; } }
 
     public override string GetBreakEffectTexture(byte data) { return "glass"; }
