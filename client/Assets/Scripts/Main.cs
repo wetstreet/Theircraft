@@ -26,6 +26,7 @@ public class Main : MonoBehaviour {
         LocalizationManager.Init();
         NBTGeneratorManager.Init();
         TextureArrayManager.Init();
+        CraftingSystem.Init();
 
         SceneManager.LoadScene("LoginScene");
 

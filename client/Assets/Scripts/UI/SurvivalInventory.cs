@@ -229,7 +229,10 @@ public class SurvivalInventory : MonoBehaviour
         }
         else
         {
-            if (InventorySystem.grabItem.id != null && InventorySystem.items[highlightIndex].id != null && InventorySystem.grabItem.id == InventorySystem.items[highlightIndex].id)
+            if (InventorySystem.grabItem.id != null && 
+                InventorySystem.items[highlightIndex].id != null && 
+                InventorySystem.grabItem.id == InventorySystem.items[highlightIndex].id &&
+                InventorySystem.grabItem.damage == InventorySystem.items[highlightIndex].damage)
             {
                 InventorySystem.PutItems(highlightIndex);
             }

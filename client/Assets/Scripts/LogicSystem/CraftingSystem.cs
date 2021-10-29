@@ -71,35 +71,183 @@ public class CraftingSystem : MonoBehaviour
 
     static Dictionary<string, Recipe> name2recipe = new Dictionary<string, Recipe>();
 
-    [UnityEditor.MenuItem("Assets/RecipeTest")]
     public static void Init()
     {
         UnityEngine.Object[] jsons = Resources.LoadAll("Recipes");
         foreach (TextAsset json in jsons)
         {
-            Debug.Log(json.name + "," + json);
             name2recipe[json.name] = ParseRecipe(json.text); ;
         }
-
-        //TextAsset json = UnityEditor.Selection.activeObject as TextAsset;
-        //name2recipe[json.name] = ParseRecipe(json.text);
-
-        //Recipe recipe = JsonConvert.DeserializeObject<Recipe>(json.text);
-        //Debug.Log(json);
-        //Debug.Log(recipe.type);
-        //Debug.Log(recipe.group);
-        //foreach (string p in recipe.pattern)
-        //    Debug.Log(p);
-        //foreach (KeyValuePair<string, Item> pair in recipe.key)
-        //{
-        //    Debug.Log(pair.Key);
-        //    Debug.Log(pair.Value.item);
-        //    Debug.Log(pair.Value.data);
-        //}
-        //Debug.Log(recipe.result.item);
-        //Debug.Log(recipe.result.data);
-        //Debug.Log(recipe.result.count);
     }
 
+    static bool CheckRecipe(Recipe recipe, string firstRow, string secondRow, string firstID, int firstData)
+    {
+        if (recipe.pattern.Count == 1)
+        {
+            if (recipe.pattern[0] == firstRow)
+            {
+                foreach (Item item in recipe.key["#"])
+                {
+                    if (item.item == firstID && item.data == firstData)
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+        else if (recipe.pattern.Count == 2)
+        {
+            if (recipe.pattern[0] == firstRow && recipe.pattern[1] == secondRow)
+            {
+                foreach (Item item in recipe.key["#"])
+                {
+                    if (item.item == firstID && item.data == firstData)
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    public static void CheckCanCraft()
+    {
+        string firstRow = "";
+        string secondRow = "";
+
+        InventoryItem upperLeft = InventorySystem.items[36];
+        InventoryItem upperRight = InventorySystem.items[37];
+        InventoryItem bottomLeft = InventorySystem.items[38];
+        InventoryItem bottomRight = InventorySystem.items[39];
+
+        int count = 0;
+        if (upperLeft.id != null) count++;
+        if (upperRight.id != null) count++;
+        if (bottomLeft.id != null) count++;
+        if (bottomRight.id != null) count++;
+
+        string firstID = null;
+        int firstData = 0;
+
+        if (count == 1)
+        {
+            firstRow = "#";
+            if (upperLeft.id != null)
+            {
+                firstID = upperLeft.id;
+                firstData = upperLeft.damage;
+            }
+            else if (upperRight.id != null)
+            {
+                firstID = upperRight.id;
+                firstData = upperRight.damage;
+            }
+            else if (bottomLeft.id != null)
+            {
+                firstID = bottomLeft.id;
+                firstData = bottomLeft.damage;
+            }
+            else if (bottomRight.id != null)
+            {
+                firstID = bottomRight.id;
+                firstData = bottomRight.damage;
+            }
+        }
+        else if (count == 2)
+        {
+            if (upperLeft.id != null && upperRight.id != null)
+            {
+                firstRow = "##";
+                firstID = upperLeft.id;
+                firstData = upperLeft.damage;
+            }
+            else if (bottomLeft.id != null && bottomRight.id != null)
+            {
+                firstRow = "##";
+                firstID = upperLeft.id;
+                firstData = upperLeft.damage;
+            }
+            else if (upperLeft.id != null && bottomLeft.id != null)
+            {
+                firstRow =  "#";
+                secondRow = "#";
+                firstID = upperLeft.id;
+                firstData = upperLeft.damage;
+            }
+            else if (upperRight.id != null && bottomRight.id != null)
+            {
+                firstRow =  "#";
+                secondRow = "#";
+                firstID = upperRight.id;
+                firstData = upperRight.damage;
+            }
+        }
+        else if (count == 3)
+        {
+            if (upperLeft.id == null)
+            {
+                firstRow =  " #";
+                secondRow = "##";
+                firstID = upperRight.id;
+                firstData = upperRight.damage;
+            }
+            else if (upperRight.id == null)
+            {
+                firstRow =  "# ";
+                secondRow = "##";
+                firstID = upperLeft.id;
+                firstData = upperLeft.damage;
+            }
+            else if (bottomLeft.id == null)
+            {
+                firstRow =  "##";
+                secondRow = " #";
+                firstID = upperLeft.id;
+                firstData = upperLeft.damage;
+            }
+            else if (bottomRight.id == null)
+            {
+                firstRow =  "##";
+                secondRow = "# ";
+                firstID = upperLeft.id;
+                firstData = upperLeft.damage;
+            }
+        }
+        else if (count == 4)
+        {
+            firstRow =  "##";
+            secondRow = "##";
+            firstID = upperLeft.id;
+            firstData = upperLeft.damage;
+        }
+
+        string[] recipeNames = new string[] { "stick", "crafting_table" };
+        Recipe matchRecipe = null;
+        bool canCraft = false;
+        foreach (string recipeName in recipeNames)
+        {
+            Recipe recipe = name2recipe[recipeName];
+            canCraft = CheckRecipe(recipe, firstRow, secondRow, firstID, firstData);
+            if (canCraft)
+            {
+                matchRecipe = recipe;
+                break;
+            }
+        }
+
+        if (canCraft)
+        {
+            InventorySystem.items[40].id = matchRecipe.result.item;
+            InventorySystem.items[40].damage = matchRecipe.result.data;
+            InventorySystem.items[40].count = matchRecipe.result.count;
+        }
+        else
+        {
+            InventorySystem.items[40].id = null;
+            InventorySystem.items[40].damage = 0;
+            InventorySystem.items[40].count = 0;
+        }
+    }
 
 }

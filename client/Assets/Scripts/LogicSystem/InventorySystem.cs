@@ -12,6 +12,7 @@ public struct InventoryItem
 
 public class InventorySystem
 {
+    // 0-35 is bag, 36-41 is crafting
     public static InventoryItem[] items = new InventoryItem[41];
 
     public static InventoryItem grabItem;
@@ -66,9 +67,12 @@ public class InventorySystem
             short damage = item["Damage"] as TagNodeShort;
             string id = item["id"] as TagNodeString;
 
-            items[slot].id = id;
-            items[slot].count = count;
-            items[slot].damage = damage;
+            if (slot < 36)
+            {
+                items[slot].id = id;
+                items[slot].count = count;
+                items[slot].damage = damage;
+            }
         }
     }
 
@@ -233,6 +237,7 @@ public class InventorySystem
 
     static void CheckCanCraft()
     {
+        CraftingSystem.CheckCanCraft();
     }
 
     public static void SaveData(TagNodeList Inventory)
