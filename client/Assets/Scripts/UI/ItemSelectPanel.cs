@@ -138,7 +138,7 @@ public class ItemSelectPanel : MonoBehaviour
         for (int i = 0; i < 10; i++)
         {
             Transform heartTrans = Instantiate(heartUnit);
-            heartTrans.parent = heartGrid;
+            heartTrans.SetParent(heartGrid, false);
             heartTrans.localScale = Vector3.one;
             SlotUnit heart = new SlotUnit
             {
@@ -154,7 +154,7 @@ public class ItemSelectPanel : MonoBehaviour
         for (int i = 0; i < 10; i++)
         {
             Transform meatTrans = Instantiate(meatUnit);
-            meatTrans.parent = meatGrid;
+            meatTrans.SetParent(meatGrid, false);
             meatTrans.localScale = Vector3.one;
             SlotUnit meat = new SlotUnit
             {

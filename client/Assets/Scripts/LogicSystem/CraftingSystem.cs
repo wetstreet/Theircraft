@@ -86,7 +86,7 @@ public class CraftingSystem : MonoBehaviour
     {
         if (InventorySystem.items[resultIndex].id == null) return;
 
-        foreach (int i in SurvivalInventory.indexList)
+        foreach (int i in CraftingTableUI.indexList)
         {
             if (InventorySystem.items[i].count > 0)
             {
@@ -107,32 +107,24 @@ public class CraftingSystem : MonoBehaviour
         CheckCanCraft();
     }
 
-    static bool CheckRecipe(Recipe recipe, string firstRow, string secondRow, string firstID, int firstData)
+    static bool CheckRecipe(Recipe recipe, string[] pattern, string firstID, int firstData)
     {
-        if (recipe.pattern.Count == 1)
+        if (recipe.pattern.Count != pattern.Length)
         {
-            if (recipe.pattern[0] == firstRow)
+            return false;
+        }
+        for (int i = 0; i < recipe.pattern.Count; i++)
+        {
+            if (recipe.pattern[i] != pattern[i])
             {
-                foreach (Item item in recipe.key["#"])
-                {
-                    if (item.item == firstID && item.data == firstData)
-                    {
-                        return true;
-                    }
-                }
+                return false;
             }
         }
-        else if (recipe.pattern.Count == 2)
+        foreach (Item item in recipe.key["#"])
         {
-            if (recipe.pattern[0] == firstRow && recipe.pattern[1] == secondRow)
+            if (item.item == firstID && item.data == firstData)
             {
-                foreach (Item item in recipe.key["#"])
-                {
-                    if (item.item == firstID && item.data == firstData)
-                    {
-                        return true;
-                    }
-                }
+                return true;
             }
         }
         return false;
@@ -140,122 +132,112 @@ public class CraftingSystem : MonoBehaviour
 
     public static void CheckCanCraft()
     {
-        string firstRow = "";
-        string secondRow = "";
+        char[,] pattern = new char[3, 3];
 
-        InventoryItem upperLeft = InventorySystem.items[36];
-        InventoryItem upperRight = InventorySystem.items[37];
-        InventoryItem bottomLeft = InventorySystem.items[39];
-        InventoryItem bottomRight = InventorySystem.items[40];
+        InventoryItem[,] grid = new InventoryItem[3,3];
+        grid[0, 0] = InventorySystem.items[36];
+        grid[1, 0] = InventorySystem.items[37];
+        grid[2, 0] = InventorySystem.items[38];
+        grid[0, 1] = InventorySystem.items[39];
+        grid[1, 1] = InventorySystem.items[40];
+        grid[2, 1] = InventorySystem.items[41];
+        grid[0, 2] = InventorySystem.items[42];
+        grid[1, 2] = InventorySystem.items[43];
+        grid[2, 2] = InventorySystem.items[44];
 
         int count = 0;
-        if (upperLeft.id != null) count++;
-        if (upperRight.id != null) count++;
-        if (bottomLeft.id != null) count++;
-        if (bottomRight.id != null) count++;
+        for (int i = 0; i < 3; i++)
+        {
+            for (int j = 0; j < 3; j++)
+            {
+                if (grid[i, j].id != null)
+                    count++;
+            }
+        }
 
         string firstID = null;
         int firstData = 0;
 
-        if (count == 1)
+        for (int i = 0; i < 3; i++)
         {
-            firstRow = "#";
-            if (upperLeft.id != null)
+            for (int j = 0; j < 3; j++)
             {
-                firstID = upperLeft.id;
-                firstData = upperLeft.damage;
+                if (grid[i, j].id != null)
+                {
+                    pattern[i, j] = '#';
+                    firstID = grid[i, j].id;
+                    firstData = grid[i, j].damage;
+                }
+                else
+                {
+                    pattern[i, j] = ' ';
+                }
             }
-            else if (upperRight.id != null)
-            {
-                firstID = upperRight.id;
-                firstData = upperRight.damage;
-            }
-            else if (bottomLeft.id != null)
-            {
-                firstID = bottomLeft.id;
-                firstData = bottomLeft.damage;
-            }
-            else if (bottomRight.id != null)
-            {
-                firstID = bottomRight.id;
-                firstData = bottomRight.damage;
-            }
-        }
-        else if (count == 2)
-        {
-            if (upperLeft.id != null && upperRight.id != null)
-            {
-                firstRow = "##";
-                firstID = upperLeft.id;
-                firstData = upperLeft.damage;
-            }
-            else if (bottomLeft.id != null && bottomRight.id != null)
-            {
-                firstRow = "##";
-                firstID = upperLeft.id;
-                firstData = upperLeft.damage;
-            }
-            else if (upperLeft.id != null && bottomLeft.id != null)
-            {
-                firstRow =  "#";
-                secondRow = "#";
-                firstID = upperLeft.id;
-                firstData = upperLeft.damage;
-            }
-            else if (upperRight.id != null && bottomRight.id != null)
-            {
-                firstRow =  "#";
-                secondRow = "#";
-                firstID = upperRight.id;
-                firstData = upperRight.damage;
-            }
-        }
-        else if (count == 3)
-        {
-            if (upperLeft.id == null)
-            {
-                firstRow =  " #";
-                secondRow = "##";
-                firstID = upperRight.id;
-                firstData = upperRight.damage;
-            }
-            else if (upperRight.id == null)
-            {
-                firstRow =  "# ";
-                secondRow = "##";
-                firstID = upperLeft.id;
-                firstData = upperLeft.damage;
-            }
-            else if (bottomLeft.id == null)
-            {
-                firstRow =  "##";
-                secondRow = " #";
-                firstID = upperLeft.id;
-                firstData = upperLeft.damage;
-            }
-            else if (bottomRight.id == null)
-            {
-                firstRow =  "##";
-                secondRow = "# ";
-                firstID = upperLeft.id;
-                firstData = upperLeft.damage;
-            }
-        }
-        else if (count == 4)
-        {
-            firstRow =  "##";
-            secondRow = "##";
-            firstID = upperLeft.id;
-            firstData = upperLeft.damage;
         }
 
+        // calc bounding box
+        int minX = 2;
+        int maxX = 0;
+        int minY = 2;
+        int maxY = 0;
+        for (int i = 0; i < 3; i++)
+        {
+            for (int j = 0; j < 3; j++)
+            {
+                if (pattern[i, j] != ' ')
+                {
+                    if (i < minX)
+                    {
+                        minX = i;
+                    }
+                    if (i > maxX)
+                    {
+                        maxX = i;
+                    }
+                    if (j < minY)
+                    {
+                        minY = j;
+                    }
+                    if (j > maxY)
+                    {
+                        maxY = j;
+                    }
+                }
+            }
+        }
+
+        // trim spaces
+        int row = Mathf.Max(maxY - minY + 1, 0);
+        int column = Mathf.Max(maxX - minX + 1, 0);
+        char[,] trimedPattern = new char[column, row];
+
+        for (int i = minY; i <= maxY; i++)
+        {
+            for (int j = minX; j <= maxX; j++)
+            {
+                trimedPattern[j - minX, i - minY] = pattern[j, i];
+            }
+        }
+
+        // combine char
+        string[] stringPattern = new string[row];
+        for (int i = 0; i < row; i++)
+        {
+            stringPattern[i] = "";
+            for (int j = 0; j < column; j++)
+            {
+                stringPattern[i] += trimedPattern[j, i];
+            }
+        }
+
+        // compare
         string[] recipeNames = new string[] { "stick", "crafting_table" };
         Recipe matchRecipe = null;
         bool canCraft = false;
         foreach (string recipeName in recipeNames)
         {
             Recipe recipe = name2recipe[recipeName];
-            canCraft = CheckRecipe(recipe, firstRow, secondRow, firstID, firstData);
+            canCraft = CheckRecipe(recipe, stringPattern, firstID, firstData);
             if (canCraft)
             {
                 matchRecipe = recipe;

@@ -44,6 +44,24 @@ public class SurvivalInventory : InventoryUI
         {
             InventorySystem.DropGrabItem();
         }
+
+        // clear crafting
+        foreach (int i in indexList)
+        {
+            if (InventorySystem.items[i].id != null)
+            {
+                NBTObject obj = NBTGeneratorManager.GetObjectGenerator(InventorySystem.items[i].id);
+                InventorySystem.Increment(obj, (byte)InventorySystem.items[i].damage, InventorySystem.items[i].count);
+                InventorySystem.items[i].id = null;
+                InventorySystem.items[i].damage = 0;
+                InventorySystem.items[i].count = 0;
+            }
+        }
+        InventorySystem.items[resultIndex].id = null;
+        InventorySystem.items[resultIndex].damage = 0;
+        InventorySystem.items[resultIndex].count = 0;
+
+        ItemSelectPanel.instance.RefreshUI();
     }
 
     void HandleInputUpdate()

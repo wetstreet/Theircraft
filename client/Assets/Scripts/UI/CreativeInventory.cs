@@ -214,7 +214,7 @@ public class CreativeInventory : MonoBehaviour
         {
             Transform trans = Instantiate(unit);
             trans.name = i.ToString();
-            trans.parent = grid;
+            trans.SetParent(grid, false);
             trans.localScale = Vector3.one;
             trans.gameObject.SetActive(true);
 
