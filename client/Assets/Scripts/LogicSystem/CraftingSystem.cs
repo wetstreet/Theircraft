@@ -80,6 +80,33 @@ public class CraftingSystem : MonoBehaviour
         }
     }
 
+    protected static int resultIndex = 45;
+
+    public static void CraftItems()
+    {
+        if (InventorySystem.items[resultIndex].id == null) return;
+
+        foreach (int i in SurvivalInventory.indexList)
+        {
+            if (InventorySystem.items[i].count > 0)
+            {
+                InventorySystem.items[i].count--;
+
+                if (InventorySystem.items[i].count == 0)
+                {
+                    InventorySystem.items[i].id = null;
+                    InventorySystem.items[i].damage = 0;
+                }
+            }
+        }
+
+        InventorySystem.grabItem.id = InventorySystem.items[resultIndex].id;
+        InventorySystem.grabItem.damage = InventorySystem.items[resultIndex].damage;
+        InventorySystem.grabItem.count = InventorySystem.items[resultIndex].count;
+
+        CheckCanCraft();
+    }
+
     static bool CheckRecipe(Recipe recipe, string firstRow, string secondRow, string firstID, int firstData)
     {
         if (recipe.pattern.Count == 1)
@@ -118,8 +145,8 @@ public class CraftingSystem : MonoBehaviour
 
         InventoryItem upperLeft = InventorySystem.items[36];
         InventoryItem upperRight = InventorySystem.items[37];
-        InventoryItem bottomLeft = InventorySystem.items[38];
-        InventoryItem bottomRight = InventorySystem.items[39];
+        InventoryItem bottomLeft = InventorySystem.items[39];
+        InventoryItem bottomRight = InventorySystem.items[40];
 
         int count = 0;
         if (upperLeft.id != null) count++;
@@ -238,15 +265,15 @@ public class CraftingSystem : MonoBehaviour
 
         if (canCraft)
         {
-            InventorySystem.items[40].id = matchRecipe.result.item;
-            InventorySystem.items[40].damage = matchRecipe.result.data;
-            InventorySystem.items[40].count = matchRecipe.result.count;
+            InventorySystem.items[resultIndex].id = matchRecipe.result.item;
+            InventorySystem.items[resultIndex].damage = matchRecipe.result.data;
+            InventorySystem.items[resultIndex].count = matchRecipe.result.count;
         }
         else
         {
-            InventorySystem.items[40].id = null;
-            InventorySystem.items[40].damage = 0;
-            InventorySystem.items[40].count = 0;
+            InventorySystem.items[resultIndex].id = null;
+            InventorySystem.items[resultIndex].damage = 0;
+            InventorySystem.items[resultIndex].count = 0;
         }
     }
 

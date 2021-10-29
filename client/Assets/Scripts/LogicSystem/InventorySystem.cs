@@ -12,8 +12,10 @@ public struct InventoryItem
 
 public class InventorySystem
 {
-    // 0-35 is bag, 36-41 is crafting
-    public static InventoryItem[] items = new InventoryItem[41];
+    // 0-35 is bag(36)
+    // 36-44 is crafting(9)
+    // 45 is craft result(1)
+    public static InventoryItem[] items = new InventoryItem[46];
 
     public static InventoryItem grabItem;
 
@@ -208,31 +210,6 @@ public class InventorySystem
             items[slot].id = null;
             items[slot].damage = 0;
         }
-    }
-
-    public static void CraftItems()
-    {
-        if (items[40].id == null) return;
-
-        for (int i = 36; i < 40; i++)
-        {
-            if (items[i].count > 0)
-            {
-                items[i].count--;
-
-                if (items[i].count == 0)
-                {
-                    items[i].id = null;
-                    items[i].damage = 0;
-                }
-            }
-        }
-
-        grabItem.id = items[40].id;
-        grabItem.damage = items[40].damage;
-        grabItem.count = items[40].count;
-
-        CheckCanCraft();
     }
 
     static void CheckCanCraft()

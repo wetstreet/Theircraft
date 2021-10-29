@@ -312,21 +312,31 @@ public class PlayerController : MonoBehaviour
 
     void OnRightClick()
     {
-        string id = InventorySystem.items[ItemSelectPanel.curIndex].id;
-        if (WireFrameHelper.render && id != null)
+        if (WireFrameHelper.render)
         {
-            Vector3Int pos = WireFrameHelper.pos + Vector3Int.RoundToInt(hit.normal);
-
-            if (CanAddBlock(pos))
+            if (WireFrameHelper.type == 58)
             {
-                handAnimator.SetTrigger("interactTrigger");
+                CraftingTableUI.Show();
+            }
+            else
+            {
+                string id = InventorySystem.items[ItemSelectPanel.curIndex].id;
+                if (id != null)
+                {
+                    Vector3Int pos = WireFrameHelper.pos + Vector3Int.RoundToInt(hit.normal);
 
-                byte type = NBTGeneratorManager.id2type[id];
-                byte data = (byte)InventorySystem.items[ItemSelectPanel.curIndex].damage;
-                NBTHelper.SetBlockData(pos, type, data, true);
+                    if (CanAddBlock(pos))
+                    {
+                        handAnimator.SetTrigger("interactTrigger");
 
-                InventorySystem.DecrementCurrent();
-                ItemSelectPanel.instance.RefreshUI();
+                        byte type = NBTGeneratorManager.id2type[id];
+                        byte data = (byte)InventorySystem.items[ItemSelectPanel.curIndex].damage;
+                        NBTHelper.SetBlockData(pos, type, data, true);
+
+                        InventorySystem.DecrementCurrent();
+                        ItemSelectPanel.instance.RefreshUI();
+                    }
+                }
             }
         }
     }

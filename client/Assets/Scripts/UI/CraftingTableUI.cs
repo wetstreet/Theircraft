@@ -5,14 +5,11 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class SurvivalInventory : InventoryUI
+public class CraftingTableUI : InventoryUI
 {
-    Transform head;
-    Transform headAnchor;
-
     Transform craftGrid;
 
-    static SurvivalInventory Instance;
+    static CraftingTableUI Instance;
 
     public static void Show()
     {
@@ -24,7 +21,7 @@ public class SurvivalInventory : InventoryUI
         }
         else
         {
-            Instance = UISystem.InstantiateUI("SurvivalInventory").GetComponent<SurvivalInventory>();
+            Instance = UISystem.InstantiateUI("CraftingTableUI").GetComponent<CraftingTableUI>();
         }
 
         InputManager.enabled = false;
@@ -61,7 +58,11 @@ public class SurvivalInventory : InventoryUI
         craftGrid = transform.Find("CraftingGrid");
     }
 
-    public static List<int> indexList = new List<int>() { 36, 37, 39, 40 };
+    public static List<int> indexList = new List<int>() {
+        36, 37, 38,
+        39, 40, 41,
+        42, 43, 44,
+    };
 
     protected override void InitGrid()
     {
@@ -87,7 +88,12 @@ public class SurvivalInventory : InventoryUI
         items[resultIndex].count = resultTrans.Find("text").GetComponent<TextMeshProUGUI>();
     }
 
-    int[] refreshIndex = new int[] { 36, 37, 39, 40, 45 };
+    int[] refreshIndex = new int[] {
+        36, 37, 38,
+        39, 40, 41,
+        42, 43, 44,
+        45
+    };
     protected override void RefreshUI()
     {
         base.RefreshUI();
@@ -134,8 +140,8 @@ public class SurvivalInventory : InventoryUI
         }
         if (indexList.Contains(highlightIndex))
         {
-            if (InventorySystem.grabItem.id != null && 
-                InventorySystem.items[highlightIndex].id != null && 
+            if (InventorySystem.grabItem.id != null &&
+                InventorySystem.items[highlightIndex].id != null &&
                 InventorySystem.grabItem.id == InventorySystem.items[highlightIndex].id &&
                 InventorySystem.grabItem.damage == InventorySystem.items[highlightIndex].damage)
             {
@@ -200,10 +206,5 @@ public class SurvivalInventory : InventoryUI
         base.Update();
 
         HandleInputUpdate();
-
-        //headAnchor.LookAt(Input.mousePosition);
-        //Vector3 headPos = UISystem.camera.WorldToScreenPoint(head.position);
-        //Vector3 dir = Input.mousePosition - headPos;
-        //Debug.Log("dir=" + dir);
     }
 }

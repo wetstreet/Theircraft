@@ -31,7 +31,9 @@ public class InventoryUI : MonoBehaviour
     // |42 43 44|
     // ----------
     // 45 is craft result(1)
-    protected SlotItem[] items = new SlotItem[41];
+    protected SlotItem[] items = new SlotItem[46];
+
+    protected static int resultIndex = 45;
 
     protected virtual void InitGrid()
     {
@@ -199,7 +201,10 @@ public class InventoryUI : MonoBehaviour
             {
                 if (InventorySystem.items[highlightIndex].id != null)
                 {
-                    InventorySystem.MouseGrabItem(highlightIndex);
+                    if (InventorySystem.grabItem.id != InventorySystem.items[highlightIndex].id)
+                        InventorySystem.MouseGrabItem(highlightIndex);
+                    else
+                        InventorySystem.PutOneItem(highlightIndex);
                 }
                 else
                 {
@@ -209,15 +214,12 @@ public class InventoryUI : MonoBehaviour
                 RefreshUI();
                 ItemSelectPanel.instance.RefreshUI();
             }
-            else
+            else if (InventorySystem.items[highlightIndex].id != null)
             {
-                if (InventorySystem.items[highlightIndex].id != null)
-                {
-                    InventorySystem.SplitHalf(highlightIndex);
-                    RefreshGrabItem();
-                    RefreshUI();
-                    ItemSelectPanel.instance.RefreshUI();
-                }
+                InventorySystem.SplitHalf(highlightIndex);
+                RefreshGrabItem();
+                RefreshUI();
+                ItemSelectPanel.instance.RefreshUI();
             }
         }
     }
