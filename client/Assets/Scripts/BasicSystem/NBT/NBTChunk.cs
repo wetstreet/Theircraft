@@ -35,7 +35,7 @@ public class NBTChunk
 
         collidable = NBTGameObject.Create("Collidable", this, LayerMask.NameToLayer("Chunk"));
         notCollidable = NBTGameObject.Create("NotCollidable", this, LayerMask.NameToLayer("Plant"), false);
-        //water = NBTGameObject.Create("Water", transform, LayerMask.NameToLayer("Water"), false);
+        water = NBTGameObject.CreateWater("Water", this, LayerMask.NameToLayer("Water"));
         special = new GameObject("special");
         special.transform.parent = transform;
         special.transform.localPosition = Vector3.zero;
@@ -183,7 +183,7 @@ public class NBTChunk
 
         collidable.Clear();
         notCollidable.Clear();
-        //water.Clear();
+        water.Clear();
 
         for (int sectionIndex = 0; sectionIndex < Sections.Count; sectionIndex++)
         {
@@ -217,7 +217,7 @@ public class NBTChunk
                                 {
                                     if (generator is NBTStationaryWater)
                                     {
-                                        //generator.GenerateMeshInChunk(this, blockData, pos, water);
+                                        generator.AddCube(this, blockData, pos, water);
                                     }
                                     else if (generator is NBTPlant || generator is NBTSnowLayer)
                                     {
@@ -339,6 +339,7 @@ public class NBTChunk
             InitTileEntity();
             collidable.Refresh();
             notCollidable.Refresh();
+            water.Refresh();
         }
         catch (System.Exception e)
         {
@@ -373,6 +374,7 @@ public class NBTChunk
         try
         {
             notCollidable.Refresh();
+            water.Refresh();
         }
         catch (System.Exception e)
         {
@@ -384,7 +386,7 @@ public class NBTChunk
     {
         collidable.GetComponent<MeshFilter>().sharedMesh = null;
         notCollidable.GetComponent<MeshFilter>().sharedMesh = null;
-        //water.GetComponent<MeshFilter>().sharedMesh = null;
+        water.GetComponent<MeshFilter>().sharedMesh = null;
     }
 
     public byte GetSkyLightByte(int xInChunk, int yInChunk, int zInChunk, bool extends = false)

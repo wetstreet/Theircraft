@@ -33,6 +33,24 @@ public class NBTGameObject : MonoBehaviour
         return nbtGO;
     }
 
+    public static NBTGameObject CreateWater(string name, NBTChunk chunk, int layer)
+    {
+        GameObject go = new GameObject(name);
+        go.transform.parent = chunk.transform;
+        go.AddComponent<MeshFilter>();
+        go.layer = layer;
+
+        Material mat = Resources.Load<Material>("Materials/block/water_still");
+
+        go.AddComponent<MeshRenderer>().sharedMaterial = mat;
+        go.AddComponent<MeshCollider>();
+
+        NBTGameObject nbtGO = go.AddComponent<NBTGameObject>();
+        nbtGO.mat = mat;
+        nbtGO.nbtMesh.mesh.name = name;
+        return nbtGO;
+    }
+
     public void Clear()
     {
         nbtMesh.Clear();

@@ -69,6 +69,7 @@ public class NBTGeneratorManager : MonoBehaviour
         new NBTWoodenPickaxe(),
         new NBTStick(),
         new NBTBucket(),
+        new NBTWaterBucket(),
         new NBTCoal(),
     };
 
