@@ -195,10 +195,11 @@ public class CraftingTableUI : InventoryUI
             {
                 if (InventorySystem.items[highlightIndex].id != null)
                 {
-                    if (InventorySystem.grabItem.id != InventorySystem.items[highlightIndex].id)
-                        InventorySystem.MouseGrabItem(highlightIndex);
-                    else
+                    if (InventorySystem.grabItem.id == InventorySystem.items[highlightIndex].id &&
+                        InventorySystem.grabItem.damage == InventorySystem.items[highlightIndex].damage)
                         InventorySystem.PutOneItem(highlightIndex);
+                    else
+                        InventorySystem.MouseGrabItem(highlightIndex);
                 }
                 else
                 {

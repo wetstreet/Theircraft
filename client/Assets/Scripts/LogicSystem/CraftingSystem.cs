@@ -16,19 +16,20 @@ public class CraftingSystem : MonoBehaviour
 
     public class Recipe
     {
+        public string name;
         public string type;
         public string group;
         public List<string> pattern;
-        public Dictionary<string, List<Item>> key;
+        public Dictionary<char, List<Item>> key;
         public Item result;
     }
 
-    static Recipe ParseRecipe(string json)
+    static Recipe ParseRecipe(TextAsset json)
     {
         Recipe recipe = new Recipe();
 
-        JObject root = JObject.Parse(json);
-
+        JObject root = JObject.Parse(json.text);
+        recipe.name = json.name;
         recipe.type = root["type"].ToString();
 
         if (root.ContainsKey("group"))
@@ -44,18 +45,18 @@ public class CraftingSystem : MonoBehaviour
 
         if (root.ContainsKey("key"))
         {
-            recipe.key = new Dictionary<string, List<Item>>();
+            recipe.key = new Dictionary<char, List<Item>>();
 
             JObject key = JObject.Parse(root["key"].ToString());
             foreach (JToken v in key.Children())
             {
                 if (v.First.Type == JTokenType.Array)
                 {
-                    recipe.key[v.Path] = v.First.ToObject<List<Item>>();
+                    recipe.key[v.Path[0]] = v.First.ToObject<List<Item>>();
                 }
                 else if (v.First.Type == JTokenType.Object)
                 {
-                    recipe.key[v.Path] = new List<Item> { v.First.ToObject<Item>() };
+                    recipe.key[v.Path[0]] = new List<Item> { v.First.ToObject<Item>() };
                 }
             }
         }
@@ -76,11 +77,30 @@ public class CraftingSystem : MonoBehaviour
         UnityEngine.Object[] jsons = Resources.LoadAll("Recipes");
         foreach (TextAsset json in jsons)
         {
-            name2recipe[json.name] = ParseRecipe(json.text); ;
+            name2recipe[json.name] = ParseRecipe(json); ;
         }
     }
 
     protected static int resultIndex = 45;
+
+    static string[] recipeNames = new string[] {
+        "oak_planks",
+        "birch_planks",
+        "spruce_planks",
+        "jungle_planks",
+        "acacia_planks",
+        "dark_oak_planks",
+        "wooden_pickaxe",
+        "stick",
+        "crafting_table",
+        "oak_stairs",
+        "birch_stairs",
+        "spruce_stairs",
+        "jungle_stairs",
+        "acacia_stairs",
+        "dark_oak_stairs",
+    };
+
 
     public static void CraftItems()
     {
@@ -107,34 +127,58 @@ public class CraftingSystem : MonoBehaviour
         CheckCanCraft();
     }
 
-    static bool CheckRecipe(Recipe recipe, string[] pattern, string firstID, int firstData)
+    static bool CheckRecipe(Recipe recipe, InventoryItem[,] grid)
     {
-        if (recipe.pattern.Count != pattern.Length)
+        int row = recipe.pattern.Count;
+        int column = recipe.pattern[0].Length;
+
+        int gridColumn = grid.GetUpperBound(0) + 1;
+        int gridRow = grid.GetUpperBound(1) + 1;
+        if (row != gridRow || column != gridColumn)
         {
             return false;
         }
-        for (int i = 0; i < recipe.pattern.Count; i++)
+
+        Item[,] recipeGrid = new Item[column, row];
+        for (int j = 0; j < row; j++)
         {
-            if (recipe.pattern[i] != pattern[i])
+            for (int i = 0; i < column; i++)
             {
-                return false;
+                char key = recipe.pattern[j][i];
+                if (key != ' ')
+                {
+                    bool keyMatch = false;
+
+                    foreach (Item item in recipe.key[key])
+                    {
+                        recipeGrid[i, j] = item;
+                        if (recipeGrid[i, j].item == grid[i, j].id && recipeGrid[i, j].data == grid[i, j].damage)
+                        {
+                            keyMatch = true;
+                            break;
+                        }
+                    }
+                    if (!keyMatch)
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    if (grid[i, j].id != null)
+                    {
+                        return false;
+                    }
+                }
             }
         }
-        foreach (Item item in recipe.key["#"])
-        {
-            if (item.item == firstID && item.data == firstData)
-            {
-                return true;
-            }
-        }
-        return false;
+        return true;
     }
 
+    static InventoryItem[,] grid = new InventoryItem[3, 3];
+    static char[,] pattern = new char[3, 3];
     public static void CheckCanCraft()
     {
-        char[,] pattern = new char[3, 3];
-
-        InventoryItem[,] grid = new InventoryItem[3,3];
         grid[0, 0] = InventorySystem.items[36];
         grid[1, 0] = InventorySystem.items[37];
         grid[2, 0] = InventorySystem.items[38];
@@ -145,36 +189,6 @@ public class CraftingSystem : MonoBehaviour
         grid[1, 2] = InventorySystem.items[43];
         grid[2, 2] = InventorySystem.items[44];
 
-        int count = 0;
-        for (int i = 0; i < 3; i++)
-        {
-            for (int j = 0; j < 3; j++)
-            {
-                if (grid[i, j].id != null)
-                    count++;
-            }
-        }
-
-        string firstID = null;
-        int firstData = 0;
-
-        for (int i = 0; i < 3; i++)
-        {
-            for (int j = 0; j < 3; j++)
-            {
-                if (grid[i, j].id != null)
-                {
-                    pattern[i, j] = '#';
-                    firstID = grid[i, j].id;
-                    firstData = grid[i, j].damage;
-                }
-                else
-                {
-                    pattern[i, j] = ' ';
-                }
-            }
-        }
-
         // calc bounding box
         int minX = 2;
         int maxX = 0;
@@ -184,7 +198,7 @@ public class CraftingSystem : MonoBehaviour
         {
             for (int j = 0; j < 3; j++)
             {
-                if (pattern[i, j] != ' ')
+                if (grid[i, j].id != null)
                 {
                     if (i < minX)
                     {
@@ -206,42 +220,33 @@ public class CraftingSystem : MonoBehaviour
             }
         }
 
+        Recipe matchRecipe = null;
+        bool canCraft = false;
+
         // trim spaces
         int row = Mathf.Max(maxY - minY + 1, 0);
         int column = Mathf.Max(maxX - minX + 1, 0);
-        char[,] trimedPattern = new char[column, row];
-
-        for (int i = minY; i <= maxY; i++)
+        if (row != 0 || column != 0)
         {
-            for (int j = minX; j <= maxX; j++)
+            InventoryItem[,] trimedGrid = new InventoryItem[column, row];
+            for (int i = minY; i <= maxY; i++)
             {
-                trimedPattern[j - minX, i - minY] = pattern[j, i];
+                for (int j = minX; j <= maxX; j++)
+                {
+                    trimedGrid[j - minX, i - minY] = grid[j, i];
+                }
             }
-        }
 
-        // combine char
-        string[] stringPattern = new string[row];
-        for (int i = 0; i < row; i++)
-        {
-            stringPattern[i] = "";
-            for (int j = 0; j < column; j++)
+            // compare
+            foreach (string recipeName in recipeNames)
             {
-                stringPattern[i] += trimedPattern[j, i];
-            }
-        }
-
-        // compare
-        string[] recipeNames = new string[] { "stick", "crafting_table" };
-        Recipe matchRecipe = null;
-        bool canCraft = false;
-        foreach (string recipeName in recipeNames)
-        {
-            Recipe recipe = name2recipe[recipeName];
-            canCraft = CheckRecipe(recipe, stringPattern, firstID, firstData);
-            if (canCraft)
-            {
-                matchRecipe = recipe;
-                break;
+                Recipe recipe = name2recipe[recipeName];
+                canCraft = CheckRecipe(recipe, trimedGrid);
+                if (canCraft)
+                {
+                    matchRecipe = recipe;
+                    break;
+                }
             }
         }
 
