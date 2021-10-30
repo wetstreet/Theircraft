@@ -99,6 +99,7 @@ public class CraftingSystem : MonoBehaviour
         "jungle_stairs",
         "acacia_stairs",
         "dark_oak_stairs",
+        "chest",
     };
 
 

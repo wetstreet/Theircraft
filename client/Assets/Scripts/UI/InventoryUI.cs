@@ -31,7 +31,9 @@ public class InventoryUI : MonoBehaviour
     // |42 43 44|
     // ----------
     // 45 is craft result(1)
-    protected SlotItem[] items = new SlotItem[46];
+    // 46-72 is small chest(27)
+    // 46-99 is big chest(54)
+    protected SlotItem[] items = new SlotItem[99];
 
     protected static int resultIndex = 45;
 

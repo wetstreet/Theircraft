@@ -318,6 +318,10 @@ public class PlayerController : MonoBehaviour
             {
                 CraftingTableUI.Show();
             }
+            else if (WireFrameHelper.type == 54)
+            {
+                ChestUI.Show(WireFrameHelper.pos);
+            }
             else
             {
                 string id = InventorySystem.items[ItemSelectPanel.curIndex].id;

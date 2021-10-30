@@ -14,8 +14,15 @@ public class InventorySystem
 {
     // 0-35 is bag(36)
     // 36-44 is crafting(9)
+    // ----------
+    // |36 37 38|
+    // |39 40 41|
+    // |42 43 44|
+    // ----------
     // 45 is craft result(1)
-    public static InventoryItem[] items = new InventoryItem[46];
+    // 46-72 is small chest(27)
+    // 46-99 is big chest(54)
+    public static InventoryItem[] items = new InventoryItem[99];
 
     public static InventoryItem grabItem;
 
