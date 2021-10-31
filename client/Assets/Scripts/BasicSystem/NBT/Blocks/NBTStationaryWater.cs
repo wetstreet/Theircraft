@@ -9,28 +9,18 @@ public class NBTStationaryWater : NBTBlock
 
     public override bool isTransparent { get { return true; } }
 
+    public override bool willReduceLight => true;
+
     static byte TYPE_WATER = 9;
 
-    protected static Vector3 nearBottomLeft = new Vector3(-0.5f, -0.5f, -0.5f);
-    protected static Vector3 nearBottomRight = new Vector3(0.5f, -0.5f, -0.5f);
-    protected static Vector3 nearTopLeft = new Vector3(-0.5f, 0.4f, -0.5f);
-    protected static Vector3 nearTopRight = new Vector3(0.5f, 0.4f, -0.5f);
-    protected static Vector3 farBottomLeft = new Vector3(-0.5f, -0.5f, 0.5f);
-    protected static Vector3 farBottomRight = new Vector3(0.5f, -0.5f, 0.5f);
-    protected static Vector3 farTopLeft = new Vector3(-0.5f, 0.4f, 0.5f);
-    protected static Vector3 farTopRight = new Vector3(0.5f, 0.4f, 0.5f);
+    protected static Vector3 nearTopLeft_still = new Vector3(-0.5f, 0.4f, -0.5f);
+    protected static Vector3 nearTopRight_still = new Vector3(0.5f, 0.4f, -0.5f);
+    protected static Vector3 farTopLeft_still = new Vector3(-0.5f, 0.4f, 0.5f);
+    protected static Vector3 farTopRight_still = new Vector3(0.5f, 0.4f, 0.5f);
 
-    protected static Vector3[] frontVertices = new Vector3[] { nearBottomLeft, nearTopLeft, nearTopRight, nearBottomRight };
-    protected static Vector3[] backVertices = new Vector3[] { farBottomRight, farTopRight, farTopLeft, farBottomLeft };
-    protected static Vector3[] topVertices = new Vector3[] { farTopRight, nearTopRight, nearTopLeft, farTopLeft };
-    protected static Vector3[] bottomVertices = new Vector3[] { nearBottomRight, farBottomRight, farBottomLeft, nearBottomLeft };
-    protected static Vector3[] leftVertices = new Vector3[] { farBottomLeft, farTopLeft, nearTopLeft, nearBottomLeft };
-    protected static Vector3[] rightVertices = new Vector3[] { nearBottomRight, nearTopRight, farTopRight, farBottomRight };
-
-    bool ShouldAddFace(NBTChunk chunk, int xInChunk, int worldY, int zInChunk)
+    bool IsVerticalWater(byte data, byte type = 9)
     {
-        byte type = chunk.GetBlockByte(xInChunk, worldY, zInChunk);
-        return NBTGeneratorManager.IsTransparent(type) && type != TYPE_WATER;
+        return type == TYPE_WATER && data >= 9 && data <= 15;
     }
 
     public override void AddCube(NBTChunk chunk, byte blockData, Vector3Int pos, NBTGameObject nbtGO)
@@ -39,160 +29,144 @@ public class NBTStationaryWater : NBTBlock
         ca.pos = pos;
         ca.blockData = blockData;
 
+
+        chunk.GetBlockData(pos.x, pos.y, pos.z - 1, out byte frontType, out byte frontData);
+        chunk.GetBlockData(pos.x, pos.y, pos.z + 1, out byte backType, out byte backData);
+        chunk.GetBlockData(pos.x - 1, pos.y, pos.z, out byte leftType, out byte leftData);
+        chunk.GetBlockData(pos.x + 1, pos.y, pos.z, out byte rightType, out byte rightData);
+        chunk.GetBlockData(pos.x, pos.y - 1, pos.z, out byte bottomType, out byte bottomData);
+        chunk.GetBlockData(pos.x, pos.y + 1, pos.z, out byte topType, out byte topData);
+
+        bool selfIsVerticalWater = IsVerticalWater(blockData);
+
         UnityEngine.Profiling.Profiler.BeginSample("AddFaces");
 
-        if (ShouldAddFace(chunk, pos.x, pos.y, pos.z - 1))
+        chunk.GetLights(pos.x, pos.y, pos.z, out float skyLight, out float blockLight);
+
+        FaceAttributes fa = new FaceAttributes();
+        fa.color = Color.white;
+        fa.skyLight = skyLight;
+        fa.blockLight = blockLight;
+        fa.uv = uv_zero;
+        fa.pos = new Vector3[4];
+
+        if (NBTGeneratorManager.IsTransparent(frontType) && frontType != TYPE_WATER)
         {
-            FaceAttributes fa = GetFrontFaceAttributes(chunk, nbtGO.nbtMesh, ca);
+            if (selfIsVerticalWater)
+            {
+                fa.pos[0] = nearBottomLeft;
+                fa.pos[1] = nearTopLeft;
+                fa.pos[2] = nearTopRight;
+                fa.pos[3] = nearBottomRight;
+            }
+            else
+            {
+                fa.pos[0] = nearBottomLeft;
+                fa.pos[1] = nearTopLeft_still;
+                fa.pos[2] = nearTopRight_still;
+                fa.pos[3] = nearBottomRight;
+            }
+            fa.normal = Vector3.forward;
             AddFace(nbtGO.nbtMesh, fa, ca);
         }
-        if (ShouldAddFace(chunk, pos.x + 1, pos.y, pos.z))
+        if (NBTGeneratorManager.IsTransparent(backType) && backType != TYPE_WATER)
         {
-            FaceAttributes fa = GetRightFaceAttributes(chunk, nbtGO.nbtMesh, ca);
+            if (selfIsVerticalWater)
+            {
+                fa.pos[0] = farBottomRight;
+                fa.pos[1] = farTopRight;
+                fa.pos[2] = farTopLeft;
+                fa.pos[3] = farBottomLeft;
+            }
+            else
+            {
+                fa.pos[0] = farBottomRight;
+                fa.pos[1] = farTopRight_still;
+                fa.pos[2] = farTopLeft_still;
+                fa.pos[3] = farBottomLeft;
+            }
+            fa.normal = Vector3.back;
             AddFace(nbtGO.nbtMesh, fa, ca);
         }
-        if (ShouldAddFace(chunk, pos.x - 1, pos.y, pos.z))
+        if (NBTGeneratorManager.IsTransparent(leftType) && leftType != TYPE_WATER)
         {
-            FaceAttributes fa = GetLeftFaceAttributes(chunk, nbtGO.nbtMesh, ca);
+            if (selfIsVerticalWater)
+            {
+                fa.pos[0] = farBottomLeft;
+                fa.pos[1] = farTopLeft;
+                fa.pos[2] = nearTopLeft;
+                fa.pos[3] = nearBottomLeft;
+            }
+            else
+            {
+                fa.pos[0] = farBottomLeft;
+                fa.pos[1] = farTopLeft_still ;
+                fa.pos[2] = nearTopLeft_still;
+                fa.pos[3] = nearBottomLeft;
+            }
+            fa.normal = Vector3.left;
             AddFace(nbtGO.nbtMesh, fa, ca);
         }
-        if (ShouldAddFace(chunk, pos.x, pos.y, pos.z + 1))
+        if (NBTGeneratorManager.IsTransparent(rightType) && rightType != TYPE_WATER)
         {
-            FaceAttributes fa = GetBackFaceAttributes(chunk, nbtGO.nbtMesh, ca);
+            if (selfIsVerticalWater)
+            {
+                fa.pos[0] = nearBottomRight;
+                fa.pos[1] = nearTopRight;
+                fa.pos[2] = farTopRight;
+                fa.pos[3] = farBottomRight;
+            }
+            else
+            {
+                fa.pos[0] = nearBottomRight;
+                fa.pos[1] = nearTopRight_still;
+                fa.pos[2] = farTopRight_still;
+                fa.pos[3] = farBottomRight;
+            }
+            fa.normal = Vector3.right;
             AddFace(nbtGO.nbtMesh, fa, ca);
         }
-        if (ShouldAddFace(chunk, pos.x, pos.y + 1, pos.z))
+        if (NBTGeneratorManager.IsTransparent(topType) && topType != TYPE_WATER)
         {
-            FaceAttributes fa = GetTopFaceAttributes(chunk, nbtGO.nbtMesh, ca);
+            if (selfIsVerticalWater)
+            {
+                fa.pos[0] = farTopRight;
+                fa.pos[1] = nearTopRight;
+                fa.pos[2] = nearTopLeft;
+                fa.pos[3] = farTopLeft;
+            }
+            else
+            {
+                bool leftIsVerticalWater = IsVerticalWater(leftData, leftType);
+                bool rightIsVerticalWater = IsVerticalWater(rightData, rightType);
+                bool frontIsVerticalWater = IsVerticalWater(frontData, frontType);
+                bool backIsVerticalWater = IsVerticalWater(backData, backType);
+
+                int worldX = pos.x + chunk.x * 16;
+                int worldZ = pos.z + chunk.z * 16;
+                if (worldX == 420 && pos.y == 62 && worldZ == 207)
+                {
+                    Debug.Log("backIsVerticalWater=" + backIsVerticalWater + ",backData="+ backData+",backType="+backType);
+                }
+
+                fa.pos[0] = backIsVerticalWater || rightIsVerticalWater ? farTopRight : farTopRight_still;
+                fa.pos[1] = frontIsVerticalWater || rightIsVerticalWater ? nearTopRight : nearTopRight_still;
+                fa.pos[2] = frontIsVerticalWater || leftIsVerticalWater ? nearTopLeft : nearTopLeft_still;
+                fa.pos[3] = backIsVerticalWater || leftIsVerticalWater ? farTopLeft : farTopLeft_still;
+            }
+            fa.normal = Vector3.up;
             AddFace(nbtGO.nbtMesh, fa, ca);
         }
-        if (ShouldAddFace(chunk, pos.x, pos.y - 1, pos.z))
+        if (NBTGeneratorManager.IsTransparent(bottomType) && bottomType != TYPE_WATER)
         {
-            FaceAttributes fa = GetBottomFaceAttributes(chunk, nbtGO.nbtMesh, ca);
+            fa.pos[0] = nearBottomRight;
+            fa.pos[1] = farBottomRight;
+            fa.pos[2] = farBottomLeft;
+            fa.pos[3] = nearBottomLeft;
+            fa.normal = Vector3.down;
             AddFace(nbtGO.nbtMesh, fa, ca);
         }
 
         UnityEngine.Profiling.Profiler.EndSample();
-    }
-
-    protected override FaceAttributes GetFrontFaceAttributes(NBTChunk chunk, NBTMesh mesh, CubeAttributes ca)
-    {
-        chunk.GetLights(ca.pos.x, ca.pos.y, ca.pos.z - 1, out float skyLight, out float blockLight);
-
-        FaceAttributes fa = new FaceAttributes();
-        fa.pos = frontVertices;
-        //fa.faceIndex = GetFrontIndexByData(chunk, ca.blockData);
-        fa.color = GetFrontTintColorByData(chunk, ca.pos, ca.blockData);
-        fa.skyLight = skyLight;
-        fa.blockLight = blockLight;
-        fa.normal = Vector3.forward;
-
-        Rotation rotation = GetFrontRotationByData(ca.blockData);
-        if (rotation == Rotation.Right)
-            fa.uv = uv_right;
-        else
-            fa.uv = uv_zero;
-
-        return fa;
-    }
-    protected override FaceAttributes GetBackFaceAttributes(NBTChunk chunk, NBTMesh mesh, CubeAttributes ca)
-    {
-        chunk.GetLights(ca.pos.x, ca.pos.y, ca.pos.z + 1, out float skyLight, out float blockLight);
-
-        FaceAttributes fa = new FaceAttributes();
-        fa.pos = backVertices;
-        //fa.faceIndex = GetBackIndexByData(chunk, ca.blockData);
-        fa.color = GetBackTintColorByData(chunk, ca.pos, ca.blockData);
-        fa.skyLight = skyLight;
-        fa.blockLight = blockLight;
-        fa.normal = Vector3.back;
-
-        Rotation rotation = GetFrontRotationByData(ca.blockData);
-        if (rotation == Rotation.Right)
-            fa.uv = uv_right;
-        else
-            fa.uv = uv_zero;
-
-        return fa;
-    }
-    protected override FaceAttributes GetTopFaceAttributes(NBTChunk chunk, NBTMesh mesh, CubeAttributes ca)
-    {
-        chunk.GetLights(ca.pos.x, ca.pos.y + 1, ca.pos.z, out float skyLight, out float blockLight);
-
-        FaceAttributes fa = new FaceAttributes();
-        fa.pos = topVertices;
-        //fa.faceIndex = GetTopIndexByData(chunk, ca.blockData);
-        fa.color = GetTopTintColorByData(chunk, ca.pos, ca.blockData);
-        fa.skyLight = skyLight;
-        fa.blockLight = blockLight;
-        fa.normal = Vector3.up;
-
-        Rotation rotation = GetFrontRotationByData(ca.blockData);
-        if (rotation == Rotation.Right)
-            fa.uv = uv_right;
-        else
-            fa.uv = uv_zero;
-
-        return fa;
-    }
-    protected override FaceAttributes GetBottomFaceAttributes(NBTChunk chunk, NBTMesh mesh, CubeAttributes ca)
-    {
-        chunk.GetLights(ca.pos.x, ca.pos.y - 1, ca.pos.z, out float skyLight, out float blockLight);
-
-        FaceAttributes fa = new FaceAttributes();
-        fa.pos = bottomVertices;
-        //fa.faceIndex = GetBottomIndexByData(chunk, ca.blockData);
-        fa.color = GetBottomTintColorByData(chunk, ca.pos, ca.blockData);
-        fa.skyLight = skyLight;
-        fa.blockLight = blockLight;
-        fa.normal = Vector3.down;
-
-        Rotation rotation = GetFrontRotationByData(ca.blockData);
-        if (rotation == Rotation.Right)
-            fa.uv = uv_right;
-        else
-            fa.uv = uv_zero;
-
-        return fa;
-    }
-    protected override FaceAttributes GetLeftFaceAttributes(NBTChunk chunk, NBTMesh mesh, CubeAttributes ca)
-    {
-        chunk.GetLights(ca.pos.x - 1, ca.pos.y, ca.pos.z, out float skyLight, out float blockLight);
-
-        FaceAttributes fa = new FaceAttributes();
-        fa.pos = leftVertices;
-        //fa.faceIndex = GetLeftIndexByData(chunk, ca.blockData);
-        fa.color = GetLeftTintColorByData(chunk, ca.pos, ca.blockData);
-        fa.skyLight = skyLight;
-        fa.blockLight = blockLight;
-        fa.normal = Vector3.left;
-
-        Rotation rotation = GetFrontRotationByData(ca.blockData);
-        if (rotation == Rotation.Right)
-            fa.uv = uv_right;
-        else
-            fa.uv = uv_zero;
-
-        return fa;
-    }
-    protected override FaceAttributes GetRightFaceAttributes(NBTChunk chunk, NBTMesh mesh, CubeAttributes ca)
-    {
-        chunk.GetLights(ca.pos.x + 1, ca.pos.y, ca.pos.z, out float skyLight, out float blockLight);
-
-        FaceAttributes fa = new FaceAttributes();
-        fa.pos = rightVertices;
-        //fa.faceIndex = GetRightIndexByData(chunk, ca.blockData);
-        fa.color = GetRightTintColorByData(chunk, ca.pos, ca.blockData);
-        fa.skyLight = skyLight;
-        fa.blockLight = blockLight;
-        fa.normal = Vector3.right;
-
-        Rotation rotation = GetFrontRotationByData(ca.blockData);
-        if (rotation == Rotation.Right)
-            fa.uv = uv_right;
-        else
-            fa.uv = uv_zero;
-
-        return fa;
     }
 }

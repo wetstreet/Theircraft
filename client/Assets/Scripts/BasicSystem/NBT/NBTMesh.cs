@@ -31,6 +31,8 @@ public class NBTMesh
     {
         vertexCount = 0;
         triangleCount = 0;
+
+        mesh.Clear();
     }
 
     static VertexAttributeDescriptor[] vertexAttributes;

@@ -9,40 +9,12 @@ public class NBTCraftingTable : NBTBlock
 
     public override float hardness { get { return 2.5f; } }
 
-    public override void Init()
-    {
-        UsedTextures = new string[] { "crafting_table_front", "crafting_table_top", "crafting_table_side" };
-    }
-
-    public override int GetTopIndexByData(NBTChunk chunk, int data)
-    {
-        return TextureArrayManager.GetIndexByName("crafting_table_top");
-    }
-
-    public override int GetBottomIndexByData(NBTChunk chunk, int data)
-    {
-        return TextureArrayManager.GetIndexByName("crafting_table_top");
-    }
-
-    public override int GetFrontIndexByData(NBTChunk chunk, int data)
-    {
-        return TextureArrayManager.GetIndexByName("crafting_table_front");
-    }
-
-    public override int GetBackIndexByData(NBTChunk chunk, int data)
-    {
-        return TextureArrayManager.GetIndexByName("crafting_table_side");
-    }
-
-    public override int GetLeftIndexByData(NBTChunk chunk, int data)
-    {
-        return TextureArrayManager.GetIndexByName("crafting_table_side");
-    }
-
-    public override int GetRightIndexByData(NBTChunk chunk, int data)
-    {
-        return TextureArrayManager.GetIndexByName("crafting_table_front");
-    }
+    public override string frontName => "crafting_table_front";
+    public override string backName => "crafting_table_side";
+    public override string leftName => "crafting_table_side";
+    public override string rightName => "crafting_table_front";
+    public override string topName => "crafting_table_top";
+    public override string bottomName => "crafting_table_top";
 
     public override SoundMaterial soundMaterial { get { return SoundMaterial.Wood; } }
 

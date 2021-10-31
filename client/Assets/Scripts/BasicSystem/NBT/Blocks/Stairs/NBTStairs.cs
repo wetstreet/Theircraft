@@ -32,7 +32,7 @@ public class NBTStairs : NBTBlock
 
         int faceIndex = TextureArrayManager.GetIndexByName(stairsName);
 
-        chunk.GetLights(pos.x, pos.y, pos.z, out float skyLight, out float blockLight);
+        chunk.GetLights(pos.x, pos.y + 1, pos.z, out float skyLight, out float blockLight);
 
         NBTMesh nbtMesh = nbtGO.nbtMesh;
         ushort startIndex = nbtMesh.vertexCount;

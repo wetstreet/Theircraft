@@ -527,7 +527,7 @@ public class NBTHelper
         return 0;
     }
 
-    public static void GetBlockData(int x, int y, int z, ref byte blockType, ref byte blockData)
+    public static void GetBlockData(int x, int y, int z, out byte blockType, out byte blockData)
     {
         UnityEngine.Profiling.Profiler.BeginSample("GetBlockData");
         int chunkX = Mathf.FloorToInt(x / 16f);
@@ -542,10 +542,12 @@ public class NBTHelper
 
         if (chunk != null)
         {
-            chunk.GetBlockData(xInChunk, y, zInChunk, ref blockType, ref blockData);
+            chunk.GetBlockData(xInChunk, y, zInChunk, out blockType, out blockData);
         }
         else
         {
+            blockType = 0;
+            blockData = 0;
             //UnityEngine.Profiling.Profiler.BeginSample("GetChunkNode");
             //TagNodeCompound Chunk = GetChunkNode(chunkX, chunkZ);
             //UnityEngine.Profiling.Profiler.EndSample();

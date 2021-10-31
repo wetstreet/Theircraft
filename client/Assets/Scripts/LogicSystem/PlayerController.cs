@@ -256,9 +256,7 @@ public class PlayerController : MonoBehaviour
         }
 
         Vector3Int topPos = WireFrameHelper.pos + Vector3Int.up;
-        byte topType = 0;
-        byte topData = 0;
-        NBTHelper.GetBlockData(topPos.x, topPos.y, topPos.z, ref topType, ref topData);
+        NBTHelper.GetBlockData(topPos.x, topPos.y, topPos.z, out byte topType, out byte topData);
         NBTBlock topGenerator = NBTGeneratorManager.GetMeshGenerator(topType);
         if (topGenerator != null && topGenerator.isTransparent)
         {
@@ -581,9 +579,7 @@ public class PlayerController : MonoBehaviour
                 if (hit.transform.gameObject.layer == cubeLayerIndex || hit.transform.gameObject.layer == plantLayerIndex)
                 {
                     Vector3Int pos = Vector3Int.RoundToInt(hit.point - hit.normal / 10);
-                    byte type = 0;
-                    byte data = 0;
-                    NBTHelper.GetBlockData(pos.x, pos.y, pos.z, ref type, ref data);
+                    NBTHelper.GetBlockData(pos.x, pos.y, pos.z, out byte type, out byte data);
                     if (type != 0)
                     {
                         if (pos != WireFrameHelper.pos)

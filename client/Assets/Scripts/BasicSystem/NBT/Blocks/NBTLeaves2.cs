@@ -15,6 +15,12 @@ public class NBTLeaves2 : NBTBlock
     
     public override float hardness { get { return 0.2f; } }
 
+    public override SoundMaterial soundMaterial { get { return SoundMaterial.Grass; } }
+
+    public override bool isTransparent { get { return true; } }
+
+    public override bool willReduceLight => true;
+
     public override string GetIconPathByData(short data)
     {
         switch (data % 4)
@@ -76,10 +82,6 @@ public class NBTLeaves2 : NBTBlock
     public override int GetBackIndexByData(NBTChunk chunk, int data) { return GetIndexByData(data); }
     public override int GetLeftIndexByData(NBTChunk chunk, int data) { return GetIndexByData(data); }
     public override int GetRightIndexByData(NBTChunk chunk, int data) { return GetIndexByData(data); }
-
-    public override SoundMaterial soundMaterial { get { return SoundMaterial.Grass; } }
-
-    public override bool isTransparent { get { return true; } }
 
     public override string GetBreakEffectTexture(byte data)
     {

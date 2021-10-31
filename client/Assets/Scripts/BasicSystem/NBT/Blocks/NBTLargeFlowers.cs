@@ -16,9 +16,7 @@ public class NBTLargeFlowers : NBTPlant
         }
         else if (data == 10)
         {
-            byte bottomType = 0;
-            byte bottomData = 0;
-            chunk.GetBlockData(pos.x, pos.y - 1, pos.z, ref bottomType, ref bottomData);
+            chunk.GetBlockData(pos.x, pos.y - 1, pos.z, out byte bottomType, out byte bottomData);
             if (bottomData == 3 || bottomData == 2)
             {
                 return TintManager.tintColor;
@@ -59,9 +57,7 @@ public class NBTLargeFlowers : NBTPlant
             case 5:
                 return TextureArrayManager.GetIndexByName("double_plant_paeonia_bottom");
             case 10:
-                byte bottomType = 0;
-                byte bottomData = 0;
-                chunk.GetBlockData(pos.x, pos.y - 1, pos.z, ref bottomType, ref bottomData);
+                chunk.GetBlockData(pos.x, pos.y - 1, pos.z, out byte bottomType, out byte bottomData);
                 switch (bottomData)
                 {
                     case 1:
@@ -95,9 +91,7 @@ public class NBTLargeFlowers : NBTPlant
             case 5:
                 return "double_plant_paeonia_bottom";
             case 10:
-                byte bottomType = 0;
-                byte bottomData = 0;
-                chunk.GetBlockData(pos.x, pos.y - 1, pos.z, ref bottomType, ref bottomData);
+                chunk.GetBlockData(pos.x, pos.y - 1, pos.z, out byte bottomType, out byte bottomData);
                 switch (bottomData)
                 {
                     case 1:

@@ -125,11 +125,18 @@ public class NBTChunk
     }
 
     //input is local position
-    public void GetBlockData(int xInChunk, int worldY, int zInChunk, ref byte blockType, ref byte blockData)
+    public void GetBlockData(int xInChunk, int worldY, int zInChunk, out byte blockType, out byte blockData)
     {
-        if (xInChunk < 0 || xInChunk > 15 || worldY < 0 || worldY > 255 || zInChunk < 0 || zInChunk > 15)
+        blockType = 0;
+        blockData = 0;
+        if (worldY < 0 || worldY > 255)
         {
-            //NBTHelper.GetBlockData(xInChunk + 16 * x, worldY, zInChunk + 16 * z, ref blockType, ref blockData);
+            return;
+        }
+
+        if (xInChunk < 0 || xInChunk > 15 || zInChunk < 0 || zInChunk > 15)
+        {
+            NBTHelper.GetBlockData(xInChunk + 16 * x, worldY, zInChunk + 16 * z, out blockType, out blockData);
             return;
         }
 
@@ -352,6 +359,9 @@ public class NBTChunk
 
     public async void RebuildMeshAsync(bool forceRefreshMeshData = true, bool checkBorder = true)
     {
+        RebuildMesh(forceRefreshMeshData, checkBorder);
+        return;
+
         if (checkBorder)
         {
             CheckBorder();
