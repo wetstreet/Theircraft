@@ -220,7 +220,7 @@ public class NBTWoodenSlab : NBTBlock
     {
         chunk.GetLights(ca.pos.x, ca.pos.y - 1, ca.pos.z, out float skyLight, out float blockLight);
 
-        FaceAttributes fa;
+        FaceAttributes fa = new FaceAttributes();
         if (ca.blockData >= 8)
             fa.pos = bottomVertices_top;
         else
@@ -239,7 +239,7 @@ public class NBTWoodenSlab : NBTBlock
     {
         chunk.GetLights(ca.pos.x - 1, ca.pos.y, ca.pos.z, out float skyLight, out float blockLight);
 
-        FaceAttributes fa;
+        FaceAttributes fa = new FaceAttributes();
         if (ca.blockData >= 8)
         {
             fa.pos = leftVertices_top;
@@ -262,7 +262,7 @@ public class NBTWoodenSlab : NBTBlock
     {
         chunk.GetLights(ca.pos.x + 1, ca.pos.y, ca.pos.z, out float skyLight, out float blockLight);
 
-        FaceAttributes fa;
+        FaceAttributes fa = new FaceAttributes();
         if (ca.blockData >= 8)
         {
             fa.pos = rightVertices_top;

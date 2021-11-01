@@ -661,7 +661,7 @@ public class NBTHelper
 
                 NBTChunk chunk = GetChunk(chunkX, chunkZ);
                 int temp_y = chunk.Sections.Count * 16 - 1;
-                while (NBTGeneratorManager.IsTransparent(chunk.GetBlockByte(xInChunk, temp_y, zInChunk)))
+                while (NBTGeneratorManager.LightCanTravel(chunk.GetBlockByte(xInChunk, temp_y, zInChunk)))
                 {
                     chunk.SetSkyLightByte(xInChunk, temp_y, zInChunk, 15);
                     skyLightSet.Add(new Vector3Int(p.x, temp_y, p.z));

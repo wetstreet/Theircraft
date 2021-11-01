@@ -24,9 +24,23 @@ public class GM
             case "gamemode":
                 GameMode(gm_params);
                 break;
+            case "ao":
+                AO(gm_params);
+                break;
             default:
                 ChatPanel.AddLine(ChatPanel.ErrorCode + "Unknown command.");
                 break;
+        }
+    }
+
+    static void AO(string[] gm_params)
+    {
+        if (gm_params.Length == 2)
+        {
+            if (gm_params[1] == "1")
+                Shader.EnableKeyword("DEBUG_AO");
+            else if (gm_params[1] == "0")
+                Shader.DisableKeyword("DEBUG_AO");
         }
     }
 

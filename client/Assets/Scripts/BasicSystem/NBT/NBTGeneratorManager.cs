@@ -151,6 +151,17 @@ public class NBTGeneratorManager : MonoBehaviour
         return false;
     }
 
+    public static bool LightCanTravel(byte rawType)
+    {
+        if (rawType == 0) return true;
+
+        if (generatorDict.ContainsKey(rawType))
+        {
+            return generatorDict[rawType].isTransparent && !generatorDict[rawType].willReduceLight;
+        }
+        return false;
+    }
+
     public static bool IsFence(byte rawType)
     {
         if (generatorDict.ContainsKey(rawType))

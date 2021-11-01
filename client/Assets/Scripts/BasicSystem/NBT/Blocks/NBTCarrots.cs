@@ -54,7 +54,7 @@ public class NBTCarrots : NBTPlant
 
         chunk.GetLights(pos.x, pos.y, pos.z, out float skyLight, out float blockLight);
 
-        FaceAttributes fa;
+        FaceAttributes fa = new FaceAttributes();
         fa.faceIndex = GetPlantIndexByData(chunk, blockData);
         fa.color = Color.white;
         fa.skyLight = skyLight;

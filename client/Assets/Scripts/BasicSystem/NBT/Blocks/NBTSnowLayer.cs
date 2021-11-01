@@ -134,7 +134,7 @@ public class NBTSnowLayer : NBTBlock
     {
         chunk.GetLights(ca.pos.x, ca.pos.y - 1, ca.pos.z, out float skyLight, out float blockLight);
 
-        FaceAttributes fa;
+        FaceAttributes fa = new FaceAttributes();
         fa.pos = bottomVertices_snow;
         fa.faceIndex = GetBottomIndexByData(chunk, ca.blockData);
         fa.color = GetBottomTintColorByData(chunk, ca.pos, ca.blockData);
@@ -149,7 +149,7 @@ public class NBTSnowLayer : NBTBlock
     {
         chunk.GetLights(ca.pos.x - 1, ca.pos.y, ca.pos.z, out float skyLight, out float blockLight);
 
-        FaceAttributes fa;
+        FaceAttributes fa = new FaceAttributes();
         fa.pos = leftVertices_snow;
         fa.faceIndex = GetLeftIndexByData(chunk, ca.blockData);
         fa.color = GetLeftTintColorByData(chunk, ca.pos, ca.blockData);
@@ -164,7 +164,7 @@ public class NBTSnowLayer : NBTBlock
     {
         chunk.GetLights(ca.pos.x + 1, ca.pos.y, ca.pos.z, out float skyLight, out float blockLight);
 
-        FaceAttributes fa;
+        FaceAttributes fa = new FaceAttributes();
         fa.pos = rightVertices_snow;
         fa.faceIndex = GetRightIndexByData(chunk, ca.blockData);
         fa.color = GetRightTintColorByData(chunk, ca.pos, ca.blockData);

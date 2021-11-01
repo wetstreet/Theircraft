@@ -39,6 +39,8 @@ public class NBTGrassBlock : NBTBlock
             blockData = blockData,
         };
 
+        GetAOBlocks(chunk, ref ca);
+
         bool topIsSnow = chunk.GetBlockByte(pos.x, pos.y + 1, pos.z) == 78;
 
         UnityEngine.Profiling.Profiler.BeginSample("AddFaces");

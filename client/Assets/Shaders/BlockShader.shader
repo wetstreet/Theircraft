@@ -41,8 +41,6 @@
             float4 _MainTex_ST;
 
             float _Cutoff;
-            float _Pow;
-            float _Min;
 
             half4 _Color;
 
@@ -68,7 +66,7 @@
                 i.uv.w = 1.f;
                 // skylight
                 float skylight = i.uv.w;
-                col.rgb *= GetSkyLight(skylight);
+                // col.rgb *= GetSkyLight(skylight);
 
                 if (i.worldNormal.y == 1)
                 {

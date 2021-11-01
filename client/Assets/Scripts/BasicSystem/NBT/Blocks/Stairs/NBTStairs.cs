@@ -38,7 +38,7 @@ public class NBTStairs : NBTBlock
         ushort startIndex = nbtMesh.vertexCount;
         for (int i = 0; i < mesh.vertices.Length; i++)
         {
-            SetVertex(nbtMesh, mesh.vertices[i] + pos, faceIndex, mesh.uv[i], skyLight, blockLight, Color.white, Vector3.zero);
+            SetVertex(nbtMesh, mesh.vertices[i] + pos, faceIndex, mesh.uv[i], skyLight, blockLight, 1, Color.white, Vector3.zero);
         }
         foreach (int index in mesh.triangles)
         {

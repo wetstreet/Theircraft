@@ -7,6 +7,8 @@ Shader "Custom/TextureArrayShader"
         _TileX ("Tile X", Float) = 1
         _TileY ("Tile Y", Float) = 1
         _Cutoff ("Cut Off", Range(0, 1)) = 0.5
+        // _DayLightTexture ("_DayLightTexture", 2D) = "white" {}
+        // _NightLightTexture ("_NightLightTexture", 2D) = "white" {}
         [Enum(UnityEngine.Rendering.CullMode)] _Culling ("Culling", Float) = 2
     }
     SubShader
@@ -22,6 +24,8 @@ Shader "Custom/TextureArrayShader"
 
             #pragma vertex vert
             #pragma fragment frag
+
+            #pragma multi_compile _ DEBUG_AO
 
             #pragma enable_d3d11_debug_symbols
 
@@ -71,7 +75,16 @@ Shader "Custom/TextureArrayShader"
             half4 frag (v2f i) : SV_Target
             {
                 // sample the texture
-                half4 col = SAMPLE_TEXTURE2D_ARRAY(_Array, sampler_Array, i.uv.xy, i.uv.z) * i.color;
+                half4 col = SAMPLE_TEXTURE2D_ARRAY(_Array, sampler_Array, i.uv.xy, i.uv.z);
+
+                col.rgb *= i.color.rgb;
+                
+                // ao
+                col.rgb *= i.color.w;
+            #if DEBUG_AO
+                float ao = i.color.w;
+                return ao;
+            #endif
 
                 // skylight
                 float skylight = i.uv.w;
@@ -80,7 +93,6 @@ Shader "Custom/TextureArrayShader"
                 half4 dayLight = tex2D(_DayLightTexture, half2(blockLight, 1 - skylight));
                 half4 nightLight = tex2D(_NightLightTexture, half2(blockLight, 1 - skylight));
 
-                // col.rgb *= GetSkyLight(skylight);
                 col.rgb *= lerp(dayLight.rgb, nightLight.rgb, saturate(_DayNight01));
 
                 if (i.worldNormal.y == 1)
