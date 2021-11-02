@@ -136,7 +136,7 @@ public class NBTPlant : NBTBlock
         return itemMaterialDict[data];
     }
 
-    public override Mesh GetItemMesh(NBTChunk chunk, byte data)
+    public override Mesh GetItemMesh(NBTChunk chunk, Vector3Int pos, byte data)
     {
         byte index = (byte)(data % 4);
         if (!itemMeshDict.ContainsKey(index))

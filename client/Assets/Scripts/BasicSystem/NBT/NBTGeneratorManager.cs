@@ -78,6 +78,7 @@ public class NBTGeneratorManager : MonoBehaviour
         new NBTBucket(),
         new NBTWaterBucket(),
         new NBTCoal(),
+        new NBTDiamondSword(),
     };
 
     public static Dictionary<string, NBTBlock> id2generator = new Dictionary<string, NBTBlock>();

@@ -45,8 +45,8 @@ public class NBTStairs : NBTBlock
             nbtMesh.triangleArray[nbtMesh.triangleCount++] = (ushort)(startIndex + index);
         }
     }
-    
-    public override Mesh GetItemMesh(NBTChunk chunk, byte blockData)
+
+    public override Mesh GetItemMesh(NBTChunk chunk, Vector3Int pos, byte blockData)
     {
         return GetMesh(blockData);
     }
