@@ -39,7 +39,7 @@ public class NBTGrassBlock : NBTBlock
             blockData = blockData,
         };
 
-        GetAOBlocks(chunk, ref ca);
+        InitBlockAttributes(chunk, ref ca);
 
         bool topIsSnow = chunk.GetBlockByte(pos.x, pos.y + 1, pos.z) == 78;
 

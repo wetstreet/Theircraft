@@ -19,22 +19,35 @@ public struct CubeAttributes
 {
     public Vector3Int pos;
     public byte blockData;
-    public int leftTop;
-    public int leftFrontTop;
-    public int frontTop;
-    public int frontRightTop;
-    public int rightTop;
-    public int rightBackTop;
-    public int backTop;
-    public int backLeftTop;
-    public int leftBottom;
-    public int leftFrontBottom;
-    public int frontBottom;
-    public int frontRightBottom;
-    public int rightBottom;
-    public int rightBackBottom;
-    public int backBottom;
-    public int backLeftBottom;
+    public bool front;
+    public bool back;
+    public bool left;
+    public bool right;
+    public bool top;
+    public bool bottom;
+
+    public int frontTop ;
+    public int frontBottom ;
+    public int frontLeft ;
+    public int frontRight ;
+    public int frontTopLeft ;
+    public int frontTopRight ;
+    public int frontBottomLeft ;
+    public int frontBottomRight ;
+
+    public int backTop ;
+    public int backBottom ;
+    public int backLeft ;
+    public int backRight ;
+    public int backTopLeft ;
+    public int backTopRight ;
+    public int backBottomLeft ;
+    public int backBottomRight ;
+
+    public int topLeft ;
+    public int topRight ;
+    public int bottomLeft ;
+    public int bottomRight ;
 }
 
 public struct FaceAttributes
@@ -281,25 +294,41 @@ public abstract class NBTBlock : NBTObject
         return nbtMesh.mesh;
     }
 
-    protected void GetAOBlocks(NBTChunk chunk, ref CubeAttributes ca)
+    protected void InitBlockAttributes(NBTChunk chunk, ref CubeAttributes ca)
     {
-        ca.leftTop = chunk.HasOpaqueBlock(ca.pos.x - 1, ca.pos.y + 1, ca.pos.z) ? 1 : 0;
-        ca.leftFrontTop = chunk.HasOpaqueBlock(ca.pos.x - 1, ca.pos.y + 1, ca.pos.z - 1) ? 1 : 0;
-        ca.frontTop = chunk.HasOpaqueBlock(ca.pos.x, ca.pos.y + 1, ca.pos.z - 1) ? 1 : 0;
-        ca.frontRightTop = chunk.HasOpaqueBlock(ca.pos.x + 1, ca.pos.y + 1, ca.pos.z - 1) ? 1 : 0;
-        ca.rightTop = chunk.HasOpaqueBlock(ca.pos.x + 1, ca.pos.y + 1, ca.pos.z) ? 1 : 0;
-        ca.rightBackTop = chunk.HasOpaqueBlock(ca.pos.x + 1, ca.pos.y + 1, ca.pos.z + 1) ? 1 : 0;
-        ca.backTop = chunk.HasOpaqueBlock(ca.pos.x, ca.pos.y + 1, ca.pos.z + 1) ? 1 : 0;
-        ca.backLeftTop = chunk.HasOpaqueBlock(ca.pos.x - 1, ca.pos.y + 1, ca.pos.z + 1) ? 1 : 0;
+        ca.front = chunk.HasOpaqueBlock(ca.pos.x, ca.pos.y, ca.pos.z - 1);
+        ca.back = chunk.HasOpaqueBlock(ca.pos.x, ca.pos.y, ca.pos.z + 1);
+        ca.left = chunk.HasOpaqueBlock(ca.pos.x - 1, ca.pos.y, ca.pos.z);
+        ca.right = chunk.HasOpaqueBlock(ca.pos.x + 1, ca.pos.y, ca.pos.z);
+        ca.top = chunk.HasOpaqueBlock(ca.pos.x, ca.pos.y + 1, ca.pos.z);
+        ca.bottom = chunk.HasOpaqueBlock(ca.pos.x, ca.pos.y - 1, ca.pos.z);
 
-        ca.leftBottom = chunk.HasOpaqueBlock(ca.pos.x - 1, ca.pos.y - 1, ca.pos.z) ? 1 : 0;
-        ca.leftFrontBottom = chunk.HasOpaqueBlock(ca.pos.x - 1, ca.pos.y - 1, ca.pos.z - 1) ? 1 : 0;
-        ca.frontBottom = chunk.HasOpaqueBlock(ca.pos.x, ca.pos.y - 1, ca.pos.z - 1) ? 1 : 0;
-        ca.frontRightBottom = chunk.HasOpaqueBlock(ca.pos.x + 1, ca.pos.y - 1, ca.pos.z - 1) ? 1 : 0;
-        ca.rightBottom = chunk.HasOpaqueBlock(ca.pos.x + 1, ca.pos.y - 1, ca.pos.z) ? 1 : 0;
-        ca.rightBackBottom = chunk.HasOpaqueBlock(ca.pos.x + 1, ca.pos.y - 1, ca.pos.z + 1) ? 1 : 0;
-        ca.backBottom = chunk.HasOpaqueBlock(ca.pos.x, ca.pos.y - 1, ca.pos.z + 1) ? 1 : 0;
-        ca.backLeftBottom = chunk.HasOpaqueBlock(ca.pos.x - 1, ca.pos.y - 1, ca.pos.z + 1) ? 1 : 0;
+        if (ca.front || ca.back || ca.left || ca.right || ca.top || ca.bottom)
+        {
+            ca.frontTop = chunk.HasOpaqueBlock(ca.pos.x, ca.pos.y + 1, ca.pos.z - 1) ? 1 : 0;
+            ca.frontBottom = chunk.HasOpaqueBlock(ca.pos.x, ca.pos.y - 1, ca.pos.z - 1) ? 1 : 0;
+            ca.frontLeft = chunk.HasOpaqueBlock(ca.pos.x - 1, ca.pos.y, ca.pos.z - 1) ? 1 : 0;
+            ca.frontRight = chunk.HasOpaqueBlock(ca.pos.x + 1, ca.pos.y, ca.pos.z - 1) ? 1 : 0;
+            ca.frontTopLeft = chunk.HasOpaqueBlock(ca.pos.x - 1, ca.pos.y + 1, ca.pos.z - 1) ? 1 : 0;
+            ca.frontTopRight = chunk.HasOpaqueBlock(ca.pos.x + 1, ca.pos.y + 1, ca.pos.z - 1) ? 1 : 0;
+            ca.frontBottomLeft = chunk.HasOpaqueBlock(ca.pos.x - 1, ca.pos.y - 1, ca.pos.z - 1) ? 1 : 0;
+            ca.frontBottomRight = chunk.HasOpaqueBlock(ca.pos.x + 1, ca.pos.y - 1, ca.pos.z - 1) ? 1 : 0;
+
+            ca.backTop = chunk.HasOpaqueBlock(ca.pos.x, ca.pos.y + 1, ca.pos.z + 1) ? 1 : 0;
+            ca.backBottom = chunk.HasOpaqueBlock(ca.pos.x, ca.pos.y - 1, ca.pos.z + 1) ? 1 : 0;
+            ca.backLeft = chunk.HasOpaqueBlock(ca.pos.x - 1, ca.pos.y, ca.pos.z + 1) ? 1 : 0;
+            ca.backRight = chunk.HasOpaqueBlock(ca.pos.x + 1, ca.pos.y, ca.pos.z + 1) ? 1 : 0;
+            ca.backTopLeft = chunk.HasOpaqueBlock(ca.pos.x - 1, ca.pos.y + 1, ca.pos.z + 1) ? 1 : 0;
+            ca.backTopRight = chunk.HasOpaqueBlock(ca.pos.x + 1, ca.pos.y + 1, ca.pos.z + 1) ? 1 : 0;
+            ca.backBottomLeft = chunk.HasOpaqueBlock(ca.pos.x - 1, ca.pos.y - 1, ca.pos.z + 1) ? 1 : 0;
+            ca.backBottomRight = chunk.HasOpaqueBlock(ca.pos.x + 1, ca.pos.y - 1, ca.pos.z + 1) ? 1 : 0;
+
+            ca.topLeft = chunk.HasOpaqueBlock(ca.pos.x - 1, ca.pos.y + 1, ca.pos.z) ? 1 : 0;
+            ca.topRight = chunk.HasOpaqueBlock(ca.pos.x + 1, ca.pos.y + 1, ca.pos.z) ? 1 : 0;
+
+            ca.bottomLeft = chunk.HasOpaqueBlock(ca.pos.x - 1, ca.pos.y - 1, ca.pos.z) ? 1 : 0;
+            ca.bottomRight = chunk.HasOpaqueBlock(ca.pos.x + 1, ca.pos.y - 1, ca.pos.z) ? 1 : 0;
+        }
     }
 
     public virtual void AddCube(NBTChunk chunk, byte blockData, Vector3Int pos, NBTGameObject nbtGO)
@@ -308,36 +337,36 @@ public abstract class NBTBlock : NBTObject
         ca.pos = pos;
         ca.blockData = blockData;
 
-        GetAOBlocks(chunk, ref ca);
+        InitBlockAttributes(chunk, ref ca);
 
         UnityEngine.Profiling.Profiler.BeginSample("AddFaces");
 
-        if (!chunk.HasOpaqueBlock(pos.x, pos.y, pos.z - 1))
+        if (!ca.front)
         {
             FaceAttributes fa = GetFrontFaceAttributes(chunk, nbtGO.nbtMesh, ca);
             AddFace(nbtGO.nbtMesh, fa, ca);
         }
-        if (!chunk.HasOpaqueBlock(pos.x + 1, pos.y, pos.z))
+        if (!ca.right)
         {
             FaceAttributes fa = GetRightFaceAttributes(chunk, nbtGO.nbtMesh, ca);
             AddFace(nbtGO.nbtMesh, fa, ca);
         }
-        if (!chunk.HasOpaqueBlock(pos.x - 1, pos.y, pos.z))
+        if (!ca.left)
         {
             FaceAttributes fa = GetLeftFaceAttributes(chunk, nbtGO.nbtMesh, ca);
             AddFace(nbtGO.nbtMesh, fa, ca);
         }
-        if (!chunk.HasOpaqueBlock(pos.x, pos.y, pos.z + 1))
+        if (!ca.back)
         {
             FaceAttributes fa = GetBackFaceAttributes(chunk, nbtGO.nbtMesh, ca);
             AddFace(nbtGO.nbtMesh, fa, ca);
         }
-        if (!chunk.HasOpaqueBlock(pos.x, pos.y + 1, pos.z))
+        if (!ca.top)
         {
             FaceAttributes fa = GetTopFaceAttributes(chunk, nbtGO.nbtMesh, ca);
             AddFace(nbtGO.nbtMesh, fa, ca);
         }
-        if (!chunk.HasOpaqueBlock(pos.x, pos.y - 1, pos.z))
+        if (!ca.bottom)
         {
             FaceAttributes fa = GetBottomFaceAttributes(chunk, nbtGO.nbtMesh, ca);
             AddFace(nbtGO.nbtMesh, fa, ca);
@@ -404,10 +433,10 @@ public abstract class NBTBlock : NBTObject
 
         //nearBottomLeft, nearTopLeft, nearTopRight, nearBottomRight
         fa.ao = new float[4];
-        fa.ao[0] = ao[ca.frontBottom + ca.leftBottom + ca.leftFrontBottom];
-        fa.ao[1] = ao[ca.frontTop + ca.leftTop + ca.leftFrontTop];
-        fa.ao[2] = ao[ca.frontTop + ca.rightTop + ca.frontRightTop];
-        fa.ao[3] = ao[ca.frontBottom + ca.rightBottom + ca.frontRightBottom];
+        fa.ao[0] = ao[ca.frontBottom + ca.frontLeft + ca.frontBottomLeft];
+        fa.ao[1] = ao[ca.frontTop + ca.frontLeft + ca.frontTopLeft];
+        fa.ao[2] = ao[ca.frontTop + ca.frontRight + ca.frontTopRight];
+        fa.ao[3] = ao[ca.frontBottom + ca.frontRight + ca.frontBottomRight];
 
         Rotation rotation = GetFrontRotationByData(ca.blockData);
         if (rotation == Rotation.Right)
@@ -431,10 +460,10 @@ public abstract class NBTBlock : NBTObject
 
         //farBottomRight, farTopRight, farTopLeft, farBottomLeft
         fa.ao = new float[4];
-        fa.ao[0] = ao[ca.backBottom + ca.rightBottom + ca.rightBackBottom];
-        fa.ao[1] = ao[ca.backTop + ca.rightTop + ca.rightBackTop];
-        fa.ao[2] = ao[ca.backTop + ca.leftTop + ca.backLeftTop];
-        fa.ao[3] = ao[ca.frontBottom + ca.leftBottom + ca.leftFrontBottom];
+        fa.ao[0] = ao[ca.backBottom + ca.backRight + ca.backBottomRight];
+        fa.ao[1] = ao[ca.backTop + ca.backRight + ca.backTopRight];
+        fa.ao[2] = ao[ca.backTop + ca.backLeft + ca.backTopLeft];
+        fa.ao[3] = ao[ca.backBottom + ca.backLeft + ca.backBottomLeft];
 
         Rotation rotation = GetFrontRotationByData(ca.blockData);
         if (rotation == Rotation.Right)
@@ -459,10 +488,10 @@ public abstract class NBTBlock : NBTObject
 
         //farTopRight, nearTopRight, nearTopLeft, farTopLeft
         fa.ao = new float[4];
-        fa.ao[0] = ao[ca.backTop + ca.rightTop + ca.rightBackTop];
-        fa.ao[1] = ao[ca.frontTop + ca.rightTop + ca.frontRightTop];
-        fa.ao[2] = ao[ca.frontTop + ca.leftTop + ca.leftFrontTop];
-        fa.ao[3] = ao[ca.backTop + ca.leftTop + ca.backLeftTop];
+        fa.ao[0] = ao[ca.backTop + ca.topRight + ca.backTopRight];
+        fa.ao[1] = ao[ca.frontTop + ca.topRight + ca.frontTopRight];
+        fa.ao[2] = ao[ca.frontTop + ca.topLeft + ca.frontTopLeft];
+        fa.ao[3] = ao[ca.backTop + ca.topLeft + ca.backTopLeft];
 
         Rotation rotation = GetFrontRotationByData(ca.blockData);
         if (rotation == Rotation.Right)
@@ -486,10 +515,10 @@ public abstract class NBTBlock : NBTObject
 
         //nearBottomRight, farBottomRight, farBottomLeft, nearBottomLeft
         fa.ao = new float[4];
-        fa.ao[0] = ao[ca.frontBottom + ca.rightBottom + ca.frontRightBottom];
-        fa.ao[1] = ao[ca.backBottom + ca.rightBottom + ca.rightBackBottom];
-        fa.ao[2] = ao[ca.backBottom + ca.leftBottom + ca.backLeftBottom];
-        fa.ao[3] = ao[ca.frontBottom + ca.leftBottom + ca.leftFrontBottom];
+        fa.ao[0] = ao[ca.frontBottom + ca.bottomRight + ca.frontBottomRight];
+        fa.ao[1] = ao[ca.backBottom + ca.bottomRight + ca.backBottomRight];
+        fa.ao[2] = ao[ca.backBottom + ca.bottomLeft + ca.backBottomLeft];
+        fa.ao[3] = ao[ca.frontBottom + ca.bottomLeft + ca.frontBottomLeft];
 
         Rotation rotation = GetFrontRotationByData(ca.blockData);
         if (rotation == Rotation.Right)
@@ -513,10 +542,10 @@ public abstract class NBTBlock : NBTObject
 
         //farBottomLeft, farTopLeft, nearTopLeft, nearBottomLeft
         fa.ao = new float[4];
-        fa.ao[0] = ao[ca.backBottom + ca.leftBottom + ca.backLeftBottom];
-        fa.ao[1] = ao[ca.backTop + ca.leftTop + ca.backLeftTop];
-        fa.ao[2] = ao[ca.frontTop + ca.leftTop + ca.leftFrontTop];
-        fa.ao[3] = ao[ca.frontBottom + ca.leftBottom + ca.leftFrontBottom];
+        fa.ao[0] = ao[ca.backLeft + ca.bottomLeft + ca.backBottomLeft];
+        fa.ao[1] = ao[ca.backLeft + ca.topLeft + ca.backTopLeft];
+        fa.ao[2] = ao[ca.frontLeft + ca.topLeft + ca.frontTopLeft];
+        fa.ao[3] = ao[ca.frontLeft + ca.bottomLeft + ca.frontBottomLeft];
 
         Rotation rotation = GetFrontRotationByData(ca.blockData);
         if (rotation == Rotation.Right)
@@ -540,10 +569,10 @@ public abstract class NBTBlock : NBTObject
 
         //nearBottomRight, nearTopRight, farTopRight, farBottomRight
         fa.ao = new float[4];
-        fa.ao[0] = ao[ca.frontBottom + ca.rightBottom + ca.frontRightBottom];
-        fa.ao[1] = ao[ca.frontTop + ca.rightTop + ca.frontRightTop];
-        fa.ao[2] = ao[ca.backTop + ca.rightTop + ca.rightBackTop];
-        fa.ao[3] = ao[ca.backBottom + ca.rightBottom + ca.rightBackBottom];
+        fa.ao[0] = ao[ca.frontRight + ca.bottomRight + ca.frontBottomRight];
+        fa.ao[1] = ao[ca.frontRight + ca.topRight + ca.frontTopRight];
+        fa.ao[2] = ao[ca.backRight + ca.topRight + ca.backTopRight];
+        fa.ao[3] = ao[ca.backRight + ca.bottomRight + ca.backBottomRight];
 
         Rotation rotation = GetFrontRotationByData(ca.blockData);
         if (rotation == Rotation.Right)
