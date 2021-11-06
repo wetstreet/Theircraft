@@ -255,16 +255,26 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        Vector3Int topPos = WireFrameHelper.pos + Vector3Int.up;
-        NBTHelper.GetBlockData(topPos.x, topPos.y, topPos.z, out byte topType, out byte topData);
-        NBTBlock topGenerator = NBTGeneratorManager.GetMeshGenerator(topType);
-        if (topGenerator != null && topGenerator.isTransparent)
+        if (generator.isTileEntity)
         {
-            BreakBlockEffect.Create(topType, topData, topPos);
-            NBTHelper.SetBlockByteNoUpdate(topPos, 0);
+            NBTChunk chunk = NBTHelper.GetChunk(WireFrameHelper.pos);
+            chunk.RemoveTileEntity(WireFrameHelper.pos);
+            NBTHelper.SetBlockByteNoUpdate(WireFrameHelper.pos, 0);
+        }
+        else
+        {
+            Vector3Int topPos = WireFrameHelper.pos + Vector3Int.up;
+            NBTHelper.GetBlockData(topPos.x, topPos.y, topPos.z, out byte topType, out byte topData);
+            NBTBlock topGenerator = NBTGeneratorManager.GetMeshGenerator(topType);
+            if (topGenerator != null && topGenerator.isTransparent)
+            {
+                BreakBlockEffect.Create(topType, topData, topPos);
+                NBTHelper.SetBlockByteNoUpdate(topPos, 0);
+            }
+
+            NBTHelper.SetBlockByte(WireFrameHelper.pos, 0, true);
         }
 
-        NBTHelper.SetBlockByte(WireFrameHelper.pos, 0, true);
 
         //Item.CreateBlockDropItem(type, WireFrameHelper.pos);
         BreakBlockEffect.Create(WireFrameHelper.type, WireFrameHelper.data, WireFrameHelper.pos);

@@ -182,6 +182,19 @@ public class NBTChunk
         return !NBTGeneratorManager.IsTransparent(type);
     }
 
+    public void RemoveTileEntity(Vector3Int pos)
+    {
+        pos.x -= x * 16;
+        pos.z -= z * 16;
+        if (tileEntityObjs.ContainsKey(pos))
+        {
+            GameObject obj = tileEntityObjs[pos];
+            tileEntityObjs.Remove(pos);
+            tileEntityList.Remove(pos);
+            Object.Destroy(obj);
+        }
+    }
+
     Vector3Int pos = new Vector3Int();
     public void RefreshMeshData()
     {
@@ -319,7 +332,9 @@ public class NBTChunk
                 byte rawType = Blocks.Data[blockPos];
                 NBTBlock generator = NBTGeneratorManager.GetMeshGenerator(rawType);
                 byte blockData = NBTHelper.GetNibble(Data.Data, blockPos);
-                generator.AddCube(this, blockData, pos, collidable);
+                GameObject obj = generator.GetTileEntityGameObject(this, blockData, pos);
+
+                tileEntityObjs[pos] = obj;
             }
         }
 

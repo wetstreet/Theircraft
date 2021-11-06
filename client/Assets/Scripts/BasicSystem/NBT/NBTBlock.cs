@@ -582,4 +582,9 @@ public abstract class NBTBlock : NBTObject
 
         return fa;
     }
+
+    public virtual GameObject GetTileEntityGameObject(NBTChunk chunk, byte blockData, Vector3Int pos)
+    {
+        return null;
+    }
 }

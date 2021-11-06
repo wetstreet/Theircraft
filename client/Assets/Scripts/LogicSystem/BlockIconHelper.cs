@@ -18,7 +18,7 @@ public class BlockIconHelper
             path = generator.GetIconPathByData(data);
             return Resources.Load<Texture2D>(generator.pathPrefix + path);
         }
-        Debug.Log("no icon, generator=" +generator+", id=" + id + ",data=" + data + ",path="+ path);
+        Debug.Log(ChatPanel.HideCode + "no icon, generator=" +generator+", id=" + id + ",data=" + data + ",path="+ path);
         return null;
     }
 }
