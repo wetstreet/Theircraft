@@ -19,5 +19,5 @@ public class NBTPotatoes : NBTCrops
         return TextureArrayManager.GetIndexByName("potatoes_stage_3");
     }
 
-    public override string GetBreakEffectTexture(byte data) { return "potato"; }
+    public override string GetBreakEffectTexture(byte data) { return "potatoes_stage_3"; }
 }

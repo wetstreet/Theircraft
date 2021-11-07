@@ -57,12 +57,12 @@ public class NBTLeaves2 : NBTBlock
         return TintManager.tintColor;
     }
 
-    public override Color GetTopTintColorByData(NBTChunk chunk, Vector3Int pos, byte data) { return GetTintColorByData(data); }
-    public override Color GetBottomTintColorByData(NBTChunk chunk, Vector3Int pos, byte data) { return GetTintColorByData(data); }
-    public override Color GetFrontTintColorByData(NBTChunk chunk, Vector3Int pos, byte data) { return GetTintColorByData(data); }
-    public override Color GetBackTintColorByData(NBTChunk chunk, Vector3Int pos, byte data) { return GetTintColorByData(data); }
-    public override Color GetLeftTintColorByData(NBTChunk chunk, Vector3Int pos, byte data) { return GetTintColorByData(data); }
-    public override Color GetRightTintColorByData(NBTChunk chunk, Vector3Int pos, byte data) { return GetTintColorByData(data); }
+    public override Color GetTopTintColorByData(byte data) { return GetTintColorByData(data); }
+    public override Color GetBottomTintColorByData(byte data) { return GetTintColorByData(data); }
+    public override Color GetFrontTintColorByData(byte data) { return GetTintColorByData(data); }
+    public override Color GetBackTintColorByData(byte data) { return GetTintColorByData(data); }
+    public override Color GetLeftTintColorByData(byte data) { return GetTintColorByData(data); }
+    public override Color GetRightTintColorByData(byte data) { return GetTintColorByData(data); }
 
     int GetIndexByData(int data)
     {

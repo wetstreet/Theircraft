@@ -148,12 +148,13 @@ public class CraftingTableUI : InventoryUI
 
         if (highlightIndex == resultIndex)
         {
-            if (InventorySystem.grabItem.id == null)
+            if (InventorySystem.grabItem.id == null ||
+                (InventorySystem.grabItem.id == InventorySystem.items[resultIndex].id &&
+                InventorySystem.grabItem.damage == InventorySystem.items[resultIndex].damage))
             {
                 CraftingSystem.CraftItems();
                 RefreshGrabItem();
                 RefreshUI();
-                ItemSelectPanel.instance.RefreshUI();
             }
         }
         if (indexList.Contains(highlightIndex))

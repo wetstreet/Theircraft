@@ -121,9 +121,17 @@ public class CraftingSystem : MonoBehaviour
             }
         }
 
-        InventorySystem.grabItem.id = InventorySystem.items[resultIndex].id;
-        InventorySystem.grabItem.damage = InventorySystem.items[resultIndex].damage;
-        InventorySystem.grabItem.count = InventorySystem.items[resultIndex].count;
+        if (InventorySystem.grabItem.id == InventorySystem.items[resultIndex].id &&
+            InventorySystem.grabItem.damage == InventorySystem.items[resultIndex].damage)
+        {
+            InventorySystem.grabItem.count += InventorySystem.items[resultIndex].count;
+        }
+        else
+        {
+            InventorySystem.grabItem.id = InventorySystem.items[resultIndex].id;
+            InventorySystem.grabItem.damage = InventorySystem.items[resultIndex].damage;
+            InventorySystem.grabItem.count = InventorySystem.items[resultIndex].count;
+        }
 
         CheckCanCraft();
     }

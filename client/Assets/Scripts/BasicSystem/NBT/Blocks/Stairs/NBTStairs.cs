@@ -46,6 +46,11 @@ public class NBTStairs : NBTBlock
         }
     }
 
+    public override Mesh GetItemMesh(byte data = 0)
+    {
+        return GetMesh(data);
+    }
+
     public override Mesh GetItemMesh(NBTChunk chunk, Vector3Int pos, byte blockData)
     {
         return GetMesh(blockData);

@@ -16,6 +16,11 @@ public class IconGenerator : ScriptableWizard
         NBTGeneratorManager.Init();
         TextureArrayManager.Init();
         DisplayWizard<IconGenerator>("创建icon", "创建", "批量创建");
+
+        Texture2D day = Resources.Load<Texture2D>("GUI/Day");
+        Shader.SetGlobalTexture("_DayLightTexture", day);
+        Texture2D night = Resources.Load<Texture2D>("GUI/Night");
+        Shader.SetGlobalTexture("_NightLightTexture", night);
     }
 
     public int size = 128;

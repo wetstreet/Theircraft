@@ -29,8 +29,8 @@ public class GameModeManager : MonoBehaviour
 
     public static void Init()
     {
-        TagNodeCompound levelDat = NBTHelper.GetLevelDat();
-        int gameMode = levelDat["GameType"] as TagNodeInt;
+        TagNodeCompound player = NBTHelper.GetPlayerData();
+        int gameMode = player["playerGameType"] as TagNodeInt;
         _mode = (GameMode)gameMode;
     }
 

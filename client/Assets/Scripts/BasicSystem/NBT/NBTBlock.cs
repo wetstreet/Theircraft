@@ -122,12 +122,18 @@ public abstract class NBTBlock : NBTObject
     public virtual int GetLeftIndexByData(NBTChunk chunk, int data) { return TextureArrayManager.GetIndexByName(leftName); }
     public virtual int GetRightIndexByData(NBTChunk chunk, int data) { return TextureArrayManager.GetIndexByName(rightName); }
 
-    public virtual Color GetTopTintColorByData(NBTChunk chunk, Vector3Int pos, byte data) { return Color.white; }
-    public virtual Color GetBottomTintColorByData(NBTChunk chunk, Vector3Int pos, byte data) { return Color.white; }
-    public virtual Color GetFrontTintColorByData(NBTChunk chunk, Vector3Int pos, byte data) { return Color.white; }
-    public virtual Color GetBackTintColorByData(NBTChunk chunk, Vector3Int pos, byte data) { return Color.white; }
-    public virtual Color GetLeftTintColorByData(NBTChunk chunk, Vector3Int pos, byte data) { return Color.white; }
-    public virtual Color GetRightTintColorByData(NBTChunk chunk, Vector3Int pos, byte data) { return Color.white; }
+    public virtual Color GetTopTintColorByData(NBTChunk chunk, Vector3Int pos, byte data) { return GetTopTintColorByData(data); }
+    public virtual Color GetBottomTintColorByData(NBTChunk chunk, Vector3Int pos, byte data) { return GetBottomTintColorByData(data); }
+    public virtual Color GetFrontTintColorByData(NBTChunk chunk, Vector3Int pos, byte data) { return GetFrontTintColorByData(data); }
+    public virtual Color GetBackTintColorByData(NBTChunk chunk, Vector3Int pos, byte data) { return GetBackTintColorByData(data); }
+    public virtual Color GetLeftTintColorByData(NBTChunk chunk, Vector3Int pos, byte data) { return GetLeftTintColorByData(data); }
+    public virtual Color GetRightTintColorByData(NBTChunk chunk, Vector3Int pos, byte data) { return GetRightTintColorByData(data); }
+    public virtual Color GetTopTintColorByData(byte data) { return Color.white; }
+    public virtual Color GetBottomTintColorByData(byte data) { return Color.white; }
+    public virtual Color GetFrontTintColorByData(byte data) { return Color.white; }
+    public virtual Color GetBackTintColorByData(byte data) { return Color.white; }
+    public virtual Color GetLeftTintColorByData(byte data) { return Color.white; }
+    public virtual Color GetRightTintColorByData(byte data) { return Color.white; }
 
     protected virtual Rotation GetTopRotationByData(byte data) { return Rotation.Zero; }
     protected virtual Rotation GetBottomRotationByData(byte data) { return Rotation.Zero; }
@@ -183,7 +189,6 @@ public abstract class NBTBlock : NBTObject
         FaceAttributes fa = new FaceAttributes();
         fa.skyLight = skylight_default;
         fa.blockLight = blocklight_default;
-        fa.color = Color.white;
 
         try
         {
@@ -191,36 +196,42 @@ public abstract class NBTBlock : NBTObject
             fa.normal = Vector3.forward;
             fa.faceIndex = GetFrontIndexByData(null, data);
             fa.uv = GetFrontRotationByData(data) == Rotation.Right ? uv_right : uv_zero;
+            fa.color = GetFrontTintColorByData(data);
             AddFace(nbtMesh, fa, ca);
 
             fa.pos = backVertices;
             fa.normal = Vector3.back;
             fa.faceIndex = GetBackIndexByData(null, data);
             fa.uv = GetBackRotationByData(data) == Rotation.Right ? uv_right : uv_zero;
+            fa.color = GetBackTintColorByData(data);
             AddFace(nbtMesh, fa, ca);
 
             fa.pos = topVertices;
             fa.normal = Vector3.up;
             fa.faceIndex = GetTopIndexByData(null, data);
             fa.uv = GetTopRotationByData(data) == Rotation.Right ? uv_right : uv_zero;
+            fa.color = GetTopTintColorByData(data);
             AddFace(nbtMesh, fa, ca);
 
             fa.pos = bottomVertices;
             fa.normal = Vector3.down;
             fa.faceIndex = GetBottomIndexByData(null, data);
             fa.uv = GetBottomRotationByData(data) == Rotation.Right ? uv_right : uv_zero;
+            fa.color = GetBottomTintColorByData(data);
             AddFace(nbtMesh, fa, ca);
 
             fa.pos = leftVertices;
             fa.normal = Vector3.left;
             fa.faceIndex = GetLeftIndexByData(null, data);
             fa.uv = GetLeftRotationByData(data) == Rotation.Right ? uv_right : uv_zero;
+            fa.color = GetLeftTintColorByData(data);
             AddFace(nbtMesh, fa, ca);
 
             fa.pos = rightVertices;
             fa.normal = Vector3.right;
             fa.faceIndex = GetRightIndexByData(null, data);
             fa.uv = GetRightRotationByData(data) == Rotation.Right ? uv_right : uv_zero;
+            fa.color = GetRightTintColorByData(data);
             AddFace(nbtMesh, fa, ca);
         }
         catch (System.Exception e)

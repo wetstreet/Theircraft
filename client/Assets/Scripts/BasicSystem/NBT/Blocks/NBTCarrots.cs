@@ -19,5 +19,5 @@ public class NBTCarrots : NBTCrops
         return TextureArrayManager.GetIndexByName("carrots_stage_3");
     }
 
-    public override string GetBreakEffectTexture(byte data) { return "carrot"; }
+    public override string GetBreakEffectTexture(byte data) { return "carrots_stage_3"; }
 }

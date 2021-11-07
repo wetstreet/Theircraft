@@ -19,5 +19,5 @@ public class NBTWheat : NBTCrops
         return TextureArrayManager.GetIndexByName("wheat_stage_7");
     }
 
-    public override string GetBreakEffectTexture(byte data) { return "wheat"; }
+    public override string GetBreakEffectTexture(byte data) { return "wheat_stage_7"; }
 }
