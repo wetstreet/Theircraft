@@ -19,6 +19,8 @@ public class NBTTorch : NBTBlock
 
     public override bool isTransparent => true;
 
+    public override Vector3 itemSize => Vector3.one;
+
     public override string GetIconPathByData(short data = 0)
     {
         return "torch_on";

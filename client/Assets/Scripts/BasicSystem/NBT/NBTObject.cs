@@ -19,6 +19,10 @@ public abstract class NBTObject
 
     protected Dictionary<byte, Material> itemMaterialDict = new Dictionary<byte, Material>();
 
+
+    protected static Vector3 itemSize_half = new Vector3(0.5f, 0.5f, 0.5f);
+    public virtual Vector3 itemSize { get { return Vector3.one; } }
+
     public virtual Material GetItemMaterial(byte data)
     {
         if (commonItemMat == null)

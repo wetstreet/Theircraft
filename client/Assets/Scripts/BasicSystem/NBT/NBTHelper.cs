@@ -10,6 +10,16 @@ using System.Threading.Tasks;
 using Unity.Jobs;
 using UnityEngine;
 
+[Flags] public enum UpdateFlags
+{
+    None = 0,
+    Collidable = 1,
+    NotCollidable = 2,
+    Water = 4,
+    Lighting = 8,
+    All = 15,
+}
+
 public class NBTHelper
 {
     public static string save = "New World-";
@@ -396,9 +406,28 @@ public class NBTHelper
         chunk.SetBlockByte(xInChunk, y, zInChunk, type);
     }
 
-    public static void SetBlockByte(Vector3Int pos, byte type, bool updateLighting = false) { SetBlockByte(pos.x, pos.y, pos.z, type, updateLighting); }
+    static UpdateFlags GetUpdateFlags(NBTBlock generator)
+    {
+        if (generator is NBTPlant || generator is NBTSnowLayer)
+        {
+            return UpdateFlags.NotCollidable;
+        }
+        else if (generator is NBTStationaryWater)
+        {
+            return UpdateFlags.Water;
+        }
+        else
+        {
+            return UpdateFlags.Collidable | UpdateFlags.Lighting;
+        }
+    }
 
-    public async static void SetBlockByte(int x, int y, int z, byte type, bool updateLighting = false)
+    public static void SetBlockByte(Vector3Int pos, byte type)
+    {
+        SetBlockByte(pos.x, pos.y, pos.z, type);
+    }
+
+    public static void SetBlockByte(int x, int y, int z, byte type)
     {
         int chunkX = Mathf.FloorToInt(x / 16f);
         int chunkZ = Mathf.FloorToInt(z / 16f);
@@ -407,14 +436,29 @@ public class NBTHelper
         int zInChunk = z - chunkZ * 16;
 
         NBTChunk chunk = GetChunk(chunkX, chunkZ);
+        NBTBlock oldGenerator = NBTGeneratorManager.GetMeshGenerator(chunk.GetBlockByte(xInChunk, y, zInChunk));
+        UpdateFlags updateFlag = GetUpdateFlags(oldGenerator);
+
+        if (type == 0)
+        {
+            chunk.GetBlockData(xInChunk, y + 1, zInChunk, out byte topType, out byte topData);
+            NBTBlock topGenerator = NBTGeneratorManager.GetMeshGenerator(topType);
+            if (topGenerator != null && topGenerator.isTransparent)
+            {
+                BreakBlockEffect.Create(topType, topData, new Vector3(x, y + 1, z));
+                chunk.SetBlockByte(xInChunk, y + 1, zInChunk, 0);
+                updateFlag |= UpdateFlags.NotCollidable;
+            }
+        }
+
         chunk.SetBlockByte(xInChunk, y, zInChunk, type);
-        if (updateLighting)
+        if (updateFlag.HasFlag(UpdateFlags.Lighting))
         {
             UpdateLighting(x, y, z);
         }
-        chunk.RebuildMesh();
+        chunk.RebuildMesh(updateFlag);
 
-        if (type == 0)
+        if (type == 0 && !oldGenerator.isTransparent)
         {
             NBTChunk leftChunk = GetChunk(chunkX - 1, chunkZ);
             if (xInChunk == 0)
@@ -442,9 +486,12 @@ public class NBTHelper
         }
     }
 
-    public static void SetBlockData(Vector3Int pos, byte type, byte data, bool updateLighting = false) { SetBlockData(pos.x, pos.y, pos.z, type, data, updateLighting); }
+    public static void SetBlockData(Vector3Int pos, byte type, byte data)
+    {
+        SetBlockData(pos.x, pos.y, pos.z, type, data);
+    }
 
-    public async static void SetBlockData(int x, int y, int z, byte type, byte data, bool updateLighting = false)
+    public static void SetBlockData(int x, int y, int z, byte type, byte data)
     {
         int chunkX = Mathf.FloorToInt(x / 16f);
         int chunkZ = Mathf.FloorToInt(z / 16f);
@@ -453,36 +500,55 @@ public class NBTHelper
         int zInChunk = z - chunkZ * 16;
 
         NBTChunk chunk = GetChunk(chunkX, chunkZ);
+        NBTBlock oldGenerator = NBTGeneratorManager.GetMeshGenerator(chunk.GetBlockByte(xInChunk, y, zInChunk));
+        UpdateFlags updateFlag = GetUpdateFlags(oldGenerator);
+
+        if (type == 0)
+        {
+            chunk.GetBlockData(xInChunk, y + 1, zInChunk, out byte topType, out byte topData);
+            NBTBlock topGenerator = NBTGeneratorManager.GetMeshGenerator(topType);
+            if (topGenerator != null && topGenerator.isTransparent)
+            {
+                BreakBlockEffect.Create(topType, topData, new Vector3(x, y + 1, z));
+                chunk.SetBlockByte(xInChunk, y + 1, zInChunk, 0);
+                updateFlag |= UpdateFlags.NotCollidable;
+            }
+        }
+
         chunk.SetBlockData(xInChunk, y, zInChunk, type, data);
-        if (updateLighting)
+        if (updateFlag.HasFlag(UpdateFlags.Lighting))
         {
             UpdateLighting(x, y, z);
         }
-        chunk.RebuildMesh();
+        chunk.RebuildMesh(updateFlag);
 
-        NBTChunk leftChunk = GetChunk(chunkX - 1, chunkZ);
-        if (xInChunk == 0)
-            leftChunk.RebuildMesh();
-        else
-            leftChunk.RebuildMeshAsync();
+        if (type == 0 && !oldGenerator.isTransparent)
+        {
+            // update border chunks if neccesary
+            NBTChunk leftChunk = GetChunk(chunkX - 1, chunkZ);
+            if (xInChunk == 0)
+                leftChunk.RebuildMesh();
+            else
+                leftChunk.RebuildMeshAsync();
 
-        NBTChunk rightChunk = GetChunk(chunkX + 1, chunkZ);
-        if (xInChunk == 15)
-            rightChunk.RebuildMesh();
-        else
-            rightChunk.RebuildMeshAsync();
+            NBTChunk rightChunk = GetChunk(chunkX + 1, chunkZ);
+            if (xInChunk == 15)
+                rightChunk.RebuildMesh();
+            else
+                rightChunk.RebuildMeshAsync();
 
-        NBTChunk backChunk = GetChunk(chunkX, chunkZ - 1);
-        if (zInChunk == 0)
-            backChunk.RebuildMesh();
-        else
-            backChunk.RebuildMeshAsync();
+            NBTChunk backChunk = GetChunk(chunkX, chunkZ - 1);
+            if (zInChunk == 0)
+                backChunk.RebuildMesh();
+            else
+                backChunk.RebuildMeshAsync();
 
-        NBTChunk frontChunk = GetChunk(chunkX, chunkZ + 1);
-        if (zInChunk == 15)
-            frontChunk.RebuildMesh();
-        else
-            frontChunk.RebuildMeshAsync();
+            NBTChunk frontChunk = GetChunk(chunkX, chunkZ + 1);
+            if (zInChunk == 15)
+                frontChunk.RebuildMesh();
+            else
+                frontChunk.RebuildMeshAsync();
+        }
     }
 
     public static byte GetBlockByte(Vector3Int pos) { return GetBlockByte(pos.x, pos.y, pos.z); }

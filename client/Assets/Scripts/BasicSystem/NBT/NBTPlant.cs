@@ -37,6 +37,7 @@ public class NBTPlant : NBTBlock
     public override bool isCollidable { get { return false; } }
 
     public override bool hasDropItem { get { return false; } }
+    public override Vector3 itemSize => Vector3.one;
 
 
     protected PlantCorners corners;

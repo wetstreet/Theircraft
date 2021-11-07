@@ -162,7 +162,7 @@ public class InventorySystem
 
             if (NBTGeneratorManager.GetObjectGenerator(items[i].id) == null)
             {
-                Debug.Log("cannot get type,slot=" + i + ",id=" + items[i].id);
+                Debug.Log(ChatPanel.HideCode + "cannot get type,slot=" + i + ",id=" + items[i].id);
                 continue;
             }
 

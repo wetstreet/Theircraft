@@ -263,16 +263,7 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            Vector3Int topPos = WireFrameHelper.pos + Vector3Int.up;
-            NBTHelper.GetBlockData(topPos.x, topPos.y, topPos.z, out byte topType, out byte topData);
-            NBTBlock topGenerator = NBTGeneratorManager.GetMeshGenerator(topType);
-            if (topGenerator != null && topGenerator.isTransparent)
-            {
-                BreakBlockEffect.Create(topType, topData, topPos);
-                NBTHelper.SetBlockByteNoUpdate(topPos, 0);
-            }
-
-            NBTHelper.SetBlockByte(WireFrameHelper.pos, 0, true);
+            NBTHelper.SetBlockByte(WireFrameHelper.pos, 0);
         }
 
 
@@ -343,7 +334,7 @@ public class PlayerController : MonoBehaviour
 
                         byte type = NBTGeneratorManager.id2type[id];
                         byte data = (byte)InventorySystem.items[ItemSelectPanel.curIndex].damage;
-                        NBTHelper.SetBlockData(pos, type, data, true);
+                        NBTHelper.SetBlockData(pos, type, data);
 
                         InventorySystem.DecrementCurrent();
                         ItemSelectPanel.instance.RefreshUI();

@@ -195,15 +195,30 @@ public class NBTChunk
         }
     }
 
+
+    public void RefreshMeshDataAsync()
+    {
+        RefreshMeshData(UpdateFlags.All);
+    }
+
     Vector3Int pos = new Vector3Int();
-    public void RefreshMeshData()
+    public void RefreshMeshData(UpdateFlags updateFlag = UpdateFlags.All)
     {
         //Debug.Log("RefreshMeshData,chunk=" + x + ",z=" + z);
         UnityEngine.Profiling.Profiler.BeginSample("RefreshMeshData");
 
-        collidable.Clear();
-        notCollidable.Clear();
-        water.Clear();
+        if (updateFlag.HasFlag(UpdateFlags.Collidable))
+        {
+            collidable.Clear();
+        }
+        if (updateFlag.HasFlag(UpdateFlags.NotCollidable))
+        {
+            notCollidable.Clear();
+        }
+        if (updateFlag.HasFlag(UpdateFlags.Water))
+        {
+            water.Clear();
+        }
 
         for (int sectionIndex = 0; sectionIndex < Sections.Count; sectionIndex++)
         {
@@ -237,15 +252,24 @@ public class NBTChunk
                                 {
                                     if (generator is NBTStationaryWater)
                                     {
-                                        generator.AddCube(this, blockData, pos, water);
+                                        if (updateFlag.HasFlag(UpdateFlags.Water))
+                                        {
+                                            generator.AddCube(this, blockData, pos, water);
+                                        }
                                     }
                                     else if (generator is NBTPlant || generator is NBTSnowLayer)
                                     {
-                                        generator.AddCube(this, blockData, pos, notCollidable);
+                                        if (updateFlag.HasFlag(UpdateFlags.NotCollidable))
+                                        {
+                                            generator.AddCube(this, blockData, pos, notCollidable);
+                                        }
                                     }
                                     else
                                     {
-                                        generator.AddCube(this, blockData, pos, collidable);
+                                        if (updateFlag.HasFlag(UpdateFlags.Collidable))
+                                        {
+                                            generator.AddCube(this, blockData, pos, collidable);
+                                        }
                                     }
                                 }
                             }
@@ -281,7 +305,7 @@ public class NBTChunk
         {
             if (isBorderChunk)
             {
-                RebuildMeshAsync(true, false);
+                RebuildMeshAsync(false);
             }
             isBorderChunk = false;
         }
@@ -341,7 +365,7 @@ public class NBTChunk
         hasInitTileEntity = true;
     }
 
-    public void RebuildMesh(bool forceRefreshMeshData = true, bool checkBorder = true)
+    public void RebuildMesh(UpdateFlags updateFlags = UpdateFlags.All, bool checkBorder = true)
     {
         UnityEngine.Profiling.Profiler.BeginSample("RebuildMesh");
 
@@ -351,17 +375,23 @@ public class NBTChunk
             CheckNearbyChunks();
         }
 
-        if (forceRefreshMeshData)
-        {
-            RefreshMeshData();
-        }
+        RefreshMeshData(updateFlags);
 
         try
         {
             InitTileEntity();
-            collidable.Refresh();
-            notCollidable.Refresh();
-            water.Refresh();
+            if (updateFlags.HasFlag(UpdateFlags.Collidable))
+            {
+                collidable.Refresh();
+            }
+            if (updateFlags.HasFlag(UpdateFlags.NotCollidable))
+            {
+                notCollidable.Refresh();
+            }
+            if (updateFlags.HasFlag(UpdateFlags.Water))
+            {
+                water.Refresh();
+            }
         }
         catch (System.Exception e)
         {
@@ -372,9 +402,9 @@ public class NBTChunk
         UnityEngine.Profiling.Profiler.EndSample();
     }
 
-    public async void RebuildMeshAsync(bool forceRefreshMeshData = true, bool checkBorder = true)
+    public async void RebuildMeshAsync(bool checkBorder = true)
     {
-        RebuildMesh(forceRefreshMeshData, checkBorder);
+        RebuildMesh(UpdateFlags.All, checkBorder);
         return;
 
         if (checkBorder)
@@ -383,10 +413,7 @@ public class NBTChunk
             CheckNearbyChunks();
         }
 
-        if (forceRefreshMeshData)
-        {
-            await Task.Run(RefreshMeshData);
-        }
+        await Task.Run(RefreshMeshDataAsync);
         try
         {
             InitTileEntity();
