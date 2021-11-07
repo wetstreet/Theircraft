@@ -93,8 +93,8 @@ public class NBTSnowLayer : NBTBlock
         fa.pos = frontVertices_snow;
         fa.faceIndex = GetFrontIndexByData(chunk, ca.blockData);
         fa.color = GetFrontTintColorByData(chunk, ca.pos, ca.blockData);
-        fa.skyLight = skyLight;
-        fa.blockLight = blockLight;
+        fa.skyLight = new float[] { skyLight, skyLight, skyLight, skyLight };
+        fa.blockLight = new float[] { blockLight, blockLight, blockLight, blockLight };
         fa.normal = Vector3.forward;
         fa.uv = uv_bot;
 
@@ -108,8 +108,8 @@ public class NBTSnowLayer : NBTBlock
         fa.pos = backVertices_snow;
         fa.faceIndex = GetBackIndexByData(chunk, ca.blockData);
         fa.color = GetBackTintColorByData(chunk, ca.pos, ca.blockData);
-        fa.skyLight = skyLight;
-        fa.blockLight = blockLight;
+        fa.skyLight = new float[] { skyLight, skyLight, skyLight, skyLight };
+        fa.blockLight = new float[] { blockLight, blockLight, blockLight, blockLight };
         fa.normal = Vector3.back;
         fa.uv = uv_bot;
 
@@ -123,8 +123,8 @@ public class NBTSnowLayer : NBTBlock
         fa.pos = topVertices_snow;
         fa.faceIndex = GetTopIndexByData(chunk, ca.blockData);
         fa.color = GetTopTintColorByData(chunk, ca.pos, ca.blockData);
-        fa.skyLight = skyLight;
-        fa.blockLight = blockLight;
+        fa.skyLight = new float[] { skyLight, skyLight, skyLight, skyLight };
+        fa.blockLight = new float[] { blockLight, blockLight, blockLight, blockLight };
         fa.normal = Vector3.up;
         fa.uv = uv_full;
 
@@ -138,8 +138,8 @@ public class NBTSnowLayer : NBTBlock
         fa.pos = bottomVertices_snow;
         fa.faceIndex = GetBottomIndexByData(chunk, ca.blockData);
         fa.color = GetBottomTintColorByData(chunk, ca.pos, ca.blockData);
-        fa.skyLight = skyLight;
-        fa.blockLight = blockLight;
+        fa.skyLight = new float[] { skyLight, skyLight, skyLight, skyLight };
+        fa.blockLight = new float[] { blockLight, blockLight, blockLight, blockLight };
         fa.normal = Vector3.down;
         fa.uv = uv_full;
 
@@ -153,8 +153,8 @@ public class NBTSnowLayer : NBTBlock
         fa.pos = leftVertices_snow;
         fa.faceIndex = GetLeftIndexByData(chunk, ca.blockData);
         fa.color = GetLeftTintColorByData(chunk, ca.pos, ca.blockData);
-        fa.skyLight = skyLight;
-        fa.blockLight = blockLight;
+        fa.skyLight = new float[] { skyLight, skyLight, skyLight, skyLight };
+        fa.blockLight = new float[] { blockLight, blockLight, blockLight, blockLight };
         fa.normal = Vector3.left;
         fa.uv = uv_bot;
 
@@ -168,8 +168,8 @@ public class NBTSnowLayer : NBTBlock
         fa.pos = rightVertices_snow;
         fa.faceIndex = GetRightIndexByData(chunk, ca.blockData);
         fa.color = GetRightTintColorByData(chunk, ca.pos, ca.blockData);
-        fa.skyLight = skyLight;
-        fa.blockLight = blockLight;
+        fa.skyLight = new float[] { skyLight, skyLight, skyLight, skyLight };
+        fa.blockLight = new float[] { blockLight, blockLight, blockLight, blockLight };
         fa.normal = Vector3.right;
         fa.uv = uv_bot;
 

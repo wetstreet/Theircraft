@@ -45,8 +45,8 @@ public class NBTStationaryWater : NBTBlock
 
         FaceAttributes fa = new FaceAttributes();
         fa.color = Color.white;
-        fa.skyLight = skyLight;
-        fa.blockLight = blockLight;
+        fa.skyLight = skylight_default;
+        fa.blockLight = blocklight_default;
         fa.uv = uv_zero;
         fa.pos = new Vector3[4];
 

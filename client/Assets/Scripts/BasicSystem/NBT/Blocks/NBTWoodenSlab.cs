@@ -168,8 +168,8 @@ public class NBTWoodenSlab : NBTBlock
         }
         fa.faceIndex = GetFrontIndexByData(chunk, ca.blockData);
         fa.color = GetFrontTintColorByData(chunk, ca.pos, ca.blockData);
-        fa.skyLight = skyLight;
-        fa.blockLight = blockLight;
+        fa.skyLight = new float[] { skyLight, skyLight, skyLight, skyLight };
+        fa.blockLight = new float[] { blockLight, blockLight, blockLight, blockLight };
         fa.normal = Vector3.forward;
 
         return fa;
@@ -191,8 +191,8 @@ public class NBTWoodenSlab : NBTBlock
         }
         fa.faceIndex = GetBackIndexByData(chunk, ca.blockData);
         fa.color = GetBackTintColorByData(chunk, ca.pos, ca.blockData);
-        fa.skyLight = skyLight;
-        fa.blockLight = blockLight;
+        fa.skyLight = new float[] { skyLight, skyLight, skyLight, skyLight };
+        fa.blockLight = new float[] { blockLight, blockLight, blockLight, blockLight };
         fa.normal = Vector3.back;
 
         return fa;
@@ -208,8 +208,8 @@ public class NBTWoodenSlab : NBTBlock
             fa.pos = topVertices_bottom;
         fa.faceIndex = GetTopIndexByData(chunk, ca.blockData);
         fa.color = GetTopTintColorByData(chunk, ca.pos, ca.blockData);
-        fa.skyLight = skyLight;
-        fa.blockLight = blockLight;
+        fa.skyLight = new float[] { skyLight, skyLight, skyLight, skyLight };
+        fa.blockLight = new float[] { blockLight, blockLight, blockLight, blockLight };
         fa.normal = Vector3.up;
         fa.uv = uv_full;
 
@@ -228,8 +228,8 @@ public class NBTWoodenSlab : NBTBlock
         fa.pos = bottomVertices;
         fa.faceIndex = GetBottomIndexByData(chunk, ca.blockData);
         fa.color = GetBottomTintColorByData(chunk, ca.pos, ca.blockData);
-        fa.skyLight = skyLight;
-        fa.blockLight = blockLight;
+        fa.skyLight = new float[] { skyLight, skyLight, skyLight, skyLight };
+        fa.blockLight = new float[] { blockLight, blockLight, blockLight, blockLight };
         fa.normal = Vector3.down;
         fa.uv = uv_full;
 
@@ -252,8 +252,8 @@ public class NBTWoodenSlab : NBTBlock
         }
         fa.faceIndex = GetLeftIndexByData(chunk, ca.blockData);
         fa.color = GetLeftTintColorByData(chunk, ca.pos, ca.blockData);
-        fa.skyLight = skyLight;
-        fa.blockLight = blockLight;
+        fa.skyLight = new float[] { skyLight, skyLight, skyLight, skyLight };
+        fa.blockLight = new float[] { blockLight, blockLight, blockLight, blockLight };
         fa.normal = Vector3.left;
 
         return fa;
@@ -275,8 +275,8 @@ public class NBTWoodenSlab : NBTBlock
         }
         fa.faceIndex = GetRightIndexByData(chunk, ca.blockData);
         fa.color = GetRightTintColorByData(chunk, ca.pos, ca.blockData);
-        fa.skyLight = skyLight;
-        fa.blockLight = blockLight;
+        fa.skyLight = new float[] { skyLight, skyLight, skyLight, skyLight };
+        fa.blockLight = new float[] { blockLight, blockLight, blockLight, blockLight };
         fa.normal = Vector3.right;
 
         return fa;

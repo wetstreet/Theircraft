@@ -23,11 +23,6 @@ public class GameStart : MonoBehaviour
         PlayerController.Init();
         LocalNavMeshBuilder.Init();
         ChunkRefresher.ForceRefreshAll();
-
-        Texture2D day = Resources.Load<Texture2D>("GUI/Day");
-        Shader.SetGlobalTexture("_DayLightTexture", day);
-        Texture2D night = Resources.Load<Texture2D>("GUI/Night");
-        Shader.SetGlobalTexture("_NightLightTexture", night);
     }
 
     public static Queue<Chunk> rebuildQueue = new Queue<Chunk>();
@@ -38,6 +33,11 @@ public class GameStart : MonoBehaviour
             ChunkChecker.Update();
             ChunkRefresher.Update();
         }
+
+        Texture2D day = Resources.Load<Texture2D>("GUI/Day");
+        Shader.SetGlobalTexture("_DayLightTexture", day);
+        Texture2D night = Resources.Load<Texture2D>("GUI/Night");
+        Shader.SetGlobalTexture("_NightLightTexture", night);
     }
 
     private void OnDestroy()

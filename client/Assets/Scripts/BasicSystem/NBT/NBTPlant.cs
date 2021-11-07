@@ -98,8 +98,8 @@ public class NBTPlant : NBTBlock
         fa.pos = diagonalFace;
         fa.faceIndex = GetPlantIndexByData(chunk, ca.pos, ca.blockData);
         fa.color = GetTintColorByData(chunk, ca.pos, ca.blockData);
-        fa.skyLight = skyLight;
-        fa.blockLight = blockLight;
+        fa.skyLight = new float[] { skyLight, skyLight, skyLight, skyLight };
+        fa.blockLight = new float[] { blockLight, blockLight, blockLight, blockLight };
         fa.normal = Vector3.zero;
         fa.uv = uv_plant;
 
@@ -114,8 +114,8 @@ public class NBTPlant : NBTBlock
         fa.pos = antiDiagonalFace;
         fa.faceIndex = GetPlantIndexByData(chunk, ca.pos, ca.blockData);
         fa.color = GetTintColorByData(chunk, ca.pos, ca.blockData);
-        fa.skyLight = skyLight;
-        fa.blockLight = blockLight;
+        fa.skyLight = new float[] { skyLight, skyLight, skyLight, skyLight };
+        fa.blockLight = new float[] { blockLight, blockLight, blockLight, blockLight };
         fa.normal = Vector3.zero;
         fa.uv = uv_plant;
 

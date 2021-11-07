@@ -27,7 +27,7 @@ Shader "Custom/TextureArrayShader"
 
             #pragma multi_compile _ DEBUG_AO
 
-            #pragma enable_d3d11_debug_symbols
+            // #pragma enable_d3d11_debug_symbols
 
             #include "Common.hlsl"
 
@@ -45,6 +45,7 @@ Shader "Custom/TextureArrayShader"
                 float4 uv : TEXCOORD0;
                 float4 worldNormal : TEXCOORD1;
                 half4 color : COLOR;
+                half4 light : TEXCOORD2;
             };
 
             TEXTURE2D_ARRAY(_Array);  SAMPLER(sampler_Array);
@@ -69,6 +70,15 @@ Shader "Custom/TextureArrayShader"
                 o.worldNormal.xyz = TransformObjectToWorldNormal(v.normal);
                 o.worldNormal.w = v.uv.w;
 
+                // skylight
+                float skylight = v.uv.z;
+                half blockLight = v.uv.w;
+
+                half4 dayLight = tex2Dlod(_DayLightTexture, half4(blockLight, 1 - skylight, 0, 0));
+                half4 nightLight = tex2Dlod(_NightLightTexture, half4(blockLight, 1 - skylight, 0, 0));
+
+                o.light = lerp(dayLight, nightLight, saturate(_DayNight01));
+
                 return o;
             }
 
@@ -78,22 +88,26 @@ Shader "Custom/TextureArrayShader"
                 half4 col = SAMPLE_TEXTURE2D_ARRAY(_Array, sampler_Array, i.uv.xy, i.uv.z);
 
                 col.rgb *= i.color.rgb;
+
+                // // skylight
+                // float skylight = i.uv.w;
+                // half blockLight = i.worldNormal.w;
+
+                // half4 dayLight = tex2Dlod(_DayLightTexture, half4(blockLight, 1 - skylight, 0, 0));
+                // half4 nightLight = tex2Dlod(_NightLightTexture, half4(blockLight, 1 - skylight, 0, 0));
+
+                // half3 light = lerp(dayLight, nightLight, saturate(_DayNight01));
                 
                 // ao
-                col.rgb *= i.color.w;
+                // col.rgb *= i.color.w;
+
             #if DEBUG_AO
                 float ao = i.color.w;
-                return ao;
+                return half4(i.light.rgb, 1);
             #endif
 
-                // skylight
-                float skylight = i.uv.w;
-                half blockLight = i.worldNormal.w;
+                col.rgb *= i.light.rgb;
 
-                half4 dayLight = tex2D(_DayLightTexture, half2(blockLight, 1 - skylight));
-                half4 nightLight = tex2D(_NightLightTexture, half2(blockLight, 1 - skylight));
-
-                col.rgb *= lerp(dayLight.rgb, nightLight.rgb, saturate(_DayNight01));
 
                 if (i.worldNormal.y == 1)
                 {

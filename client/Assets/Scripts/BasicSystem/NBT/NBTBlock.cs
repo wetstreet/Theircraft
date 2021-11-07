@@ -15,39 +15,48 @@ public enum Rotation
     Right,
 }
 
+public struct BlockLightAttributes
+{
+    public byte exist;
+    public byte skyLight;
+    public byte blockLight;
+}
+
 public struct CubeAttributes
 {
     public Vector3Int pos;
+    public Vector3Int worldPos;
     public byte blockData;
-    public bool front;
-    public bool back;
-    public bool left;
-    public bool right;
-    public bool top;
-    public bool bottom;
 
-    public int frontTop ;
-    public int frontBottom ;
-    public int frontLeft ;
-    public int frontRight ;
-    public int frontTopLeft ;
-    public int frontTopRight ;
-    public int frontBottomLeft ;
-    public int frontBottomRight ;
+    public BlockLightAttributes front;
+    public BlockLightAttributes back;
+    public BlockLightAttributes left;
+    public BlockLightAttributes right;
+    public BlockLightAttributes top;
+    public BlockLightAttributes bottom;
 
-    public int backTop ;
-    public int backBottom ;
-    public int backLeft ;
-    public int backRight ;
-    public int backTopLeft ;
-    public int backTopRight ;
-    public int backBottomLeft ;
-    public int backBottomRight ;
+    public BlockLightAttributes frontTop ;
+    public BlockLightAttributes frontBottom ;
+    public BlockLightAttributes frontLeft ;
+    public BlockLightAttributes frontRight ;
+    public BlockLightAttributes frontTopLeft ;
+    public BlockLightAttributes frontTopRight ;
+    public BlockLightAttributes frontBottomLeft ;
+    public BlockLightAttributes frontBottomRight ;
 
-    public int topLeft ;
-    public int topRight ;
-    public int bottomLeft ;
-    public int bottomRight ;
+    public BlockLightAttributes backTop ;
+    public BlockLightAttributes backBottom ;
+    public BlockLightAttributes backLeft ;
+    public BlockLightAttributes backRight ;
+    public BlockLightAttributes backTopLeft ;
+    public BlockLightAttributes backTopRight ;
+    public BlockLightAttributes backBottomLeft ;
+    public BlockLightAttributes backBottomRight ;
+
+    public BlockLightAttributes topLeft ;
+    public BlockLightAttributes topRight ;
+    public BlockLightAttributes bottomLeft ;
+    public BlockLightAttributes bottomRight ;
 }
 
 public struct FaceAttributes
@@ -57,8 +66,8 @@ public struct FaceAttributes
     public float[] ao;
     public int faceIndex;
     public Color color;
-    public float skyLight;
-    public float blockLight;
+    public float[] skyLight;
+    public float[] blockLight;
     public Vector3 normal;
 }
 
@@ -162,6 +171,8 @@ public abstract class NBTBlock : NBTObject
     public virtual float radius { get { return -0.501f; } }
     public virtual bool useRadius { get { return false; } }
 
+    protected static float[] skylight_default = new float[] { 1, 1, 1, 1 };
+    protected static float[] blocklight_default = new float[] { 1, 1, 1, 1 };
     public virtual Mesh GetItemMesh(byte data = 0)
     {
         CubeAttributes ca = new CubeAttributes();
@@ -169,8 +180,8 @@ public abstract class NBTBlock : NBTObject
         NBTMesh nbtMesh = new NBTMesh(256);
 
         FaceAttributes fa = new FaceAttributes();
-        fa.skyLight = 1;
-        fa.blockLight = 1;
+        fa.skyLight = skylight_default;
+        fa.blockLight = blocklight_default;
         fa.color = Color.white;
 
         try
@@ -235,8 +246,8 @@ public abstract class NBTBlock : NBTObject
         chunk.GetLights(pos.x, pos.y, pos.z, out float skyLight, out float blockLight);
 
         FaceAttributes fa = new FaceAttributes();
-        fa.skyLight = skyLight;
-        fa.blockLight = blockLight;
+        fa.skyLight = skylight_default;
+        fa.blockLight = blocklight_default;
 
         Rotation rotation = GetFrontRotationByData(ca.blockData);
         if (rotation == Rotation.Right)
@@ -294,40 +305,60 @@ public abstract class NBTBlock : NBTObject
         return nbtMesh.mesh;
     }
 
+    static byte HAS_BLOCK = 1;
+    static byte NO_BLOCK = 0;
+
+    BlockLightAttributes InitBlockLightAttributes(NBTChunk chunk, int xInChunk, int worldY, int zInChunk)
+    {
+        BlockLightAttributes bla = new BlockLightAttributes();
+        bla.exist = chunk.HasOpaqueBlock(xInChunk, worldY, zInChunk) ? HAS_BLOCK : NO_BLOCK;
+        if (bla.exist == 0)
+        {
+            chunk.GetLightsByte(xInChunk, worldY, zInChunk, out bla.skyLight, out bla.blockLight, true);
+        }
+        else
+        {
+            bla.skyLight = 0;
+            bla.blockLight = 0;
+        }
+        return bla;
+    }
+
     protected void InitBlockAttributes(NBTChunk chunk, ref CubeAttributes ca)
     {
-        ca.front = chunk.HasOpaqueBlock(ca.pos.x, ca.pos.y, ca.pos.z - 1);
-        ca.back = chunk.HasOpaqueBlock(ca.pos.x, ca.pos.y, ca.pos.z + 1);
-        ca.left = chunk.HasOpaqueBlock(ca.pos.x - 1, ca.pos.y, ca.pos.z);
-        ca.right = chunk.HasOpaqueBlock(ca.pos.x + 1, ca.pos.y, ca.pos.z);
-        ca.top = chunk.HasOpaqueBlock(ca.pos.x, ca.pos.y + 1, ca.pos.z);
-        ca.bottom = chunk.HasOpaqueBlock(ca.pos.x, ca.pos.y - 1, ca.pos.z);
+        ca.front = InitBlockLightAttributes(chunk, ca.pos.x, ca.pos.y, ca.pos.z - 1);
+        ca.front = InitBlockLightAttributes(chunk, ca.pos.x, ca.pos.y, ca.pos.z - 1);
+        ca.back = InitBlockLightAttributes(chunk, ca.pos.x, ca.pos.y, ca.pos.z + 1);
+        ca.left = InitBlockLightAttributes(chunk, ca.pos.x - 1, ca.pos.y, ca.pos.z);
+        ca.right = InitBlockLightAttributes(chunk, ca.pos.x + 1, ca.pos.y, ca.pos.z);
+        ca.top = InitBlockLightAttributes(chunk, ca.pos.x, ca.pos.y + 1, ca.pos.z);
+        ca.bottom = InitBlockLightAttributes(chunk, ca.pos.x, ca.pos.y - 1, ca.pos.z);
 
-        if (ca.front || ca.back || ca.left || ca.right || ca.top || ca.bottom)
+        if (ca.front.exist == 0 || ca.back.exist == 0 || ca.left.exist == 0 || ca.right.exist == 0 || ca.top.exist == 0 || ca.bottom.exist == 0)
         {
-            ca.frontTop = chunk.HasOpaqueBlock(ca.pos.x, ca.pos.y + 1, ca.pos.z - 1) ? 1 : 0;
-            ca.frontBottom = chunk.HasOpaqueBlock(ca.pos.x, ca.pos.y - 1, ca.pos.z - 1) ? 1 : 0;
-            ca.frontLeft = chunk.HasOpaqueBlock(ca.pos.x - 1, ca.pos.y, ca.pos.z - 1) ? 1 : 0;
-            ca.frontRight = chunk.HasOpaqueBlock(ca.pos.x + 1, ca.pos.y, ca.pos.z - 1) ? 1 : 0;
-            ca.frontTopLeft = chunk.HasOpaqueBlock(ca.pos.x - 1, ca.pos.y + 1, ca.pos.z - 1) ? 1 : 0;
-            ca.frontTopRight = chunk.HasOpaqueBlock(ca.pos.x + 1, ca.pos.y + 1, ca.pos.z - 1) ? 1 : 0;
-            ca.frontBottomLeft = chunk.HasOpaqueBlock(ca.pos.x - 1, ca.pos.y - 1, ca.pos.z - 1) ? 1 : 0;
-            ca.frontBottomRight = chunk.HasOpaqueBlock(ca.pos.x + 1, ca.pos.y - 1, ca.pos.z - 1) ? 1 : 0;
+            ca.frontTop = InitBlockLightAttributes(chunk, ca.pos.x, ca.pos.y + 1, ca.pos.z - 1);
+            ca.frontBottom = InitBlockLightAttributes(chunk, ca.pos.x, ca.pos.y - 1, ca.pos.z - 1);
+            ca.frontLeft = InitBlockLightAttributes(chunk, ca.pos.x - 1, ca.pos.y, ca.pos.z - 1);
+            ca.frontRight = InitBlockLightAttributes(chunk, ca.pos.x + 1, ca.pos.y, ca.pos.z - 1);
+            ca.frontTopLeft = InitBlockLightAttributes(chunk, ca.pos.x - 1, ca.pos.y + 1, ca.pos.z - 1);
+            ca.frontTopRight = InitBlockLightAttributes(chunk, ca.pos.x + 1, ca.pos.y + 1, ca.pos.z - 1);
+            ca.frontBottomLeft = InitBlockLightAttributes(chunk, ca.pos.x - 1, ca.pos.y - 1, ca.pos.z - 1);
+            ca.frontBottomRight = InitBlockLightAttributes(chunk, ca.pos.x + 1, ca.pos.y - 1, ca.pos.z - 1);
 
-            ca.backTop = chunk.HasOpaqueBlock(ca.pos.x, ca.pos.y + 1, ca.pos.z + 1) ? 1 : 0;
-            ca.backBottom = chunk.HasOpaqueBlock(ca.pos.x, ca.pos.y - 1, ca.pos.z + 1) ? 1 : 0;
-            ca.backLeft = chunk.HasOpaqueBlock(ca.pos.x - 1, ca.pos.y, ca.pos.z + 1) ? 1 : 0;
-            ca.backRight = chunk.HasOpaqueBlock(ca.pos.x + 1, ca.pos.y, ca.pos.z + 1) ? 1 : 0;
-            ca.backTopLeft = chunk.HasOpaqueBlock(ca.pos.x - 1, ca.pos.y + 1, ca.pos.z + 1) ? 1 : 0;
-            ca.backTopRight = chunk.HasOpaqueBlock(ca.pos.x + 1, ca.pos.y + 1, ca.pos.z + 1) ? 1 : 0;
-            ca.backBottomLeft = chunk.HasOpaqueBlock(ca.pos.x - 1, ca.pos.y - 1, ca.pos.z + 1) ? 1 : 0;
-            ca.backBottomRight = chunk.HasOpaqueBlock(ca.pos.x + 1, ca.pos.y - 1, ca.pos.z + 1) ? 1 : 0;
+            ca.backTop = InitBlockLightAttributes(chunk, ca.pos.x, ca.pos.y + 1, ca.pos.z + 1);
+            ca.backBottom = InitBlockLightAttributes(chunk, ca.pos.x, ca.pos.y - 1, ca.pos.z + 1);
+            ca.backLeft = InitBlockLightAttributes(chunk, ca.pos.x - 1, ca.pos.y, ca.pos.z + 1);
+            ca.backRight = InitBlockLightAttributes(chunk, ca.pos.x + 1, ca.pos.y, ca.pos.z + 1);
+            ca.backTopLeft = InitBlockLightAttributes(chunk, ca.pos.x - 1, ca.pos.y + 1, ca.pos.z + 1);
+            ca.backTopRight = InitBlockLightAttributes(chunk, ca.pos.x + 1, ca.pos.y + 1, ca.pos.z + 1);
+            ca.backBottomLeft = InitBlockLightAttributes(chunk, ca.pos.x - 1, ca.pos.y - 1, ca.pos.z + 1);
+            ca.backBottomRight = InitBlockLightAttributes(chunk, ca.pos.x + 1, ca.pos.y - 1, ca.pos.z + 1);
 
-            ca.topLeft = chunk.HasOpaqueBlock(ca.pos.x - 1, ca.pos.y + 1, ca.pos.z) ? 1 : 0;
-            ca.topRight = chunk.HasOpaqueBlock(ca.pos.x + 1, ca.pos.y + 1, ca.pos.z) ? 1 : 0;
+            ca.topLeft = InitBlockLightAttributes(chunk, ca.pos.x - 1, ca.pos.y + 1, ca.pos.z);
+            ca.topRight = InitBlockLightAttributes(chunk, ca.pos.x + 1, ca.pos.y + 1, ca.pos.z);
 
-            ca.bottomLeft = chunk.HasOpaqueBlock(ca.pos.x - 1, ca.pos.y - 1, ca.pos.z) ? 1 : 0;
-            ca.bottomRight = chunk.HasOpaqueBlock(ca.pos.x + 1, ca.pos.y - 1, ca.pos.z) ? 1 : 0;
+            ca.bottomLeft = InitBlockLightAttributes(chunk, ca.pos.x - 1, ca.pos.y - 1, ca.pos.z);
+            ca.bottomRight = InitBlockLightAttributes(chunk, ca.pos.x + 1, ca.pos.y - 1, ca.pos.z);
         }
     }
 
@@ -335,38 +366,40 @@ public abstract class NBTBlock : NBTObject
     {
         CubeAttributes ca = new CubeAttributes();
         ca.pos = pos;
+        ca.worldPos = new Vector3Int(pos.x + chunk.x * 16, pos.y, pos.z + chunk.z * 16);
         ca.blockData = blockData;
 
         InitBlockAttributes(chunk, ref ca);
 
         UnityEngine.Profiling.Profiler.BeginSample("AddFaces");
 
-        if (!ca.front)
+        if (ca.front.exist == 0)
         {
             FaceAttributes fa = GetFrontFaceAttributes(chunk, nbtGO.nbtMesh, ca);
+
             AddFace(nbtGO.nbtMesh, fa, ca);
         }
-        if (!ca.right)
+        if (ca.right.exist == 0)
         {
             FaceAttributes fa = GetRightFaceAttributes(chunk, nbtGO.nbtMesh, ca);
             AddFace(nbtGO.nbtMesh, fa, ca);
         }
-        if (!ca.left)
+        if (ca.left.exist == 0)
         {
             FaceAttributes fa = GetLeftFaceAttributes(chunk, nbtGO.nbtMesh, ca);
             AddFace(nbtGO.nbtMesh, fa, ca);
         }
-        if (!ca.back)
+        if (ca.back.exist == 0)
         {
             FaceAttributes fa = GetBackFaceAttributes(chunk, nbtGO.nbtMesh, ca);
             AddFace(nbtGO.nbtMesh, fa, ca);
         }
-        if (!ca.top)
+        if (ca.top.exist == 0)
         {
             FaceAttributes fa = GetTopFaceAttributes(chunk, nbtGO.nbtMesh, ca);
             AddFace(nbtGO.nbtMesh, fa, ca);
         }
-        if (!ca.bottom)
+        if (ca.bottom.exist == 0)
         {
             FaceAttributes fa = GetBottomFaceAttributes(chunk, nbtGO.nbtMesh, ca);
             AddFace(nbtGO.nbtMesh, fa, ca);
@@ -403,11 +436,19 @@ public abstract class NBTBlock : NBTObject
         {
             fa.ao = ao_default;
         }
+        if (fa.skyLight == null)
+        {
+            fa.skyLight = skylight_default;
+        }
+        if (fa.blockLight == null)
+        {
+            fa.blockLight = blocklight_default;
+        }
 
-        SetVertex(mesh, fa.pos[0] + ca.pos, fa.faceIndex, fa.uv[0], fa.skyLight, fa.blockLight, fa.ao[0], fa.color, fa.normal);
-        SetVertex(mesh, fa.pos[1] + ca.pos, fa.faceIndex, fa.uv[1], fa.skyLight, fa.blockLight, fa.ao[1], fa.color, fa.normal);
-        SetVertex(mesh, fa.pos[2] + ca.pos, fa.faceIndex, fa.uv[2], fa.skyLight, fa.blockLight, fa.ao[2], fa.color, fa.normal);
-        SetVertex(mesh, fa.pos[3] + ca.pos, fa.faceIndex, fa.uv[3], fa.skyLight, fa.blockLight, fa.ao[3], fa.color, fa.normal);
+        SetVertex(mesh, fa.pos[0] + ca.pos, fa.faceIndex, fa.uv[0], fa.skyLight[0], fa.blockLight[0], fa.ao[0], fa.color, fa.normal);
+        SetVertex(mesh, fa.pos[1] + ca.pos, fa.faceIndex, fa.uv[1], fa.skyLight[1], fa.blockLight[1], fa.ao[1], fa.color, fa.normal);
+        SetVertex(mesh, fa.pos[2] + ca.pos, fa.faceIndex, fa.uv[2], fa.skyLight[2], fa.blockLight[2], fa.ao[2], fa.color, fa.normal);
+        SetVertex(mesh, fa.pos[3] + ca.pos, fa.faceIndex, fa.uv[3], fa.skyLight[3], fa.blockLight[3], fa.ao[3], fa.color, fa.normal);
 
         mesh.triangleArray[mesh.triangleCount++] = startIndex;
         mesh.triangleArray[mesh.triangleCount++] = (ushort)(startIndex + 1);
@@ -421,22 +462,28 @@ public abstract class NBTBlock : NBTObject
     protected static float[] ao_default = new float[] { 1, 1, 1, 1 };
     protected virtual FaceAttributes GetFrontFaceAttributes(NBTChunk chunk, NBTMesh mesh, CubeAttributes ca)
     {
-        chunk.GetLights(ca.pos.x, ca.pos.y, ca.pos.z - 1, out float skyLight, out float blockLight);
-
         FaceAttributes fa = new FaceAttributes();
         fa.pos = frontVertices;
         fa.faceIndex = GetFrontIndexByData(chunk, ca.blockData);
         fa.color = GetFrontTintColorByData(chunk, ca.pos, ca.blockData);
-        fa.skyLight = skyLight;
-        fa.blockLight = blockLight;
         fa.normal = Vector3.forward;
 
         //nearBottomLeft, nearTopLeft, nearTopRight, nearBottomRight
-        fa.ao = new float[4];
-        fa.ao[0] = ao[ca.frontBottom + ca.frontLeft + ca.frontBottomLeft];
-        fa.ao[1] = ao[ca.frontTop + ca.frontLeft + ca.frontTopLeft];
-        fa.ao[2] = ao[ca.frontTop + ca.frontRight + ca.frontTopRight];
-        fa.ao[3] = ao[ca.frontBottom + ca.frontRight + ca.frontBottomRight];
+        fa.skyLight = new float[4];
+        fa.skyLight[0] = (ca.front.skyLight + ca.frontBottom.skyLight + ca.frontLeft.skyLight + ca.frontBottomLeft.skyLight) / 60.0f;
+        fa.skyLight[1] = (ca.front.skyLight + ca.frontTop.skyLight + ca.frontLeft.skyLight + ca.frontTopLeft.skyLight) / 60.0f;
+        fa.skyLight[2] = (ca.front.skyLight + ca.frontTop.skyLight + ca.frontRight.skyLight + ca.frontTopRight.skyLight) / 60.0f;
+        fa.skyLight[3] = (ca.front.skyLight + ca.frontBottom.skyLight + ca.frontRight.skyLight + ca.frontBottomRight.skyLight) / 60.0f;
+        fa.blockLight = new float[4];
+        fa.blockLight[0] = (ca.front.blockLight + ca.frontBottom.blockLight + ca.frontLeft.blockLight + ca.frontBottomLeft.blockLight) / 60.0f;
+        fa.blockLight[1] = (ca.front.blockLight + ca.frontTop.blockLight + ca.frontLeft.blockLight + ca.frontTopLeft.blockLight) / 60.0f;
+        fa.blockLight[2] = (ca.front.blockLight + ca.frontTop.blockLight + ca.frontRight.blockLight + ca.frontTopRight.blockLight) / 60.0f;
+        fa.blockLight[3] = (ca.front.blockLight + ca.frontBottom.blockLight + ca.frontRight.blockLight + ca.frontBottomRight.blockLight) / 60.0f;
+        //fa.ao = new float[4];
+        //fa.ao[0] = ao[ca.frontBottom.exist + ca.frontLeft.exist + ca.frontBottomLeft.exist];
+        //fa.ao[1] = ao[ca.frontTop.exist + ca.frontLeft.exist + ca.frontTopLeft.exist];
+        //fa.ao[2] = ao[ca.frontTop.exist + ca.frontRight.exist + ca.frontTopRight.exist];
+        //fa.ao[3] = ao[ca.frontBottom.exist + ca.frontRight.exist + ca.frontBottomRight.exist];
 
         Rotation rotation = GetFrontRotationByData(ca.blockData);
         if (rotation == Rotation.Right)
@@ -454,16 +501,24 @@ public abstract class NBTBlock : NBTObject
         fa.pos = backVertices;
         fa.faceIndex = GetBackIndexByData(chunk, ca.blockData);
         fa.color = GetBackTintColorByData(chunk, ca.pos, ca.blockData);
-        fa.skyLight = skyLight;
-        fa.blockLight = blockLight;
         fa.normal = Vector3.back;
 
         //farBottomRight, farTopRight, farTopLeft, farBottomLeft
-        fa.ao = new float[4];
-        fa.ao[0] = ao[ca.backBottom + ca.backRight + ca.backBottomRight];
-        fa.ao[1] = ao[ca.backTop + ca.backRight + ca.backTopRight];
-        fa.ao[2] = ao[ca.backTop + ca.backLeft + ca.backTopLeft];
-        fa.ao[3] = ao[ca.backBottom + ca.backLeft + ca.backBottomLeft];
+        fa.skyLight = new float[4];
+        fa.skyLight[0] = (ca.back.skyLight + ca.backBottom.skyLight + ca.backRight.skyLight + ca.backBottomRight.skyLight) / 60.0f;
+        fa.skyLight[1] = (ca.back.skyLight + ca.backTop.skyLight + ca.backRight.skyLight + ca.backTopRight.skyLight) / 60.0f;
+        fa.skyLight[2] = (ca.back.skyLight + ca.backTop.skyLight + ca.backLeft.skyLight + ca.backTopLeft.skyLight) / 60.0f;
+        fa.skyLight[3] = (ca.back.skyLight + ca.backBottom.skyLight + ca.backLeft.skyLight + ca.backBottomLeft.skyLight) / 60.0f;
+        fa.blockLight = new float[4];
+        fa.blockLight[0] = (ca.back.blockLight + ca.backBottom.blockLight + ca.backRight.blockLight + ca.backBottomRight.blockLight) / 60.0f;
+        fa.blockLight[1] = (ca.back.blockLight + ca.backTop.blockLight + ca.backRight.blockLight + ca.backTopRight.blockLight) / 60.0f;
+        fa.blockLight[2] = (ca.back.blockLight + ca.backTop.blockLight + ca.backLeft.blockLight + ca.backTopLeft.blockLight) / 60.0f;
+        fa.blockLight[3] = (ca.back.blockLight + ca.backBottom.blockLight + ca.backLeft.blockLight + ca.backBottomLeft.blockLight) / 60.0f;
+        //fa.ao = new float[4];
+        //fa.ao[0] = ao[ca.backBottom.exist + ca.backRight.exist + ca.backBottomRight.exist];
+        //fa.ao[1] = ao[ca.backTop.exist + ca.backRight.exist + ca.backTopRight.exist];
+        //fa.ao[2] = ao[ca.backTop.exist + ca.backLeft.exist + ca.backTopLeft.exist];
+        //fa.ao[3] = ao[ca.backBottom.exist + ca.backLeft.exist + ca.backBottomLeft.exist];
 
         Rotation rotation = GetFrontRotationByData(ca.blockData);
         if (rotation == Rotation.Right)
@@ -482,16 +537,24 @@ public abstract class NBTBlock : NBTObject
         fa.pos = topVertices;
         fa.faceIndex = GetTopIndexByData(chunk, ca.blockData);
         fa.color = GetTopTintColorByData(chunk, ca.pos, ca.blockData);
-        fa.skyLight = skyLight;
-        fa.blockLight = blockLight;
         fa.normal = Vector3.up;
 
         //farTopRight, nearTopRight, nearTopLeft, farTopLeft
-        fa.ao = new float[4];
-        fa.ao[0] = ao[ca.backTop + ca.topRight + ca.backTopRight];
-        fa.ao[1] = ao[ca.frontTop + ca.topRight + ca.frontTopRight];
-        fa.ao[2] = ao[ca.frontTop + ca.topLeft + ca.frontTopLeft];
-        fa.ao[3] = ao[ca.backTop + ca.topLeft + ca.backTopLeft];
+        fa.skyLight = new float[4];
+        fa.skyLight[0] = (ca.top.skyLight + ca.backTop.skyLight + ca.topRight.skyLight + ca.backTopRight.skyLight) / 60.0f;
+        fa.skyLight[1] = (ca.top.skyLight + ca.frontTop.skyLight + ca.topRight.skyLight + ca.frontTopRight.skyLight) / 60.0f;
+        fa.skyLight[2] = (ca.top.skyLight + ca.frontTop.skyLight + ca.topLeft.skyLight + ca.frontTopLeft.skyLight) / 60.0f;
+        fa.skyLight[3] = (ca.top.skyLight + ca.backTop.skyLight + ca.topLeft.skyLight + ca.backTopLeft.skyLight) / 60.0f;
+        fa.blockLight = new float[4];
+        fa.blockLight[0] = (ca.top.blockLight + ca.backTop.blockLight + ca.topRight.blockLight + ca.backTopRight.blockLight) / 60.0f;
+        fa.blockLight[1] = (ca.top.blockLight + ca.frontTop.blockLight + ca.topRight.blockLight + ca.frontTopRight.blockLight) / 60.0f;
+        fa.blockLight[2] = (ca.top.blockLight + ca.frontTop.blockLight + ca.topLeft.blockLight + ca.frontTopLeft.blockLight) / 60.0f;
+        fa.blockLight[3] = (ca.top.blockLight + ca.backTop.blockLight + ca.topLeft.blockLight + ca.backTopLeft.blockLight) / 60.0f;
+        //fa.ao = new float[4];
+        //fa.ao[0] = ao[ca.backTop.exist + ca.topRight.exist + ca.backTopRight.exist];
+        //fa.ao[1] = ao[ca.frontTop.exist + ca.topRight.exist + ca.frontTopRight.exist];
+        //fa.ao[2] = ao[ca.frontTop.exist + ca.topLeft.exist + ca.frontTopLeft.exist];
+        //fa.ao[3] = ao[ca.backTop.exist + ca.topLeft.exist + ca.backTopLeft.exist];
 
         Rotation rotation = GetFrontRotationByData(ca.blockData);
         if (rotation == Rotation.Right)
@@ -509,16 +572,24 @@ public abstract class NBTBlock : NBTObject
         fa.pos = bottomVertices;
         fa.faceIndex = GetBottomIndexByData(chunk, ca.blockData);
         fa.color = GetBottomTintColorByData(chunk, ca.pos, ca.blockData);
-        fa.skyLight = skyLight;
-        fa.blockLight = blockLight;
         fa.normal = Vector3.down;
 
         //nearBottomRight, farBottomRight, farBottomLeft, nearBottomLeft
-        fa.ao = new float[4];
-        fa.ao[0] = ao[ca.frontBottom + ca.bottomRight + ca.frontBottomRight];
-        fa.ao[1] = ao[ca.backBottom + ca.bottomRight + ca.backBottomRight];
-        fa.ao[2] = ao[ca.backBottom + ca.bottomLeft + ca.backBottomLeft];
-        fa.ao[3] = ao[ca.frontBottom + ca.bottomLeft + ca.frontBottomLeft];
+        fa.skyLight = new float[4];
+        fa.skyLight[0] = (ca.bottom.skyLight + ca.frontBottom.skyLight + ca.bottomRight.skyLight + ca.frontBottomRight.skyLight) / 60.0f;
+        fa.skyLight[1] = (ca.bottom.skyLight + ca.backBottom.skyLight + ca.bottomRight.skyLight + ca.backBottomRight.skyLight) / 60.0f;
+        fa.skyLight[2] = (ca.bottom.skyLight + ca.backBottom.skyLight + ca.bottomLeft.skyLight + ca.backBottomLeft.skyLight) / 60.0f;
+        fa.skyLight[3] = (ca.bottom.skyLight + ca.frontBottom.skyLight + ca.bottomLeft.skyLight + ca.frontBottomLeft.skyLight) / 60.0f;
+        fa.blockLight = new float[4];
+        fa.blockLight[0] = (ca.bottom.blockLight + ca.frontBottom.blockLight + ca.bottomRight.blockLight + ca.frontBottomRight.blockLight) / 60.0f;
+        fa.blockLight[1] = (ca.bottom.blockLight + ca.backBottom.blockLight + ca.bottomRight.blockLight + ca.backBottomRight.blockLight) / 60.0f;
+        fa.blockLight[2] = (ca.bottom.blockLight + ca.backBottom.blockLight + ca.bottomLeft.blockLight + ca.backBottomLeft.blockLight) / 60.0f;
+        fa.blockLight[3] = (ca.bottom.blockLight + ca.frontBottom.blockLight + ca.bottomLeft.blockLight + ca.frontBottomLeft.blockLight) / 60.0f;
+        //fa.ao = new float[4];
+        //fa.ao[0] = ao[ca.frontBottom.exist + ca.bottomRight.exist + ca.frontBottomRight.exist];
+        //fa.ao[1] = ao[ca.backBottom.exist + ca.bottomRight.exist + ca.backBottomRight.exist];
+        //fa.ao[2] = ao[ca.backBottom.exist + ca.bottomLeft.exist + ca.backBottomLeft.exist];
+        //fa.ao[3] = ao[ca.frontBottom.exist + ca.bottomLeft.exist + ca.frontBottomLeft.exist];
 
         Rotation rotation = GetFrontRotationByData(ca.blockData);
         if (rotation == Rotation.Right)
@@ -536,16 +607,24 @@ public abstract class NBTBlock : NBTObject
         fa.pos = leftVertices;
         fa.faceIndex = GetLeftIndexByData(chunk, ca.blockData);
         fa.color = GetLeftTintColorByData(chunk, ca.pos, ca.blockData);
-        fa.skyLight = skyLight;
-        fa.blockLight = blockLight;
         fa.normal = Vector3.left;
 
         //farBottomLeft, farTopLeft, nearTopLeft, nearBottomLeft
-        fa.ao = new float[4];
-        fa.ao[0] = ao[ca.backLeft + ca.bottomLeft + ca.backBottomLeft];
-        fa.ao[1] = ao[ca.backLeft + ca.topLeft + ca.backTopLeft];
-        fa.ao[2] = ao[ca.frontLeft + ca.topLeft + ca.frontTopLeft];
-        fa.ao[3] = ao[ca.frontLeft + ca.bottomLeft + ca.frontBottomLeft];
+        fa.skyLight = new float[4];
+        fa.skyLight[0] = (ca.left.skyLight + ca.backLeft.skyLight + ca.bottomLeft.skyLight + ca.backBottomLeft.skyLight) / 60.0f;
+        fa.skyLight[1] = (ca.left.skyLight + ca.backLeft.skyLight + ca.topLeft.skyLight + ca.backTopLeft.skyLight) / 60.0f;
+        fa.skyLight[2] = (ca.left.skyLight + ca.frontLeft.skyLight + ca.topLeft.skyLight + ca.frontTopLeft.skyLight) / 60.0f;
+        fa.skyLight[3] = (ca.left.skyLight + ca.frontLeft.skyLight + ca.bottomLeft.skyLight + ca.frontBottomLeft.skyLight) / 60.0f;
+        fa.blockLight = new float[4];
+        fa.blockLight[0] = (ca.left.blockLight + ca.backLeft.blockLight + ca.bottomLeft.blockLight + ca.backBottomLeft.blockLight) / 60.0f;
+        fa.blockLight[1] = (ca.left.blockLight + ca.backLeft.blockLight + ca.topLeft.blockLight + ca.backTopLeft.blockLight) / 60.0f;
+        fa.blockLight[2] = (ca.left.blockLight + ca.frontLeft.blockLight + ca.topLeft.blockLight + ca.frontTopLeft.blockLight) / 60.0f;
+        fa.blockLight[3] = (ca.left.blockLight + ca.frontLeft.blockLight + ca.bottomLeft.blockLight + ca.frontBottomLeft.blockLight) / 60.0f;
+        //fa.ao = new float[4];
+        //fa.ao[0] = ao[ca.backLeft.exist + ca.bottomLeft.exist + ca.backBottomLeft.exist];
+        //fa.ao[1] = ao[ca.backLeft.exist + ca.topLeft.exist + ca.backTopLeft.exist];
+        //fa.ao[2] = ao[ca.frontLeft.exist + ca.topLeft.exist + ca.frontTopLeft.exist];
+        //fa.ao[3] = ao[ca.frontLeft.exist + ca.bottomLeft.exist + ca.frontBottomLeft.exist];
 
         Rotation rotation = GetFrontRotationByData(ca.blockData);
         if (rotation == Rotation.Right)
@@ -563,16 +642,24 @@ public abstract class NBTBlock : NBTObject
         fa.pos = rightVertices;
         fa.faceIndex = GetRightIndexByData(chunk, ca.blockData);
         fa.color = GetRightTintColorByData(chunk, ca.pos, ca.blockData);
-        fa.skyLight = skyLight;
-        fa.blockLight = blockLight;
         fa.normal = Vector3.right;
 
         //nearBottomRight, nearTopRight, farTopRight, farBottomRight
-        fa.ao = new float[4];
-        fa.ao[0] = ao[ca.frontRight + ca.bottomRight + ca.frontBottomRight];
-        fa.ao[1] = ao[ca.frontRight + ca.topRight + ca.frontTopRight];
-        fa.ao[2] = ao[ca.backRight + ca.topRight + ca.backTopRight];
-        fa.ao[3] = ao[ca.backRight + ca.bottomRight + ca.backBottomRight];
+        fa.skyLight = new float[4];
+        fa.skyLight[0] = (ca.right.skyLight + ca.frontRight.skyLight + ca.bottomRight.skyLight + ca.frontBottomRight.skyLight) / 60.0f;
+        fa.skyLight[1] = (ca.right.skyLight + ca.frontRight.skyLight + ca.topRight.skyLight + ca.frontTopRight.skyLight) / 60.0f;
+        fa.skyLight[2] = (ca.right.skyLight + ca.backRight.skyLight + ca.topRight.skyLight + ca.backTopRight.skyLight) / 60.0f;
+        fa.skyLight[3] = (ca.right.skyLight + ca.backRight.skyLight + ca.bottomRight.skyLight + ca.backBottomRight.skyLight) / 60.0f;
+        fa.blockLight = new float[4];
+        fa.blockLight[0] = (ca.right.blockLight + ca.frontRight.blockLight + ca.bottomRight.blockLight + ca.frontBottomRight.blockLight) / 60.0f;
+        fa.blockLight[1] = (ca.right.blockLight + ca.frontRight.blockLight + ca.topRight.blockLight + ca.frontTopRight.blockLight) / 60.0f;
+        fa.blockLight[2] = (ca.right.blockLight + ca.backRight.blockLight + ca.topRight.blockLight + ca.backTopRight.blockLight) / 60.0f;
+        fa.blockLight[3] = (ca.right.blockLight + ca.backRight.blockLight + ca.bottomRight.blockLight + ca.backBottomRight.blockLight) / 60.0f;
+        //fa.ao = new float[4];
+        //fa.ao[0] = ao[ca.frontRight.exist + ca.bottomRight.exist + ca.frontBottomRight.exist];
+        //fa.ao[1] = ao[ca.frontRight.exist + ca.topRight.exist + ca.frontTopRight.exist];
+        //fa.ao[2] = ao[ca.backRight.exist + ca.topRight.exist + ca.backTopRight.exist];
+        //fa.ao[3] = ao[ca.backRight.exist + ca.bottomRight.exist + ca.backBottomRight.exist];
 
         Rotation rotation = GetFrontRotationByData(ca.blockData);
         if (rotation == Rotation.Right)

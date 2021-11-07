@@ -41,8 +41,8 @@ public class NBTCrops : NBTPlant
         FaceAttributes fa = new FaceAttributes();
         fa.faceIndex = GetPlantIndexByData(chunk, blockData);
         fa.color = Color.white;
-        fa.skyLight = skyLight;
-        fa.blockLight = blockLight;
+        fa.skyLight = new float[] { skyLight, skyLight, skyLight, skyLight };
+        fa.blockLight = new float[] { blockLight, blockLight, blockLight, blockLight };
         fa.normal = Vector3.zero;
         fa.uv = uv_zero;
 

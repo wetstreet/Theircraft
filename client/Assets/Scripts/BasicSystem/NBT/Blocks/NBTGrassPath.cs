@@ -49,6 +49,8 @@ public class NBTGrassPath : NBTBlock
             blockData = blockData,
         };
 
+        InitBlockAttributes(chunk, ref ca);
+
         UnityEngine.Profiling.Profiler.BeginSample("AddFaces");
 
         if (!chunk.HasOpaqueBlock(pos.x, pos.y, pos.z - 1))
@@ -101,8 +103,8 @@ public class NBTGrassPath : NBTBlock
         NBTMesh nbtMesh = new NBTMesh(256);
 
         FaceAttributes fa = new FaceAttributes();
-        fa.skyLight = 1;
-        fa.blockLight = 1;
+        //fa.skyLight = skylight_default;
+        //fa.blockLight = blocklight_default;
         fa.color = Color.white;
         fa.uv = uv_zero;
 

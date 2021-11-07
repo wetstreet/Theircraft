@@ -96,8 +96,8 @@ public class NBTGrassBlock : NBTBlock
         NBTMesh nbtMesh = new NBTMesh(256);
 
         FaceAttributes fa = new FaceAttributes();
-        fa.skyLight = 1;
-        fa.blockLight = 1;
+        fa.skyLight = skylight_default;
+        fa.blockLight = blocklight_default;
         fa.color = Color.white;
         fa.uv = uv_zero;
 
