@@ -4,69 +4,56 @@ using UnityEngine;
 
 public class Clouds : MonoBehaviour
 {
-    public float perlinScale = 1;
-    [Range(0, 1)]
-    public float threshold = 0.5f;
-    public int unit = 100;
+    public Texture2D cloudTex;
+    public Material mat;
 
-    // Start is called before the first frame update
     void Start()
     {
-
-    }
-
-    private void OnGUI()
-    {
-        if (GUILayout.Button("test"))
+        for (int i = -8; i < 8; i++)
         {
-            Vector3Int playerPos = PlayerController.instance.position.ToVector3Int();
-
-            HashSet<Vector3Int> cloudPos = new HashSet<Vector3Int>();
-
-            for (int x = -unit; x <= unit; x++)
+            for (int j = -8; j < 8; j++)
             {
-                for (int z = -unit; z <= unit; z++)
+                GameObject go = new GameObject(i + "," + j);
+                go.transform.parent = transform;
+
+                List <Vector3> vertices = new List<Vector3>();
+                List<int> triangles = new List<int>();
+                for (int x = 0; x < 16; x++)
                 {
-                    float noise = Mathf.PerlinNoise(x / perlinScale, z / perlinScale);
-                    if (noise > threshold)
+                    for (int z = 0; z < 16; z++)
                     {
-                        cloudPos.Add(new Vector3Int(playerPos.x + x, 128, playerPos.z + z));
+                        Color noise = cloudTex.GetPixel(i * 16 + x, j * 16 + z);
+                        if (noise.a > 0.5f)
+                        {
+                            Vector3 pos = new Vector3(i * 16 + x, 0, j * 16 + z);
+
+                            AddFrontFace(vertices, triangles, pos);
+                            AddBackFace(vertices, triangles, pos);
+                            AddTopFace(vertices, triangles, pos);
+                            AddBottomFace(vertices, triangles, pos);
+                            AddLeftFace(vertices, triangles, pos);
+                            AddRightFace(vertices, triangles, pos);
+                        }
                     }
                 }
+                Mesh mesh = new Mesh();
+                mesh.vertices = vertices.ToArray();
+                mesh.triangles = triangles.ToArray();
+                mesh.RecalculateNormals();
+
+                go.AddComponent<MeshFilter>().sharedMesh = mesh;
+                go.AddComponent<MeshRenderer>().sharedMaterial = mat;
             }
-
-            List<Vector3> vertices = new List<Vector3>();
-            List<int> triangles = new List<int>();
-
-            Vector3Int key = new Vector3Int();
-            foreach (Vector3Int pos in cloudPos)
-            {
-                key.Set(pos.x, pos.y, pos.z - 1);
-                if (!cloudPos.Contains(key))
-                    AddFrontFace(vertices, triangles, pos);
-
-                key.Set(pos.x, pos.y, pos.z + 1);
-                if (!cloudPos.Contains(key))
-                    AddBackFace(vertices, triangles, pos);
-
-                AddTopFace(vertices, triangles, pos);
-                AddBottomFace(vertices, triangles, pos);
-
-                key.Set(pos.x - 1, pos.y, pos.z);
-                if (!cloudPos.Contains(key))
-                    AddLeftFace(vertices, triangles, pos);
-
-                key.Set(pos.x + 1, pos.y, pos.z);
-                if (!cloudPos.Contains(key))
-                    AddRightFace(vertices, triangles, pos);
-            }
-
-            Mesh mesh = new Mesh();
-            mesh.vertices = vertices.ToArray();
-            mesh.triangles = triangles.ToArray();
-
-            GetComponent<MeshFilter>().sharedMesh = mesh;
         }
+        Vector3 playerPos = DataCenter.spawnPosition;
+        transform.localPosition = new Vector3(playerPos.x, 128, playerPos.z);
+        transform.localScale = new Vector3(12, 4, 12);
+    }
+
+    public Vector3 speed = Vector3.zero;
+    void Update()
+    {
+        transform.position += speed * Time.deltaTime;
     }
 
     static Vector3 nearBottomLeft = new Vector3(-0.5f, -0.5f, -0.5f);
@@ -123,11 +110,5 @@ public class Clouds : MonoBehaviour
     void AddRightFace(List<Vector3> vertices, List<int> triangles, Vector3 pos)
     {
         AddFace(vertices, triangles, pos, nearBottomRight, nearTopRight, farTopRight, farBottomRight);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }
