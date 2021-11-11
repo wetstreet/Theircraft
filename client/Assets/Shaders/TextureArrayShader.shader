@@ -89,20 +89,7 @@ Shader "Custom/TextureArrayShader"
 
                 col.rgb *= i.color.rgb;
 
-                // // skylight
-                // float skylight = i.uv.w;
-                // half blockLight = i.worldNormal.w;
-
-                // half4 dayLight = tex2Dlod(_DayLightTexture, half4(blockLight, 1 - skylight, 0, 0));
-                // half4 nightLight = tex2Dlod(_NightLightTexture, half4(blockLight, 1 - skylight, 0, 0));
-
-                // half3 light = lerp(dayLight, nightLight, saturate(_DayNight01));
-                
-                // ao
-                // col.rgb *= i.color.w;
-
             #if DEBUG_AO
-                float ao = i.color.w;
                 return half4(i.light.rgb, 1);
             #endif
 

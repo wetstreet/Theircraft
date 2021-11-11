@@ -16,6 +16,8 @@ public class NBTCobblestone : NBTBlock
 
     public override float hardness { get { return 2; } }
 
+    public override BlockMaterial blockMaterial => BlockMaterial.RockI;
+
     public override SoundMaterial soundMaterial { get { return SoundMaterial.Stone; } }
 
     public override string GetBreakEffectTexture(byte data) { return "cobblestone"; }

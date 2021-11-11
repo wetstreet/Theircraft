@@ -9,6 +9,8 @@ public class NBTPlanks : NBTBlock
 
     public override float hardness => 2;
 
+    public override BlockMaterial blockMaterial => BlockMaterial.Wood;
+
     public override string GetIconPathByData(short data)
     {
         if (data == 0) return "OakWoodPlanks";

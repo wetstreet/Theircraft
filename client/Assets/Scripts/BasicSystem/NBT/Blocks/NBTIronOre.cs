@@ -15,6 +15,10 @@ public class NBTIronOre : NBTBlock
     public override string leftName { get { return "iron_ore"; } }
     public override string rightName { get { return "iron_ore"; } }
 
+    public override float hardness => 3;
+
+    public override BlockMaterial blockMaterial => BlockMaterial.RockII;
+
     public override SoundMaterial soundMaterial { get { return SoundMaterial.Stone; } }
 
     public override string GetBreakEffectTexture(byte data) { return "iron_ore"; }

@@ -41,6 +41,14 @@ public class PlayerController : MonoBehaviour
     MeshRenderer handMeshRenderer;
     GameObject vcamWide;
 
+    NBTObject handObject
+    {
+        get
+        {
+            return NBTGeneratorManager.GetObjectGenerator(InventorySystem.items[ItemSelectPanel.curIndex].id);
+        }
+    }
+
     [SerializeField] [Range(0f, 1f)] private float m_RunstepLenghten = 0.7f;
     [SerializeField] private CurveControlledBob m_HeadBob = new CurveControlledBob();
 
@@ -371,7 +379,7 @@ public class PlayerController : MonoBehaviour
     float attackInterval = 0.5f;
     float lastAttackTime;
     public float attackStrength = 5f;
-    public float attackDamage = 10f;
+    public float attackDamage = 1f;
     void OnLeftMousePressed()
     {
         //Debug.Log(ChatPanel.HideCode + "OnLeftMousePressed");
@@ -395,7 +403,7 @@ public class PlayerController : MonoBehaviour
                 {
                     SoundManager.Play3DSound("Zombie_Hurt", monster.gameObject);
                 }
-                Debug.Log("monster health = " + monster.health);
+                //Debug.Log("monster health = " + monster.health);
 
                 lastAttackTime = Time.time;
             }
@@ -407,8 +415,25 @@ public class PlayerController : MonoBehaviour
 
             breakTime += Time.deltaTime;
 
-            NBTBlock generator = NBTGeneratorManager.GetMeshGenerator(WireFrameHelper.type);
-            float breakNeedTime = generator.breakNeedTime;
+            NBTBlock targetGenerator = NBTGeneratorManager.GetMeshGenerator(WireFrameHelper.type);
+
+            bool match = false;
+            float speed = 1;
+            if (handObject != null && handObject is NBTItem)
+            {
+                NBTItem item = handObject as NBTItem;
+                if (item.IsMatch(targetGenerator.blockMaterial))
+                {
+                    match = true;
+                    speed = item.toolSpeed;
+                }
+            }
+            if (!match)
+            {
+                match = targetGenerator.blockMaterial == BlockMaterial.Ground;
+            }
+            float breakNeedTime = targetGenerator.hardness * (match ? 1.5f : 5f) / speed;
+
             if (breakNeedTime == 0)
             {
                 BreakBlock(WireFrameHelper.pos);
@@ -419,7 +444,7 @@ public class PlayerController : MonoBehaviour
                 if (stage != curStage)
                 {
                     stage = curStage;
-                    UpdateBreakingEffect(generator, WireFrameHelper.pos, stage);
+                    UpdateBreakingEffect(targetGenerator, WireFrameHelper.pos, stage);
                 }
                 if (stage >= 10)
                 {

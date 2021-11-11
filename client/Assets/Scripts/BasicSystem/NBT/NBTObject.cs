@@ -17,6 +17,8 @@ public abstract class NBTObject
 
     static Material commonItemMat;
 
+    public virtual int attackDamage { get { return 1; } }
+
     protected Dictionary<byte, Material> itemMaterialDict = new Dictionary<byte, Material>();
 
 

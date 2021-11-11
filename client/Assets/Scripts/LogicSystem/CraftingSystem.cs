@@ -91,6 +91,8 @@ public class CraftingSystem : MonoBehaviour
         "acacia_planks",
         "dark_oak_planks",
         "wooden_pickaxe",
+        "stone_pickaxe",
+        "iron_pickaxe",
         "stick",
         "crafting_table",
         "oak_stairs",

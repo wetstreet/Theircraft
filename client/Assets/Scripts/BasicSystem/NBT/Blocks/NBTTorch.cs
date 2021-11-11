@@ -11,7 +11,7 @@ public class NBTTorch : NBTBlock
     public override float radius => 0.0725f;
     public override bool useRadius => true;
 
-    public override float breakNeedTime => 0;
+    public override float hardness => 0;
 
     public override SoundMaterial soundMaterial => SoundMaterial.Wood;
 

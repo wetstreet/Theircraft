@@ -22,7 +22,7 @@ using UnityEngine;
 
 public class NBTHelper
 {
-    public static string save = "New World-";
+    public static string save = "New World1";
 
     private static Dictionary<Vector2Int, NBTChunk> chunkDict = new Dictionary<Vector2Int, NBTChunk>();
 
@@ -35,7 +35,7 @@ public class NBTHelper
             path = Path.Combine(path, "New World1");
 #else
             string path = Path.Combine(Application.streamingAssetsPath, "saves");
-            path = Path.Combine(path, "New World-");
+            path = Path.Combine(path, "New World1");
 #endif
             return path;
         }
@@ -443,7 +443,7 @@ public class NBTHelper
         {
             chunk.GetBlockData(xInChunk, y + 1, zInChunk, out byte topType, out byte topData);
             NBTBlock topGenerator = NBTGeneratorManager.GetMeshGenerator(topType);
-            if (topGenerator != null && topGenerator.isTransparent)
+            if (topGenerator != null && topGenerator is NBTPlant)
             {
                 BreakBlockEffect.Create(topType, topData, new Vector3(x, y + 1, z));
                 chunk.SetBlockByte(xInChunk, y + 1, zInChunk, 0);
@@ -463,26 +463,18 @@ public class NBTHelper
             NBTChunk leftChunk = GetChunk(chunkX - 1, chunkZ);
             if (xInChunk == 0)
                 leftChunk.RebuildMesh();
-            else
-                leftChunk.RebuildMeshAsync();
 
             NBTChunk rightChunk = GetChunk(chunkX + 1, chunkZ);
             if (xInChunk == 15)
                 rightChunk.RebuildMesh();
-            else
-                rightChunk.RebuildMeshAsync();
 
             NBTChunk backChunk = GetChunk(chunkX, chunkZ - 1);
             if (zInChunk == 0)
                 backChunk.RebuildMesh();
-            else
-                backChunk.RebuildMeshAsync();
 
             NBTChunk frontChunk = GetChunk(chunkX, chunkZ + 1);
             if (zInChunk == 15)
                 frontChunk.RebuildMesh();
-            else
-                frontChunk.RebuildMeshAsync();
         }
     }
 

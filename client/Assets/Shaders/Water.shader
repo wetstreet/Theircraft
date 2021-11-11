@@ -25,8 +25,14 @@
             // make fog work
             #pragma multi_compile_fog
 
-            #include "UnityCG.cginc"
-            #include "AutoLight.cginc"
+            #include "Common.hlsl"
+
+            struct a2v
+            {
+                float4 vertex : POSITION;
+                float3 normal : NORMAL;
+                float2 texcoord : TEXCOORD0;
+            };
 
             struct v2f
             {
@@ -34,12 +40,10 @@
                 float2 uv : TEXCOORD0;
                 float3 worldNormal : TEXCOORD1;
                 float3 worldPos : TEXCOORD2;
-                UNITY_FOG_COORDS(3)
-                SHADOW_COORDS(4)
             };
 
             CBUFFER_START(UnityPerMaterial)
-            fixed4 _Color;
+            half4 _Color;
             float _AlphaBoost;
             float4 _MainTex_ST;
             float _Speed;
@@ -66,19 +70,17 @@
                 return uv;
             }
 
-            v2f vert (appdata_base v)
+            v2f vert (a2v v)
             {
                 v2f o;
-                o.vertex = UnityObjectToClipPos(v.vertex);
+                o.vertex = TransformObjectToHClip(v.vertex);
                 o.uv = TRANSFORM_TEX(v.texcoord, _MainTex);
-                o.worldNormal = UnityObjectToWorldNormal(v.normal);
+                o.worldNormal = TransformObjectToWorldNormal(v.normal);
                 o.worldPos = mul(unity_ObjectToWorld, v.vertex);
-                TRANSFER_SHADOW(o);
-                UNITY_TRANSFER_FOG(o,o.vertex);
                 return o;
             }
 
-            fixed4 frag (v2f i) : SV_Target
+            half4 frag (v2f i) : SV_Target
             {
                 float2 uv = Rotate(i.uv);
                 uv.y /= 32;
@@ -86,25 +88,10 @@
                 uv.y += index / 32.f;
 
                 // sample the texture
-                fixed4 col = tex2D(_MainTex, uv) * _Color;
+                half4 col = tex2D(_MainTex, uv) * _Color;
+                col.rgb *= _SkyLightColor.rgb;
+
                 return col;
-
-                col.a += _AlphaBoost;
-
-                half3 worldNormal = normalize(i.worldNormal);
-                half3 lightDir = normalize(UnityWorldSpaceLightDir(i.vertex));
-
-                UNITY_LIGHT_ATTENUATION(atten, i, i.worldPos)
-
-                float diff = saturate(dot(worldNormal, lightDir));
-                fixed3 diffuse = col.rgb * diff;
-
-                fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz * col.rgb;
-                float3 c = diffuse * atten + ambient;
-
-                // apply fog
-                UNITY_APPLY_FOG(i.fogCoord, c);
-                return fixed4(c, _Color.a);
             }
 
             ENDHLSL

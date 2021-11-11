@@ -5,7 +5,11 @@ using UnityEngine;
 public abstract class NBTItem : NBTObject
 {
     public override string pathPrefix { get { return "GUI/items/"; } }
-    
+
+    public virtual int durability { get { return -1; } }
+
+    public virtual float toolSpeed { get { return 1; } }
+
     public override Material GetItemMaterial(byte data)
     {
         if (!itemMaterialDict.ContainsKey(data))
@@ -27,5 +31,10 @@ public abstract class NBTItem : NBTObject
             itemMeshDict.Add(data, mesh);
         }
         return itemMeshDict[data];
+    }
+
+    public virtual bool IsMatch(BlockMaterial blockMaterial)
+    {
+        return blockMaterial == BlockMaterial.Ground;
     }
 }

@@ -15,6 +15,19 @@ public enum Rotation
     Right,
 }
 
+public enum BlockMaterial
+{
+    Default,
+    Ground,
+    Wood,
+    Leaves,
+    Web,
+    RockI,
+    RockII,
+    RockIII,
+    RockIV,
+}
+
 public struct BlockLightAttributes
 {
     public byte exist;
@@ -82,22 +95,13 @@ public abstract class NBTBlock : NBTObject
 
     public virtual float hardness { get { return 1; } }
 
-    public virtual float speedMultiplier { get { return 3; } }
-
     public virtual bool isTileEntity { get { return false; } } // tile entity block has its own material
-
-    public virtual float breakNeedTime {
-        get {
-            float damage = speedMultiplier / hardness / 100;
-            if (damage > 1) return 0;
-            int ticks = Mathf.CeilToInt(1 / damage);
-            return ticks / 20f;
-        }
-    }
 
     public virtual void Init() { }
 
     public string[] UsedTextures;
+
+    public virtual BlockMaterial blockMaterial { get { return BlockMaterial.Default; } }
 
     public virtual SoundMaterial soundMaterial { get; }
 
@@ -388,7 +392,6 @@ public abstract class NBTBlock : NBTObject
         if (ca.front.exist == 0)
         {
             FaceAttributes fa = GetFrontFaceAttributes(chunk, nbtGO.nbtMesh, ca);
-
             AddFace(nbtGO.nbtMesh, fa, ca);
         }
         if (ca.right.exist == 0)
@@ -421,7 +424,7 @@ public abstract class NBTBlock : NBTObject
     }
 
     protected void SetVertex(NBTMesh mesh, Vector3 pos, int faceIndex, Vector2 texcoord,
-        float skyLight, float blockLight, float ao, Vector4 color, Vector3 normal)
+        float skyLight, float blockLight, Vector4 color, Vector3 normal)
     {
         Vertex vert = mesh.vertexArray[mesh.vertexCount];
         vert.pos.x = pos.x;
@@ -432,10 +435,7 @@ public abstract class NBTBlock : NBTObject
         vert.texcoord.y = texcoord.y;
         vert.texcoord.z = skyLight;
         vert.texcoord.w = blockLight;
-        vert.color.x = color.x;
-        vert.color.y = color.y;
-        vert.color.z = color.z;
-        vert.color.w = ao;
+        vert.color = color;
         vert.normal = normal;
         mesh.vertexArray[mesh.vertexCount++] = vert;
     }
@@ -444,10 +444,6 @@ public abstract class NBTBlock : NBTObject
     {
         ushort startIndex = mesh.vertexCount;
 
-        if (fa.ao == null)
-        {
-            fa.ao = ao_default;
-        }
         if (fa.skyLight == null)
         {
             fa.skyLight = skylight_default;
@@ -457,10 +453,10 @@ public abstract class NBTBlock : NBTObject
             fa.blockLight = blocklight_default;
         }
 
-        SetVertex(mesh, fa.pos[0] + ca.pos, fa.faceIndex, fa.uv[0], fa.skyLight[0], fa.blockLight[0], fa.ao[0], fa.color, fa.normal);
-        SetVertex(mesh, fa.pos[1] + ca.pos, fa.faceIndex, fa.uv[1], fa.skyLight[1], fa.blockLight[1], fa.ao[1], fa.color, fa.normal);
-        SetVertex(mesh, fa.pos[2] + ca.pos, fa.faceIndex, fa.uv[2], fa.skyLight[2], fa.blockLight[2], fa.ao[2], fa.color, fa.normal);
-        SetVertex(mesh, fa.pos[3] + ca.pos, fa.faceIndex, fa.uv[3], fa.skyLight[3], fa.blockLight[3], fa.ao[3], fa.color, fa.normal);
+        SetVertex(mesh, fa.pos[0] + ca.pos, fa.faceIndex, fa.uv[0], fa.skyLight[0], fa.blockLight[0], fa.color, fa.normal);
+        SetVertex(mesh, fa.pos[1] + ca.pos, fa.faceIndex, fa.uv[1], fa.skyLight[1], fa.blockLight[1], fa.color, fa.normal);
+        SetVertex(mesh, fa.pos[2] + ca.pos, fa.faceIndex, fa.uv[2], fa.skyLight[2], fa.blockLight[2], fa.color, fa.normal);
+        SetVertex(mesh, fa.pos[3] + ca.pos, fa.faceIndex, fa.uv[3], fa.skyLight[3], fa.blockLight[3], fa.color, fa.normal);
 
         mesh.triangleArray[mesh.triangleCount++] = startIndex;
         mesh.triangleArray[mesh.triangleCount++] = (ushort)(startIndex + 1);
@@ -470,8 +466,6 @@ public abstract class NBTBlock : NBTObject
         mesh.triangleArray[mesh.triangleCount++] = (ushort)(startIndex + 3);
     }
 
-    static float[] ao = new float[] { 1, 0.3f, 0.2f, 0.1f };
-    protected static float[] ao_default = new float[] { 1, 1, 1, 1 };
     protected virtual FaceAttributes GetFrontFaceAttributes(NBTChunk chunk, NBTMesh mesh, CubeAttributes ca)
     {
         FaceAttributes fa = new FaceAttributes();

@@ -28,7 +28,7 @@ public class NBTPlant : NBTBlock
 
     public virtual int GetPlantIndexByData(int data) { return 0; }
 
-    public override float breakNeedTime { get { return 0; } }
+    public override float hardness => 0;
 
     public override SoundMaterial soundMaterial { get { return SoundMaterial.Grass; } }
 
