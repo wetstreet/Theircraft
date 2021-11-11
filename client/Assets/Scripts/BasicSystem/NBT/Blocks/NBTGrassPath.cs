@@ -18,7 +18,9 @@ public class NBTGrassPath : NBTBlock
     public override string leftName { get { return "grass_path_side"; } }
     public override string rightName { get { return "grass_path_side"; } }
 
-    public override float hardness { get { return 0.6f; } }
+    public override float hardness { get { return 0.65f; } }
+
+    public override BlockMaterial blockMaterial => BlockMaterial.Ground;
 
     public override Color GetTopTintColorByData(NBTChunk chunk, Vector3Int pos, byte data) { return Color.white; }
 

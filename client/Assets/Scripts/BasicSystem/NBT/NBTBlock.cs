@@ -26,6 +26,7 @@ public enum BlockMaterial
     RockII,
     RockIII,
     RockIV,
+    Glass,
 }
 
 public struct BlockLightAttributes
@@ -108,8 +109,6 @@ public abstract class NBTBlock : NBTObject
     public virtual bool isTransparent { get { return false; } }
 
     public virtual bool willReduceLight { get { return false; } }
-
-    public virtual bool isFence { get { return false; } }
 
     public virtual bool isCollidable { get { return true; } }
 

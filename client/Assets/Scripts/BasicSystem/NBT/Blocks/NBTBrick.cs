@@ -15,6 +15,10 @@ public class NBTBrick : NBTBlock
     public override string leftName { get { return "brick"; } }
     public override string rightName { get { return "brick"; } }
 
+    public override float hardness => 2;
+
+    public override BlockMaterial blockMaterial => BlockMaterial.RockI;
+
     public override SoundMaterial soundMaterial { get { return SoundMaterial.Stone; } }
 
     public override string GetBreakEffectTexture(byte data) { return "brick"; }

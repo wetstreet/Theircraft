@@ -11,6 +11,10 @@ public class NBTChest : NBTBlock
     public override float radius => 0.4475f;
     public override bool useRadius => true;
 
+    public override float hardness => 2.5f;
+
+    public override BlockMaterial blockMaterial => BlockMaterial.Wood;
+
     public override SoundMaterial soundMaterial => SoundMaterial.Wood;
 
     public override bool isTileEntity => true;

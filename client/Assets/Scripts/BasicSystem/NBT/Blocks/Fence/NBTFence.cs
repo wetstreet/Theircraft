@@ -10,6 +10,8 @@ public class NBTFence : NBTBlock
 
     public override float hardness => 2;
 
+    public override BlockMaterial blockMaterial => BlockMaterial.Wood;
+
     MeshData[] meshes = new MeshData[16];
     public override void Init()
     {
@@ -36,8 +38,6 @@ public class NBTFence : NBTBlock
     public override string GetBreakEffectTexture(NBTChunk chunk, byte data) { return "planks_birch"; }
 
     public override bool isTransparent => true;
-
-    public override bool isFence => true;
 
     MeshData GetMesh(NBTChunk chunk, Vector3Int pos)
     {

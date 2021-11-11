@@ -430,7 +430,9 @@ public class PlayerController : MonoBehaviour
             }
             if (!match)
             {
-                match = targetGenerator.blockMaterial == BlockMaterial.Ground;
+                match = targetGenerator.blockMaterial == BlockMaterial.Ground
+                    || targetGenerator.blockMaterial == BlockMaterial.Wood
+                    || targetGenerator.blockMaterial == BlockMaterial.Glass;
             }
             float breakNeedTime = targetGenerator.hardness * (match ? 1.5f : 5f) / speed;
 

@@ -12,10 +12,11 @@ public class ItemSelectPanel : MonoBehaviour
         public RawImage icon;
         public GameObject select;
         public TextMeshProUGUI count;
+        public RawImage damage;
+        public GameObject damageObj;
     }
 
     public static uint curIndex;
-    public static CSBlockType curBlockType { get { return dataList[curIndex]; } }
 
     private SlotItem[] itemList = new SlotItem[9];
     public static CSBlockType[] dataList = new CSBlockType[9];
@@ -125,9 +126,12 @@ public class ItemSelectPanel : MonoBehaviour
                 icon = trans.Find("icon").GetComponent<RawImage>(),
                 select = trans.Find("select").gameObject,
                 count = trans.Find("Text").GetComponent<TextMeshProUGUI>(),
+                damageObj = trans.Find("damage_bg").gameObject,
+                damage = trans.Find("damage_bg/damage").GetComponent<RawImage>(),
             };
             item.icon.gameObject.SetActive(false);
             item.select.SetActive(false);
+            item.damageObj.SetActive(false);
             itemList[i] = item;
         }
 
@@ -224,6 +228,7 @@ public class ItemSelectPanel : MonoBehaviour
             {
                 itemList[i].icon.gameObject.SetActive(false);
                 itemList[i].count.gameObject.SetActive(false);
+                itemList[i].damageObj.SetActive(false);
             }
             else
             {
@@ -237,6 +242,23 @@ public class ItemSelectPanel : MonoBehaviour
                 else
                 {
                     itemList[i].count.gameObject.SetActive(false);
+                }
+
+                NBTObject generator = NBTGeneratorManager.GetObjectGenerator(item.id);
+                if (generator != null && generator is NBTItem)
+                {
+                    NBTItem nbtItem = generator as NBTItem;
+
+                    if (nbtItem.durability == -1 || item.damage == 0)
+                    {
+                        itemList[i].damageObj.SetActive(false);
+                    }
+                    else
+                    {
+                        itemList[i].damageObj.SetActive(true);
+                        float process = (nbtItem.durability - item.damage) / (float)nbtItem.durability;
+                        itemList[i].damage.rectTransform.sizeDelta = new Vector2(13 * process, 1);
+                    }
                 }
             }
             itemList[i].select.SetActive(i == curIndex);

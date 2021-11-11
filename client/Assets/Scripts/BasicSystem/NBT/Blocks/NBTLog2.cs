@@ -34,6 +34,8 @@ public class NBTLog2 : NBTBlock
 
     public override float hardness { get { return 2f; } }
 
+    public override BlockMaterial blockMaterial => BlockMaterial.Wood;
+
     protected override Rotation GetTopRotationByData(byte data)
     {
         if (data < 4)

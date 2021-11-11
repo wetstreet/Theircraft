@@ -172,7 +172,7 @@ public class NBTGeneratorManager : MonoBehaviour
     {
         if (generatorDict.ContainsKey(rawType))
         {
-            return generatorDict[rawType].isFence;
+            return generatorDict[rawType] is NBTFence;
         }
         return false;
     }

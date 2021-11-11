@@ -17,6 +17,10 @@ public class NBTGlass : NBTBlock
 
     public override bool isTransparent => true;
 
+    public override float hardness => 0.3f;
+
+    public override BlockMaterial blockMaterial => BlockMaterial.Glass;
+
     public override SoundMaterial soundMaterial { get { return SoundMaterial.Glass; } }
 
     public override string GetBreakEffectTexture(byte data) { return "glass"; }
