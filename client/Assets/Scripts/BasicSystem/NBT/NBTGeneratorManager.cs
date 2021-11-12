@@ -42,6 +42,7 @@ public class NBTGeneratorManager : MonoBehaviour
         { 58, new NBTCraftingTable() },
         { 59, new NBTWheat() },
         { 60, new NBTFarmland() },
+        { 61, new NBTFurnace() },
         { 67, new NBTCobblestoneStairs() },
         { 73, new NBTRedstoneOre() },
         { 78, new NBTSnowLayer() },

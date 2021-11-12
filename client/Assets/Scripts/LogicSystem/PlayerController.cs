@@ -341,6 +341,10 @@ public class PlayerController : MonoBehaviour
             {
                 ChestUI.Show(WireFrameHelper.pos);
             }
+            else if (WireFrameHelper.type == 61)
+            {
+                FurnaceUI.Show();
+            }
             else
             {
                 string id = InventorySystem.items[ItemSelectPanel.curIndex].id;

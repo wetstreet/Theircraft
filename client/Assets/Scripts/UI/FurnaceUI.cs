@@ -5,11 +5,9 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class CraftingTableUI : InventoryUI
+public class FurnaceUI : InventoryUI
 {
-    Transform craftGrid;
-
-    static CraftingTableUI Instance;
+    static FurnaceUI Instance;
 
     public static void Show()
     {
@@ -21,7 +19,7 @@ public class CraftingTableUI : InventoryUI
         }
         else
         {
-            Instance = UISystem.InstantiateUI("CraftingTableUI").GetComponent<CraftingTableUI>();
+            Instance = UISystem.InstantiateUI("FurnaceUI").GetComponent<FurnaceUI>();
         }
 
         InputManager.enabled = false;
@@ -42,22 +40,6 @@ public class CraftingTableUI : InventoryUI
             InventorySystem.DropGrabItem();
         }
 
-        // clear crafting
-        foreach (int i in indexList)
-        {
-            if (InventorySystem.items[i].id != null)
-            {
-                NBTObject obj = NBTGeneratorManager.GetObjectGenerator(InventorySystem.items[i].id);
-                InventorySystem.Increment(obj, (byte)InventorySystem.items[i].damage, InventorySystem.items[i].count);
-                InventorySystem.items[i].id = null;
-                InventorySystem.items[i].damage = 0;
-                InventorySystem.items[i].count = 0;
-            }
-        }
-        InventorySystem.items[resultIndex].id = null;
-        InventorySystem.items[resultIndex].damage = 0;
-        InventorySystem.items[resultIndex].count = 0;
-
         ItemSelectPanel.instance.RefreshUI();
     }
 
@@ -72,32 +54,28 @@ public class CraftingTableUI : InventoryUI
     protected override void InitComponents()
     {
         base.InitComponents();
-
-        craftGrid = transform.Find("CraftingGrid");
     }
 
     public static List<int> indexList = new List<int>() {
-        36, 37, 38,
-        39, 40, 41,
-        42, 43, 44,
+        oreIndex,
+        fuelIndex
     };
 
     protected override void InitGrid()
     {
         base.InitGrid();
 
-        foreach (int i in indexList)
-        {
-            Transform trans = Instantiate(unit);
-            trans.name = i.ToString();
-            trans.SetParent(craftGrid, false);
-            trans.localScale = Vector3.one;
-            trans.gameObject.SetActive(true);
+        Transform oreTrans = transform.Find("Ore");
+        oreTrans.name = oreIndex.ToString();
+        items[oreIndex].highlight = oreTrans.Find("highlight").GetComponent<RawImage>();
+        items[oreIndex].icon = oreTrans.GetComponent<RawImage>();
+        items[oreIndex].count = oreTrans.Find("text").GetComponent<TextMeshProUGUI>();
 
-            items[i].highlight = trans.Find("highlight").GetComponent<RawImage>();
-            items[i].icon = trans.GetComponent<RawImage>();
-            items[i].count = trans.Find("text").GetComponent<TextMeshProUGUI>();
-        }
+        Transform fuelTrans = transform.Find("Fuel");
+        fuelTrans.name = fuelIndex.ToString();
+        items[fuelIndex].highlight = fuelTrans.Find("highlight").GetComponent<RawImage>();
+        items[fuelIndex].icon = fuelTrans.GetComponent<RawImage>();
+        items[fuelIndex].count = fuelTrans.Find("text").GetComponent<TextMeshProUGUI>();
 
         Transform resultTrans = transform.Find("CraftingResult/result");
         resultTrans.name = resultIndex.ToString();
@@ -107,10 +85,9 @@ public class CraftingTableUI : InventoryUI
     }
 
     int[] refreshIndex = new int[] {
-        36, 37, 38,
-        39, 40, 41,
-        42, 43, 44,
-        45
+        resultIndex,
+        oreIndex,
+        fuelIndex
     };
     protected override void RefreshUI()
     {
@@ -152,6 +129,7 @@ public class CraftingTableUI : InventoryUI
                 (InventorySystem.grabItem.id == InventorySystem.items[resultIndex].id &&
                 InventorySystem.grabItem.damage == InventorySystem.items[resultIndex].damage))
             {
+                Debug.Log("craft,grabItem=" + InventorySystem.grabItem.id + ",result=" + InventorySystem.items[resultIndex].id);
                 CraftingSystem.CraftItems();
                 RefreshGrabItem();
                 RefreshUI();

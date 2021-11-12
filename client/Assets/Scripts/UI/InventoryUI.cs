@@ -33,9 +33,12 @@ public class InventoryUI : MonoBehaviour
     // 45 is craft result(1)
     // 46-72 is small chest(27)
     // 46-99 is big chest(54)
-    protected SlotItem[] items = new SlotItem[99];
+    // 100-101 is furnace ore and fuel
+    protected SlotItem[] items = new SlotItem[102];
 
     protected static int resultIndex = 45;
+    protected static int oreIndex = 100;
+    protected static int fuelIndex = 101;
 
     protected virtual void InitGrid()
     {
@@ -217,7 +220,7 @@ public class InventoryUI : MonoBehaviour
                 RefreshUI();
                 ItemSelectPanel.instance.RefreshUI();
             }
-            else if (InventorySystem.items[highlightIndex].id != null)
+            else if (InventorySystem.items[highlightIndex].id != null && InventorySystem.items[highlightIndex].count > 1)
             {
                 InventorySystem.SplitHalf(highlightIndex);
                 RefreshGrabItem();

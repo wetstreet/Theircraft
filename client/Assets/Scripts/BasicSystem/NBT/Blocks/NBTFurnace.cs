@@ -1,0 +1,27 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class NBTFurnace : NBTBlock
+{
+    public override string name { get { return "Furnace"; } }
+    public override string id { get { return "minecraft:furnace"; } }
+
+    public override float hardness { get { return 3.5f; } }
+
+    public override BlockMaterial blockMaterial => BlockMaterial.RockI;
+
+    public override string frontName => "furnace_front_off";
+    public override string backName => "furnace_side";
+    public override string leftName => "furnace_side";
+    public override string rightName => "furnace_side";
+    public override string topName => "furnace_top";
+    public override string bottomName => "furnace_top";
+
+    public override SoundMaterial soundMaterial { get { return SoundMaterial.Stone; } }
+
+    public override string GetBreakEffectTexture(byte data)
+    {
+        return "furnace_front_off";
+    }
+}

@@ -22,7 +22,8 @@ public class InventorySystem
     // 45 is craft result(1)
     // 46-72 is small chest(27)
     // 46-99 is big chest(54)
-    public static InventoryItem[] items = new InventoryItem[99];
+    // 100-101 is furnace ore and fuel
+    public static InventoryItem[] items = new InventoryItem[102];
 
     public static InventoryItem grabItem;
 

@@ -96,6 +96,7 @@ public class CraftingSystem : MonoBehaviour
         "wooden_axe",
         "stone_axe",
         "iron_axe",
+        "furnace",
         "stick",
         "crafting_table",
         "oak_stairs",

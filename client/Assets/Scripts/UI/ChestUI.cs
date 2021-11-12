@@ -228,7 +228,7 @@ public class ChestUI : InventoryUI
                 RefreshUI();
                 ItemSelectPanel.instance.RefreshUI();
             }
-            else if (InventorySystem.items[highlightIndex].id != null)
+            else if (InventorySystem.items[highlightIndex].id != null && InventorySystem.items[highlightIndex].count > 1)
             {
                 InventorySystem.SplitHalf(highlightIndex);
                 RefreshGrabItem();
