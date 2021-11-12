@@ -34,14 +34,19 @@ public class SoundManager : MonoBehaviour
         SetMasterVolume();
     }
 
+    public static void Play2DSound(string name)
+    {
+        AkSoundEngine.PostEvent(name, Camera.main.gameObject);
+    }
+
+    public static void Play3DSound(string name, GameObject obj)
+    {
+        AkSoundEngine.PostEvent(name, obj);
+    }
+
     public static void SetMasterVolume()
     {
         AkSoundEngine.SetRTPCValue("MainVolume", SettingsPanel.MasterVolume);
-    }
-    
-    public static void PlayClickSound()
-    {
-        AkSoundEngine.PostEvent("UI_Click", Camera.main.gameObject);
     }
 
     public static void PlayPlaceSound(byte type, GameObject gameObject)
@@ -63,15 +68,5 @@ public class SoundManager : MonoBehaviour
         string material = NBTGeneratorManager.GetMeshGenerator(type).soundMaterial.ToString();
         AkSoundEngine.SetSwitch("Materials", material, gameObject);
         AkSoundEngine.PostEvent("Player_Footstep", gameObject);
-    }
-
-    public static void PlayPopSound()
-    {
-        AkSoundEngine.PostEvent("Player_Pop", Camera.main.gameObject);
-    }
-
-    public static void Play3DSound(string name, GameObject obj)
-    {
-        AkSoundEngine.PostEvent(name, obj);
     }
 }

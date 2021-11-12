@@ -26,6 +26,7 @@
 				<Event Id="871813740" Name="Player_Hit" ObjectPath="\Events\Player\Player_Hit"/>
 				<Event Id="2463044974" Name="Player_Place" ObjectPath="\Events\Player\Player_Place"/>
 				<Event Id="1505523378" Name="Player_Pop" ObjectPath="\Events\Player\Player_Pop"/>
+				<Event Id="2149293103" Name="Player_Tool_Break" ObjectPath="\Events\Player\Player_Tool_Break"/>
 				<Event Id="2249769530" Name="UI_Click" ObjectPath="\Events\UI\UI_Click"/>
 				<Event Id="2474416884" Name="Zombie_Death" ObjectPath="\Events\Monster\Zombie\Zombie_Death"/>
 				<Event Id="1361217281" Name="Zombie_Hurt" ObjectPath="\Events\Monster\Zombie\Zombie_Hurt"/>
@@ -342,6 +343,10 @@
 				<File Id="1045146731" Language="SFX">
 					<ShortName>ladder1.wav</ShortName>
 					<Path>SFX\ladder1_10C4C929.wem</Path>
+				</File>
+				<File Id="1049023566" Language="SFX">
+					<ShortName>random\break.wav</ShortName>
+					<Path>SFX\random\break_10C4C929.wem</Path>
 				</File>
 				<File Id="1069077107" Language="SFX">
 					<ShortName>ladder3.wav</ShortName>

@@ -9,6 +9,8 @@ public class NBTCraftingTable : NBTBlock
 
     public override float hardness { get { return 2.5f; } }
 
+    public override BlockMaterial blockMaterial => BlockMaterial.Wood;
+
     public override string frontName => "crafting_table_front";
     public override string backName => "crafting_table_side";
     public override string leftName => "crafting_table_side";

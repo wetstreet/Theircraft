@@ -49,6 +49,18 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    NBTItem handItem
+    {
+        get
+        {
+            string id = InventorySystem.items[ItemSelectPanel.curIndex].id;
+            if (id == null) return null;
+            NBTObject obj = NBTGeneratorManager.GetObjectGenerator(id);
+            if (obj == null) return null;
+            return obj as NBTItem;
+        }
+    }
+
     [SerializeField] [Range(0f, 1f)] private float m_RunstepLenghten = 0.7f;
     [SerializeField] private CurveControlledBob m_HeadBob = new CurveControlledBob();
 
@@ -379,7 +391,6 @@ public class PlayerController : MonoBehaviour
     float attackInterval = 0.5f;
     float lastAttackTime;
     public float attackStrength = 5f;
-    public float attackDamage = 1f;
     void OnLeftMousePressed()
     {
         //Debug.Log(ChatPanel.HideCode + "OnLeftMousePressed");
@@ -390,6 +401,11 @@ public class PlayerController : MonoBehaviour
             if (Time.time - lastAttackTime > attackInterval)
             {
                 Monster monster = hit.transform.GetComponent<Monster>();
+                float attackDamage = 1f;
+                if (handItem != null)
+                {
+                    attackDamage = handItem.attackDamage;
+                }
                 monster.health -= attackDamage;
                 Vector3 hitForce = transform.forward + Vector3.up;
                 monster.AddForce(hitForce * attackStrength);
@@ -419,13 +435,12 @@ public class PlayerController : MonoBehaviour
 
             bool match = false;
             float speed = 1;
-            if (handObject != null && handObject is NBTItem)
+            if (handItem != null)
             {
-                NBTItem item = handObject as NBTItem;
-                if (item.IsMatch(targetGenerator.blockMaterial))
+                if (handItem.IsMatch(targetGenerator.blockMaterial))
                 {
                     match = true;
-                    speed = item.toolSpeed;
+                    speed = handItem.toolSpeed;
                 }
             }
             if (!match)
@@ -451,6 +466,19 @@ public class PlayerController : MonoBehaviour
                 if (stage >= 10)
                 {
                     BreakBlock(WireFrameHelper.pos);
+                    if (handItem != null && handItem.durability != -1)
+                    {
+                        InventorySystem.items[ItemSelectPanel.curIndex].damage++;
+
+                        if (InventorySystem.items[ItemSelectPanel.curIndex].damage >= handItem.durability)
+                        {
+                            InventorySystem.items[ItemSelectPanel.curIndex].id = null;
+                            InventorySystem.items[ItemSelectPanel.curIndex].damage = 0;
+                            InventorySystem.items[ItemSelectPanel.curIndex].count = 0;
+                            SoundManager.Play2DSound("Player_Tool_Break");
+                        }
+                        ItemSelectPanel.instance.RefreshUI();
+                    }
                 }
             }
         }

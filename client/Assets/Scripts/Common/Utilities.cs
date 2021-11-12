@@ -85,7 +85,7 @@ public static class Utilities
         button.onClick.RemoveAllListeners();
         button.onClick.AddListener(() =>
         {
-            SoundManager.PlayClickSound();
+            SoundManager.Play2DSound("UI_Click");
             call();
         });
     }

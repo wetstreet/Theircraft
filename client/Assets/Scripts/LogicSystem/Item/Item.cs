@@ -129,7 +129,7 @@ public class Item : MonoBehaviour
             if (distance < minDistance)
             {
                 Destroy(gameObject);
-                SoundManager.PlayPopSound();
+                SoundManager.Play2DSound("Player_Pop");
                 InventorySystem.Increment(generator, blockData, (byte)Count);
                 ItemSelectPanel.instance.RefreshUI();
             }

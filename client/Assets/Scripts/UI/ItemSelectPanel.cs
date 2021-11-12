@@ -258,6 +258,7 @@ public class ItemSelectPanel : MonoBehaviour
                         itemList[i].damageObj.SetActive(true);
                         float process = (nbtItem.durability - item.damage) / (float)nbtItem.durability;
                         itemList[i].damage.rectTransform.sizeDelta = new Vector2(13 * process, 1);
+                        itemList[i].damage.color = Color.Lerp(Color.red, Color.green, process);
                     }
                 }
             }

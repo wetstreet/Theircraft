@@ -11,7 +11,7 @@ public class NBTWoodenPickaxe : NBTPickaxe
 
     public override float toolSpeed => 2;
 
-    public override int durability => 59;
+    public override int durability => 60;
 
     public override string GetIconPathByData(short data) { return "wood_pickaxe"; }
 
