@@ -58,6 +58,17 @@
 						</Action>
 					</ChildrenList>
 				</Event>
+				<Event Name="Player_Tool_Break" ID="{AD51B01A-8C3C-42FB-8E14-A4386117FB18}">
+					<ChildrenList>
+						<Action Name="" ID="{AA19A65B-0B7E-471A-90D3-5864A559D92B}" ShortID="1048729860">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="break" ID="{1D3CA89D-BA13-4F4F-A273-710E748EDFAE}" WorkUnitID="{85FFC83D-636B-4D75-AA57-E58140A12C83}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
 			</ChildrenList>
 		</WorkUnit>
 	</Events>
