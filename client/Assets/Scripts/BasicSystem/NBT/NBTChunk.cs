@@ -16,10 +16,11 @@ public class NBTChunk
     public GameObject gameObject;
     public bool isDirty = false;
     public TagNodeList Sections;
-    public TagNodeList TileEntities;
+    public Dictionary<Vector3Int, TagNodeCompound> tileEntityDict = new Dictionary<Vector3Int, TagNodeCompound>();
 
-    public HashSet<Vector3Int> tileEntityList = new HashSet<Vector3Int>();
-    public Dictionary<Vector3Int, GameObject> tileEntityObjs = new Dictionary<Vector3Int, GameObject>();
+    TagNodeList TileEntities;
+    HashSet<Vector3Int> tileEntityList = new HashSet<Vector3Int>();
+    Dictionary<Vector3Int, GameObject> tileEntityObjs = new Dictionary<Vector3Int, GameObject>();
 
     public NBTGameObject collidable;
     public NBTGameObject notCollidable;
@@ -49,6 +50,12 @@ public class NBTChunk
         globalZ = z * 16;
         Sections = Level["Sections"] as TagNodeList;
         TileEntities = Level["TileEntities"] as TagNodeList;
+
+        foreach (TagNodeCompound node in TileEntities)
+        {
+            tileEntityDict[new Vector3Int((TagNodeInt)node["x"], (TagNodeInt)node["y"], (TagNodeInt)node["z"])] = node;
+        }
+
         gameObject.name = "chunk (" + x + "," + z + ")";
         transform.localPosition = new Vector3(x * 16, 0, z * 16);
         ClearData();

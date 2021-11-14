@@ -43,6 +43,7 @@ public class NBTGeneratorManager : MonoBehaviour
         { 59, new NBTWheat() },
         { 60, new NBTFarmland() },
         { 61, new NBTFurnace() },
+        { 62, new NBTLitFurnace() },
         { 67, new NBTCobblestoneStairs() },
         { 73, new NBTRedstoneOre() },
         { 78, new NBTSnowLayer() },
@@ -74,20 +75,27 @@ public class NBTGeneratorManager : MonoBehaviour
         new NBTWheatSeeds(),
         new NBTWoodenHoe(),
         new NBTWoodenShovel(),
+
         new NBTWoodenPickaxe(),
         new NBTStonePickaxe(),
         new NBTIronPickaxe(),
+
         new NBTWoodenAxe(),
         new NBTStoneAxe(),
         new NBTIronAxe(),
+
         new NBTStick(),
         new NBTBucket(),
         new NBTWaterBucket(),
-        new NBTCoal(),
         new NBTDiamondSword(),
         new NBTGunpowder(),
         new NBTPoisonousPotato(),
         new NBTRottonFlesh(),
+
+        new NBTCoal(),
+        new NBTIronIngot(),
+        new NBTGoldIngot(),
+        new NBTDiamond(),
     };
 
     public static Dictionary<string, NBTBlock> id2generator = new Dictionary<string, NBTBlock>();

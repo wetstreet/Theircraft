@@ -50,6 +50,11 @@ public class ChestUI : InventoryUI
             InventorySystem.DropGrabItem();
         }
 
+        SaveData();
+    }
+
+    static void SaveData()
+    {
         // save to chest
         Instance.Items.Clear();
         Instance.Items.ChangeValueType(TagType.TAG_COMPOUND);
@@ -92,23 +97,15 @@ public class ChestUI : InventoryUI
     protected void InitData()
     {
         NBTChunk chunk = NBTHelper.GetChunk(pos);
-        foreach (TagNodeCompound node in chunk.TileEntities)
+        if (chunk != null && chunk.tileEntityDict.ContainsKey(pos))
         {
-            int x = node["x"] as TagNodeInt;
-            int y = node["y"] as TagNodeInt;
-            int z = node["z"] as TagNodeInt;
-
-            if (x == pos.x && y == pos.y && z == pos.z)
+            Items = (TagNodeList)chunk.tileEntityDict[pos]["Items"];
+            foreach (TagNodeCompound item in Items)
             {
-                Items = node["Items"] as TagNodeList;
-                foreach (TagNodeCompound item in Items)
-                {
-                    byte slot = item["Slot"] as TagNodeByte;
-                    InventorySystem.items[slot + 46].id = item["id"] as TagNodeString;
-                    InventorySystem.items[slot + 46].damage = item["Damage"] as TagNodeShort;
-                    InventorySystem.items[slot + 46].count = item["Count"] as TagNodeByte;
-                }
-                break;
+                byte slot = item["Slot"] as TagNodeByte;
+                InventorySystem.items[slot + 46].id = item["id"] as TagNodeString;
+                InventorySystem.items[slot + 46].damage = item["Damage"] as TagNodeShort;
+                InventorySystem.items[slot + 46].count = item["Count"] as TagNodeByte;
             }
         }
     }

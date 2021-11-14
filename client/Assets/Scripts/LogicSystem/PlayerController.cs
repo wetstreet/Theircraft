@@ -341,9 +341,9 @@ public class PlayerController : MonoBehaviour
             {
                 ChestUI.Show(WireFrameHelper.pos);
             }
-            else if (WireFrameHelper.type == 61)
+            else if (WireFrameHelper.type == 61 || WireFrameHelper.type == 62)
             {
-                FurnaceUI.Show();
+                FurnaceUI.Show(WireFrameHelper.pos);
             }
             else
             {
