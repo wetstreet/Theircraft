@@ -212,7 +212,6 @@ public class FurnaceUI : InventoryUI
                 (InventorySystem.grabItem.id == InventorySystem.items[resultIndex].id &&
                 InventorySystem.grabItem.damage == InventorySystem.items[resultIndex].damage))
             {
-                Debug.Log("craft,grabItem=" + InventorySystem.grabItem.id + ",result=" + InventorySystem.items[resultIndex].id);
                 CraftingSystem.CraftItems();
                 RefreshGrabItem();
                 RefreshUI();
