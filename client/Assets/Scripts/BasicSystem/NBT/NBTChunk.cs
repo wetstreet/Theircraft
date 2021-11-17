@@ -242,10 +242,10 @@ public class NBTChunk
                         int blockPos = yInSection * 16 * 16 + zInSection * 16 + xInSection;
                         byte rawType = Blocks.Data[blockPos];
                         NBTBlock generator = NBTGeneratorManager.GetMeshGenerator(rawType);
+                        int worldY = yInSection + sectionIndex * 16;
 
                         if (generator != null)
                         {
-                            int worldY = yInSection + sectionIndex * 16;
                             pos.Set(xInSection, worldY, zInSection);
                             byte blockData = NBTHelper.GetNibble(Data.Data, blockPos);
 
@@ -282,12 +282,18 @@ public class NBTChunk
                             }
                             catch (System.Exception e)
                             {
-                                Debug.LogError(generator.GetType() + "\n" + e.ToString());
+                                int worldX = x * 16 + xInSection;
+                                int worldZ = z * 16 + zInSection;
+                                Vector3Int worldPos = new Vector3Int(worldX, worldY, worldZ);
+                                Debug.LogError(generator.GetType() + ",pos=" + worldPos + "\n" + e.ToString());
                             }
                         }
                         else if (rawType != 0 && rawType != 11)
                         {
-                            Debug.LogWarning("generator not exist, type=" + rawType);
+                            int worldX = x * 16 + xInSection;
+                            int worldZ = z * 16 + zInSection;
+                            Vector3Int worldPos = new Vector3Int(worldX, worldY, worldZ);
+                            Debug.LogWarning("generator not exist" + ",pos=" + worldPos +", type=" + rawType);
                         }
                     }
                 }

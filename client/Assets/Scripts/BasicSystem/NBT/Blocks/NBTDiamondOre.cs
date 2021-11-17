@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class NBTDiamondOre : NBTBlock
 {
-    public override string name { get { return "DiamondOre"; } }
+    public override string name { get { return "Diamond Ore"; } }
     public override string id { get { return "minecraft:diamond_ore"; } }
 
     public override string topName { get { return "diamond_ore"; } }
