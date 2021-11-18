@@ -20,5 +20,5 @@ public class NBTMossyCobblestone : NBTBlock
 
     public override SoundMaterial soundMaterial { get { return SoundMaterial.Stone; } }
 
-    public override string GetBreakEffectTexture(byte data) { return "cobblestone"; }
+    public override string GetBreakEffectTexture(byte data) { return "cobblestone_mossy"; }
 }
