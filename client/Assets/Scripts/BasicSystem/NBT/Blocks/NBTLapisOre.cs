@@ -17,6 +17,10 @@ public class NBTLapisOre : NBTBlock
     public override string leftName { get { return "lapis_ore"; } }
     public override string rightName { get { return "lapis_ore"; } }
 
+    public override BlockMaterial blockMaterial => BlockMaterial.RockII;
+
+    public override float hardness => 3;
+
     public override SoundMaterial soundMaterial { get { return SoundMaterial.Stone; } }
 
     public override string GetBreakEffectTexture(byte data) { return "lapis_ore"; }

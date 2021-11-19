@@ -49,6 +49,7 @@ public class NBTGeneratorManager : MonoBehaviour
         { 64, new NBTOakDoor() },
         { 65, new NBTLadder() },
         { 67, new NBTCobblestoneStairs() },
+        { 72, new NBTWoodenPressurePlate() },
         { 73, new NBTRedstoneOre() },
         { 78, new NBTSnowLayer() },
         { 81, new NBTCactus() },
