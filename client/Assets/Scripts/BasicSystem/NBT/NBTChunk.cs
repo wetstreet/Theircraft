@@ -16,6 +16,7 @@ public class NBTChunk
     public GameObject gameObject;
     public bool isDirty = false;
     public TagNodeList Sections;
+    public TagNodeByteArray Biomes;
     public Dictionary<Vector3Int, TagNodeCompound> tileEntityDict = new Dictionary<Vector3Int, TagNodeCompound>();
 
     TagNodeList TileEntities;
@@ -50,6 +51,7 @@ public class NBTChunk
         globalZ = z * 16;
         Sections = Level["Sections"] as TagNodeList;
         TileEntities = Level["TileEntities"] as TagNodeList;
+        Biomes = Level["Biomes"] as TagNodeByteArray;
 
         foreach (TagNodeCompound node in TileEntities)
         {
@@ -417,9 +419,6 @@ public class NBTChunk
 
     public async void RebuildMeshAsync(bool checkBorder = true)
     {
-        RebuildMesh(UpdateFlags.All, checkBorder);
-        return;
-
         if (checkBorder)
         {
             CheckBorder();

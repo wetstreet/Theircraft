@@ -506,6 +506,11 @@ public class NBTHelper
                 updateFlag |= UpdateFlags.NotCollidable;
             }
         }
+        else
+        {
+            NBTBlock generator = NBTGeneratorManager.GetMeshGenerator(type);
+            updateFlag |= GetUpdateFlags(generator);
+        }
 
         chunk.SetBlockData(xInChunk, y, zInChunk, type, data);
         if (updateFlag.HasFlag(UpdateFlags.Lighting))

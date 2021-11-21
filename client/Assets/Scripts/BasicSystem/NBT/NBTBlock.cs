@@ -42,6 +42,8 @@ public struct CubeAttributes
     public Vector3Int worldPos;
     public byte blockData;
 
+    public bool isBreakingMesh;
+
     public BlockLightAttributes front;
     public BlockLightAttributes back;
     public BlockLightAttributes left;
@@ -180,6 +182,11 @@ public abstract class NBTBlock : NBTObject
     public virtual float backOffset { get { return -0.501f; } }
     public virtual float radius { get { return -0.501f; } }
     public virtual bool useRadius { get { return false; } }
+
+    public virtual void OnDestroyBlock(Vector3Int globalPos, byte blockData)
+    {
+
+    }
 
     protected static float[] skylight_default = new float[] { 1, 1, 1, 1 };
     protected static float[] blocklight_default = new float[] { 1, 1, 1, 1 };
@@ -632,6 +639,50 @@ public abstract class NBTBlock : NBTObject
             fa.uv = uv_zero;
 
         return fa;
+    }
+
+    void OnRightClick()
+    {
+
+    }
+
+    public void OnAddBlock(RaycastHit hit)
+    {
+        Vector3Int pos = WireFrameHelper.pos + Vector3Int.RoundToInt(hit.normal);
+
+        if (CanAddBlock(pos))
+        {
+            PlayerController.instance.PlayHandAnimation();
+
+            byte type = NBTGeneratorManager.id2type[id];
+            byte data = (byte)InventorySystem.items[ItemSelectPanel.curIndex].damage;
+            NBTHelper.SetBlockData(pos, type, data);
+
+            InventorySystem.DecrementCurrent();
+            ItemSelectPanel.instance.RefreshUI();
+        }
+    }
+
+    public bool CanAddBlock(Vector3Int pos)
+    {
+        byte type = NBTHelper.GetBlockByte(pos);
+        NBTBlock targetGenerator = NBTGeneratorManager.GetMeshGenerator(type);
+
+        if (this is NBTPlant)
+        {
+            if (this == targetGenerator) { return false; }
+
+            byte belowType = NBTHelper.GetBlockByte(pos + Vector3Int.down);
+
+            //如果手上拿的是植物，则判断下方是否是否是实体
+            NBTBlock targetBelowGenerator = NBTGeneratorManager.GetMeshGenerator(belowType);
+            return targetBelowGenerator != null && !(targetBelowGenerator is NBTPlant);
+        }
+        else
+        {
+            //如果手上拿的不是植物，则判断碰撞盒是否与玩家相交
+            return !PlayerController.instance.cc.bounds.Intersects(new Bounds(pos, Vector3.one));
+        }
     }
 
     public virtual GameObject GetTileEntityGameObject(NBTChunk chunk, byte blockData, Vector3Int pos)

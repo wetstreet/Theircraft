@@ -14,7 +14,7 @@ public class WireFrameHelper : MonoBehaviour
         {
             // Unity has a built-in shader that is useful for drawing
             // simple colored things.
-            Shader shader = Shader.Find("Hidden/Internal-Colored");
+            Shader shader = Shader.Find("Hidden/WireframeShader");
             lineMaterial = new Material(shader);
             lineMaterial.hideFlags = HideFlags.HideAndDontSave;
             // Turn on alpha blending
@@ -56,6 +56,7 @@ public class WireFrameHelper : MonoBehaviour
         float rightOffset = generator.useRadius ? generator.radius : generator.rightOffset;
         float frontOffset = generator.useRadius ? -generator.radius : generator.frontOffset;
         float backOffset = generator.useRadius ? generator.radius : generator.backOffset;
+
 
         // bottom lines
         GL.Vertex3(pos.x + leftOffset, pos.y + bottomOffset, pos.z + frontOffset);

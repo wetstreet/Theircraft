@@ -31,18 +31,16 @@ public class NBTMesh
     {
         vertexCount = 0;
         triangleCount = 0;
-
-        mesh.Clear();
     }
 
     static VertexAttributeDescriptor[] vertexAttributes;
 
     public void Refresh()
     {
+        mesh.Clear();
+
         if (vertexCount > 0)
         {
-            mesh.Clear();
-
             if (vertexAttributes == null)
             {
                 vertexAttributes = new[] {

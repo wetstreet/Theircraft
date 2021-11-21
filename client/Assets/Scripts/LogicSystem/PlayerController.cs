@@ -33,7 +33,7 @@ public class PlayerController : MonoBehaviour
 
     private Vector3 verticalSpeed;
     private Vector3 horizontalSpeed;
-    private CharacterController cc;
+    public CharacterController cc;
     static private Camera handCam;
     Animator handAnimator;
     MeshFilter blockMeshFilter;
@@ -274,6 +274,7 @@ public class PlayerController : MonoBehaviour
                 Debug.LogError("create item error, id=" + generator.GetDropItemByData(WireFrameHelper.data) + ",generator=" + generator);
             }
         }
+        generator.OnDestroyBlock(WireFrameHelper.pos, WireFrameHelper.data);
 
         if (generator.isTileEntity)
         {
@@ -292,6 +293,11 @@ public class PlayerController : MonoBehaviour
         SoundManager.PlayBreakSound(WireFrameHelper.type, instance.gameObject);
     }
 
+    public void PlayHandAnimation()
+    {
+        handAnimator.SetTrigger("interactTrigger");
+    }
+
     void OnLeftMouseDown()
     {
         handAnimator.Play("hand-interact", -1, 0);
@@ -301,32 +307,6 @@ public class PlayerController : MonoBehaviour
     {
         breakTime = 0;
         HideBreakingEffect();
-    }
-
-    bool CanAddBlock(Vector3Int pos)
-    {
-        NBTBlock generator = NBTGeneratorManager.GetMeshGenerator(InventorySystem.items[ItemSelectPanel.curIndex].id);
-        // 手上的
-        if (generator == null) return false;
-
-        byte type = NBTHelper.GetBlockByte(pos);
-        NBTBlock targetGenerator = NBTGeneratorManager.GetMeshGenerator(type);
-
-        if (generator is NBTPlant)
-        {
-            if (generator == targetGenerator) { return false; }
-
-            byte belowType = NBTHelper.GetBlockByte(pos + Vector3Int.down);
-
-            //如果手上拿的是植物，则判断下方是否是否是实体
-            NBTBlock targetBelowGenerator = NBTGeneratorManager.GetMeshGenerator(belowType);
-            return targetBelowGenerator != null && !(targetBelowGenerator is NBTPlant);
-        }
-        else
-        {
-            //如果手上拿的不是植物，则判断碰撞盒是否与玩家相交
-            return !cc.bounds.Intersects(new Bounds(pos, Vector3.one));
-        }
     }
 
     void OnRightClick()
@@ -350,18 +330,10 @@ public class PlayerController : MonoBehaviour
                 string id = InventorySystem.items[ItemSelectPanel.curIndex].id;
                 if (id != null)
                 {
-                    Vector3Int pos = WireFrameHelper.pos + Vector3Int.RoundToInt(hit.normal);
-
-                    if (CanAddBlock(pos))
+                    NBTBlock generaotr = NBTGeneratorManager.GetMeshGenerator(id);
+                    if (generaotr != null)
                     {
-                        handAnimator.SetTrigger("interactTrigger");
-
-                        byte type = NBTGeneratorManager.id2type[id];
-                        byte data = (byte)InventorySystem.items[ItemSelectPanel.curIndex].damage;
-                        NBTHelper.SetBlockData(pos, type, data);
-
-                        InventorySystem.DecrementCurrent();
-                        ItemSelectPanel.instance.RefreshUI();
+                        generaotr.OnAddBlock(hit);
                     }
                 }
             }

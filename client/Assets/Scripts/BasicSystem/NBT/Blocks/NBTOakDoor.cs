@@ -71,6 +71,19 @@ public class NBTOakDoor : NBTBlock
     protected static Vector2[] uv_side = new Vector2[4] { Vector2.zero, Vector2.up, new Vector2(0.1875f, 1), new Vector2(0.1875f, 0) };
     protected static Vector2[] uv_top = new Vector2[4] { Vector2.zero, new Vector2(0, 0.1875f), new Vector2(1, 0.1875f), Vector2.right };
 
+    public override void OnDestroyBlock(Vector3Int globalPos, byte blockData)
+    {
+        bool isUpper = (blockData & 0b1000) > 0;
+        if (isUpper)
+        {
+            NBTHelper.SetBlockByteNoUpdate(globalPos - Vector3Int.up, 0);
+        }
+        else
+        {
+            NBTHelper.SetBlockByteNoUpdate(globalPos + Vector3Int.up, 0);
+        }
+    }
+
     // upper door
     // 0x1: 0 if hinge is on the left (the default), 1 if on the right
     // 0x2: 0 if unpowered, 1 if powered
@@ -85,14 +98,9 @@ public class NBTOakDoor : NBTBlock
     // 3: Facing north
     // 0x4: 0 if the entire door is closed, 1 if open.
     // 0x8: Always 0 for the lower part of a door.
-
-    public override void AddCube(NBTChunk chunk, byte blockData, Vector3Int pos, NBTGameObject nbtGO)
+    void FillMesh(NBTChunk chunk, CubeAttributes ca, NBTMesh nbtMesh)
     {
-        CubeAttributes ca = new CubeAttributes();
-        ca.pos = pos;
-        ca.blockData = blockData;
-
-        chunk.GetLights(pos.x, pos.y, pos.z, out float skyLight, out float blockLight);
+        chunk.GetLights(ca.pos.x, ca.pos.y, ca.pos.z, out float skyLight, out float blockLight);
 
         FaceAttributes fa = new FaceAttributes();
         fa.color = Color.white;
@@ -100,14 +108,14 @@ public class NBTOakDoor : NBTBlock
         fa.blockLight = new float[] { blockLight, blockLight, blockLight, blockLight };
         fa.normal = Vector3.zero;
 
-        bool isUpper = (blockData & 0b1000) > 0;
+        bool isUpper = (ca.blockData & 0b1000) > 0;
 
         int direction = 0;
         bool isOpen = false;
 
         if (isUpper)
         {
-            chunk.GetBlockData(pos.x, pos.y - 1, pos.z, out byte belowType, out byte belowData);
+            chunk.GetBlockData(ca.pos.x, ca.pos.y - 1, ca.pos.z, out byte belowType, out byte belowData);
             if (belowType == 64)
             {
                 isOpen = (belowData & 0b0100) > 0;
@@ -116,10 +124,14 @@ public class NBTOakDoor : NBTBlock
         }
         else
         {
-            isOpen = (blockData & 0b0100) > 0;
-            direction = blockData & 0b0011;
+            isOpen = (ca.blockData & 0b0100) > 0;
+            direction = ca.blockData & 0b0011;
         }
 
+        if (ca.isBreakingMesh)
+        {
+            ca.pos = Vector3Int.zero;
+        }
 
         try
         {
@@ -129,78 +141,107 @@ public class NBTOakDoor : NBTBlock
             {
                 fa.uv = uv_top;
                 fa.pos = topVertices_east;
-                AddFace(nbtGO.nbtMesh, fa, ca);
+                AddFace(nbtMesh, fa, ca);
                 fa.pos = bottomVertices_east;
-                AddFace(nbtGO.nbtMesh, fa, ca);
+                AddFace(nbtMesh, fa, ca);
                 fa.uv = uv_zero;
                 fa.pos = leftVertices_east;
-                AddFace(nbtGO.nbtMesh, fa, ca);
+                AddFace(nbtMesh, fa, ca);
                 fa.pos = rightVertices_east;
-                AddFace(nbtGO.nbtMesh, fa, ca);
+                AddFace(nbtMesh, fa, ca);
                 fa.uv = uv_side;
                 fa.pos = frontVertices_east;
-                AddFace(nbtGO.nbtMesh, fa, ca);
+                AddFace(nbtMesh, fa, ca);
                 fa.pos = backVertices_east;
-                AddFace(nbtGO.nbtMesh, fa, ca);
+                AddFace(nbtMesh, fa, ca);
             }
             else if (direction == 1)
             {
                 fa.uv = uv_zero;
                 fa.pos = frontVertices_south;
-                AddFace(nbtGO.nbtMesh, fa, ca);
+                AddFace(nbtMesh, fa, ca);
                 fa.pos = backVertices_south;
-                AddFace(nbtGO.nbtMesh, fa, ca);
+                AddFace(nbtMesh, fa, ca);
                 fa.uv = uv_top;
                 fa.pos = topVertices_south;
-                AddFace(nbtGO.nbtMesh, fa, ca);
+                AddFace(nbtMesh, fa, ca);
                 fa.pos = bottomVertices_south;
-                AddFace(nbtGO.nbtMesh, fa, ca);
+                AddFace(nbtMesh, fa, ca);
                 fa.uv = uv_side;
                 fa.pos = leftVertices_south;
-                AddFace(nbtGO.nbtMesh, fa, ca);
+                AddFace(nbtMesh, fa, ca);
                 fa.pos = rightVertices_south;
-                AddFace(nbtGO.nbtMesh, fa, ca);
+                AddFace(nbtMesh, fa, ca);
             }
             else if (direction == 2)
             {
                 fa.uv = uv_top;
                 fa.pos = topVertices_west;
-                AddFace(nbtGO.nbtMesh, fa, ca);
+                AddFace(nbtMesh, fa, ca);
                 fa.pos = bottomVertices_west;
-                AddFace(nbtGO.nbtMesh, fa, ca);
+                AddFace(nbtMesh, fa, ca);
                 fa.uv = uv_zero;
                 fa.pos = leftVertices_west;
-                AddFace(nbtGO.nbtMesh, fa, ca);
+                AddFace(nbtMesh, fa, ca);
                 fa.pos = rightVertices_west;
-                AddFace(nbtGO.nbtMesh, fa, ca);
+                AddFace(nbtMesh, fa, ca);
                 fa.uv = uv_side;
                 fa.pos = frontVertices_west;
-                AddFace(nbtGO.nbtMesh, fa, ca);
+                AddFace(nbtMesh, fa, ca);
                 fa.pos = backVertices_west;
-                AddFace(nbtGO.nbtMesh, fa, ca);
+                AddFace(nbtMesh, fa, ca);
             }
             else
             {
                 fa.uv = uv_zero;
                 fa.pos = frontVertices_north;
-                AddFace(nbtGO.nbtMesh, fa, ca);
+                AddFace(nbtMesh, fa, ca);
                 fa.pos = backVertices_north;
-                AddFace(nbtGO.nbtMesh, fa, ca);
+                AddFace(nbtMesh, fa, ca);
                 fa.uv = uv_top;
                 fa.pos = topVertices_north;
-                AddFace(nbtGO.nbtMesh, fa, ca);
+                AddFace(nbtMesh, fa, ca);
                 fa.pos = bottomVertices_north;
-                AddFace(nbtGO.nbtMesh, fa, ca);
+                AddFace(nbtMesh, fa, ca);
                 fa.uv = uv_side;
                 fa.pos = leftVertices_north;
-                AddFace(nbtGO.nbtMesh, fa, ca);
+                AddFace(nbtMesh, fa, ca);
                 fa.pos = rightVertices_north;
-                AddFace(nbtGO.nbtMesh, fa, ca);
+                AddFace(nbtMesh, fa, ca);
             }
         }
         catch (System.Exception e)
         {
-            Debug.Log(e.ToString() + "\n" + "pos=" + pos + ",data=" + blockData);
+            Debug.Log(e.ToString() + "\n" + "pos=" + ca.pos + ",data=" + ca.blockData);
         }
+    }
+
+    public override Mesh GetItemMesh(NBTChunk chunk, Vector3Int pos, byte blockData)
+    {
+        CubeAttributes ca = new CubeAttributes();
+        ca.pos = new Vector3Int(pos.x - chunk.x * 16, pos.y, pos.z - chunk.z * 16);
+        ca.worldPos = pos;
+        ca.blockData = blockData;
+        ca.isBreakingMesh = true;
+
+        NBTMesh nbtMesh = new NBTMesh(256);
+
+        FillMesh(chunk, ca, nbtMesh);
+
+
+        nbtMesh.Refresh();
+
+        nbtMesh.Dispose();
+
+        return nbtMesh.mesh;
+    }
+
+    public override void AddCube(NBTChunk chunk, byte blockData, Vector3Int pos, NBTGameObject nbtGO)
+    {
+        CubeAttributes ca = new CubeAttributes();
+        ca.pos = pos;
+        ca.blockData = blockData;
+
+        FillMesh(chunk, ca, nbtGO.nbtMesh);
     }
 }

@@ -8,27 +8,23 @@ public class NBTStairs : NBTBlock
 
     public override bool isTransparent => true;
 
-    Mesh GetMesh(byte blockData)
+    MeshData[] meshes = new MeshData[16];
+    public override void Init()
     {
-        Mesh mesh = Resources.Load<Mesh>("Meshes/blocks/stair/stair_+y-x");
-        switch (blockData)
-        {
-            case 1:
-                mesh = Resources.Load<Mesh>("Meshes/blocks/stair/stair_+y+x");
-                break;
-            case 2:
-                mesh = Resources.Load<Mesh>("Meshes/blocks/stair/stair_+y-z");
-                break;
-            case 3:
-                mesh = Resources.Load<Mesh>("Meshes/blocks/stair/stair_+y+z");
-                break;
-        }
-        return mesh;
+        meshes[0] = Resources.Load<Mesh>("Meshes/blocks/stair/stair_+y-x").ToMeshData();
+        meshes[1] = Resources.Load<Mesh>("Meshes/blocks/stair/stair_+y+x").ToMeshData();
+        meshes[2] = Resources.Load<Mesh>("Meshes/blocks/stair/stair_+y-z").ToMeshData();
+        meshes[3] = Resources.Load<Mesh>("Meshes/blocks/stair/stair_+y+z").ToMeshData();
+    }
+
+    MeshData GetMesh(byte blockData)
+    {
+        return meshes[blockData];
     }
 
     public override void AddCube(NBTChunk chunk, byte blockData, Vector3Int pos, NBTGameObject nbtGO)
     {
-        Mesh mesh = GetMesh(blockData);
+        MeshData mesh = GetMesh(blockData);
 
         int faceIndex = TextureArrayManager.GetIndexByName(stairsName);
 
@@ -48,12 +44,12 @@ public class NBTStairs : NBTBlock
 
     public override Mesh GetItemMesh(byte data = 0)
     {
-        return GetMesh(data);
+        return GetMesh(data).mesh;
     }
 
     public override Mesh GetItemMesh(NBTChunk chunk, Vector3Int pos, byte blockData)
     {
-        return GetMesh(blockData);
+        return GetMesh(blockData).mesh;
     }
 
     public override Material GetItemMaterial(byte data)
