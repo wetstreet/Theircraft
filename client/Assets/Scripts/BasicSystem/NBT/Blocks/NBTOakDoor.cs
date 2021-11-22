@@ -14,6 +14,8 @@ public class NBTOakDoor : NBTBlock
         UsedTextures = new string[] { "door_wood_lower", "door_wood_upper" };
     }
 
+    public override byte GetDropItemData(byte data) { return 0; }
+
     public override string GetBreakEffectTexture(byte data) { return "door_wood_lower"; }
 
     public override bool isTransparent { get { return true; } }
@@ -121,7 +123,7 @@ public class NBTOakDoor : NBTBlock
         SoundManager.Play2DSound(isOpen ? "Player_Door_Close" : "Player_Door_Open");
 
         NBTChunk chunk = NBTHelper.GetChunk(WireFrameHelper.pos);
-        chunk.RebuildMesh();
+        chunk.RebuildMesh(UpdateFlags.Collidable);
     }
 
     // upper door
@@ -298,12 +300,103 @@ public class NBTOakDoor : NBTBlock
         FillMesh(chunk, ca, nbtGO.nbtMesh);
     }
 
+    public override void OnAddBlock(RaycastHit hit)
+    {
+        if (hit.normal != Vector3.up)
+        {
+            return;
+        }
+
+        Vector3Int pos = WireFrameHelper.pos + Vector3Int.RoundToInt(hit.normal);
+
+        byte upperType = NBTHelper.GetBlockByte(pos + Vector3Int.up);
+        byte lowerType = NBTHelper.GetBlockByte(pos);
+
+        if (upperType != 0 || lowerType != 0)
+        {
+            return;
+        }
+
+        PlayerController.instance.PlayHandAnimation();
+
+        byte type = NBTGeneratorManager.id2type[id];
+        byte upperData = 0b1000;
+        byte lowerData = 0b0000;
+
+        Vector3 playerPos = PlayerController.instance.position;
+        Vector2 dir = (new Vector2(playerPos.x, playerPos.z) - new Vector2(pos.x, pos.z)).normalized;
+        if (dir.x > 0)
+        {
+            if (dir.y > 0)
+            {
+                if (dir.y > dir.x)
+                {
+                    // positive z
+                    lowerData = 3;
+                }
+                else
+                {
+                    // positive x
+                    lowerData = 2;
+                }
+            }
+            else
+            {
+                if (-dir.y > dir.x)
+                {
+                    // negative z
+                    lowerData = 1;
+                }
+                else
+                {
+                    // positive x
+                    lowerData = 2;
+                }
+            }
+        }
+        else
+        {
+            if (dir.y > 0)
+            {
+                if (dir.y > -dir.x)
+                {
+                    // positive z
+                    lowerData = 3;
+                }
+                else
+                {
+                    // negative x
+                    lowerData = 0;
+                }
+            }
+            else
+            {
+                if (-dir.y > -dir.x)
+                {
+                    // negative z
+                    lowerData = 1;
+                }
+                else
+                {
+                    // negative x
+                    lowerData = 0;
+                }
+            }
+        }
+        NBTHelper.SetBlockData(pos + Vector3Int.up, type, upperData);
+        NBTHelper.SetBlockData(pos, type, lowerData);
+
+        InventorySystem.DecrementCurrent();
+        ItemSelectPanel.instance.RefreshUI();
+    }
+
     public override void RenderWireframe(byte blockData)
     {
         bool isUpper = (blockData & 0b1000) > 0;
 
-        int direction = 0;
+        DoorDirection direction = 0;
         bool isOpen = false;
+        int hinge;
 
         if (isUpper)
         {
@@ -311,45 +404,63 @@ public class NBTOakDoor : NBTBlock
             if (belowType == 64)
             {
                 isOpen = (belowData & 0b0100) > 0;
-                direction = belowData & 0b0011;
+                direction = (DoorDirection)(belowData & 0b0011);
             }
+            hinge = (blockData & 0b0001);
         }
         else
         {
             isOpen = (blockData & 0b0100) > 0;
-            direction = blockData & 0b0011;
+            direction = (DoorDirection)(blockData & 0b0011);
+            NBTHelper.GetBlockData(WireFrameHelper.pos.x, WireFrameHelper.pos.y + 1, WireFrameHelper.pos.z, out byte aboveType, out byte aboveData);
+            hinge = (aboveData & 0b0001);
         }
 
         float top, bottom, left, right, front, back;
         top = 0.501f;
         bottom = -0.501f;
-        if (direction == 0)
+        if ((direction == DoorDirection.East && isOpen == false)
+            || (direction == DoorDirection.South && isOpen && hinge == 1)
+            || (direction == DoorDirection.North && isOpen && hinge == 0))
         {
             left = -0.501f;
             right = -0.3115f;
             front = 0.501f;
             back = -0.501f;
         }
-        else if (direction == 1)
+        else if ((direction == DoorDirection.South && isOpen == false)
+            || (direction == DoorDirection.East && isOpen && hinge == 0)
+            || (direction == DoorDirection.West && isOpen && hinge == 1))
         {
             left = -0.501f;
             right = 0.501f;
             front = -0.3115f;
             back = -0.501f;
         }
-        else if (direction == 2)
+        else if ((direction == DoorDirection.West && isOpen == false)
+            || (direction == DoorDirection.South && isOpen && hinge == 0)
+            || (direction == DoorDirection.North && isOpen && hinge == 1))
         {
             left = 0.3115f;
             right = 0.501f;
             front = 0.501f;
             back = -0.501f;
         }
-        else
+        else if ((direction == DoorDirection.North && isOpen == false)
+            || (direction == DoorDirection.East && isOpen && hinge == 1)
+            || (direction == DoorDirection.West && isOpen && hinge == 0))
         {
             left = -0.501f;
             right = 0.501f;
             front = 0.3115f;
             back = 0.501f;
+        }
+        else
+        {
+            left = -0.501f;
+            right = 0.501f;
+            front = 0.501f;
+            back = -0.501f;
         }
 
         RenderWireframeByVertex(top, bottom, left, right, front, back);

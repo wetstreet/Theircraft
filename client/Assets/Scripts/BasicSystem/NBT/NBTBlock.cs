@@ -635,7 +635,7 @@ public abstract class NBTBlock : NBTObject
         return fa;
     }
 
-    public void OnAddBlock(RaycastHit hit)
+    public virtual void OnAddBlock(RaycastHit hit)
     {
         Vector3Int pos = WireFrameHelper.pos + Vector3Int.RoundToInt(hit.normal);
 
@@ -652,7 +652,7 @@ public abstract class NBTBlock : NBTObject
         }
     }
 
-    public bool CanAddBlock(Vector3Int pos)
+    protected bool CanAddBlock(Vector3Int pos)
     {
         byte type = NBTHelper.GetBlockByte(pos);
         NBTBlock targetGenerator = NBTGeneratorManager.GetMeshGenerator(type);
