@@ -7,8 +7,6 @@ public class NBTBed : NBTBlock
     public override string name { get { return "Bed"; } }
     public override string id { get { return "minecraft:bed"; } }
 
-    public override float topOffset => 0.0635f;
-
     public override SoundMaterial soundMaterial => SoundMaterial.Wood;
 
     public override bool isTileEntity => true;
@@ -106,5 +104,17 @@ public class NBTBed : NBTBlock
     public override Material GetItemMaterial(byte data)
     {
         return GetMaterial(data);
+    }
+
+    public override void RenderWireframe(byte blockData)
+    {
+        float top = 0.0635f;
+        float bottom = -0.501f;
+        float left = -0.501f;
+        float right = 0.501f;
+        float front = 0.501f;
+        float back = -0.501f;
+
+        RenderWireframeByVertex(top, bottom, left, right, front, back);
     }
 }

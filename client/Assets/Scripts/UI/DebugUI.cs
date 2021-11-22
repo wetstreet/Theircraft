@@ -121,7 +121,7 @@ public class DebugUI : MonoBehaviour
             sb.Append(WireFrameHelper.pos.z);
             
             sb.Append("\nType: ");
-            NBTBlock generator = NBTGeneratorManager.GetMeshGenerator(WireFrameHelper.type);
+            NBTBlock generator = WireFrameHelper.generator;
             sb.Append(generator.name);
 
             sb.Append("\nData: ");

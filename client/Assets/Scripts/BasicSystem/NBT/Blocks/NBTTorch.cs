@@ -7,10 +7,6 @@ public class NBTTorch : NBTBlock
     public override string name { get { return "Torch"; } }
     public override string id { get { return "minecraft:torch"; } }
 
-    public override float topOffset => 0.135f;
-    public override float radius => 0.0725f;
-    public override bool useRadius => true;
-
     public override float hardness => 0;
 
     public override SoundMaterial soundMaterial => SoundMaterial.Wood;
@@ -87,5 +83,17 @@ public class NBTTorch : NBTBlock
     public override Material GetItemMaterial(byte data)
     {
         return GetMaterial(data);
+    }
+
+    public override void RenderWireframe(byte blockData)
+    {
+        float top = 0.135f;
+        float bottom = -0.501f;
+        float left = -0.0725f;
+        float right = 0.0725f;
+        float front = 0.0725f;
+        float back = -0.0725f;
+
+        RenderWireframeByVertex(top, bottom, left, right, front, back);
     }
 }

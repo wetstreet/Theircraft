@@ -7,9 +7,6 @@ public class NBTRedFlower : NBTPlant
 {
     public override string name { get { return "Red Flower"; } }
     public override string id { get { return "minecraft:red_flower"; } }
-    public override float topOffset => 0.1875f;
-    public override float radius => 0.25f;
-    public override bool useRadius => true;
     protected override int size => 4;
     protected override int height => 12;
 
@@ -73,5 +70,17 @@ public class NBTRedFlower : NBTPlant
                 return "Oxeye Daisy";
         }
         throw new System.Exception("no name, data=" + data);
+    }
+
+    public override void RenderWireframe(byte blockData)
+    {
+        float top = 0.1875f;
+        float bottom = -0.501f;
+        float left = -0.25f;
+        float right = 0.25f;
+        float front = 0.25f;
+        float back = -0.25f;
+
+        RenderWireframeByVertex(top, bottom, left, right, front, back);
     }
 }

@@ -24,4 +24,10 @@ public class NBTLitFurnace : NBTBlock
     {
         return "furnace_front_on";
     }
+
+    public override bool canInteract => true;
+    public override void OnRightClick(Vector3Int pos)
+    {
+        FurnaceUI.Show(WireFrameHelper.pos);
+    }
 }

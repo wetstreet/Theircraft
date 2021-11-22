@@ -24,4 +24,10 @@ public class NBTCraftingTable : NBTBlock
     {
         return "crafting_table_front";
     }
+
+    public override bool canInteract => true;
+    public override void OnRightClick(Vector3Int pos)
+    {
+        CraftingTableUI.Show();
+    }
 }

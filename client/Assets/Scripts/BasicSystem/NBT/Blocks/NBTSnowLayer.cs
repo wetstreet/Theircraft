@@ -27,8 +27,6 @@ public class NBTSnowLayer : NBTBlock
 
     public override string GetBreakEffectTexture(byte data) { return "snow"; }
 
-    public override float topOffset => -0.374f;
-
 
     protected static Vector3 nearMiddleLeft = new Vector3(-0.5f, -0.375f, -0.5f);
     protected static Vector3 farMiddleLeft = new Vector3(-0.5f, -0.375f, 0.5f);
@@ -174,5 +172,17 @@ public class NBTSnowLayer : NBTBlock
         fa.uv = uv_bot;
 
         return fa;
+    }
+
+    public override void RenderWireframe(byte blockData)
+    {
+        float top = -0.374f;
+        float bottom = -0.501f;
+        float left = -0.501f;
+        float right = 0.501f;
+        float front = 0.501f;
+        float back = -0.501f;
+
+        RenderWireframeByVertex(top, bottom, left, right, front, back);
     }
 }

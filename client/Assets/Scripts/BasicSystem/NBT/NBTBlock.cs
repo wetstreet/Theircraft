@@ -112,6 +112,10 @@ public abstract class NBTBlock : NBTObject
 
     public virtual bool willReduceLight { get { return false; } }
 
+    // right click interact
+    public virtual bool canInteract { get { return false; } }
+    public virtual void OnRightClick(Vector3Int pos) { }
+
     public virtual bool isCollidable { get { return true; } }
 
     public virtual string GetBreakEffectTexture(byte data) { return string.Empty; }
@@ -172,16 +176,6 @@ public abstract class NBTBlock : NBTObject
 
     protected static Vector2[] uv_zero = new Vector2[4] { Vector2.zero, Vector2.up, Vector2.one, Vector2.right };
     protected static Vector2[] uv_right = new Vector2[4] { Vector2.up, Vector2.one, Vector2.right, Vector2.zero };
-
-    // wireframe
-    public virtual float topOffset { get { return 0.501f; } }
-    public virtual float bottomOffset { get { return -0.501f; } }
-    public virtual float leftOffset { get { return -0.501f; } }
-    public virtual float rightOffset { get { return 0.501f; } }
-    public virtual float frontOffset { get { return 0.501f; } }
-    public virtual float backOffset { get { return -0.501f; } }
-    public virtual float radius { get { return -0.501f; } }
-    public virtual bool useRadius { get { return false; } }
 
     public virtual void OnDestroyBlock(Vector3Int globalPos, byte blockData)
     {
@@ -641,11 +635,6 @@ public abstract class NBTBlock : NBTObject
         return fa;
     }
 
-    void OnRightClick()
-    {
-
-    }
-
     public void OnAddBlock(RaycastHit hit)
     {
         Vector3Int pos = WireFrameHelper.pos + Vector3Int.RoundToInt(hit.normal);
@@ -688,5 +677,50 @@ public abstract class NBTBlock : NBTObject
     public virtual GameObject GetTileEntityGameObject(NBTChunk chunk, byte blockData, Vector3Int pos)
     {
         return null;
+    }
+
+    protected void RenderWireframeByVertex(float top, float bottom, float left, float right, float front, float back)
+    {
+        // bottom lines
+        GL.Vertex3(left, bottom, front);
+        GL.Vertex3(right, bottom, front);
+        GL.Vertex3(left, bottom, back);
+        GL.Vertex3(right, bottom, back);
+        GL.Vertex3(left, bottom, front);
+        GL.Vertex3(left, bottom, back);
+        GL.Vertex3(right, bottom, front);
+        GL.Vertex3(right, bottom, back);
+
+        // top lines
+        GL.Vertex3(left, top, front);
+        GL.Vertex3(right, top, front);
+        GL.Vertex3(left, top, back);
+        GL.Vertex3(right, top, back);
+        GL.Vertex3(left, top, front);
+        GL.Vertex3(left, top, back);
+        GL.Vertex3(right, top, front);
+        GL.Vertex3(right, top, back);
+
+        // vertical lines
+        GL.Vertex3(right, top, back);
+        GL.Vertex3(right, bottom, back);
+        GL.Vertex3(right, top, front);
+        GL.Vertex3(right, bottom, front);
+        GL.Vertex3(left, top, back);
+        GL.Vertex3(left, bottom, back);
+        GL.Vertex3(left, top, front);
+        GL.Vertex3(left, bottom, front);
+    }
+
+    public virtual void RenderWireframe(byte blockData)
+    {
+        float top = 0.501f;
+        float bottom = -0.501f;
+        float left = -0.501f;
+        float right = 0.501f;
+        float front = 0.501f;
+        float back = -0.501f;
+
+        RenderWireframeByVertex(top, bottom, left, right, front, back);
     }
 }

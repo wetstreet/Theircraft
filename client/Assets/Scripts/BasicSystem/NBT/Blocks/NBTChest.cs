@@ -7,10 +7,6 @@ public class NBTChest : NBTBlock
     public override string name { get { return "Chest"; } }
     public override string id { get { return "minecraft:chest"; } }
 
-    public override float topOffset => 0.385f;
-    public override float radius => 0.4475f;
-    public override bool useRadius => true;
-
     public override float hardness => 2.5f;
 
     public override BlockMaterial blockMaterial => BlockMaterial.Wood;
@@ -59,5 +55,23 @@ public class NBTChest : NBTBlock
     public override Material GetItemMaterial(byte data)
     {
         return GetMaterial(data);
+    }
+
+    public override bool canInteract => true;
+    public override void OnRightClick(Vector3Int pos)
+    {
+        ChestUI.Show(WireFrameHelper.pos);
+    }
+
+    public override void RenderWireframe(byte blockData)
+    {
+        float top = 0.385f;
+        float bottom = -0.501f;
+        float left = -0.4475f;
+        float right = 0.4475f;
+        float front = 0.4475f;
+        float back = -0.4475f;
+
+        RenderWireframeByVertex(top, bottom, left, right, front, back);
     }
 }

@@ -49,13 +49,15 @@ Shader "Hidden/WireframeShader"
                 UNITY_VERTEX_OUTPUT_STEREO
             };
 
+            float4x4 _Wireframe_ObjectToWorld;
+
             float4 _Color;
             v2f vert (appdata_t v)
             {
                 v2f o;
                 UNITY_SETUP_INSTANCE_ID(v);
                 UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
-                o.vertex = mul(UNITY_MATRIX_P, mul(UNITY_MATRIX_V, v.vertex));
+                o.vertex = mul(UNITY_MATRIX_P, mul(UNITY_MATRIX_V, mul(_Wireframe_ObjectToWorld, v.vertex)));
                 o.color = v.color * _Color;
                 return o;
             }

@@ -262,7 +262,7 @@ public class PlayerController : MonoBehaviour
         HideBreakingEffect();
         //DeleteBlockReq(WireFrameHelper.pos);
 
-        NBTBlock generator = NBTGeneratorManager.GetMeshGenerator(WireFrameHelper.type);
+        NBTBlock generator = WireFrameHelper.generator;
         if (generator.hasDropItem)
         {
             try
@@ -313,17 +313,9 @@ public class PlayerController : MonoBehaviour
     {
         if (WireFrameHelper.render)
         {
-            if (WireFrameHelper.type == 58)
+            if (WireFrameHelper.generator.canInteract)
             {
-                CraftingTableUI.Show();
-            }
-            else if (WireFrameHelper.type == 54)
-            {
-                ChestUI.Show(WireFrameHelper.pos);
-            }
-            else if (WireFrameHelper.type == 61 || WireFrameHelper.type == 62)
-            {
-                FurnaceUI.Show(WireFrameHelper.pos);
+                WireFrameHelper.generator.OnRightClick(WireFrameHelper.pos);
             }
             else
             {
@@ -407,7 +399,7 @@ public class PlayerController : MonoBehaviour
 
             breakTime += Time.deltaTime;
 
-            NBTBlock targetGenerator = NBTGeneratorManager.GetMeshGenerator(WireFrameHelper.type);
+            NBTBlock targetGenerator = WireFrameHelper.generator;
 
             bool match = false;
             float speed = 1;
@@ -624,6 +616,7 @@ public class PlayerController : MonoBehaviour
                         WireFrameHelper.hitPos = hit.point;
                         WireFrameHelper.type = type;
                         WireFrameHelper.data = data;
+                        WireFrameHelper.generator = NBTGeneratorManager.GetMeshGenerator(type);
                     }
                 }
             }
