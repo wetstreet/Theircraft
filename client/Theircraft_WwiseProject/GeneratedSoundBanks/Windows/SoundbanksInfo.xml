@@ -22,6 +22,8 @@
 			<Path>Main.bnk</Path>
 			<IncludedEvents>
 				<Event Id="1114612066" Name="Player_Break" ObjectPath="\Events\Player\Player_Break"/>
+				<Event Id="406899944" Name="Player_Door_Close" ObjectPath="\Events\Player\Player_Door_Close"/>
+				<Event Id="2292777164" Name="Player_Door_Open" ObjectPath="\Events\Player\Player_Door_Open"/>
 				<Event Id="2453392179" Name="Player_Footstep" ObjectPath="\Events\Player\Player_Footstep"/>
 				<Event Id="871813740" Name="Player_Hit" ObjectPath="\Events\Player\Player_Hit"/>
 				<Event Id="2463044974" Name="Player_Place" ObjectPath="\Events\Player\Player_Place"/>
@@ -204,6 +206,10 @@
 					<ShortName>36_wav_files (online-audio-converter.com)\pop.wav</ShortName>
 					<Path>SFX\36_wav_files (online-audio-converter.com)\pop_10C4C929.wem</Path>
 				</File>
+				<File Id="597535214" Language="SFX">
+					<ShortName>random\door_close.wav</ShortName>
+					<Path>SFX\random\door_close_10C4C929.wem</Path>
+				</File>
 				<File Id="602040375" Language="SFX">
 					<ShortName>6_wav_files (online-audio-converter.com)\grass1.wav</ShortName>
 					<Path>SFX\6_wav_files (online-audio-converter.com)\grass1_10C4C929.wem</Path>
@@ -339,6 +345,10 @@
 				<File Id="1042351094" Language="SFX">
 					<ShortName>cloth2.wav</ShortName>
 					<Path>SFX\cloth2_10C4C929.wem</Path>
+				</File>
+				<File Id="1043263907" Language="SFX">
+					<ShortName>random\door_open.wav</ShortName>
+					<Path>SFX\random\door_open_10C4C929.wem</Path>
 				</File>
 				<File Id="1045146731" Language="SFX">
 					<ShortName>ladder1.wav</ShortName>

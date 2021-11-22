@@ -26,7 +26,7 @@ public class NBTFurnace : NBTBlock
     }
 
     public override bool canInteract => true;
-    public override void OnRightClick(Vector3Int pos)
+    public override void OnRightClick()
     {
         FurnaceUI.Show(WireFrameHelper.pos);
     }

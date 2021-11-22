@@ -84,6 +84,46 @@ public class NBTOakDoor : NBTBlock
         }
     }
 
+    enum DoorDirection
+    {
+        East,
+        South,
+        West,
+        North
+    }
+
+    public override bool canInteract => true;
+    public override void OnRightClick()
+    {
+        bool isUpper = (WireFrameHelper.data & 0b1000) > 0;
+
+        int direction = 0;
+        bool isOpen = false;
+        if (isUpper)
+        {
+            NBTHelper.GetBlockData(WireFrameHelper.pos.x, WireFrameHelper.pos.y - 1, WireFrameHelper.pos.z, out byte belowType, out byte belowData);
+            if (belowType == 64)
+            {
+                isOpen = (belowData & 0b0100) > 0;
+                direction = belowData & 0b0011;
+            }
+
+            byte newData = (byte)(belowData ^ 0b0100);
+            NBTHelper.SetBlockData(WireFrameHelper.pos + Vector3Int.down, WireFrameHelper.type, newData);
+        }
+        else
+        {
+            isOpen = (WireFrameHelper.data & 0b0100) > 0;
+
+            byte newData = (byte)(WireFrameHelper.data ^ 0b0100);
+            NBTHelper.SetBlockData(WireFrameHelper.pos, WireFrameHelper.type, newData);
+        }
+        SoundManager.Play2DSound(isOpen ? "Player_Door_Close" : "Player_Door_Open");
+
+        NBTChunk chunk = NBTHelper.GetChunk(WireFrameHelper.pos);
+        chunk.RebuildMesh();
+    }
+
     // upper door
     // 0x1: 0 if hinge is on the left (the default), 1 if on the right
     // 0x2: 0 if unpowered, 1 if powered
@@ -110,7 +150,9 @@ public class NBTOakDoor : NBTBlock
 
         bool isUpper = (ca.blockData & 0b1000) > 0;
 
-        int direction = 0;
+        int hinge;
+
+        DoorDirection direction = 0;
         bool isOpen = false;
 
         if (isUpper)
@@ -119,13 +161,16 @@ public class NBTOakDoor : NBTBlock
             if (belowType == 64)
             {
                 isOpen = (belowData & 0b0100) > 0;
-                direction = belowData & 0b0011;
+                direction = (DoorDirection)(belowData & 0b0011);
             }
+            hinge = (ca.blockData & 0b0001);
         }
         else
         {
             isOpen = (ca.blockData & 0b0100) > 0;
-            direction = ca.blockData & 0b0011;
+            direction = (DoorDirection)(ca.blockData & 0b0011);
+            chunk.GetBlockData(ca.pos.x, ca.pos.y + 1, ca.pos.z, out byte aboveType, out byte aboveData);
+            hinge = (aboveData & 0b0001);
         }
 
         if (ca.isBreakingMesh)
@@ -137,7 +182,9 @@ public class NBTOakDoor : NBTBlock
         {
             fa.faceIndex = TextureArrayManager.GetIndexByName(isUpper ? "door_wood_upper" : "door_wood_lower");
 
-            if (direction == 0)
+            if ((direction == DoorDirection.East && isOpen == false)
+                || (direction == DoorDirection.South && isOpen && hinge == 1)
+                || (direction == DoorDirection.North && isOpen && hinge == 0))
             {
                 fa.uv = uv_top;
                 fa.pos = topVertices_east;
@@ -155,7 +202,9 @@ public class NBTOakDoor : NBTBlock
                 fa.pos = backVertices_east;
                 AddFace(nbtMesh, fa, ca);
             }
-            else if (direction == 1)
+            else if ((direction == DoorDirection.South && isOpen == false)
+                || (direction == DoorDirection.East && isOpen && hinge == 0)
+                || (direction == DoorDirection.West && isOpen && hinge == 1))
             {
                 fa.uv = uv_zero;
                 fa.pos = frontVertices_south;
@@ -173,7 +222,9 @@ public class NBTOakDoor : NBTBlock
                 fa.pos = rightVertices_south;
                 AddFace(nbtMesh, fa, ca);
             }
-            else if (direction == 2)
+            else if ((direction == DoorDirection.West && isOpen == false)
+                || (direction == DoorDirection.South && isOpen && hinge == 0)
+                || (direction == DoorDirection.North && isOpen && hinge == 1))
             {
                 fa.uv = uv_top;
                 fa.pos = topVertices_west;
@@ -191,7 +242,9 @@ public class NBTOakDoor : NBTBlock
                 fa.pos = backVertices_west;
                 AddFace(nbtMesh, fa, ca);
             }
-            else
+            else if ((direction == DoorDirection.North && isOpen == false)
+                || (direction == DoorDirection.East && isOpen && hinge == 1)
+                || (direction == DoorDirection.West && isOpen && hinge == 0))
             {
                 fa.uv = uv_zero;
                 fa.pos = frontVertices_north;
@@ -243,5 +296,62 @@ public class NBTOakDoor : NBTBlock
         ca.blockData = blockData;
 
         FillMesh(chunk, ca, nbtGO.nbtMesh);
+    }
+
+    public override void RenderWireframe(byte blockData)
+    {
+        bool isUpper = (blockData & 0b1000) > 0;
+
+        int direction = 0;
+        bool isOpen = false;
+
+        if (isUpper)
+        {
+            NBTHelper.GetBlockData(WireFrameHelper.pos.x, WireFrameHelper.pos.y - 1, WireFrameHelper.pos.z, out byte belowType, out byte belowData);
+            if (belowType == 64)
+            {
+                isOpen = (belowData & 0b0100) > 0;
+                direction = belowData & 0b0011;
+            }
+        }
+        else
+        {
+            isOpen = (blockData & 0b0100) > 0;
+            direction = blockData & 0b0011;
+        }
+
+        float top, bottom, left, right, front, back;
+        top = 0.501f;
+        bottom = -0.501f;
+        if (direction == 0)
+        {
+            left = -0.501f;
+            right = -0.3115f;
+            front = 0.501f;
+            back = -0.501f;
+        }
+        else if (direction == 1)
+        {
+            left = -0.501f;
+            right = 0.501f;
+            front = -0.3115f;
+            back = -0.501f;
+        }
+        else if (direction == 2)
+        {
+            left = 0.3115f;
+            right = 0.501f;
+            front = 0.501f;
+            back = -0.501f;
+        }
+        else
+        {
+            left = -0.501f;
+            right = 0.501f;
+            front = 0.3115f;
+            back = 0.501f;
+        }
+
+        RenderWireframeByVertex(top, bottom, left, right, front, back);
     }
 }

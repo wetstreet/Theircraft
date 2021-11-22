@@ -58,7 +58,7 @@ public class NBTChest : NBTBlock
     }
 
     public override bool canInteract => true;
-    public override void OnRightClick(Vector3Int pos)
+    public override void OnRightClick()
     {
         ChestUI.Show(WireFrameHelper.pos);
     }

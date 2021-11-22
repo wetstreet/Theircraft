@@ -69,6 +69,28 @@
 						</Action>
 					</ChildrenList>
 				</Event>
+				<Event Name="Player_Door_Open" ID="{BDA3D77A-8FF7-47E4-8B4D-C47E1AD3C370}">
+					<ChildrenList>
+						<Action Name="" ID="{2946B69F-7789-44E5-8C4D-88D6B602B733}" ShortID="15254414">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="door_open" ID="{BF5DA61B-A23B-45C3-A8EE-CC9A1BEB4AFB}" WorkUnitID="{85FFC83D-636B-4D75-AA57-E58140A12C83}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Player_Door_Close" ID="{442E4011-1340-429D-8081-AD123354E902}">
+					<ChildrenList>
+						<Action Name="" ID="{CAF42118-FBA0-43E8-B51F-BD4B69C10189}" ShortID="727212032">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="door_close" ID="{09E212F5-7B90-43E4-9FF5-100AD42E9A0B}" WorkUnitID="{85FFC83D-636B-4D75-AA57-E58140A12C83}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
 			</ChildrenList>
 		</WorkUnit>
 	</Events>

@@ -315,7 +315,7 @@ public class PlayerController : MonoBehaviour
         {
             if (WireFrameHelper.generator.canInteract)
             {
-                WireFrameHelper.generator.OnRightClick(WireFrameHelper.pos);
+                WireFrameHelper.generator.OnRightClick();
             }
             else
             {

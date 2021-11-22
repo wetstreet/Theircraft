@@ -114,7 +114,7 @@ public abstract class NBTBlock : NBTObject
 
     // right click interact
     public virtual bool canInteract { get { return false; } }
-    public virtual void OnRightClick(Vector3Int pos) { }
+    public virtual void OnRightClick() { }
 
     public virtual bool isCollidable { get { return true; } }
 
