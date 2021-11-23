@@ -43,6 +43,7 @@ public struct CubeAttributes
     public byte blockData;
 
     public bool isBreakingMesh;
+    public bool isItemMesh;
 
     public BlockLightAttributes front;
     public BlockLightAttributes back;
@@ -727,5 +728,69 @@ public abstract class NBTBlock : NBTObject
         float back = -0.501f;
 
         RenderWireframeByVertex(top, bottom, left, right, front, back);
+    }
+
+    protected byte CalcBlockDirection(Vector3Int blockPos, byte front, byte left, byte back, byte right)
+    {
+        Vector3 playerPos = PlayerController.instance.position;
+        Vector2 dir = (new Vector2(playerPos.x, playerPos.z) - new Vector2(blockPos.x, blockPos.z)).normalized;
+        if (dir.x > 0)
+        {
+            if (dir.y > 0)
+            {
+                if (dir.y > dir.x)
+                {
+                    // positive z
+                    return front;
+                }
+                else
+                {
+                    // positive x
+                    return right;
+                }
+            }
+            else
+            {
+                if (-dir.y > dir.x)
+                {
+                    // negative z
+                    return back;
+                }
+                else
+                {
+                    // positive x
+                    return right;
+                }
+            }
+        }
+        else
+        {
+            if (dir.y > 0)
+            {
+                if (dir.y > -dir.x)
+                {
+                    // positive z
+                    return front;
+                }
+                else
+                {
+                    // negative x
+                    return left;
+                }
+            }
+            else
+            {
+                if (-dir.y > -dir.x)
+                {
+                    // negative z
+                    return back;
+                }
+                else
+                {
+                    // negative x
+                    return left;
+                }
+            }
+        }
     }
 }

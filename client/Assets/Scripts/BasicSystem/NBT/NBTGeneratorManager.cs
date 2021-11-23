@@ -87,10 +87,14 @@ public class NBTGeneratorManager : MonoBehaviour
         new NBTWoodenPickaxe(),
         new NBTStonePickaxe(),
         new NBTIronPickaxe(),
+        new NBTGoldPickaxe(),
+        new NBTDiamondPickaxe(),
 
         new NBTWoodenAxe(),
         new NBTStoneAxe(),
         new NBTIronAxe(),
+        new NBTGoldAxe(),
+        new NBTDiamondAxe(),
 
         new NBTStick(),
         new NBTBucket(),

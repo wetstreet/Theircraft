@@ -90,9 +90,9 @@ public class InventorySystem
     {
         if (Input.GetKeyDown(KeyCode.E))
         {
-            if (GameModeManager.isCreative)
-                CreativeInventory.Show();
-            else
+            //if (GameModeManager.isCreative)
+            //    CreativeInventory.Show();
+            //else
                 SurvivalInventory.Show();
         }
     }

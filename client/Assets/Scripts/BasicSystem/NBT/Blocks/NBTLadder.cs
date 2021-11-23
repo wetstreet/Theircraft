@@ -85,7 +85,7 @@ public class NBTLadder : NBTBlock
     public override Mesh GetBreakingEffectMesh(NBTChunk chunk, Vector3Int pos, byte blockData)
     {
         CubeAttributes ca = new CubeAttributes();
-        ca.pos = new Vector3Int(pos.x - chunk.x * 16, pos.y, pos.z - chunk.z * 16);
+        //ca.pos = new Vector3Int(pos.x - chunk.x * 16, pos.y, pos.z - chunk.z * 16);
         ca.worldPos = pos;
         ca.blockData = blockData;
         ca.isBreakingMesh = true;
@@ -140,65 +140,21 @@ public class NBTLadder : NBTBlock
             byte type = NBTGeneratorManager.id2type[id];
             byte data = 0;
 
-            Vector3 playerPos = PlayerController.instance.position;
-            Vector2 dir = (new Vector2(playerPos.x, playerPos.z) - new Vector2(pos.x, pos.z)).normalized;
-            if (dir.x > 0)
+            if (hit.normal == Vector3.back)
             {
-                if (dir.y > 0)
-                {
-                    if (dir.y > dir.x)
-                    {
-                        // positive z
-                        data = 3;
-                    }
-                    else
-                    {
-                        // positive x
-                        data = 5;
-                    }
-                }
-                else
-                {
-                    if (-dir.y > dir.x)
-                    {
-                        // negative z
-                        data = 2;
-                    }
-                    else
-                    {
-                        // positive x
-                        data = 5;
-                    }
-                }
+                data = 2;
             }
-            else
+            else if (hit.normal == Vector3.forward)
             {
-                if (dir.y > 0)
-                {
-                    if (dir.y > -dir.x)
-                    {
-                        // positive z
-                        data = 3;
-                    }
-                    else
-                    {
-                        // negative x
-                        data = 4;
-                    }
-                }
-                else
-                {
-                    if (-dir.y > -dir.x)
-                    {
-                        // negative z
-                        data = 2;
-                    }
-                    else
-                    {
-                        // negative x
-                        data = 4;
-                    }
-                }
+                data = 3;
+            }
+            else if (hit.normal == Vector3.left)
+            {
+                data = 4;
+            }
+            else if (hit.normal == Vector3.right)
+            {
+                data = 5;
             }
             NBTHelper.SetBlockData(pos, type, data);
 

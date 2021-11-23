@@ -50,4 +50,31 @@ public class NBTPumpkin : NBTBlock
     public override SoundMaterial soundMaterial { get { return SoundMaterial.Wood; } }
 
     public override string GetBreakEffectTexture(byte data) { return "pumpkin_face_off"; }
+
+    // 0 = south
+    // 1 = west
+    // 2 = north
+    // 3 = east
+    public override void OnAddBlock(RaycastHit hit)
+    {
+        if (hit.normal == Vector3.down)
+        {
+            return;
+        }
+
+        Vector3Int pos = WireFrameHelper.pos + Vector3Int.RoundToInt(hit.normal);
+
+
+        if (CanAddBlock(pos))
+        {
+            PlayerController.instance.PlayHandAnimation();
+
+            byte type = NBTGeneratorManager.id2type[id];
+            byte data = CalcBlockDirection(pos, 0, 1, 2, 3);
+            NBTHelper.SetBlockData(pos, type, data);
+
+            InventorySystem.DecrementCurrent();
+            ItemSelectPanel.instance.RefreshUI();
+        }
+    }
 }

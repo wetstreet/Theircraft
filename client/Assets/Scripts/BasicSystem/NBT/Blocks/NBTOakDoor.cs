@@ -73,7 +73,9 @@ public class NBTOakDoor : NBTBlock
     protected static Vector3[] rightVertices_north = new Vector3[] { nearBottomRight_1, nearTopRight_1, farTopRight, farBottomRight };
 
     protected static Vector2[] uv_side = new Vector2[4] { Vector2.zero, Vector2.up, new Vector2(0.1875f, 1), new Vector2(0.1875f, 0) };
+    protected static Vector2[] uv_side_flip = new Vector2[4] { new Vector2(0.1875f, 0), new Vector2(0.1875f, 1), Vector2.up, Vector2.zero };
     protected static Vector2[] uv_top = new Vector2[4] { Vector2.zero, new Vector2(0, 0.1875f), new Vector2(1, 0.1875f), Vector2.right };
+    protected static Vector2[] uv_flip = new Vector2[4] { Vector2.right, Vector2.one, Vector2.up, Vector2.zero };
 
     public override void OnDestroyBlock(Vector3Int globalPos, byte blockData)
     {
@@ -144,13 +146,22 @@ public class NBTOakDoor : NBTBlock
     // 0x8: Always 0 for the lower part of a door.
     void FillMesh(NBTChunk chunk, CubeAttributes ca, NBTMesh nbtMesh)
     {
-        chunk.GetLights(ca.pos.x, ca.pos.y, ca.pos.z, out float skyLight, out float blockLight);
+        float skyLight, blockLight;
+        if (ca.isItemMesh)
+        {
+            chunk.GetLights(ca.worldPos.x, ca.worldPos.y, ca.worldPos.z, out skyLight, out blockLight);
+        }
+        else
+        {
+            chunk.GetLights(ca.pos.x, ca.pos.y, ca.pos.z, out skyLight, out blockLight);
+        }
 
         FaceAttributes fa = new FaceAttributes();
         fa.color = Color.white;
         fa.skyLight = new float[] { skyLight, skyLight, skyLight, skyLight };
         fa.blockLight = new float[] { blockLight, blockLight, blockLight, blockLight };
         fa.normal = Vector3.zero;
+
 
         bool isUpper = (ca.blockData & 0b1000) > 0;
 
@@ -195,12 +206,12 @@ public class NBTOakDoor : NBTBlock
                 AddFace(nbtMesh, fa, ca);
                 fa.pos = bottomVertices_east;
                 AddFace(nbtMesh, fa, ca);
-                fa.uv = uv_zero;
+                fa.uv = hinge == 0 ? uv_flip : uv_zero;
                 fa.pos = leftVertices_east;
                 AddFace(nbtMesh, fa, ca);
                 fa.pos = rightVertices_east;
                 AddFace(nbtMesh, fa, ca);
-                fa.uv = uv_side;
+                fa.uv = hinge == 0 ? uv_side_flip : uv_side;
                 fa.pos = frontVertices_east;
                 AddFace(nbtMesh, fa, ca);
                 fa.pos = backVertices_east;
@@ -210,7 +221,7 @@ public class NBTOakDoor : NBTBlock
                 || (direction == DoorDirection.East && isOpen && hinge == 0)
                 || (direction == DoorDirection.West && isOpen && hinge == 1))
             {
-                fa.uv = uv_zero;
+                fa.uv = hinge == 0 ? uv_flip : uv_zero;
                 fa.pos = frontVertices_south;
                 AddFace(nbtMesh, fa, ca);
                 fa.pos = backVertices_south;
@@ -220,7 +231,7 @@ public class NBTOakDoor : NBTBlock
                 AddFace(nbtMesh, fa, ca);
                 fa.pos = bottomVertices_south;
                 AddFace(nbtMesh, fa, ca);
-                fa.uv = uv_side;
+                fa.uv = hinge == 0 ? uv_side_flip : uv_side;
                 fa.pos = leftVertices_south;
                 AddFace(nbtMesh, fa, ca);
                 fa.pos = rightVertices_south;
@@ -235,12 +246,12 @@ public class NBTOakDoor : NBTBlock
                 AddFace(nbtMesh, fa, ca);
                 fa.pos = bottomVertices_west;
                 AddFace(nbtMesh, fa, ca);
-                fa.uv = uv_zero;
+                fa.uv = hinge == 0 ? uv_flip : uv_zero;
                 fa.pos = leftVertices_west;
                 AddFace(nbtMesh, fa, ca);
                 fa.pos = rightVertices_west;
                 AddFace(nbtMesh, fa, ca);
-                fa.uv = uv_side;
+                fa.uv = hinge == 0 ? uv_side_flip : uv_side;
                 fa.pos = frontVertices_west;
                 AddFace(nbtMesh, fa, ca);
                 fa.pos = backVertices_west;
@@ -250,7 +261,7 @@ public class NBTOakDoor : NBTBlock
                 || (direction == DoorDirection.East && isOpen && hinge == 1)
                 || (direction == DoorDirection.West && isOpen && hinge == 0))
             {
-                fa.uv = uv_zero;
+                fa.uv = hinge == 0 ? uv_flip : uv_zero;
                 fa.pos = frontVertices_north;
                 AddFace(nbtMesh, fa, ca);
                 fa.pos = backVertices_north;
@@ -260,7 +271,7 @@ public class NBTOakDoor : NBTBlock
                 AddFace(nbtMesh, fa, ca);
                 fa.pos = bottomVertices_north;
                 AddFace(nbtMesh, fa, ca);
-                fa.uv = uv_side;
+                fa.uv = hinge == 0 ? uv_side_flip : uv_side;
                 fa.pos = leftVertices_north;
                 AddFace(nbtMesh, fa, ca);
                 fa.pos = rightVertices_north;
@@ -296,6 +307,7 @@ public class NBTOakDoor : NBTBlock
         CubeAttributes ca = new CubeAttributes();
         ca.worldPos = pos;
         ca.blockData = blockData;
+        ca.isItemMesh = true;
 
         NBTMesh nbtMesh = new NBTMesh(256);
 
@@ -346,6 +358,9 @@ public class NBTOakDoor : NBTBlock
 
         Vector3 playerPos = PlayerController.instance.position;
         Vector2 dir = (new Vector2(playerPos.x, playerPos.z) - new Vector2(pos.x, pos.z)).normalized;
+
+        Vector3 diff = WireFrameHelper.hitPos - pos;
+
         if (dir.x > 0)
         {
             if (dir.y > 0)
@@ -354,11 +369,13 @@ public class NBTOakDoor : NBTBlock
                 {
                     // positive z
                     lowerData = 3;
+                    if (diff.x > 0) upperData |= 0b0001;
                 }
                 else
                 {
                     // positive x
                     lowerData = 2;
+                    if (diff.z < 0) upperData |= 0b0001;
                 }
             }
             else
@@ -367,11 +384,13 @@ public class NBTOakDoor : NBTBlock
                 {
                     // negative z
                     lowerData = 1;
+                    if (diff.x < 0) upperData |= 0b0001;
                 }
                 else
                 {
                     // positive x
                     lowerData = 2;
+                    if (diff.z < 0) upperData |= 0b0001;
                 }
             }
         }
@@ -383,11 +402,13 @@ public class NBTOakDoor : NBTBlock
                 {
                     // positive z
                     lowerData = 3;
+                    if (diff.x > 0) upperData |= 0b0001;
                 }
                 else
                 {
                     // negative x
                     lowerData = 0;
+                    if (diff.z > 0) upperData |= 0b0001;
                 }
             }
             else
@@ -396,14 +417,17 @@ public class NBTOakDoor : NBTBlock
                 {
                     // negative z
                     lowerData = 1;
+                    if (diff.x < 0) upperData |= 0b0001;
                 }
                 else
                 {
                     // negative x
                     lowerData = 0;
+                    if (diff.z > 0) upperData |= 0b0001;
                 }
             }
         }
+
         NBTHelper.SetBlockData(pos + Vector3Int.up, type, upperData);
         NBTHelper.SetBlockData(pos, type, lowerData);
 

@@ -25,7 +25,7 @@ public class Hand : MonoBehaviour
     {
         rawImage = transform.GetComponent<RawImage>();
 
-        rt = new RenderTexture(Screen.width, Screen.height, 0);
+        rt = new RenderTexture(Screen.width, Screen.height, 16);
         PlayerController.SetHandRT(rt);
         rawImage.texture = rt;
     }
