@@ -7,12 +7,15 @@ public class NBTLadder : NBTBlock
     public override string name { get { return "Ladder"; } }
     public override string id { get { return "minecraft:ladder"; } }
 
+    public override string pathPrefix => "GUI/block/";
     public override string GetIconPathByData(short data) { return "ladder"; }
 
     public override void Init()
     {
         UsedTextures = new string[] { "ladder" };
     }
+
+    public override byte GetDropItemData(byte data) { return 0; }
 
     public override string GetBreakEffectTexture(byte data) { return "ladder"; }
 
@@ -36,13 +39,9 @@ public class NBTLadder : NBTBlock
     protected static Vector3[] leftFace = new Vector3[] { farBottomRight_1, farTopRight_1, nearTopRight_1, nearBottomRight_1 };
     protected static Vector3[] rightFace = new Vector3[] { nearBottomLeft_1, nearTopLeft_1, farTopLeft_1, farBottomLeft_1 };
 
-    public override void AddCube(NBTChunk chunk, byte blockData, Vector3Int pos, NBTGameObject nbtGO)
+    void FillMesh(NBTChunk chunk, CubeAttributes ca, NBTMesh nbtMesh)
     {
-        CubeAttributes ca = new CubeAttributes();
-        ca.pos = pos;
-        ca.blockData = blockData;
-
-        chunk.GetLights(pos.x, pos.y, pos.z, out float skyLight, out float blockLight);
+        chunk.GetLights(ca.pos.x, ca.pos.y, ca.pos.z, out float skyLight, out float blockLight);
 
         FaceAttributes fa = new FaceAttributes();
         fa.faceIndex = TextureArrayManager.GetIndexByName("ladder");
@@ -52,36 +51,204 @@ public class NBTLadder : NBTBlock
         fa.normal = Vector3.zero;
         fa.uv = uv_zero;
 
-        try
+        if (ca.blockData == 2)
         {
-            if (ca.blockData == 2)
+            fa.pos = frontFace;
+            AddFace(nbtMesh, fa, ca);
+        }
+        else if (ca.blockData == 3)
+        {
+            fa.pos = backFace;
+            AddFace(nbtMesh, fa, ca);
+        }
+        else if (ca.blockData == 4)
+        {
+            fa.pos = leftFace;
+            AddFace(nbtMesh, fa, ca);
+        }
+        else if (ca.blockData == 5)
+        {
+            fa.pos = rightFace;
+            AddFace(nbtMesh, fa, ca);
+        }
+    }
+
+    public override void AddCube(NBTChunk chunk, byte blockData, Vector3Int pos, NBTGameObject nbtGO)
+    {
+        CubeAttributes ca = new CubeAttributes();
+        ca.pos = pos;
+        ca.blockData = blockData;
+
+        FillMesh(chunk, ca, nbtGO.nbtMesh);
+    }
+
+    public override Mesh GetBreakingEffectMesh(NBTChunk chunk, Vector3Int pos, byte blockData)
+    {
+        CubeAttributes ca = new CubeAttributes();
+        ca.pos = new Vector3Int(pos.x - chunk.x * 16, pos.y, pos.z - chunk.z * 16);
+        ca.worldPos = pos;
+        ca.blockData = blockData;
+        ca.isBreakingMesh = true;
+
+        NBTMesh nbtMesh = new NBTMesh(256);
+
+        FillMesh(chunk, ca, nbtMesh);
+
+        nbtMesh.Refresh();
+        nbtMesh.Dispose();
+
+        return nbtMesh.mesh;
+    }
+
+    public override Material GetItemMaterial(byte data)
+    {
+        if (!itemMaterialDict.ContainsKey(data))
+        {
+            Material mat = new Material(Shader.Find("Custom/BlockShader"));
+            Texture2D tex = Resources.Load<Texture2D>(pathPrefix + GetIconPathByData(data));
+            mat.mainTexture = tex;
+            itemMaterialDict.Add(data, mat);
+        }
+        return itemMaterialDict[data];
+    }
+
+    public override Mesh GetItemMesh(NBTChunk chunk, Vector3Int pos, byte blockData)
+    {
+        if (!itemMeshDict.ContainsKey(0))
+        {
+            Texture2D tex = Resources.Load<Texture2D>(pathPrefix + GetIconPathByData(0));
+            Mesh mesh = ItemMeshGenerator.instance.Generate(tex);
+            itemMeshDict.Add(0, mesh);
+        }
+        return itemMeshDict[0];
+    }
+
+    public override void OnAddBlock(RaycastHit hit)
+    {
+        if (hit.normal.y != 0)
+        {
+            return;
+        }
+
+        Vector3Int pos = WireFrameHelper.pos + Vector3Int.RoundToInt(hit.normal);
+
+
+        if (CanAddBlock(pos))
+        {
+            PlayerController.instance.PlayHandAnimation();
+
+            byte type = NBTGeneratorManager.id2type[id];
+            byte data = 0;
+
+            Vector3 playerPos = PlayerController.instance.position;
+            Vector2 dir = (new Vector2(playerPos.x, playerPos.z) - new Vector2(pos.x, pos.z)).normalized;
+            if (dir.x > 0)
             {
-                fa.pos = frontFace;
-                AddFace(nbtGO.nbtMesh, fa, ca);
-            }
-            else if (ca.blockData == 3)
-            {
-                fa.pos = backFace;
-                AddFace(nbtGO.nbtMesh, fa, ca);
-            }
-            else if (ca.blockData == 4)
-            {
-                fa.pos = leftFace;
-                AddFace(nbtGO.nbtMesh, fa, ca);
-            }
-            else if (ca.blockData == 5)
-            {
-                fa.pos = rightFace;
-                AddFace(nbtGO.nbtMesh, fa, ca);
+                if (dir.y > 0)
+                {
+                    if (dir.y > dir.x)
+                    {
+                        // positive z
+                        data = 3;
+                    }
+                    else
+                    {
+                        // positive x
+                        data = 5;
+                    }
+                }
+                else
+                {
+                    if (-dir.y > dir.x)
+                    {
+                        // negative z
+                        data = 2;
+                    }
+                    else
+                    {
+                        // positive x
+                        data = 5;
+                    }
+                }
             }
             else
             {
-                throw new System.Exception();
+                if (dir.y > 0)
+                {
+                    if (dir.y > -dir.x)
+                    {
+                        // positive z
+                        data = 3;
+                    }
+                    else
+                    {
+                        // negative x
+                        data = 4;
+                    }
+                }
+                else
+                {
+                    if (-dir.y > -dir.x)
+                    {
+                        // negative z
+                        data = 2;
+                    }
+                    else
+                    {
+                        // negative x
+                        data = 4;
+                    }
+                }
             }
+            NBTHelper.SetBlockData(pos, type, data);
+
+            InventorySystem.DecrementCurrent();
+            ItemSelectPanel.instance.RefreshUI();
         }
-        catch (System.Exception e)
+    }
+
+    public override void RenderWireframe(byte blockData)
+    {
+
+        float top, bottom, left, right, front, back;
+        top = 0.501f;
+        bottom = -0.501f;
+        if (blockData == 2) // front
         {
-            Debug.Log(e.ToString() + "\n" + "pos=" + pos + ",data=" + blockData);
+            left = -0.501f;
+            right = 0.501f;
+            front = 0.501f;
+            back = 0.3115f;
         }
+        else if (blockData == 3) // back
+        {
+            left = -0.501f;
+            right = 0.501f;
+            front = -0.3115f;
+            back = -0.501f;
+        }
+        else if (blockData == 4) // left
+        {
+            left = 0.3115f;
+            right = 0.501f;
+            front = 0.501f;
+            back = -0.501f;
+        }
+        else if (blockData == 5) // right
+        {
+            left = -0.501f;
+            right = -0.3115f;
+            front = 0.501f;
+            back = -0.501f;
+        }
+        else
+        {
+            left = -0.501f;
+            right = 0.501f;
+            front = 0.501f;
+            back = -0.501f;
+        }
+
+        RenderWireframeByVertex(top, bottom, left, right, front, back);
     }
 }

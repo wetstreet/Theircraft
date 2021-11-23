@@ -182,6 +182,11 @@ public abstract class NBTBlock : NBTObject
 
     }
 
+    public virtual Mesh GetBreakingEffectMesh(NBTChunk chunk, Vector3Int pos, byte blockData)
+    {
+        return GetItemMesh(chunk, pos, blockData);
+    }
+
     protected static float[] skylight_default = new float[] { 1, 1, 1, 1 };
     protected static float[] blocklight_default = new float[] { 1, 1, 1, 1 };
     public virtual Mesh GetItemMesh(byte data = 0)

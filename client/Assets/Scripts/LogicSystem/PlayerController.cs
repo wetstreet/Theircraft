@@ -570,7 +570,7 @@ public class PlayerController : MonoBehaviour
         {
             breakingEffect.gameObject.SetActive(true);
             breakingEffect.transform.position = pos;
-            breakingEffectMesh.sharedMesh = generator.GetItemMesh(NBTHelper.GetChunk(GetCurrentChunkPos()), pos, WireFrameHelper.data);
+            breakingEffectMesh.sharedMesh = generator.GetBreakingEffectMesh(NBTHelper.GetChunk(GetCurrentChunkPos()), pos, WireFrameHelper.data);
 
             breakingEffect.material.mainTexture = Resources.Load<Texture2D>("GUI/block/destroy_stage_" + (stage - 1));
         }
@@ -602,7 +602,7 @@ public class PlayerController : MonoBehaviour
             {
                 if (hit.transform.gameObject.layer == cubeLayerIndex || hit.transform.gameObject.layer == plantLayerIndex)
                 {
-                    Vector3Int pos = Vector3Int.RoundToInt(hit.point - hit.normal / 10);
+                    Vector3Int pos = Vector3Int.RoundToInt(hit.point - hit.normal / 100);
                     NBTHelper.GetBlockData(pos.x, pos.y, pos.z, out byte type, out byte data);
                     if (type != 0)
                     {

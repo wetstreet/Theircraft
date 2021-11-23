@@ -18,6 +18,8 @@ public class NBTOakDoor : NBTBlock
 
     public override string GetBreakEffectTexture(byte data) { return "door_wood_lower"; }
 
+    public override string pathPrefix => "GUI/items/";
+
     public override bool isTransparent { get { return true; } }
 
     public override BlockMaterial blockMaterial => BlockMaterial.Wood;
@@ -271,7 +273,7 @@ public class NBTOakDoor : NBTBlock
         }
     }
 
-    public override Mesh GetItemMesh(NBTChunk chunk, Vector3Int pos, byte blockData)
+    public override Mesh GetBreakingEffectMesh(NBTChunk chunk, Vector3Int pos, byte blockData)
     {
         CubeAttributes ca = new CubeAttributes();
         ca.pos = new Vector3Int(pos.x - chunk.x * 16, pos.y, pos.z - chunk.z * 16);
@@ -283,9 +285,28 @@ public class NBTOakDoor : NBTBlock
 
         FillMesh(chunk, ca, nbtMesh);
 
+        nbtMesh.Refresh();
+        nbtMesh.Dispose();
+
+        return nbtMesh.mesh;
+    }
+
+    public override Mesh GetItemMesh(NBTChunk chunk, Vector3Int pos, byte blockData)
+    {
+        CubeAttributes ca = new CubeAttributes();
+        ca.worldPos = pos;
+        ca.blockData = blockData;
+
+        NBTMesh nbtMesh = new NBTMesh(256);
+
+        ca.pos = Vector3Int.up;
+        ca.blockData = 0b1000;
+        FillMesh(chunk, ca, nbtMesh);
+        ca.pos = Vector3Int.zero;
+        ca.blockData = 0b0000;
+        FillMesh(chunk, ca, nbtMesh);
 
         nbtMesh.Refresh();
-
         nbtMesh.Dispose();
 
         return nbtMesh.mesh;
