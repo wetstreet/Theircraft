@@ -15,9 +15,8 @@ public class TextureArrayManager
         return 0;
     }
 
-    static Dictionary<string, int> name2index = new Dictionary<string, int>();
-
-    static List<Texture2D> textureList = new List<Texture2D>();
+    static Dictionary<string, int> name2index;
+    static List<Texture2D> textureList;
 
     static void AddTexture(string name)
     {
@@ -57,9 +56,24 @@ public class TextureArrayManager
     
     public static void Init()
     {
+        name2index = new Dictionary<string, int>();
+        textureList = new List<Texture2D>();
+
         int size = 16;
         Texture2D[] textures = GetTextures(size);
         CreateArray(textures, size);
+    }
+
+    public static void Uninit()
+    {
+        if (array != null)
+        {
+            Object.DestroyImmediate(array);
+            array = null;
+        }
+
+        name2index = null;
+        textureList = null;
     }
 
     static void CreateArray(Texture2D[] textures, int size)

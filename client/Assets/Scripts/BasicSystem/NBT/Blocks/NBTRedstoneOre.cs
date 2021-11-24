@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class NBTRedstoneOre : NBTBlock
 {
-    public override string name { get { return "RedstoneOre"; } }
+    public override string name { get { return "Redstone Ore"; } }
     public override string id { get { return "minecraft:redstone_ore"; } }
 
     public override string GetDropItemByData(byte data) { return "minecraft:redstone"; }

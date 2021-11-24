@@ -255,9 +255,10 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    float lastBreakTime;
     void BreakBlock(Vector3Int pos)
     {
-        breakTime = 0;
+        breakingTime = 0;
 
         HideBreakingEffect();
         //DeleteBlockReq(WireFrameHelper.pos);
@@ -305,7 +306,7 @@ public class PlayerController : MonoBehaviour
 
     void OnLeftMouseUp()
     {
-        breakTime = 0;
+        breakingTime = 0;
         HideBreakingEffect();
     }
 
@@ -322,10 +323,12 @@ public class PlayerController : MonoBehaviour
                 string id = InventorySystem.items[ItemSelectPanel.curIndex].id;
                 if (id != null)
                 {
-                    NBTBlock generaotr = NBTGeneratorManager.GetMeshGenerator(id);
-                    if (generaotr != null)
+                    NBTBlock generator = NBTGeneratorManager.GetMeshGenerator(id);
+                    if (generator != null)
                     {
-                        generaotr.OnAddBlock(hit);
+                        generator.OnAddBlock(hit);
+                        SoundManager.SetSwitch(generator);
+                        SoundManager.Play2DSound("Player_Place");
                     }
                 }
             }
@@ -397,7 +400,7 @@ public class PlayerController : MonoBehaviour
         {
             handAnimator.CrossFade("hand-interact", 0);
 
-            breakTime += Time.deltaTime;
+            breakingTime += Time.deltaTime;
 
             NBTBlock targetGenerator = WireFrameHelper.generator;
 
@@ -425,7 +428,7 @@ public class PlayerController : MonoBehaviour
             }
             else
             {
-                int curStage = Mathf.FloorToInt(breakTime / (breakNeedTime / 12));
+                int curStage = Mathf.FloorToInt(breakingTime / (breakNeedTime / 12));
                 if (stage != curStage)
                 {
                     stage = curStage;
@@ -452,7 +455,7 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            breakTime = 0;
+            breakingTime = 0;
             HideBreakingEffect();
         }
     }
@@ -587,7 +590,7 @@ public class PlayerController : MonoBehaviour
 
     Vector3 center = new Vector3(Screen.width / 2, Screen.height / 2, 0);
     RaycastHit hit;
-    float breakTime;
+    float breakingTime;
     int stage;
     void DrawWireFrame()
     {
@@ -608,7 +611,7 @@ public class PlayerController : MonoBehaviour
                     {
                         if (pos != WireFrameHelper.pos)
                         {
-                            breakTime = 0;
+                            breakingTime = 0;
                         }
 
                         WireFrameHelper.render = true;
@@ -794,23 +797,14 @@ public class PlayerController : MonoBehaviour
         if (cc.isGrounded)
         {
             verticalSpeed = Vector3.zero;
-            if (verticalMovement.sqrMagnitude > precision)
-            {
-                AkSoundEngine.PostEvent("Player_Footstep", this.gameObject);
-            }
-            
-            if (isMoving && horizontalSpeed.sqrMagnitude > 0.2f)
+            if ((verticalMovement.sqrMagnitude > precision) || (isMoving && horizontalSpeed.sqrMagnitude > 0.2f))
             {
                 Vector3Int pos = Vector3Int.RoundToInt(transform.position - Vector3.up / 10);
-                bool hasBlock = ChunkManager.HasBlock(pos);
-                if (hasBlock)
+                byte type = NBTHelper.GetBlockByte(pos.x, pos.y, pos.z);
+                if (type != 0 && Time.realtimeSinceStartup - lastFootstepTime > footstepInterval)
                 {
-                    CSBlockType type = ChunkManager.GetBlockType(pos.x, pos.y, pos.z);
-                    if (Time.realtimeSinceStartup - lastFootstepTime > footstepInterval)
-                    {
-                        //SoundManager.PlayFootstepSound(type, gameObject);
-                        lastFootstepTime = Time.realtimeSinceStartup;
-                    }
+                    SoundManager.PlayFootstepSound(type, gameObject);
+                    lastFootstepTime = Time.realtimeSinceStartup;
                 }
             }
         }

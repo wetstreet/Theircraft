@@ -11,18 +11,9 @@ public class NBTPlanks : NBTBlock
 
     public override BlockMaterial blockMaterial => BlockMaterial.Wood;
 
-    public override string GetIconPathByData(short data)
-    {
-        if (data == 0) return "OakWoodPlanks";
-        else if (data == 1) return "SpruceWoodPlanks";
-        else if (data == 2) return "BirchWoodPlanks";
-        else if (data == 3) return "JungleWoodPlanks";
-        else return null;
-    }
-
     public override string GetNameByData(short data)
     {
-        switch (data % 4)
+        switch (data)
         {
             case 0:
                 return "Oak Wood Planks";
@@ -32,18 +23,22 @@ public class NBTPlanks : NBTBlock
                 return "Birch Wood Planks";
             case 3:
                 return "Jungle Wood Planks";
+            case 4:
+                return "Acacia Wood Planks";
+            case 5:
+                return "Dark Oak Wood Planks";
         }
         throw new System.Exception("no name, data=" + data);
     }
 
     public override void Init()
     {
-        UsedTextures = new string[] { "planks_oak", "planks_spruce", "planks_birch", "planks_jungle" };
+        UsedTextures = new string[] { "planks_oak", "planks_spruce", "planks_birch", "planks_jungle", "planks_acacia", "planks_big_oak" };
     }
 
     int GetIndexByData(int data)
     {
-        switch (data % 4)
+        switch (data)
         {
             case 0:
                 return TextureArrayManager.GetIndexByName("planks_oak");
@@ -53,6 +48,10 @@ public class NBTPlanks : NBTBlock
                 return TextureArrayManager.GetIndexByName("planks_birch");
             case 3:
                 return TextureArrayManager.GetIndexByName("planks_jungle");
+            case 4:
+                return TextureArrayManager.GetIndexByName("planks_acacia");
+            case 5:
+                return TextureArrayManager.GetIndexByName("planks_big_oak");
         }
         return TextureArrayManager.GetIndexByName("planks_oak");
     }
@@ -68,7 +67,7 @@ public class NBTPlanks : NBTBlock
 
     public override string GetBreakEffectTexture(byte data)
     {
-        switch (data % 4)
+        switch (data)
         {
             case 0:
                 return "planks_oak";
@@ -78,6 +77,10 @@ public class NBTPlanks : NBTBlock
                 return "planks_birch";
             case 3:
                 return "planks_jungle";
+            case 4:
+                return "planks_acacia";
+            case 5:
+                return "planks_big_oak";
         }
         return null;
     }

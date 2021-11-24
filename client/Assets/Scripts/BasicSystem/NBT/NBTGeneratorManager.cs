@@ -2,122 +2,135 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum BlockType
+{
+    None             = 0,
+    Stone            = 1,
+    GrassBlock       = 2,
+    Dirt             = 3,
+    Cobblestone      = 4,
+    Planks           = 5,
+    Sapling          = 6,
+}
+
 public class NBTGeneratorManager : MonoBehaviour
 {
-    public static Dictionary<byte, NBTBlock> generatorDict = new Dictionary<byte, NBTBlock>()
-    {
-        { 1, new NBTStone() },
-        { 2, new NBTGrassBlock() },
-        { 3, new NBTDirt() },
-        { 4, new NBTCobblestone() },
-        { 5, new NBTPlanks() },
-        { 6, new NBTSapling() },
-        { 7, new NBTBedrock() },
-        { 9, new NBTStationaryWater() },
-        { 12, new NBTSand() },
-        { 13, new NBTGravel() },
-        { 14, new NBTGoldOre() },
-        { 15, new NBTIronOre() },
-        { 16, new NBTCoalOre() },
-        { 17, new NBTLog() },
-        { 18, new NBTLeaves() },
-        { 20, new NBTGlass() },
-        { 21, new NBTLapisOre() },
-        { 24, new NBTSandStone() },
-        { 26, new NBTBed() },
-        { 31, new NBTTallGrass() },
-        { 32, new NBTDeadBush() },
-        { 35, new NBTWool() },
-        { 37, new NBTYellowFlower() },
-        { 38, new NBTRedFlower() },
-        { 39, new NBTBrownMushroom() },
-        { 40, new NBTRedMushroom() },
-        { 43, new NBTDoubleStoneSlab() },
-        { 45, new NBTBrick() },
-        { 47, new NBTBookshelf() },
-        { 48, new NBTMossyCobblestone() },
-        { 49, new NBTObsidian() },
-        { 50, new NBTTorch() },
-        { 53, new NBTOakStairs() },
-        { 54, new NBTChest() },
-        { 56, new NBTDiamondOre() },
-        { 58, new NBTCraftingTable() },
-        { 59, new NBTWheat() },
-        { 60, new NBTFarmland() },
-        { 61, new NBTFurnace() },
-        { 62, new NBTLitFurnace() },
-        { 64, new NBTOakDoor() },
-        { 65, new NBTLadder() },
-        { 67, new NBTCobblestoneStairs() },
-        { 72, new NBTWoodenPressurePlate() },
-        { 73, new NBTRedstoneOre() },
-        { 78, new NBTSnowLayer() },
-        { 81, new NBTCactus() },
-        { 82, new NBTClay() },
-        { 83, new NBTSugarCane() },
-        { 85, new NBTFence() },
-        { 86, new NBTPumpkin() },
-        { 97, new NBTMonsterEgg() },
-        { 99, new NBTBrownMushroomBlock() },
-        { 100, new NBTRedMushroomBlock() },
-        { 102, new NBTGlassPane() },
-        { 108, new NBTBrickStairs() },
-        { 125, new NBTDoubleWoodenSlab() },
-        { 126, new NBTWoodenSlab() },
-        { 134, new NBTSpruceStairs() },
-        { 135, new NBTBirchStairs() },
-        { 136, new NBTJungleStairs() },
-        { 141, new NBTCarrots() },
-        { 142, new NBTPotatoes() },
-        { 161, new NBTLeaves2() },
-        { 162, new NBTLog2() },
-        { 175, new NBTLargeFlowers() },
-        { 188, new NBTSpruceFence() },
-        { 193, new NBTSpruceDoor() },
-        { 208, new NBTGrassPath() },
-    };
-
-    public static List<NBTItem> itemList = new List<NBTItem>()
-    {
-        new NBTShears(),
-        new NBTWheatSeeds(),
-        new NBTWoodenHoe(),
-        new NBTWoodenShovel(),
-
-        new NBTWoodenPickaxe(),
-        new NBTStonePickaxe(),
-        new NBTIronPickaxe(),
-        new NBTGoldPickaxe(),
-        new NBTDiamondPickaxe(),
-
-        new NBTWoodenAxe(),
-        new NBTStoneAxe(),
-        new NBTIronAxe(),
-        new NBTGoldAxe(),
-        new NBTDiamondAxe(),
-
-        new NBTStick(),
-        new NBTBucket(),
-        new NBTWaterBucket(),
-        new NBTDiamondSword(),
-        new NBTGunpowder(),
-        new NBTPoisonousPotato(),
-        new NBTRottonFlesh(),
-
-        new NBTCoal(),
-        new NBTIronIngot(),
-        new NBTGoldIngot(),
-        new NBTDiamond(),
-    };
-
-    public static Dictionary<string, NBTBlock> id2generator = new Dictionary<string, NBTBlock>();
-
-    public static Dictionary<string, NBTItem> id2item = new Dictionary<string, NBTItem>();
-
-    public static Dictionary<string, byte> id2type = new Dictionary<string, byte>();
+    public static Dictionary<byte, NBTBlock> generatorDict;
+    public static List<NBTItem> itemList;
+    public static Dictionary<string, NBTBlock> id2generator;
+    public static Dictionary<string, byte> id2type;
+    public static Dictionary<string, NBTItem> id2item;
 
     public static void Init()
     {
+        generatorDict = new Dictionary<byte, NBTBlock>()
+        {
+            { 1, new NBTStone() },
+            { 2, new NBTGrassBlock() },
+            { 3, new NBTDirt() },
+            { 4, new NBTCobblestone() },
+            { 5, new NBTPlanks() },
+            { 6, new NBTSapling() },
+            { 7, new NBTBedrock() },
+            { 9, new NBTStationaryWater() },
+            { 12, new NBTSand() },
+            { 13, new NBTGravel() },
+            { 14, new NBTGoldOre() },
+            { 15, new NBTIronOre() },
+            { 16, new NBTCoalOre() },
+            { 17, new NBTLog() },
+            { 18, new NBTLeaves() },
+            { 20, new NBTGlass() },
+            { 21, new NBTLapisOre() },
+            { 24, new NBTSandStone() },
+            { 26, new NBTBed() },
+            { 31, new NBTTallGrass() },
+            { 32, new NBTDeadBush() },
+            { 35, new NBTWool() },
+            { 37, new NBTYellowFlower() },
+            { 38, new NBTRedFlower() },
+            { 39, new NBTBrownMushroom() },
+            { 40, new NBTRedMushroom() },
+            { 43, new NBTDoubleStoneSlab() },
+            { 45, new NBTBrick() },
+            { 47, new NBTBookshelf() },
+            { 48, new NBTMossyCobblestone() },
+            { 49, new NBTObsidian() },
+            { 50, new NBTTorch() },
+            { 53, new NBTOakStairs() },
+            { 54, new NBTChest() },
+            { 56, new NBTDiamondOre() },
+            { 58, new NBTCraftingTable() },
+            { 59, new NBTWheat() },
+            { 60, new NBTFarmland() },
+            { 61, new NBTFurnace() },
+            { 62, new NBTLitFurnace() },
+            { 64, new NBTOakDoor() },
+            { 65, new NBTLadder() },
+            { 67, new NBTCobblestoneStairs() },
+            { 72, new NBTWoodenPressurePlate() },
+            { 73, new NBTRedstoneOre() },
+            { 78, new NBTSnowLayer() },
+            { 81, new NBTCactus() },
+            { 82, new NBTClay() },
+            { 83, new NBTSugarCane() },
+            { 85, new NBTFence() },
+            { 86, new NBTPumpkin() },
+            { 97, new NBTMonsterEgg() },
+            { 99, new NBTBrownMushroomBlock() },
+            { 100, new NBTRedMushroomBlock() },
+            { 102, new NBTGlassPane() },
+            { 108, new NBTBrickStairs() },
+            { 125, new NBTDoubleWoodenSlab() },
+            { 126, new NBTWoodenSlab() },
+            { 134, new NBTSpruceStairs() },
+            { 135, new NBTBirchStairs() },
+            { 136, new NBTJungleStairs() },
+            { 141, new NBTCarrots() },
+            { 142, new NBTPotatoes() },
+            { 161, new NBTLeaves2() },
+            { 162, new NBTLog2() },
+            { 175, new NBTLargeFlowers() },
+            { 188, new NBTSpruceFence() },
+            { 193, new NBTSpruceDoor() },
+            { 208, new NBTGrassPath() },
+        };
+
+        itemList = new List<NBTItem>()
+        {
+            new NBTShears(),
+            new NBTWheatSeeds(),
+            new NBTWoodenHoe(),
+            new NBTWoodenShovel(),
+
+            new NBTWoodenPickaxe(),
+            new NBTStonePickaxe(),
+            new NBTIronPickaxe(),
+            new NBTGoldPickaxe(),
+            new NBTDiamondPickaxe(),
+
+            new NBTWoodenAxe(),
+            new NBTStoneAxe(),
+            new NBTIronAxe(),
+            new NBTGoldAxe(),
+            new NBTDiamondAxe(),
+
+            new NBTStick(),
+            new NBTBucket(),
+            new NBTWaterBucket(),
+            new NBTDiamondSword(),
+            new NBTGunpowder(),
+            new NBTPoisonousPotato(),
+            new NBTRottonFlesh(),
+
+            new NBTCoal(),
+            new NBTIronIngot(),
+            new NBTGoldIngot(),
+            new NBTDiamond(),
+        };
+
+        id2generator = new Dictionary<string, NBTBlock>();
+        id2type = new Dictionary<string, byte>();
         foreach (KeyValuePair<byte, NBTBlock> keyValue in generatorDict)
         {
             NBTBlock generator = keyValue.Value;
@@ -130,6 +143,7 @@ public class NBTGeneratorManager : MonoBehaviour
             }
         }
 
+        id2item = new Dictionary<string, NBTItem>();
         foreach (NBTItem item in itemList)
         {
             if (item.id != null)
@@ -137,6 +151,15 @@ public class NBTGeneratorManager : MonoBehaviour
                 id2item.Add(item.id, item);
             }
         }
+    }
+
+    public static void Uninit()
+    {
+        generatorDict = null;
+        itemList = null;
+        id2generator = null;
+        id2type = null;
+        id2item = null;
     }
 
     public static NBTBlock GetMeshGenerator(byte rawType)

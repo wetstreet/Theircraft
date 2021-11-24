@@ -90,21 +90,37 @@ public class CraftingSystem : MonoBehaviour
         "jungle_planks",
         "acacia_planks",
         "dark_oak_planks",
-        "wooden_pickaxe",
-        "stone_pickaxe",
-        "iron_pickaxe",
-        "wooden_axe",
-        "stone_axe",
-        "iron_axe",
-        "furnace",
-        "stick",
-        "crafting_table",
+
         "oak_stairs",
         "birch_stairs",
         "spruce_stairs",
         "jungle_stairs",
         "acacia_stairs",
         "dark_oak_stairs",
+
+        "oak_wooden_slab",
+        "birch_wooden_slab",
+        "spruce_wooden_slab",
+        "jungle_wooden_slab",
+        "acacia_wooden_slab",
+        "dark_oak_wooden_slab",
+
+        "wooden_pickaxe",
+        "stone_pickaxe",
+        "iron_pickaxe",
+        "golden_pickaxe",
+        "diamond_pickaxe",
+
+        "wooden_axe",
+        "stone_axe",
+        "iron_axe",
+        "golden_axe",
+        "diamond_axe",
+
+        "furnace",
+        "stick",
+        "crafting_table",
+
         "chest",
     };
 
@@ -255,12 +271,19 @@ public class CraftingSystem : MonoBehaviour
             // compare
             foreach (string recipeName in recipeNames)
             {
-                Recipe recipe = name2recipe[recipeName];
-                canCraft = CheckRecipe(recipe, trimedGrid);
-                if (canCraft)
+                try
                 {
-                    matchRecipe = recipe;
-                    break;
+                    Recipe recipe = name2recipe[recipeName];
+                    canCraft = CheckRecipe(recipe, trimedGrid);
+                    if (canCraft)
+                    {
+                        matchRecipe = recipe;
+                        break;
+                    }
+                }
+                catch
+                {
+                    Debug.Log("no recipe,name=" + recipeName);
                 }
             }
         }

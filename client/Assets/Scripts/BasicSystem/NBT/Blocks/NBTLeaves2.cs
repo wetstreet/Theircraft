@@ -21,18 +21,6 @@ public class NBTLeaves2 : NBTBlock
 
     public override bool willReduceLight => true;
 
-    public override string GetIconPathByData(short data)
-    {
-        switch (data % 4)
-        {
-            case 0:
-                return "AcaciaLeaves";
-            case 1:
-                return "DarkOakLeaves";
-        }
-        return "OakLeaves";
-    }
-
     public override string GetNameByData(short data)
     {
         switch (data % 4)

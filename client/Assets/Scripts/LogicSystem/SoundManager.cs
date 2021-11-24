@@ -49,11 +49,14 @@ public class SoundManager : MonoBehaviour
         AkSoundEngine.SetRTPCValue("MainVolume", SettingsPanel.MasterVolume);
     }
 
-    public static void PlayPlaceSound(byte type, GameObject gameObject)
+    public static void SetSwitch(NBTBlock generator, GameObject go = null)
     {
-        string material = NBTGeneratorManager.GetMeshGenerator(type).soundMaterial.ToString();
-        AkSoundEngine.SetSwitch("Materials", material, gameObject);
-        AkSoundEngine.PostEvent("Player_Place", gameObject);
+        string material = generator.soundMaterial.ToString();
+        if (go == null)
+        {
+            go = Camera.main.gameObject;
+        }
+        AkSoundEngine.SetSwitch("Materials", material, go);
     }
 
     public static void PlayBreakSound(byte type, GameObject gameObject)
@@ -65,7 +68,9 @@ public class SoundManager : MonoBehaviour
 
     public static void PlayFootstepSound(byte type, GameObject gameObject)
     {
-        string material = NBTGeneratorManager.GetMeshGenerator(type).soundMaterial.ToString();
+        NBTBlock generator = NBTGeneratorManager.GetMeshGenerator(type);
+        if (generator == null) return;
+        string material = generator.soundMaterial.ToString();
         AkSoundEngine.SetSwitch("Materials", material, gameObject);
         AkSoundEngine.PostEvent("Player_Footstep", gameObject);
     }

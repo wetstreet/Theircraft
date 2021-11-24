@@ -7,17 +7,6 @@ public class NBTLog : NBTBlock
 {
     public override string name { get { return "Log"; } }
     public override string id { get { return "minecraft:log"; } }
-    
-    public override string GetIconPathByData(short data)
-    {
-        if (data == 0) return "OakLog";
-        else if (data == 1) return "SpruceLog";
-        else if (data == 2) return "BirchLog";
-        else if (data == 3) return "JungleLog";
-
-        return "OakLog";
-        //throw new System.Exception("no icon, data=" + data);
-    }
 
     public override string GetNameByData(short data)
     {

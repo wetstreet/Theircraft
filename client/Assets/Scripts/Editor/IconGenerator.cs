@@ -5,31 +5,160 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-public class IconGenerator : ScriptableWizard
+public class IconGenerator : EditorWindow
 {
-    public byte type = 2;
-    public byte data = 0;
+    [MenuItem("Window/Icon Generator")]
+    static void Init()
+    {
+        IconGenerator window = (IconGenerator)GetWindow(typeof(IconGenerator));
+        window.Show();
+    }
 
-    [MenuItem("GameObject/Create Icon Wizard")]
-    static void CreateWizard()
+    private void Awake()
     {
         NBTGeneratorManager.Init();
         TextureArrayManager.Init();
-        DisplayWizard<IconGenerator>("创建icon", "创建", "批量创建");
 
         Texture2D day = Resources.Load<Texture2D>("GUI/Day");
         Shader.SetGlobalTexture("_DayLightTexture", day);
         Texture2D night = Resources.Load<Texture2D>("GUI/Night");
         Shader.SetGlobalTexture("_NightLightTexture", night);
+
+        AddGridItem(NBTGeneratorManager.GetMeshGenerator(1), 0);
+        AddGridItem(NBTGeneratorManager.GetMeshGenerator(2), 0);
+        AddGridItem(NBTGeneratorManager.GetMeshGenerator(3), 0);
+        AddGridItem(NBTGeneratorManager.GetMeshGenerator(4), 0);
+        AddGridItem(NBTGeneratorManager.GetMeshGenerator(5), 0);
+        AddGridItem(NBTGeneratorManager.GetMeshGenerator(5), 1);
+        AddGridItem(NBTGeneratorManager.GetMeshGenerator(5), 2);
+        AddGridItem(NBTGeneratorManager.GetMeshGenerator(5), 3);
+        AddGridItem(NBTGeneratorManager.GetMeshGenerator(5), 4);
+        AddGridItem(NBTGeneratorManager.GetMeshGenerator(5), 5);
+        AddGridItem(NBTGeneratorManager.GetMeshGenerator(7), 0);
+        AddGridItem(NBTGeneratorManager.GetMeshGenerator(12), 0);
+        AddGridItem(NBTGeneratorManager.GetMeshGenerator(13), 0);
+        AddGridItem(NBTGeneratorManager.GetMeshGenerator(14), 0);
+        AddGridItem(NBTGeneratorManager.GetMeshGenerator(15), 0);
+        AddGridItem(NBTGeneratorManager.GetMeshGenerator(16), 0);
+        AddGridItem(NBTGeneratorManager.GetMeshGenerator(17), 0);
+        AddGridItem(NBTGeneratorManager.GetMeshGenerator(17), 1);
+        AddGridItem(NBTGeneratorManager.GetMeshGenerator(17), 2);
+        AddGridItem(NBTGeneratorManager.GetMeshGenerator(17), 3);
+        AddGridItem(NBTGeneratorManager.GetMeshGenerator(18), 0);
+        AddGridItem(NBTGeneratorManager.GetMeshGenerator(18), 1);
+        AddGridItem(NBTGeneratorManager.GetMeshGenerator(18), 2);
+        AddGridItem(NBTGeneratorManager.GetMeshGenerator(18), 3);
+        AddGridItem(NBTGeneratorManager.GetMeshGenerator(20), 0);
+        AddGridItem(NBTGeneratorManager.GetMeshGenerator(21), 0);
+        AddGridItem(NBTGeneratorManager.GetMeshGenerator(24), 0);
+        AddGridItem(NBTGeneratorManager.GetMeshGenerator(26), 0);
+        AddGridItem(NBTGeneratorManager.GetMeshGenerator(35), 0);
+        AddGridItem(NBTGeneratorManager.GetMeshGenerator(35), 1);
+        AddGridItem(NBTGeneratorManager.GetMeshGenerator(35), 2);
+        AddGridItem(NBTGeneratorManager.GetMeshGenerator(35), 3);
+        AddGridItem(NBTGeneratorManager.GetMeshGenerator(35), 4);
+        AddGridItem(NBTGeneratorManager.GetMeshGenerator(35), 5);
+        AddGridItem(NBTGeneratorManager.GetMeshGenerator(35), 6);
+        AddGridItem(NBTGeneratorManager.GetMeshGenerator(35), 7);
+        AddGridItem(NBTGeneratorManager.GetMeshGenerator(35), 8);
+        AddGridItem(NBTGeneratorManager.GetMeshGenerator(35), 9);
+        AddGridItem(NBTGeneratorManager.GetMeshGenerator(35), 10);
+        AddGridItem(NBTGeneratorManager.GetMeshGenerator(35), 11);
+        AddGridItem(NBTGeneratorManager.GetMeshGenerator(35), 12);
+        AddGridItem(NBTGeneratorManager.GetMeshGenerator(35), 13);
+        AddGridItem(NBTGeneratorManager.GetMeshGenerator(35), 14);
+        AddGridItem(NBTGeneratorManager.GetMeshGenerator(35), 15);
+        AddGridItem(NBTGeneratorManager.GetMeshGenerator(45), 0);
+        AddGridItem(NBTGeneratorManager.GetMeshGenerator(49), 0);
+        AddGridItem(NBTGeneratorManager.GetMeshGenerator(53), 0);
+        AddGridItem(NBTGeneratorManager.GetMeshGenerator(54), 0);
+        AddGridItem(NBTGeneratorManager.GetMeshGenerator(56), 0);
+        AddGridItem(NBTGeneratorManager.GetMeshGenerator(58), 0);
+        AddGridItem(NBTGeneratorManager.GetMeshGenerator(67), 0);
+        AddGridItem(NBTGeneratorManager.GetMeshGenerator(73), 0);
+        AddGridItem(NBTGeneratorManager.GetMeshGenerator(81), 0);
+        AddGridItem(NBTGeneratorManager.GetMeshGenerator(82), 0);
+        AddGridItem(NBTGeneratorManager.GetMeshGenerator(85), 0);
+        AddGridItem(NBTGeneratorManager.GetMeshGenerator(108), 0);
+        AddGridItem(NBTGeneratorManager.GetMeshGenerator(125), 0);
+        AddGridItem(NBTGeneratorManager.GetMeshGenerator(126), 0);
+        AddGridItem(NBTGeneratorManager.GetMeshGenerator(126), 1);
+        AddGridItem(NBTGeneratorManager.GetMeshGenerator(126), 2);
+        AddGridItem(NBTGeneratorManager.GetMeshGenerator(126), 3);
+        AddGridItem(NBTGeneratorManager.GetMeshGenerator(126), 4);
+        AddGridItem(NBTGeneratorManager.GetMeshGenerator(126), 5);
+        AddGridItem(NBTGeneratorManager.GetMeshGenerator(134), 0);
+        AddGridItem(NBTGeneratorManager.GetMeshGenerator(135), 0);
+        AddGridItem(NBTGeneratorManager.GetMeshGenerator(136), 0);
+        AddGridItem(NBTGeneratorManager.GetMeshGenerator(161), 0);
+        AddGridItem(NBTGeneratorManager.GetMeshGenerator(161), 1);
+        AddGridItem(NBTGeneratorManager.GetMeshGenerator(162), 0);
+        AddGridItem(NBTGeneratorManager.GetMeshGenerator(162), 1);
+
+        optionArray = optionList.ToArray();
+    }
+
+    void AddGridItem(NBTBlock generator, byte data)
+    {
+        generatorList.Add(generator);
+        dataList.Add(data);
+        optionList.Add(generator.ToString() + ", " + data);
+    }
+
+    private void OnDestroy()
+    {
+        NBTGeneratorManager.Uninit();
+        TextureArrayManager.Uninit();
+    }
+
+    public byte type = 2;
+    public byte data = 0;
+
+    string dir = "Assets/Resources/GUI/icon";
+
+    List<string> optionList = new List<string>();
+    List<NBTBlock> generatorList = new List<NBTBlock>();
+    List<byte> dataList = new List<byte>();
+
+    string[] optionArray;
+
+    GameObject go;
+
+    int index = 0;
+    Vector2 scrollPos;
+    private void OnGUI()
+    {
+        dir = EditorGUILayout.TextField(dir);
+
+        EditorGUILayout.BeginHorizontal();
+
+        EditorGUILayout.BeginVertical();
+        scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
+        index = GUILayout.SelectionGrid(index, optionArray, 1);
+        EditorGUILayout.EndScrollView();
+        EditorGUILayout.EndVertical();
+
+        if (GUILayout.Button("创建", GUILayout.Height(100)))
+        {
+            Render(generatorList[index], dataList[index], dir);
+        }
+
+        EditorGUILayout.EndHorizontal();
     }
 
     public int size = 128;
 
-    string Render(NBTBlock generator, byte data = 0, string dir = null, bool destroyAfterFinish = false)
+    string Render(NBTBlock generator, byte data = 0, string dir = null)
     {
         Mesh mesh = generator.GetItemMesh(data);
 
-        GameObject go = new GameObject();
+        if (go != null)
+        {
+            DestroyImmediate(go);
+        }
+
+        go = new GameObject();
+        go.name = generator.GetIconPathByData(data);
         go.AddComponent<MeshFilter>().sharedMesh = mesh;
         go.AddComponent<MeshRenderer>().sharedMaterial = generator.GetItemMaterial(0);
 
@@ -55,7 +184,7 @@ public class IconGenerator : ScriptableWizard
         string path = "";
         if (dir == null)
         {
-            path = EditorUtility.SaveFilePanel("保存", "", generator.GetIconPathByData(data), "png");
+            path = EditorUtility.SaveFilePanel("保存", "", go.name, "png");
             if (path.Length == 0)
             {
                 DestroyImmediate(tex);
@@ -66,7 +195,7 @@ public class IconGenerator : ScriptableWizard
         }
         else
         {
-            path = dir + "/" + generator.GetIconPathByData(data) + ".png";
+            path = dir + "/" + go.name + ".png";
             path = path.Substring(path.IndexOf("Assets"));
         }
 
@@ -84,102 +213,7 @@ public class IconGenerator : ScriptableWizard
         AssetDatabase.Refresh();
 
         DestroyImmediate(tex);
-        if (destroyAfterFinish)
-        {
-            DestroyImmediate(go);
-        }
 
         return path;
-    }
-
-    void OnWizardCreate()
-    {
-        NBTBlock generator = NBTGeneratorManager.GetMeshGenerator(type);
-        if (generator != null)
-        {
-            string path = Render(generator, data);
-
-            if (!string.IsNullOrEmpty(path))
-            {
-                Texture2D tex = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
-                Selection.activeObject = tex;
-            }
-        }
-    }
-
-    private void OnWizardOtherButton()
-    {
-        string dir = EditorUtility.OpenFolderPanel("选择文件夹", Application.dataPath + "Assets/Resources/GUI/icon", "");
-        dir = dir.Substring(dir.IndexOf("Assets"));
-
-        Render(NBTGeneratorManager.GetMeshGenerator(1), 0, dir, true);
-        Render(NBTGeneratorManager.GetMeshGenerator(2), 0, dir, true);
-        Render(NBTGeneratorManager.GetMeshGenerator(3), 0, dir, true);
-        Render(NBTGeneratorManager.GetMeshGenerator(4), 0, dir, true);
-        Render(NBTGeneratorManager.GetMeshGenerator(5), 0, dir, true);
-        Render(NBTGeneratorManager.GetMeshGenerator(5), 1, dir, true);
-        Render(NBTGeneratorManager.GetMeshGenerator(5), 2, dir, true);
-        Render(NBTGeneratorManager.GetMeshGenerator(5), 3, dir, true);
-        Render(NBTGeneratorManager.GetMeshGenerator(7), 0, dir, true);
-        Render(NBTGeneratorManager.GetMeshGenerator(12), 0, dir, true);
-        Render(NBTGeneratorManager.GetMeshGenerator(13), 0, dir, true);
-        Render(NBTGeneratorManager.GetMeshGenerator(14), 0, dir, true);
-        Render(NBTGeneratorManager.GetMeshGenerator(15), 0, dir, true);
-        Render(NBTGeneratorManager.GetMeshGenerator(16), 0, dir, true);
-        Render(NBTGeneratorManager.GetMeshGenerator(17), 0, dir, true);
-        Render(NBTGeneratorManager.GetMeshGenerator(17), 1, dir, true);
-        Render(NBTGeneratorManager.GetMeshGenerator(17), 2, dir, true);
-        Render(NBTGeneratorManager.GetMeshGenerator(17), 3, dir, true);
-        Render(NBTGeneratorManager.GetMeshGenerator(18), 0, dir, true);
-        Render(NBTGeneratorManager.GetMeshGenerator(18), 1, dir, true);
-        Render(NBTGeneratorManager.GetMeshGenerator(18), 2, dir, true);
-        Render(NBTGeneratorManager.GetMeshGenerator(18), 3, dir, true);
-        Render(NBTGeneratorManager.GetMeshGenerator(20), 0, dir, true);
-        Render(NBTGeneratorManager.GetMeshGenerator(21), 0, dir, true);
-        Render(NBTGeneratorManager.GetMeshGenerator(24), 0, dir, true);
-        //Render(NBTGeneratorManager.GetMeshGenerator(26), 0, dir, true);
-        Render(NBTGeneratorManager.GetMeshGenerator(35), 0, dir, true);
-        Render(NBTGeneratorManager.GetMeshGenerator(35), 1, dir, true);
-        Render(NBTGeneratorManager.GetMeshGenerator(35), 2, dir, true);
-        Render(NBTGeneratorManager.GetMeshGenerator(35), 3, dir, true);
-        Render(NBTGeneratorManager.GetMeshGenerator(35), 4, dir, true);
-        Render(NBTGeneratorManager.GetMeshGenerator(35), 5, dir, true);
-        Render(NBTGeneratorManager.GetMeshGenerator(35), 6, dir, true);
-        Render(NBTGeneratorManager.GetMeshGenerator(35), 7, dir, true);
-        Render(NBTGeneratorManager.GetMeshGenerator(35), 8, dir, true);
-        Render(NBTGeneratorManager.GetMeshGenerator(35), 9, dir, true);
-        Render(NBTGeneratorManager.GetMeshGenerator(35), 10, dir, true);
-        Render(NBTGeneratorManager.GetMeshGenerator(35), 11, dir, true);
-        Render(NBTGeneratorManager.GetMeshGenerator(35), 12, dir, true);
-        Render(NBTGeneratorManager.GetMeshGenerator(35), 13, dir, true);
-        Render(NBTGeneratorManager.GetMeshGenerator(35), 14, dir, true);
-        Render(NBTGeneratorManager.GetMeshGenerator(35), 15, dir, true);
-        Render(NBTGeneratorManager.GetMeshGenerator(45), 0, dir, true);
-        Render(NBTGeneratorManager.GetMeshGenerator(49), 0, dir, true);
-        Render(NBTGeneratorManager.GetMeshGenerator(53), 0, dir, true);
-        //Render(NBTGeneratorManager.GetMeshGenerator(54), 0, dir, true);
-        Render(NBTGeneratorManager.GetMeshGenerator(56), 0, dir, true);
-        Render(NBTGeneratorManager.GetMeshGenerator(58), 0, dir, true);
-        Render(NBTGeneratorManager.GetMeshGenerator(67), 0, dir, true);
-        Render(NBTGeneratorManager.GetMeshGenerator(73), 0, dir, true);
-        Render(NBTGeneratorManager.GetMeshGenerator(81), 0, dir, true);
-        Render(NBTGeneratorManager.GetMeshGenerator(82), 0, dir, true);
-        Render(NBTGeneratorManager.GetMeshGenerator(85), 0, dir, true);
-        Render(NBTGeneratorManager.GetMeshGenerator(108), 0, dir, true);
-        Render(NBTGeneratorManager.GetMeshGenerator(125), 0, dir, true);
-        Render(NBTGeneratorManager.GetMeshGenerator(126), 0, dir, true);
-        Render(NBTGeneratorManager.GetMeshGenerator(134), 0, dir, true);
-        Render(NBTGeneratorManager.GetMeshGenerator(135), 0, dir, true);
-        Render(NBTGeneratorManager.GetMeshGenerator(136), 0, dir, true);
-        Render(NBTGeneratorManager.GetMeshGenerator(161), 0, dir, true);
-        Render(NBTGeneratorManager.GetMeshGenerator(161), 1, dir, true);
-        Render(NBTGeneratorManager.GetMeshGenerator(162), 0, dir, true);
-        Render(NBTGeneratorManager.GetMeshGenerator(162), 1, dir, true);
-
-    }
-
-    void OnWizardUpdate()
-    {
-
     }
 }
