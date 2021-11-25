@@ -16,7 +16,12 @@ public class BlockIconHelper
         if (generator != null)
         {
             path = generator.GetIconPathByData(data);
-            return Resources.Load<Texture2D>(generator.pathPrefix + path);
+            Texture2D icon = Resources.Load<Texture2D>(generator.pathPrefix + path);
+            if (icon == null)
+            {
+                Debug.Log(ChatPanel.HideCode + "no icon, generator=" + generator + ", id=" + id + ",data=" + data + ",path=" + path);
+            }
+            return icon;
         }
         Debug.Log(ChatPanel.HideCode + "no icon, generator=" +generator+", id=" + id + ",data=" + data + ",path="+ path);
         return null;

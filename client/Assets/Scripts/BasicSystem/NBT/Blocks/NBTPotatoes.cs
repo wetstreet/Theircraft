@@ -9,11 +9,6 @@ public class NBTPotatoes : NBTCrops
 
     public override string GetIconPathByData(short data) { return "potato"; }
 
-    public override void Init()
-    {
-        UsedTextures = new string[] { "potatoes_stage_3" };
-    }
-
     public override int GetPlantIndexByData(int data)
     {
         return TextureArrayManager.GetIndexByName("potatoes_stage_3");

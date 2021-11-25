@@ -7,11 +7,6 @@ public class NBTFarmland : NBTBlock
     public override string name { get { return "Farmland"; } }
     public override string id { get { return "minecraft:farmland"; } }
 
-    public override void Init()
-    {
-        UsedTextures = new string[] { "farmland_dry", "farmland_wet" };
-    }
-
     public override int GetTopIndexByData(NBTChunk chunk, int data)
     {
         if (data == 7)

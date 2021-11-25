@@ -9,28 +9,6 @@ public class NBTWool : NBTBlock
 
     public override float hardness => 0.8f;
 
-    public override void Init()
-    {
-        UsedTextures = new string[] {
-            "wool_colored_white",
-            "wool_colored_orange",
-            "wool_colored_magenta",
-            "wool_colored_light_blue",
-            "wool_colored_yellow",
-            "wool_colored_lime",
-            "wool_colored_pink",
-            "wool_colored_gray",
-            "wool_colored_silver",
-            "wool_colored_cyan",
-            "wool_colored_purple",
-            "wool_colored_blue",
-            "wool_colored_brown",
-            "wool_colored_green",
-            "wool_colored_red",
-            "wool_colored_black",
-        };
-    }
-
     public override string GetNameByData(short data)
     {
         switch (data)

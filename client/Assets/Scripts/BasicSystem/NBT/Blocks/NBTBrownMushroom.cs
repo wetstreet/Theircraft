@@ -5,12 +5,8 @@ using UnityEngine;
 
 public class NBTBrownMushroom : NBTPlant
 {
-    public override string name { get { return "Brown Mushroom"; } }
-
-    public override void Init()
-    {
-        UsedTextures = new string[] { "mushroom_brown" };
-    }
+    public override string name => "Brown Mushroom";
+    public override string id => "minecraft:brown_mushroom";
 
     public override int GetPlantIndexByData(int data)
     {

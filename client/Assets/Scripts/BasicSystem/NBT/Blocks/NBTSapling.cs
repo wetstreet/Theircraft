@@ -9,11 +9,6 @@ public class NBTSapling : NBTPlant
     public override string name { get { return "Sapling"; } }
     public override string id { get { return "minecraft:sapling"; } }
 
-    public override void Init()
-    {
-        UsedTextures = new string[] { "sapling_oak", "sapling_spruce", "sapling_birch", "sapling_jungle" };
-    }
-
     public override Material GetItemMaterial(byte data)
     {
         byte index = (byte)(data % 4);

@@ -10,11 +10,6 @@ public class NBTRedFlower : NBTPlant
     protected override int size => 4;
     protected override int height => 12;
 
-    public override void Init()
-    {
-        UsedTextures = new string[] { "flower_rose", "flower_houstonia", "flower_tulip_red", "flower_tulip_orange", "flower_tulip_pink", "flower_tulip_white", "flower_oxeye_daisy" };
-    }
-
     string GetNameByData(int data)
     {
         switch (data)

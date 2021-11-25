@@ -22,7 +22,7 @@ public abstract class NBTItem : NBTObject
         return itemMaterialDict[data];
     }
 
-    public override Mesh GetItemMesh(NBTChunk chunk, byte data)
+    public override Mesh GetItemMesh(NBTChunk chunk, Vector3Int pos, byte data)
     {
         if (!itemMeshDict.ContainsKey(data))
         {

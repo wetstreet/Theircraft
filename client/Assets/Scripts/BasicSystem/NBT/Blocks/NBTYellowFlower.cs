@@ -11,11 +11,6 @@ public class NBTYellowFlower : NBTPlant
     protected override int size => 4;
     protected override int height => 8;
 
-    public override void Init()
-    {
-        UsedTextures = new string[] { "flower_dandelion", "flower_oxeye_daisy", "flower_houstonia" };
-    }
-
     public override int GetPlantIndexByData(int data)
     {
         if (data == 0)

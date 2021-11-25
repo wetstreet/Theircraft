@@ -31,11 +31,6 @@ public class NBTPlanks : NBTBlock
         throw new System.Exception("no name, data=" + data);
     }
 
-    public override void Init()
-    {
-        UsedTextures = new string[] { "planks_oak", "planks_spruce", "planks_birch", "planks_jungle", "planks_acacia", "planks_big_oak" };
-    }
-
     int GetIndexByData(int data)
     {
         switch (data)

@@ -34,10 +34,13 @@ public class NBTWoodenSlab : NBTBlock
 
     public override SoundMaterial soundMaterial { get { return SoundMaterial.Wood; } }
 
-
-    public override void Init()
+    public override byte GetDropItemData(byte data)
     {
-        UsedTextures = new string[] { "planks_oak", "planks_spruce", "planks_birch", "planks_jungle", "planks_acacia", "planks_big_oak" };
+        if (data >= 8)
+        {
+            data -= 8;
+        }
+        return data;
     }
 
     string GetNameByData(int data)
@@ -72,19 +75,8 @@ public class NBTWoodenSlab : NBTBlock
         return GetNameByData(data);
     }
 
-    public override Mesh GetItemMesh(byte data = 0)
+    void FillMesh(FaceAttributes fa, CubeAttributes ca, NBTMesh nbtMesh)
     {
-        CubeAttributes ca = new CubeAttributes();
-        ca.blockData = data;
-
-        NBTMesh nbtMesh = new NBTMesh(256);
-
-        FaceAttributes fa = new FaceAttributes();
-        fa.faceIndex = TextureArrayManager.GetIndexByName(GetNameByData(data));
-        fa.skyLight = skylight_default;
-        fa.blockLight = blocklight_default;
-        fa.color = Color.white;
-
         if (ca.blockData >= 8)
         {
             fa.pos = frontVertices_top;
@@ -154,12 +146,57 @@ public class NBTWoodenSlab : NBTBlock
         }
         fa.normal = Vector3.right;
         AddFace(nbtMesh, fa, ca);
+    }
+
+    public override Mesh GetItemMesh(byte data = 0)
+    {
+        CubeAttributes ca = new CubeAttributes();
+        ca.blockData = data;
+
+        NBTMesh nbtMesh = new NBTMesh(256);
+
+        FaceAttributes fa = new FaceAttributes();
+        fa.faceIndex = TextureArrayManager.GetIndexByName(GetNameByData(data));
+        fa.skyLight = skylight_default;
+        fa.blockLight = blocklight_default;
+        fa.color = Color.white;
+
+        FillMesh(fa, ca, nbtMesh);
 
         nbtMesh.Refresh();
 
         nbtMesh.Dispose();
 
         return nbtMesh.mesh;
+    }
+
+    public override Mesh GetItemMesh(NBTChunk chunk, Vector3Int pos, byte blockData)
+    {
+        CubeAttributes ca = new CubeAttributes();
+        ca.blockData = blockData;
+
+        NBTMesh nbtMesh = new NBTMesh(256);
+
+        chunk.GetLights(pos.x - chunk.x * 16, pos.y, pos.z - chunk.z * 16, out float skyLight, out float blockLight);
+
+        FaceAttributes fa = new FaceAttributes();
+        fa.faceIndex = TextureArrayManager.GetIndexByName(GetNameByData(blockData));
+        fa.skyLight = new float[] { skyLight, skyLight, skyLight, skyLight };
+        fa.blockLight = new float[] { blockLight, blockLight, blockLight, blockLight };
+        fa.color = Color.white;
+
+        FillMesh(fa, ca, nbtMesh);
+
+        nbtMesh.Refresh();
+
+        nbtMesh.Dispose();
+
+        return nbtMesh.mesh;
+    }
+
+    public override Mesh GetBreakingEffectMesh(NBTChunk chunk, Vector3Int pos, byte blockData)
+    {
+        return GetItemMesh(blockData);
     }
 
     public override void AddCube(NBTChunk chunk, byte blockData, Vector3Int pos, NBTGameObject nbtGO)
@@ -234,16 +271,42 @@ public class NBTWoodenSlab : NBTBlock
     public override void OnAddBlock(RaycastHit hit)
     {
         Vector3Int pos = WireFrameHelper.pos + Vector3Int.RoundToInt(hit.normal);
-
         byte targetType = NBTHelper.GetBlockByte(pos);
+
+        bool canAdd = false;
+        byte type = NBTGeneratorManager.id2type[id];
+        byte data = (byte)InventorySystem.items[ItemSelectPanel.curIndex].damage;
+        Vector3Int finalPos = pos;
+
+        if (targetType == 126)
+        {
+            canAdd = true;
+            type = 125;
+        }
+
+        if (WireFrameHelper.generator is NBTWoodenSlab &&
+            (WireFrameHelper.data < 8 && hit.normal == Vector3.up) ||
+            (WireFrameHelper.data >= 8 && hit.normal == Vector3.down))
+        {
+            canAdd = true;
+            type = 125;
+            finalPos = WireFrameHelper.pos;
+        }
+
         if (targetType == 0 && CanAddBlock(pos))
+        {
+            canAdd = true;
+            if (WireFrameHelper.hitPos.y - pos.y > 0)
+            {
+                data += 8;
+            }
+        }
+
+        if (canAdd)
         {
             PlayerController.instance.PlayHandAnimation();
 
-            byte type = NBTGeneratorManager.id2type[id];
-            byte data = (byte)InventorySystem.items[ItemSelectPanel.curIndex].damage;
-
-            NBTHelper.SetBlockData(pos, type, data);
+            NBTHelper.SetBlockData(finalPos, type, data);
 
             InventorySystem.DecrementCurrent();
             ItemSelectPanel.instance.RefreshUI();

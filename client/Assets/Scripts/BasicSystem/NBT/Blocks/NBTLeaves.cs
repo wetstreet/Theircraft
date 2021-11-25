@@ -8,11 +8,6 @@ public class NBTLeaves : NBTBlock
     public override string name { get { return "Leaves"; } }
     public override string id { get { return "minecraft:leaves"; } }
 
-    public override void Init()
-    {
-        UsedTextures = new string[] { "leaves_oak", "leaves_spruce", "leaves_birch", "leaves_jungle" };
-    }
-    
     public override float hardness { get { return 0.2f; } }
 
     public override SoundMaterial soundMaterial { get { return SoundMaterial.Grass; } }

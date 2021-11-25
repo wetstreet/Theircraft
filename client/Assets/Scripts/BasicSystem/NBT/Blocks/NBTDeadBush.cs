@@ -5,12 +5,9 @@ using UnityEngine;
 
 public class NBTDeadBush : NBTPlant
 {
-    public override string name { get { return "DeadBush"; } }
+    public override string name => "Dead Bush";
 
-    public override void Init()
-    {
-        UsedTextures = new string[] { "deadbush" };
-    }
+    public override string id => "minecraft:deadbush";
 
     public override int GetPlantIndexByData(int data)
     {

@@ -118,11 +118,6 @@ public class NBTLog2 : NBTBlock
         }
     }
 
-    public override void Init()
-    {
-        UsedTextures = new string[] { "log_acacia_top", "log_acacia", "log_big_oak_top", "log_big_oak" };
-    }
-
     public override int GetTopIndexByData(NBTChunk chunk, int data)
     {
         switch (data)

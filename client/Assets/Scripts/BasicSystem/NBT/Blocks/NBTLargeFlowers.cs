@@ -25,23 +25,6 @@ public class NBTLargeFlowers : NBTPlant
         return Color.white;
     }
 
-    public override void Init()
-    {
-        UsedTextures = new string[]
-        {
-            "double_plant_grass_bottom",
-            "double_plant_grass_top",
-            "double_plant_fern_bottom",
-            "double_plant_fern_top",
-            "double_plant_syringa_bottom",
-            "double_plant_syringa_top",
-            "double_plant_rose_bottom",
-            "double_plant_rose_top",
-            "double_plant_paeonia_bottom",
-            "double_plant_paeonia_top",
-        };
-    }
-
     public override int GetPlantIndexByData(NBTChunk chunk, Vector3Int pos, int data)
     {
         switch (data)

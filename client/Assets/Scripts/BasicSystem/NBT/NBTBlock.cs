@@ -103,8 +103,6 @@ public abstract class NBTBlock : NBTObject
 
     public virtual void Init() { }
 
-    public string[] UsedTextures;
-
     public virtual BlockMaterial blockMaterial { get { return BlockMaterial.Default; } }
 
     public virtual SoundMaterial soundMaterial { get; }

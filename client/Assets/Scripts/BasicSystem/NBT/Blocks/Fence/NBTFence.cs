@@ -79,7 +79,7 @@ public class NBTFence : NBTBlock
         }
     }
 
-    public override Mesh GetItemMesh(NBTChunk chunk, byte blockData)
+    public override Mesh GetItemMesh(NBTChunk chunk, Vector3Int pos, byte data)
     {
         return meshes[0].mesh;
     }

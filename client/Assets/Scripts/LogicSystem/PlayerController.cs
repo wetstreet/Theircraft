@@ -268,7 +268,9 @@ public class PlayerController : MonoBehaviour
         {
             try
             {
-                Item.CreateBlockDropItem(generator.GetDropItemByData(WireFrameHelper.data), generator.GetDropItemData(WireFrameHelper.data), pos);
+                string id = generator.GetDropItemByData(WireFrameHelper.data);
+                byte data = generator.GetDropItemData(WireFrameHelper.data);
+                Item.CreateBlockDropItem(id, data, pos);
             }
             catch (System.Exception e)
             {

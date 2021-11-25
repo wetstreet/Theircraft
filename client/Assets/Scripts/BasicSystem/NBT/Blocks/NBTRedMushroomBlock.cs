@@ -7,11 +7,6 @@ public class NBTRedMushroomBlock : NBTBlock
     public override string name { get { return "Red Mushroom Block"; } }
     public override string id { get { return "minecraft:red_mushroom_block"; } }
 
-    public override void Init()
-    {
-        UsedTextures = new string[] { "mushroom_block_skin_red", "mushroom_block_inside", "mushroom_block_skin_stem" };
-    }
-
     public override float hardness { get { return 0.2f; } }
 
     public override int GetTopIndexByData(NBTChunk chunk, int data)

@@ -20,11 +20,6 @@ public class NBTMonsterEgg : NBTBlock
         throw new System.Exception("no icon,data=" + data);
     }
 
-    public override void Init()
-    {
-        UsedTextures = new string[] { "stone", "cobblestone" };
-    }
-
     public override float hardness { get { return 1.5f; } }
 
     public override SoundMaterial soundMaterial { get { return SoundMaterial.Stone; } }

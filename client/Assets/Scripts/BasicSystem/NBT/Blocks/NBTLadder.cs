@@ -10,11 +10,6 @@ public class NBTLadder : NBTBlock
     public override string pathPrefix => "GUI/block/";
     public override string GetIconPathByData(short data) { return "ladder"; }
 
-    public override void Init()
-    {
-        UsedTextures = new string[] { "ladder" };
-    }
-
     public override byte GetDropItemData(byte data) { return 0; }
 
     public override string GetBreakEffectTexture(byte data) { return "ladder"; }

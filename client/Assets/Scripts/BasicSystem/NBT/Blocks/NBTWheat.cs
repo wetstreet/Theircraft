@@ -9,11 +9,6 @@ public class NBTWheat : NBTCrops
 
     public override string GetIconPathByData(short data) { return "wheat"; }
 
-    public override void Init()
-    {
-        UsedTextures = new string[] { "wheat_stage_7" };
-    }
-
     public override int GetPlantIndexByData(int data)
     {
         return TextureArrayManager.GetIndexByName("wheat_stage_7");

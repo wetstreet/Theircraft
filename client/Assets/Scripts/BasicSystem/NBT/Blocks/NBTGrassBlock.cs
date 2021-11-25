@@ -10,11 +10,6 @@ public class NBTGrassBlock : NBTBlock
 
     public override string GetDropItemByData(byte data) { return "minecraft:dirt"; }
 
-    public override void Init()
-    {
-        UsedTextures = new string[] { "grass_top", "grass_side", "dirt", "snow", "grass_side_snowed" };
-    }
-
     public override string topName { get { return "grass_top"; } }
     public override string bottomName { get { return "dirt"; } }
     public override string frontName { get { return "grass_side"; } }

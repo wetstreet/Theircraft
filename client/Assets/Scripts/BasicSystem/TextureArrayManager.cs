@@ -6,6 +6,68 @@ public class TextureArrayManager
 {
     static Texture2DArray array;
 
+    static string[] usedTextures = new string[]
+    {
+        "mushroom_brown",
+        "mushroom_red",
+
+        "mushroom_block_skin_brown", "mushroom_block_inside", "mushroom_block_skin_stem",
+        "mushroom_block_skin_red", "mushroom_block_inside", "mushroom_block_skin_stem",
+
+        "carrots_stage_3",
+        "potatoes_stage_3",
+        "wheat_stage_7",
+
+        "deadbush",
+        "farmland_dry", "farmland_wet",
+        "grass_top", "grass_side", "dirt", "snow", "grass_side_snowed",
+        "ladder",
+
+        "double_plant_grass_bottom",
+        "double_plant_grass_top",
+        "double_plant_fern_bottom",
+        "double_plant_fern_top",
+        "double_plant_syringa_bottom",
+        "double_plant_syringa_top",
+        "double_plant_rose_bottom",
+        "double_plant_rose_top",
+        "double_plant_paeonia_bottom",
+        "double_plant_paeonia_top",
+
+        "leaves_oak", "leaves_spruce", "leaves_birch", "leaves_jungle",
+        "leaves_acacia", "leaves_big_oak",
+        "log_oak_top", "log_oak", "log_spruce_top", "log_spruce", "log_birch_top", "log_birch", "log_jungle_top", "log_jungle",
+        "log_acacia_top", "log_acacia", "log_big_oak_top", "log_big_oak",
+
+        "stone", "cobblestone",
+        "door_wood_lower", "door_wood_upper",
+        "planks_oak", "planks_spruce", "planks_birch", "planks_jungle", "planks_acacia", "planks_big_oak",
+
+        "flower_rose", "flower_houstonia", "flower_tulip_red", "flower_tulip_orange", "flower_tulip_pink", "flower_tulip_white", "flower_oxeye_daisy",
+        "flower_dandelion", "flower_oxeye_daisy", "flower_houstonia",
+
+        "sapling_oak", "sapling_spruce", "sapling_birch", "sapling_jungle",
+        "reeds",
+        "tallgrass",
+
+        "wool_colored_white",
+        "wool_colored_orange",
+        "wool_colored_magenta",
+        "wool_colored_light_blue",
+        "wool_colored_yellow",
+        "wool_colored_lime",
+        "wool_colored_pink",
+        "wool_colored_gray",
+        "wool_colored_silver",
+        "wool_colored_cyan",
+        "wool_colored_purple",
+        "wool_colored_blue",
+        "wool_colored_brown",
+        "wool_colored_green",
+        "wool_colored_red",
+        "wool_colored_black",
+};
+
     public static int GetIndexByName(string name)
     {
         if (name2index.ContainsKey(name))
@@ -36,12 +98,9 @@ public class TextureArrayManager
     {
         foreach (NBTBlock generator in NBTGeneratorManager.generatorDict.Values)
         {
-            if (generator.UsedTextures != null)
+            foreach (string name in usedTextures)
             {
-                foreach (string name in generator.UsedTextures)
-                {
-                    AddTexture(name);
-                }
+                AddTexture(name);
             }
             AddTexture(generator.frontName);
             AddTexture(generator.backName);

@@ -9,11 +9,6 @@ public class NBTOakDoor : NBTBlock
 
     public override string GetIconPathByData(short data) { return "door_wood"; }
 
-    public override void Init()
-    {
-        UsedTextures = new string[] { "door_wood_lower", "door_wood_upper" };
-    }
-
     public override byte GetDropItemData(byte data) { return 0; }
 
     public override string GetBreakEffectTexture(byte data) { return "door_wood_lower"; }

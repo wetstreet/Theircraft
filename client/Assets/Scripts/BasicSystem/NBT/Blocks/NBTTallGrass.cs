@@ -13,11 +13,6 @@ public class NBTTallGrass : NBTPlant
         return TintManager.tintColor;
     }
 
-    public override void Init()
-    {
-        UsedTextures = new string[] { "tallgrass" };
-    }
-
     public override int GetPlantIndexByData(int data)
     {
         return TextureArrayManager.GetIndexByName("tallgrass");
