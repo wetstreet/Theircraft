@@ -87,6 +87,7 @@ public class IconGenerator : EditorWindow
         AddGridItem(NBTGeneratorManager.GetMeshGenerator(126), 3);
         AddGridItem(NBTGeneratorManager.GetMeshGenerator(126), 4);
         AddGridItem(NBTGeneratorManager.GetMeshGenerator(126), 5);
+        AddGridItem(NBTGeneratorManager.GetMeshGenerator(129), 0);
         AddGridItem(NBTGeneratorManager.GetMeshGenerator(134), 0);
         AddGridItem(NBTGeneratorManager.GetMeshGenerator(135), 0);
         AddGridItem(NBTGeneratorManager.GetMeshGenerator(136), 0);

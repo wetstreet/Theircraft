@@ -83,6 +83,7 @@ public class NBTGeneratorManager : MonoBehaviour
             { 108, new NBTBrickStairs() },
             { 125, new NBTDoubleWoodenSlab() },
             { 126, new NBTWoodenSlab() },
+            { 129, new NBTEmeraldOre() },
             { 134, new NBTSpruceStairs() },
             { 135, new NBTBirchStairs() },
             { 136, new NBTJungleStairs() },

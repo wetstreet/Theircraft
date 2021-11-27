@@ -15,6 +15,8 @@ public class NBTSandStone : NBTBlock
     public override string leftName { get { return "sandstone_normal"; } }
     public override string rightName { get { return "sandstone_normal"; } }
 
+    public override BlockMaterial blockMaterial => BlockMaterial.RockI;
+
     public override SoundMaterial soundMaterial { get { return SoundMaterial.Stone; } }
 
     public override string GetBreakEffectTexture(byte data) { return "sandstone_normal"; }

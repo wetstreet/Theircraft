@@ -15,6 +15,10 @@ public class NBTGravel : NBTBlock
     public override string leftName { get { return "gravel"; } }
     public override string rightName { get { return "gravel"; } }
 
+    public override float hardness => 0.6f;
+
+    public override BlockMaterial blockMaterial => BlockMaterial.Ground;
+
     public override SoundMaterial soundMaterial { get { return SoundMaterial.Gravel; } }
 
     public override string GetBreakEffectTexture(byte data) { return "gravel"; }

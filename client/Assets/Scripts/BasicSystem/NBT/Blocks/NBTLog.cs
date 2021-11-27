@@ -310,4 +310,34 @@ public class NBTLog : NBTBlock
         }
         return texture;
     }
+
+    public override void OnAddBlock(RaycastHit hit)
+    {
+        Vector3Int pos = WireFrameHelper.pos + Vector3Int.RoundToInt(hit.normal);
+
+        if (CanAddBlock(pos))
+        {
+            PlayerController.instance.PlayHandAnimation();
+
+            byte type = NBTGeneratorManager.id2type[id];
+            byte data = (byte)InventorySystem.items[ItemSelectPanel.curIndex].damage;
+
+            if (hit.normal == Vector3.up || hit.normal == Vector3.down) 
+            {
+                data |= 0b0000;
+            }
+            else if (hit.normal == Vector3.left || hit.normal == Vector3.right)
+            {
+                data |= 0b0100;
+            }
+            else if (hit.normal == Vector3.back || hit.normal == Vector3.forward)
+            {
+                data |= 0b1000;
+            }
+            NBTHelper.SetBlockData(pos, type, data);
+
+            InventorySystem.DecrementCurrent();
+            ItemSelectPanel.instance.RefreshUI();
+        }
+    }
 }

@@ -258,6 +258,12 @@ public class PlayerController : MonoBehaviour
     float lastBreakTime;
     void BreakBlock(Vector3Int pos)
     {
+        if (Time.time - lastBreakTime < 0.1f)
+        {
+            return;
+        }
+        lastBreakTime = Time.time;
+
         breakingTime = 0;
 
         HideBreakingEffect();
@@ -428,7 +434,7 @@ public class PlayerController : MonoBehaviour
             {
                 BreakBlock(WireFrameHelper.pos);
             }
-            else
+            else if (breakNeedTime > 0)
             {
                 int curStage = Mathf.FloorToInt(breakingTime / (breakNeedTime / 12));
                 if (stage != curStage)
@@ -453,6 +459,11 @@ public class PlayerController : MonoBehaviour
                         ItemSelectPanel.instance.RefreshUI();
                     }
                 }
+            }
+            else
+            {
+                breakingTime = 0;
+                HideBreakingEffect();
             }
         }
         else
