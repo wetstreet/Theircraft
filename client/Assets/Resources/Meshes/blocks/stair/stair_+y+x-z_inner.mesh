@@ -6,7 +6,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: stair_joint_no_top_left
+  m_Name: stair_+y+x-z_inner
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2

@@ -458,24 +458,21 @@ public class NBTHelper
         }
         chunk.RebuildMesh(updateFlag);
 
-        if (type == 0 && !oldGenerator.isTransparent)
-        {
-            NBTChunk leftChunk = GetChunk(chunkX - 1, chunkZ);
-            if (xInChunk == 0)
-                leftChunk.RebuildMesh();
+        NBTChunk leftChunk = GetChunk(chunkX - 1, chunkZ);
+        if (xInChunk == 0)
+            leftChunk.RebuildMesh();
 
-            NBTChunk rightChunk = GetChunk(chunkX + 1, chunkZ);
-            if (xInChunk == 15)
-                rightChunk.RebuildMesh();
+        NBTChunk rightChunk = GetChunk(chunkX + 1, chunkZ);
+        if (xInChunk == 15)
+            rightChunk.RebuildMesh();
 
-            NBTChunk backChunk = GetChunk(chunkX, chunkZ - 1);
-            if (zInChunk == 0)
-                backChunk.RebuildMesh();
+        NBTChunk backChunk = GetChunk(chunkX, chunkZ - 1);
+        if (zInChunk == 0)
+            backChunk.RebuildMesh();
 
-            NBTChunk frontChunk = GetChunk(chunkX, chunkZ + 1);
-            if (zInChunk == 15)
-                frontChunk.RebuildMesh();
-        }
+        NBTChunk frontChunk = GetChunk(chunkX, chunkZ + 1);
+        if (zInChunk == 15)
+            frontChunk.RebuildMesh();
     }
 
     public static void SetBlockData(Vector3Int pos, byte type, byte data)
