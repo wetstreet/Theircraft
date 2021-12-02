@@ -210,6 +210,33 @@ public class NBTChunk
         RefreshMeshData(UpdateFlags.All);
     }
 
+    void AddCube(NBTBlock generator, byte blockData, UpdateFlags updateFlag)
+    {
+        UnityEngine.Profiling.Profiler.BeginSample("AddCube");
+        if (generator is NBTStationaryWater)
+        {
+            if (updateFlag.HasFlag(UpdateFlags.Water))
+            {
+                generator.AddCube(this, blockData, pos, water);
+            }
+        }
+        else if (generator is NBTPlant || generator is NBTSnowLayer)
+        {
+            if (updateFlag.HasFlag(UpdateFlags.NotCollidable))
+            {
+                generator.AddCube(this, blockData, pos, notCollidable);
+            }
+        }
+        else
+        {
+            if (updateFlag.HasFlag(UpdateFlags.Collidable))
+            {
+                generator.AddCube(this, blockData, pos, collidable);
+            }
+        }
+        UnityEngine.Profiling.Profiler.EndSample();
+    }
+
     Vector3Int pos = new Vector3Int();
     public void RefreshMeshData(UpdateFlags updateFlag = UpdateFlags.All)
     {
@@ -259,27 +286,7 @@ public class NBTChunk
                                 }
                                 else
                                 {
-                                    if (generator is NBTStationaryWater)
-                                    {
-                                        if (updateFlag.HasFlag(UpdateFlags.Water))
-                                        {
-                                            generator.AddCube(this, blockData, pos, water);
-                                        }
-                                    }
-                                    else if (generator is NBTPlant || generator is NBTSnowLayer)
-                                    {
-                                        if (updateFlag.HasFlag(UpdateFlags.NotCollidable))
-                                        {
-                                            generator.AddCube(this, blockData, pos, notCollidable);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        if (updateFlag.HasFlag(UpdateFlags.Collidable))
-                                        {
-                                            generator.AddCube(this, blockData, pos, collidable);
-                                        }
-                                    }
+                                    AddCube(generator, blockData, updateFlag);
                                 }
                             }
                             catch (System.Exception e)

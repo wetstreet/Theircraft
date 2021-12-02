@@ -35,7 +35,6 @@ public class NBTSnowLayer : NBTBlock
 
     public override void AddCube(NBTChunk chunk, byte blockData, Vector3Int pos, NBTGameObject nbtGO)
     {
-        CubeAttributes ca = new CubeAttributes();
         ca.pos = pos;
         ca.blockData = blockData;
 

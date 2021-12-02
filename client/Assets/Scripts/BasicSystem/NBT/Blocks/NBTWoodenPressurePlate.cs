@@ -44,9 +44,8 @@ public class NBTWoodenPressurePlate : NBTBlock
 
     public override void AddCube(NBTChunk chunk, byte data, Vector3Int pos, NBTGameObject nbtGO)
     {
-        CubeAttributes ca = new CubeAttributes();
         ca.pos = pos;
-        ca.worldPos = new Vector3Int(pos.x + chunk.x * 16, pos.y, pos.z + chunk.z * 16);
+        ca.worldPos.Set(pos.x + chunk.x * 16, pos.y, pos.z + chunk.z * 16);
         ca.blockData = data;
 
         FaceAttributes fa = new FaceAttributes();

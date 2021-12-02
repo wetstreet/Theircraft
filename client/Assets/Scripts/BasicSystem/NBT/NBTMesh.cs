@@ -8,6 +8,7 @@ public class NBTMesh
 {
     public NativeArray<Vertex> vertexArray;
     public NativeArray<ushort> triangleArray;
+    Vector3[] positions;
     public ushort vertexCount = 0;
     public ushort triangleCount = 0;
 
@@ -19,6 +20,7 @@ public class NBTMesh
         triangleArray = new NativeArray<ushort>(size, Allocator.Persistent);
 
         mesh = new Mesh();
+        positions = new Vector3[size];
     }
 
     public void Dispose()
@@ -34,6 +36,12 @@ public class NBTMesh
     }
 
     static VertexAttributeDescriptor[] vertexAttributes;
+    SubMeshDescriptor desc = new SubMeshDescriptor
+    {
+        indexStart = 0,
+        baseVertex = 0,
+        topology = MeshTopology.Triangles,
+    };
 
     public void Refresh()
     {
@@ -44,11 +52,11 @@ public class NBTMesh
             if (vertexAttributes == null)
             {
                 vertexAttributes = new[] {
-                new VertexAttributeDescriptor(VertexAttribute.Position, VertexAttributeFormat.Float32, 4, 0),
-                new VertexAttributeDescriptor(VertexAttribute.Normal, VertexAttributeFormat.Float32, 3, 0),
-                new VertexAttributeDescriptor(VertexAttribute.Color, VertexAttributeFormat.Float32, 4, 0),
-                new VertexAttributeDescriptor(VertexAttribute.TexCoord0, VertexAttributeFormat.Float32, 4, 0),
-            };
+                    new VertexAttributeDescriptor(VertexAttribute.Position, VertexAttributeFormat.Float32, 4, 0),
+                    new VertexAttributeDescriptor(VertexAttribute.Normal, VertexAttributeFormat.Float32, 3, 0),
+                    new VertexAttributeDescriptor(VertexAttribute.Color, VertexAttributeFormat.Float32, 4, 0),
+                    new VertexAttributeDescriptor(VertexAttribute.TexCoord0, VertexAttributeFormat.Float32, 4, 0),
+                };
             }
 
             mesh.SetVertexBufferParams(vertexCount, vertexAttributes);
@@ -73,18 +81,17 @@ public class NBTMesh
             }
 
             mesh.subMeshCount = 1;
-            SubMeshDescriptor desc = new SubMeshDescriptor();
-            desc.indexStart = 0;
             desc.indexCount = triangleCount;
-            desc.baseVertex = 0;
-            desc.topology = MeshTopology.Triangles;
             mesh.SetSubMesh(0, desc);
 
-            Vector3[] positions = new Vector3[vertexCount];
             for (int i = 0; i < vertexCount; i++)
             {
                 Vertex vert = vertexArray[i];
                 positions[i] = vert.pos;
+            }
+            for (int i = vertexCount; i < positions.Length; i++)
+            {
+                positions[i] = Vector3.zero;
             }
             Bounds bounds = GeometryUtility.CalculateBounds(positions, Matrix4x4.identity);
             mesh.bounds = bounds;

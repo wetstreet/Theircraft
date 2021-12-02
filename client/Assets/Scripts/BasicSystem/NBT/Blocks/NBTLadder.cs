@@ -70,7 +70,6 @@ public class NBTLadder : NBTBlock
 
     public override void AddCube(NBTChunk chunk, byte blockData, Vector3Int pos, NBTGameObject nbtGO)
     {
-        CubeAttributes ca = new CubeAttributes();
         ca.pos = pos;
         ca.blockData = blockData;
 
@@ -79,8 +78,6 @@ public class NBTLadder : NBTBlock
 
     public override Mesh GetBreakingEffectMesh(NBTChunk chunk, Vector3Int pos, byte blockData)
     {
-        CubeAttributes ca = new CubeAttributes();
-        //ca.pos = new Vector3Int(pos.x - chunk.x * 16, pos.y, pos.z - chunk.z * 16);
         ca.worldPos = pos;
         ca.blockData = blockData;
         ca.isBreakingMesh = true;

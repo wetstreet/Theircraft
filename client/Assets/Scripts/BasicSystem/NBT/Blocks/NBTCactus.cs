@@ -49,14 +49,11 @@ public class NBTCactus : NBTBlock
 
     public override void AddCube(NBTChunk chunk, byte blockData, Vector3Int localPosition, NBTGameObject nbtGO)
     {
-        CubeAttributes ca = new CubeAttributes();
         ca.pos = localPosition;
         ca.worldPos = new Vector3Int(localPosition.x + chunk.x * 16, localPosition.y, localPosition.z + chunk.z * 16);
         ca.blockData = blockData;
 
         InitBlockAttributes(chunk, ref ca);
-
-        UnityEngine.Profiling.Profiler.BeginSample("AddFaces");
 
         chunk.GetLights(localPosition.x, localPosition.y, localPosition.z, out float skyLight, out float blockLight);
 
@@ -66,50 +63,41 @@ public class NBTCactus : NBTBlock
 
         fa.uv = uv_zero;
 
-        try
-        {
-            fa.pos = frontVertices;
-            fa.normal = Vector3.forward;
-            fa.faceIndex = GetFrontIndexByData(chunk, ca.blockData);
-            fa.color = GetFrontTintColorByData(chunk, localPosition, ca.blockData);
-            AddFace(nbtGO.nbtMesh, fa, ca);
+        fa.pos = frontVertices;
+        fa.normal = Vector3.forward;
+        fa.faceIndex = GetFrontIndexByData(chunk, ca.blockData);
+        fa.color = GetFrontTintColorByData(chunk, localPosition, ca.blockData);
+        AddFace(nbtGO.nbtMesh, fa, ca);
 
-            fa.pos = backVertices;
-            fa.normal = Vector3.back;
-            fa.faceIndex = GetBackIndexByData(chunk, ca.blockData);
-            fa.color = GetBackTintColorByData(chunk, localPosition, ca.blockData);
-            AddFace(nbtGO.nbtMesh, fa, ca);
+        fa.pos = backVertices;
+        fa.normal = Vector3.back;
+        fa.faceIndex = GetBackIndexByData(chunk, ca.blockData);
+        fa.color = GetBackTintColorByData(chunk, localPosition, ca.blockData);
+        AddFace(nbtGO.nbtMesh, fa, ca);
 
-            fa.pos = topVertices;
-            fa.normal = Vector3.up;
-            fa.faceIndex = GetTopIndexByData(chunk, ca.blockData);
-            fa.color = GetTopTintColorByData(chunk, localPosition, ca.blockData);
-            AddFace(nbtGO.nbtMesh, fa, ca);
+        fa.pos = topVertices;
+        fa.normal = Vector3.up;
+        fa.faceIndex = GetTopIndexByData(chunk, ca.blockData);
+        fa.color = GetTopTintColorByData(chunk, localPosition, ca.blockData);
+        AddFace(nbtGO.nbtMesh, fa, ca);
 
-            fa.pos = bottomVertices;
-            fa.normal = Vector3.down;
-            fa.faceIndex = GetBottomIndexByData(chunk, ca.blockData);
-            fa.color = GetBottomTintColorByData(chunk, localPosition, ca.blockData);
-            AddFace(nbtGO.nbtMesh, fa, ca);
+        fa.pos = bottomVertices;
+        fa.normal = Vector3.down;
+        fa.faceIndex = GetBottomIndexByData(chunk, ca.blockData);
+        fa.color = GetBottomTintColorByData(chunk, localPosition, ca.blockData);
+        AddFace(nbtGO.nbtMesh, fa, ca);
 
-            fa.pos = leftVertices;
-            fa.normal = Vector3.left;
-            fa.faceIndex = GetLeftIndexByData(chunk, ca.blockData);
-            fa.color = GetLeftTintColorByData(chunk, localPosition, ca.blockData);
-            AddFace(nbtGO.nbtMesh, fa, ca);
+        fa.pos = leftVertices;
+        fa.normal = Vector3.left;
+        fa.faceIndex = GetLeftIndexByData(chunk, ca.blockData);
+        fa.color = GetLeftTintColorByData(chunk, localPosition, ca.blockData);
+        AddFace(nbtGO.nbtMesh, fa, ca);
 
-            fa.pos = rightVertices;
-            fa.normal = Vector3.right;
-            fa.faceIndex = GetRightIndexByData(chunk, ca.blockData);
-            fa.color = GetRightTintColorByData(chunk, localPosition, ca.blockData);
-            AddFace(nbtGO.nbtMesh, fa, ca);
-        }
-        catch (System.Exception e)
-        {
-            Debug.LogError("GetItemMesh error,generator=" + GetType() + ",message=\n" + e.Message);
-        }
-
-        UnityEngine.Profiling.Profiler.EndSample();
+        fa.pos = rightVertices;
+        fa.normal = Vector3.right;
+        fa.faceIndex = GetRightIndexByData(chunk, ca.blockData);
+        fa.color = GetRightTintColorByData(chunk, localPosition, ca.blockData);
+        AddFace(nbtGO.nbtMesh, fa, ca);
     }
 
     public override Mesh GetItemMesh(byte data = 0)

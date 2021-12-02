@@ -23,12 +23,14 @@ public class NBTStationaryWater : NBTBlock
         return type == TYPE_WATER && data >= 9 && data <= 15;
     }
 
+    protected FaceAttributes fa = new FaceAttributes()
+    {
+        pos = new Vector3[4]
+    };
     public override void AddCube(NBTChunk chunk, byte blockData, Vector3Int pos, NBTGameObject nbtGO)
     {
-        CubeAttributes ca = new CubeAttributes();
         ca.pos = pos;
         ca.blockData = blockData;
-
 
         chunk.GetBlockData(pos.x, pos.y, pos.z - 1, out byte frontType, out byte frontData);
         chunk.GetBlockData(pos.x, pos.y, pos.z + 1, out byte backType, out byte backData);
@@ -39,16 +41,12 @@ public class NBTStationaryWater : NBTBlock
 
         bool selfIsVerticalWater = IsVerticalWater(blockData);
 
-        UnityEngine.Profiling.Profiler.BeginSample("AddFaces");
-
         chunk.GetLights(pos.x, pos.y, pos.z, out float skyLight, out float blockLight);
 
-        FaceAttributes fa = new FaceAttributes();
         fa.color = Color.white;
         fa.skyLight = skylight_default;
         fa.blockLight = blocklight_default;
         fa.uv = uv_zero;
-        fa.pos = new Vector3[4];
 
         if (NBTGeneratorManager.IsTransparent(frontType) && frontType != TYPE_WATER)
         {
@@ -142,13 +140,6 @@ public class NBTStationaryWater : NBTBlock
                 bool frontIsVerticalWater = IsVerticalWater(frontData, frontType);
                 bool backIsVerticalWater = IsVerticalWater(backData, backType);
 
-                int worldX = pos.x + chunk.x * 16;
-                int worldZ = pos.z + chunk.z * 16;
-                if (worldX == 420 && pos.y == 62 && worldZ == 207)
-                {
-                    Debug.Log("backIsVerticalWater=" + backIsVerticalWater + ",backData="+ backData+",backType="+backType);
-                }
-
                 fa.pos[0] = backIsVerticalWater || rightIsVerticalWater ? farTopRight : farTopRight_still;
                 fa.pos[1] = frontIsVerticalWater || rightIsVerticalWater ? nearTopRight : nearTopRight_still;
                 fa.pos[2] = frontIsVerticalWater || leftIsVerticalWater ? nearTopLeft : nearTopLeft_still;
@@ -166,7 +157,5 @@ public class NBTStationaryWater : NBTBlock
             fa.normal = Vector3.down;
             AddFace(nbtGO.nbtMesh, fa, ca);
         }
-
-        UnityEngine.Profiling.Profiler.EndSample();
     }
 }

@@ -55,7 +55,8 @@ public class ChunkRefresher
             NBTChunk chunk = GetFirstChunk(refreshChunkList);
             if (chunk != null)
             {
-                chunk.RebuildMeshAsync();
+                //chunk.RebuildMeshAsync();
+                chunk.RebuildMesh();
                 refreshChunkList.Remove(chunk);
             }
 

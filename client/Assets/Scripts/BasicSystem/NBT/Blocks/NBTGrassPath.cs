@@ -45,15 +45,10 @@ public class NBTGrassPath : NBTBlock
 
     public override void AddCube(NBTChunk chunk, byte blockData, Vector3Int pos, NBTGameObject nbtGO)
     {
-        CubeAttributes ca = new CubeAttributes()
-        {
-            pos = pos,
-            blockData = blockData,
-        };
+        ca.pos = pos;
+        ca.blockData = blockData;
 
         InitBlockAttributes(chunk, ref ca);
-
-        UnityEngine.Profiling.Profiler.BeginSample("AddFaces");
 
         if (!chunk.HasOpaqueBlock(pos.x, pos.y, pos.z - 1))
         {
@@ -94,8 +89,6 @@ public class NBTGrassPath : NBTBlock
             FaceAttributes fa = GetBottomFaceAttributes(chunk, nbtGO.nbtMesh, ca);
             AddFace(nbtGO.nbtMesh, fa, ca);
         }
-
-        UnityEngine.Profiling.Profiler.EndSample();
     }
 
     public override Mesh GetItemMesh(byte data = 0)

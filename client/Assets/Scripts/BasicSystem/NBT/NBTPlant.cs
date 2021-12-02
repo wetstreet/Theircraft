@@ -44,33 +44,32 @@ public class NBTPlant : NBTBlock
     protected virtual int size { get { return 8; } }
     protected virtual int height { get { return 16; } }
 
+    public override void Init()
+    {
+        float unit = size * 0.0625f;
+        float top = -0.5f + height * 0.0625f;
+        corners = new PlantCorners
+        {
+            nearBottomLeft = new Vector3(-unit, -0.5f, -unit),
+            nearBottomRight = new Vector3(unit, -0.5f, -unit),
+            nearTopLeft = new Vector3(-unit, top, -unit),
+            nearTopRight = new Vector3(unit, top, -unit),
+            farBottomLeft = new Vector3(-unit, -0.5f, unit),
+            farBottomRight = new Vector3(unit, -0.5f, unit),
+            farTopLeft = new Vector3(-unit, top, unit),
+            farTopRight = new Vector3(unit, top, unit),
+            bottomLeftUV = new Vector2(0.5f - size * 0.0625f, 0),
+            bottomRightUV = new Vector2(0.5f + size * 0.0625f, 0),
+            topLeftUV = new Vector2(0.5f - size * 0.0625f, height * 0.0625f),
+            topRightUV = new Vector2(0.5f + size * 0.0625f, height * 0.0625f),
+        };
+        diagonalFace = new Vector3[] { corners.farBottomLeft, corners.farTopLeft, corners.nearTopRight, corners.nearBottomRight };
+        antiDiagonalFace = new Vector3[] { corners.nearBottomLeft, corners.nearTopLeft, corners.farTopRight, corners.farBottomRight };
+        uv_plant = new Vector2[] { corners.bottomLeftUV, corners.topLeftUV, corners.topRightUV, corners.bottomRightUV };
+    }
 
     public override void AddCube(NBTChunk chunk, byte blockData, Vector3Int pos, NBTGameObject nbtGO)
     {
-        if (corners == null)
-        {
-            float unit = size * 0.0625f;
-            float top = -0.5f + height * 0.0625f;
-            corners = new PlantCorners
-            {
-                nearBottomLeft = new Vector3(-unit, -0.5f, -unit),
-                nearBottomRight = new Vector3(unit, -0.5f, -unit),
-                nearTopLeft = new Vector3(-unit, top, -unit),
-                nearTopRight = new Vector3(unit, top, -unit),
-                farBottomLeft = new Vector3(-unit, -0.5f, unit),
-                farBottomRight = new Vector3(unit, -0.5f, unit),
-                farTopLeft = new Vector3(-unit, top, unit),
-                farTopRight = new Vector3(unit, top, unit),
-                bottomLeftUV = new Vector2(0.5f - size * 0.0625f, 0),
-                bottomRightUV = new Vector2(0.5f + size * 0.0625f, 0),
-                topLeftUV = new Vector2(0.5f - size * 0.0625f, height * 0.0625f),
-                topRightUV = new Vector2(0.5f + size * 0.0625f, height * 0.0625f),
-            };
-            diagonalFace = new Vector3[] { corners.farBottomLeft, corners.farTopLeft, corners.nearTopRight, corners.nearBottomRight };
-            antiDiagonalFace = new Vector3[] { corners.nearBottomLeft, corners.nearTopLeft, corners.farTopRight, corners.farBottomRight };
-            uv_plant = new Vector2[] { corners.bottomLeftUV, corners.topLeftUV, corners.topRightUV, corners.bottomRightUV };
-        }
-        CubeAttributes ca = new CubeAttributes();
         ca.pos = pos;
         ca.blockData = blockData;
 
@@ -91,36 +90,56 @@ public class NBTPlant : NBTBlock
     Vector3[] diagonalFace;
     Vector3[] antiDiagonalFace;
 
+    FaceAttributes diagonalFA = new FaceAttributes()
+    {
+        skyLight = new float[4],
+        blockLight = new float[4],
+    };
     void AddDiagonalFace(NBTChunk chunk, NBTMesh mesh, CubeAttributes ca)
     {
         chunk.GetLights(ca.pos.x, ca.pos.y, ca.pos.z, out float skyLight, out float blockLight);
 
-        FaceAttributes fa = new FaceAttributes();
-        fa.pos = diagonalFace;
-        fa.faceIndex = GetPlantIndexByData(chunk, ca.pos, ca.blockData);
-        fa.color = GetTintColorByData(chunk, ca.pos, ca.blockData);
-        fa.skyLight = new float[] { skyLight, skyLight, skyLight, skyLight };
-        fa.blockLight = new float[] { blockLight, blockLight, blockLight, blockLight };
-        fa.normal = Vector3.zero;
-        fa.uv = uv_plant;
+        diagonalFA.pos = diagonalFace;
+        diagonalFA.faceIndex = GetPlantIndexByData(chunk, ca.pos, ca.blockData);
+        diagonalFA.color = GetTintColorByData(chunk, ca.pos, ca.blockData);
+        diagonalFA.skyLight[0] = skyLight;
+        diagonalFA.skyLight[1] = skyLight;
+        diagonalFA.skyLight[2] = skyLight;
+        diagonalFA.skyLight[3] = skyLight;
+        diagonalFA.blockLight[0] = blockLight;
+        diagonalFA.blockLight[1] = blockLight;
+        diagonalFA.blockLight[2] = blockLight;
+        diagonalFA.blockLight[3] = blockLight;
+        diagonalFA.normal = Vector3.zero;
+        diagonalFA.uv = uv_plant;
 
-        AddFace(mesh, fa, ca);
+        AddFace(mesh, diagonalFA, ca);
     }
 
+    FaceAttributes antidiagonalFA = new FaceAttributes()
+    {
+        skyLight = new float[4],
+        blockLight = new float[4],
+    };
     void AddAntiDiagonalFace(NBTChunk chunk, NBTMesh mesh, CubeAttributes ca)
     {
         chunk.GetLights(ca.pos.x, ca.pos.y, ca.pos.z, out float skyLight, out float blockLight);
 
-        FaceAttributes fa = new FaceAttributes();
-        fa.pos = antiDiagonalFace;
-        fa.faceIndex = GetPlantIndexByData(chunk, ca.pos, ca.blockData);
-        fa.color = GetTintColorByData(chunk, ca.pos, ca.blockData);
-        fa.skyLight = new float[] { skyLight, skyLight, skyLight, skyLight };
-        fa.blockLight = new float[] { blockLight, blockLight, blockLight, blockLight };
-        fa.normal = Vector3.zero;
-        fa.uv = uv_plant;
+        antidiagonalFA.pos = antiDiagonalFace;
+        antidiagonalFA.faceIndex = GetPlantIndexByData(chunk, ca.pos, ca.blockData);
+        antidiagonalFA.color = GetTintColorByData(chunk, ca.pos, ca.blockData);
+        antidiagonalFA.skyLight[0] = skyLight;
+        antidiagonalFA.skyLight[1] = skyLight;
+        antidiagonalFA.skyLight[2] = skyLight;
+        antidiagonalFA.skyLight[3] = skyLight;
+        antidiagonalFA.blockLight[0] = blockLight;
+        antidiagonalFA.blockLight[1] = blockLight;
+        antidiagonalFA.blockLight[2] = blockLight;
+        antidiagonalFA.blockLight[3] = blockLight;
+        antidiagonalFA.normal = Vector3.zero;
+        antidiagonalFA.uv = uv_plant;
 
-        AddFace(mesh, fa, ca);
+        AddFace(mesh, antidiagonalFA, ca);
     }
     
     public override string pathPrefix { get { return "GUI/block/"; } }

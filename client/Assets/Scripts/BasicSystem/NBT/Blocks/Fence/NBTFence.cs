@@ -61,6 +61,8 @@ public class NBTFence : NBTBlock
 
     public override void AddCube(NBTChunk chunk, byte blockData, Vector3Int pos, NBTGameObject nbtGO)
     {
+        UnityEngine.Profiling.Profiler.BeginSample(GetType().Name + " AddCube");
+
         int faceIndex = TextureArrayManager.GetIndexByName(fenceName);
 
         MeshData mesh = GetMesh(chunk, pos);
@@ -77,6 +79,8 @@ public class NBTFence : NBTBlock
         {
             nbtMesh.triangleArray[nbtMesh.triangleCount++] = (ushort)(startIndex + index);
         }
+
+        UnityEngine.Profiling.Profiler.EndSample();
     }
 
     public override Mesh GetItemMesh(NBTChunk chunk, Vector3Int pos, byte data)

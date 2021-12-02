@@ -346,6 +346,8 @@ public abstract class NBTBlock : NBTObject
 
     protected void InitBlockAttributes(NBTChunk chunk, ref CubeAttributes ca)
     {
+        UnityEngine.Profiling.Profiler.BeginSample("InitBlockAttributes");
+
         ca.front = InitBlockLightAttributes(chunk, ca.pos.x, ca.pos.y, ca.pos.z - 1);
         ca.front = InitBlockLightAttributes(chunk, ca.pos.x, ca.pos.y, ca.pos.z - 1);
         ca.back = InitBlockLightAttributes(chunk, ca.pos.x, ca.pos.y, ca.pos.z + 1);
@@ -380,18 +382,17 @@ public abstract class NBTBlock : NBTObject
             ca.bottomLeft = InitBlockLightAttributes(chunk, ca.pos.x - 1, ca.pos.y - 1, ca.pos.z);
             ca.bottomRight = InitBlockLightAttributes(chunk, ca.pos.x + 1, ca.pos.y - 1, ca.pos.z);
         }
+        UnityEngine.Profiling.Profiler.EndSample();
     }
 
+    protected CubeAttributes ca = new CubeAttributes();
     public virtual void AddCube(NBTChunk chunk, byte blockData, Vector3Int pos, NBTGameObject nbtGO)
     {
-        CubeAttributes ca = new CubeAttributes();
         ca.pos = pos;
-        ca.worldPos = new Vector3Int(pos.x + chunk.x * 16, pos.y, pos.z + chunk.z * 16);
+        ca.worldPos.Set(pos.x + chunk.x * 16, pos.y, pos.z + chunk.z * 16);
         ca.blockData = blockData;
 
         InitBlockAttributes(chunk, ref ca);
-
-        UnityEngine.Profiling.Profiler.BeginSample("AddFaces");
 
         if (ca.front.exist == 0)
         {
@@ -423,8 +424,6 @@ public abstract class NBTBlock : NBTObject
             FaceAttributes fa = GetBottomFaceAttributes(chunk, nbtGO.nbtMesh, ca);
             AddFace(nbtGO.nbtMesh, fa, ca);
         }
-
-        UnityEngine.Profiling.Profiler.EndSample();
     }
 
     protected void SetVertex(NBTMesh mesh, Vector3 pos, int faceIndex, Vector2 texcoord,
@@ -446,6 +445,7 @@ public abstract class NBTBlock : NBTObject
 
     protected void AddFace(NBTMesh mesh, FaceAttributes fa, CubeAttributes ca)
     {
+        UnityEngine.Profiling.Profiler.BeginSample("AddFace");
         ushort startIndex = mesh.vertexCount;
 
         if (fa.skyLight == null)
@@ -468,175 +468,202 @@ public abstract class NBTBlock : NBTObject
         mesh.triangleArray[mesh.triangleCount++] = startIndex;
         mesh.triangleArray[mesh.triangleCount++] = (ushort)(startIndex + 2);
         mesh.triangleArray[mesh.triangleCount++] = (ushort)(startIndex + 3);
+        UnityEngine.Profiling.Profiler.EndSample();
     }
 
+    FaceAttributes frontFA = new FaceAttributes()
+    {
+        skyLight = new float[4],
+        blockLight = new float[4]
+    };
     protected virtual FaceAttributes GetFrontFaceAttributes(NBTChunk chunk, NBTMesh mesh, CubeAttributes ca)
     {
-        FaceAttributes fa = new FaceAttributes();
-        fa.pos = frontVertices;
-        fa.faceIndex = GetFrontIndexByData(chunk, ca.blockData);
-        fa.color = GetFrontTintColorByData(chunk, ca.pos, ca.blockData);
-        fa.normal = Vector3.forward;
+        UnityEngine.Profiling.Profiler.BeginSample("GetFrontFaceAttributes");
+
+        frontFA.pos = frontVertices;
+        frontFA.faceIndex = GetFrontIndexByData(chunk, ca.blockData);
+        frontFA.color = GetFrontTintColorByData(chunk, ca.pos, ca.blockData);
+        frontFA.normal = Vector3.forward;
 
         //nearBottomLeft, nearTopLeft, nearTopRight, nearBottomRight
-        fa.skyLight = new float[4];
-        fa.skyLight[0] = (ca.front.skyLight + ca.frontBottom.skyLight + ca.frontLeft.skyLight + ca.frontBottomLeft.skyLight) / 60.0f;
-        fa.skyLight[1] = (ca.front.skyLight + ca.frontTop.skyLight + ca.frontLeft.skyLight + ca.frontTopLeft.skyLight) / 60.0f;
-        fa.skyLight[2] = (ca.front.skyLight + ca.frontTop.skyLight + ca.frontRight.skyLight + ca.frontTopRight.skyLight) / 60.0f;
-        fa.skyLight[3] = (ca.front.skyLight + ca.frontBottom.skyLight + ca.frontRight.skyLight + ca.frontBottomRight.skyLight) / 60.0f;
-        fa.blockLight = new float[4];
-        fa.blockLight[0] = (ca.front.blockLight + ca.frontBottom.blockLight + ca.frontLeft.blockLight + ca.frontBottomLeft.blockLight) / 60.0f;
-        fa.blockLight[1] = (ca.front.blockLight + ca.frontTop.blockLight + ca.frontLeft.blockLight + ca.frontTopLeft.blockLight) / 60.0f;
-        fa.blockLight[2] = (ca.front.blockLight + ca.frontTop.blockLight + ca.frontRight.blockLight + ca.frontTopRight.blockLight) / 60.0f;
-        fa.blockLight[3] = (ca.front.blockLight + ca.frontBottom.blockLight + ca.frontRight.blockLight + ca.frontBottomRight.blockLight) / 60.0f;
+        frontFA.skyLight[0] = (ca.front.skyLight + ca.frontBottom.skyLight + ca.frontLeft.skyLight + ca.frontBottomLeft.skyLight) / 60.0f;
+        frontFA.skyLight[1] = (ca.front.skyLight + ca.frontTop.skyLight + ca.frontLeft.skyLight + ca.frontTopLeft.skyLight) / 60.0f;
+        frontFA.skyLight[2] = (ca.front.skyLight + ca.frontTop.skyLight + ca.frontRight.skyLight + ca.frontTopRight.skyLight) / 60.0f;
+        frontFA.skyLight[3] = (ca.front.skyLight + ca.frontBottom.skyLight + ca.frontRight.skyLight + ca.frontBottomRight.skyLight) / 60.0f;
+        frontFA.blockLight[0] = (ca.front.blockLight + ca.frontBottom.blockLight + ca.frontLeft.blockLight + ca.frontBottomLeft.blockLight) / 60.0f;
+        frontFA.blockLight[1] = (ca.front.blockLight + ca.frontTop.blockLight + ca.frontLeft.blockLight + ca.frontTopLeft.blockLight) / 60.0f;
+        frontFA.blockLight[2] = (ca.front.blockLight + ca.frontTop.blockLight + ca.frontRight.blockLight + ca.frontTopRight.blockLight) / 60.0f;
+        frontFA.blockLight[3] = (ca.front.blockLight + ca.frontBottom.blockLight + ca.frontRight.blockLight + ca.frontBottomRight.blockLight) / 60.0f;
 
         Rotation rotation = GetFrontRotationByData(ca.blockData);
         if (rotation == Rotation.Right)
-            fa.uv = uv_right;
+            frontFA.uv = uv_right;
         else
-            fa.uv = uv_zero;
+            frontFA.uv = uv_zero;
 
-        return fa;
+        UnityEngine.Profiling.Profiler.EndSample();
+
+        return frontFA;
     }
+    FaceAttributes backFA = new FaceAttributes()
+    {
+        skyLight = new float[4],
+        blockLight = new float[4]
+    };
     protected virtual FaceAttributes GetBackFaceAttributes(NBTChunk chunk, NBTMesh mesh, CubeAttributes ca)
     {
-        FaceAttributes fa = new FaceAttributes();
-        fa.pos = backVertices;
-        fa.faceIndex = GetBackIndexByData(chunk, ca.blockData);
-        fa.color = GetBackTintColorByData(chunk, ca.pos, ca.blockData);
-        fa.normal = Vector3.back;
+        UnityEngine.Profiling.Profiler.BeginSample("GetBackFaceAttributes");
+        backFA.pos = backVertices;
+        backFA.faceIndex = GetBackIndexByData(chunk, ca.blockData);
+        backFA.color = GetBackTintColorByData(chunk, ca.pos, ca.blockData);
+        backFA.normal = Vector3.back;
 
         //farBottomRight, farTopRight, farTopLeft, farBottomLeft
-        fa.skyLight = new float[4];
-        fa.skyLight[0] = (ca.back.skyLight + ca.backBottom.skyLight + ca.backRight.skyLight + ca.backBottomRight.skyLight) / 60.0f;
-        fa.skyLight[1] = (ca.back.skyLight + ca.backTop.skyLight + ca.backRight.skyLight + ca.backTopRight.skyLight) / 60.0f;
-        fa.skyLight[2] = (ca.back.skyLight + ca.backTop.skyLight + ca.backLeft.skyLight + ca.backTopLeft.skyLight) / 60.0f;
-        fa.skyLight[3] = (ca.back.skyLight + ca.backBottom.skyLight + ca.backLeft.skyLight + ca.backBottomLeft.skyLight) / 60.0f;
-        fa.blockLight = new float[4];
-        fa.blockLight[0] = (ca.back.blockLight + ca.backBottom.blockLight + ca.backRight.blockLight + ca.backBottomRight.blockLight) / 60.0f;
-        fa.blockLight[1] = (ca.back.blockLight + ca.backTop.blockLight + ca.backRight.blockLight + ca.backTopRight.blockLight) / 60.0f;
-        fa.blockLight[2] = (ca.back.blockLight + ca.backTop.blockLight + ca.backLeft.blockLight + ca.backTopLeft.blockLight) / 60.0f;
-        fa.blockLight[3] = (ca.back.blockLight + ca.backBottom.blockLight + ca.backLeft.blockLight + ca.backBottomLeft.blockLight) / 60.0f;
+        backFA.skyLight[0] = (ca.back.skyLight + ca.backBottom.skyLight + ca.backRight.skyLight + ca.backBottomRight.skyLight) / 60.0f;
+        backFA.skyLight[1] = (ca.back.skyLight + ca.backTop.skyLight + ca.backRight.skyLight + ca.backTopRight.skyLight) / 60.0f;
+        backFA.skyLight[2] = (ca.back.skyLight + ca.backTop.skyLight + ca.backLeft.skyLight + ca.backTopLeft.skyLight) / 60.0f;
+        backFA.skyLight[3] = (ca.back.skyLight + ca.backBottom.skyLight + ca.backLeft.skyLight + ca.backBottomLeft.skyLight) / 60.0f;
+        backFA.blockLight[0] = (ca.back.blockLight + ca.backBottom.blockLight + ca.backRight.blockLight + ca.backBottomRight.blockLight) / 60.0f;
+        backFA.blockLight[1] = (ca.back.blockLight + ca.backTop.blockLight + ca.backRight.blockLight + ca.backTopRight.blockLight) / 60.0f;
+        backFA.blockLight[2] = (ca.back.blockLight + ca.backTop.blockLight + ca.backLeft.blockLight + ca.backTopLeft.blockLight) / 60.0f;
+        backFA.blockLight[3] = (ca.back.blockLight + ca.backBottom.blockLight + ca.backLeft.blockLight + ca.backBottomLeft.blockLight) / 60.0f;
 
         Rotation rotation = GetFrontRotationByData(ca.blockData);
         if (rotation == Rotation.Right)
-            fa.uv = uv_right;
+            backFA.uv = uv_right;
         else
-            fa.uv = uv_zero;
+            backFA.uv = uv_zero;
+        UnityEngine.Profiling.Profiler.EndSample();
 
-        return fa;
+        return backFA;
     }
+    FaceAttributes topFA = new FaceAttributes()
+    {
+        skyLight = new float[4],
+        blockLight = new float[4]
+    };
     protected virtual FaceAttributes GetTopFaceAttributes(NBTChunk chunk, NBTMesh mesh, CubeAttributes ca)
     {
-        FaceAttributes fa = new FaceAttributes();
-        fa.pos = topVertices;
-        fa.faceIndex = GetTopIndexByData(chunk, ca.blockData);
-        fa.color = GetTopTintColorByData(chunk, ca.pos, ca.blockData);
-        fa.normal = Vector3.up;
+        UnityEngine.Profiling.Profiler.BeginSample("GetTopFaceAttributes");
+        topFA.pos = topVertices;
+        topFA.faceIndex = GetTopIndexByData(chunk, ca.blockData);
+        topFA.color = GetTopTintColorByData(chunk, ca.pos, ca.blockData);
+        topFA.normal = Vector3.up;
 
         //farTopRight, nearTopRight, nearTopLeft, farTopLeft
-        fa.skyLight = new float[4];
-        fa.skyLight[0] = (ca.top.skyLight + ca.backTop.skyLight + ca.topRight.skyLight + ca.backTopRight.skyLight) / 60.0f;
-        fa.skyLight[1] = (ca.top.skyLight + ca.frontTop.skyLight + ca.topRight.skyLight + ca.frontTopRight.skyLight) / 60.0f;
-        fa.skyLight[2] = (ca.top.skyLight + ca.frontTop.skyLight + ca.topLeft.skyLight + ca.frontTopLeft.skyLight) / 60.0f;
-        fa.skyLight[3] = (ca.top.skyLight + ca.backTop.skyLight + ca.topLeft.skyLight + ca.backTopLeft.skyLight) / 60.0f;
-        fa.blockLight = new float[4];
-        fa.blockLight[0] = (ca.top.blockLight + ca.backTop.blockLight + ca.topRight.blockLight + ca.backTopRight.blockLight) / 60.0f;
-        fa.blockLight[1] = (ca.top.blockLight + ca.frontTop.blockLight + ca.topRight.blockLight + ca.frontTopRight.blockLight) / 60.0f;
-        fa.blockLight[2] = (ca.top.blockLight + ca.frontTop.blockLight + ca.topLeft.blockLight + ca.frontTopLeft.blockLight) / 60.0f;
-        fa.blockLight[3] = (ca.top.blockLight + ca.backTop.blockLight + ca.topLeft.blockLight + ca.backTopLeft.blockLight) / 60.0f;
+        topFA.skyLight[0] = (ca.top.skyLight + ca.backTop.skyLight + ca.topRight.skyLight + ca.backTopRight.skyLight) / 60.0f;
+        topFA.skyLight[1] = (ca.top.skyLight + ca.frontTop.skyLight + ca.topRight.skyLight + ca.frontTopRight.skyLight) / 60.0f;
+        topFA.skyLight[2] = (ca.top.skyLight + ca.frontTop.skyLight + ca.topLeft.skyLight + ca.frontTopLeft.skyLight) / 60.0f;
+        topFA.skyLight[3] = (ca.top.skyLight + ca.backTop.skyLight + ca.topLeft.skyLight + ca.backTopLeft.skyLight) / 60.0f;
+        topFA.blockLight[0] = (ca.top.blockLight + ca.backTop.blockLight + ca.topRight.blockLight + ca.backTopRight.blockLight) / 60.0f;
+        topFA.blockLight[1] = (ca.top.blockLight + ca.frontTop.blockLight + ca.topRight.blockLight + ca.frontTopRight.blockLight) / 60.0f;
+        topFA.blockLight[2] = (ca.top.blockLight + ca.frontTop.blockLight + ca.topLeft.blockLight + ca.frontTopLeft.blockLight) / 60.0f;
+        topFA.blockLight[3] = (ca.top.blockLight + ca.backTop.blockLight + ca.topLeft.blockLight + ca.backTopLeft.blockLight) / 60.0f;
 
         Rotation rotation = GetFrontRotationByData(ca.blockData);
         if (rotation == Rotation.Right)
-            fa.uv = uv_right;
+            topFA.uv = uv_right;
         else
-            fa.uv = uv_zero;
+            topFA.uv = uv_zero;
+        UnityEngine.Profiling.Profiler.EndSample();
 
-        return fa;
+        return topFA;
     }
+    FaceAttributes bottomFA = new FaceAttributes()
+    {
+        skyLight = new float[4],
+        blockLight = new float[4]
+    };
     protected virtual FaceAttributes GetBottomFaceAttributes(NBTChunk chunk, NBTMesh mesh, CubeAttributes ca)
     {
-        FaceAttributes fa = new FaceAttributes();
-        fa.pos = bottomVertices;
-        fa.faceIndex = GetBottomIndexByData(chunk, ca.blockData);
-        fa.color = GetBottomTintColorByData(chunk, ca.pos, ca.blockData);
-        fa.normal = Vector3.down;
+        UnityEngine.Profiling.Profiler.BeginSample("GetBottomFaceAttributes");
+        bottomFA.pos = bottomVertices;
+        bottomFA.faceIndex = GetBottomIndexByData(chunk, ca.blockData);
+        bottomFA.color = GetBottomTintColorByData(chunk, ca.pos, ca.blockData);
+        bottomFA.normal = Vector3.down;
 
         //nearBottomRight, farBottomRight, farBottomLeft, nearBottomLeft
-        fa.skyLight = new float[4];
-        fa.skyLight[0] = (ca.bottom.skyLight + ca.frontBottom.skyLight + ca.bottomRight.skyLight + ca.frontBottomRight.skyLight) / 60.0f;
-        fa.skyLight[1] = (ca.bottom.skyLight + ca.backBottom.skyLight + ca.bottomRight.skyLight + ca.backBottomRight.skyLight) / 60.0f;
-        fa.skyLight[2] = (ca.bottom.skyLight + ca.backBottom.skyLight + ca.bottomLeft.skyLight + ca.backBottomLeft.skyLight) / 60.0f;
-        fa.skyLight[3] = (ca.bottom.skyLight + ca.frontBottom.skyLight + ca.bottomLeft.skyLight + ca.frontBottomLeft.skyLight) / 60.0f;
-        fa.blockLight = new float[4];
-        fa.blockLight[0] = (ca.bottom.blockLight + ca.frontBottom.blockLight + ca.bottomRight.blockLight + ca.frontBottomRight.blockLight) / 60.0f;
-        fa.blockLight[1] = (ca.bottom.blockLight + ca.backBottom.blockLight + ca.bottomRight.blockLight + ca.backBottomRight.blockLight) / 60.0f;
-        fa.blockLight[2] = (ca.bottom.blockLight + ca.backBottom.blockLight + ca.bottomLeft.blockLight + ca.backBottomLeft.blockLight) / 60.0f;
-        fa.blockLight[3] = (ca.bottom.blockLight + ca.frontBottom.blockLight + ca.bottomLeft.blockLight + ca.frontBottomLeft.blockLight) / 60.0f;
+        bottomFA.skyLight[0] = (ca.bottom.skyLight + ca.frontBottom.skyLight + ca.bottomRight.skyLight + ca.frontBottomRight.skyLight) / 60.0f;
+        bottomFA.skyLight[1] = (ca.bottom.skyLight + ca.backBottom.skyLight + ca.bottomRight.skyLight + ca.backBottomRight.skyLight) / 60.0f;
+        bottomFA.skyLight[2] = (ca.bottom.skyLight + ca.backBottom.skyLight + ca.bottomLeft.skyLight + ca.backBottomLeft.skyLight) / 60.0f;
+        bottomFA.skyLight[3] = (ca.bottom.skyLight + ca.frontBottom.skyLight + ca.bottomLeft.skyLight + ca.frontBottomLeft.skyLight) / 60.0f;
+        bottomFA.blockLight[0] = (ca.bottom.blockLight + ca.frontBottom.blockLight + ca.bottomRight.blockLight + ca.frontBottomRight.blockLight) / 60.0f;
+        bottomFA.blockLight[1] = (ca.bottom.blockLight + ca.backBottom.blockLight + ca.bottomRight.blockLight + ca.backBottomRight.blockLight) / 60.0f;
+        bottomFA.blockLight[2] = (ca.bottom.blockLight + ca.backBottom.blockLight + ca.bottomLeft.blockLight + ca.backBottomLeft.blockLight) / 60.0f;
+        bottomFA.blockLight[3] = (ca.bottom.blockLight + ca.frontBottom.blockLight + ca.bottomLeft.blockLight + ca.frontBottomLeft.blockLight) / 60.0f;
 
         Rotation rotation = GetFrontRotationByData(ca.blockData);
         if (rotation == Rotation.Right)
-            fa.uv = uv_right;
+            bottomFA.uv = uv_right;
         else
-            fa.uv = uv_zero;
+            bottomFA.uv = uv_zero;
+        UnityEngine.Profiling.Profiler.EndSample();
 
-        return fa;
+        return bottomFA;
     }
+    FaceAttributes leftFA = new FaceAttributes()
+    {
+        skyLight = new float[4],
+        blockLight = new float[4]
+    };
     protected virtual FaceAttributes GetLeftFaceAttributes(NBTChunk chunk, NBTMesh mesh, CubeAttributes ca)
     {
-        FaceAttributes fa = new FaceAttributes();
-        fa.pos = leftVertices;
-        fa.faceIndex = GetLeftIndexByData(chunk, ca.blockData);
-        fa.color = GetLeftTintColorByData(chunk, ca.pos, ca.blockData);
-        fa.normal = Vector3.left;
+        UnityEngine.Profiling.Profiler.BeginSample("GetLeftFaceAttributes");
+        leftFA.pos = leftVertices;
+        leftFA.faceIndex = GetLeftIndexByData(chunk, ca.blockData);
+        leftFA.color = GetLeftTintColorByData(chunk, ca.pos, ca.blockData);
+        leftFA.normal = Vector3.left;
 
         //farBottomLeft, farTopLeft, nearTopLeft, nearBottomLeft
-        fa.skyLight = new float[4];
-        fa.skyLight[0] = (ca.left.skyLight + ca.backLeft.skyLight + ca.bottomLeft.skyLight + ca.backBottomLeft.skyLight) / 60.0f;
-        fa.skyLight[1] = (ca.left.skyLight + ca.backLeft.skyLight + ca.topLeft.skyLight + ca.backTopLeft.skyLight) / 60.0f;
-        fa.skyLight[2] = (ca.left.skyLight + ca.frontLeft.skyLight + ca.topLeft.skyLight + ca.frontTopLeft.skyLight) / 60.0f;
-        fa.skyLight[3] = (ca.left.skyLight + ca.frontLeft.skyLight + ca.bottomLeft.skyLight + ca.frontBottomLeft.skyLight) / 60.0f;
-        fa.blockLight = new float[4];
-        fa.blockLight[0] = (ca.left.blockLight + ca.backLeft.blockLight + ca.bottomLeft.blockLight + ca.backBottomLeft.blockLight) / 60.0f;
-        fa.blockLight[1] = (ca.left.blockLight + ca.backLeft.blockLight + ca.topLeft.blockLight + ca.backTopLeft.blockLight) / 60.0f;
-        fa.blockLight[2] = (ca.left.blockLight + ca.frontLeft.blockLight + ca.topLeft.blockLight + ca.frontTopLeft.blockLight) / 60.0f;
-        fa.blockLight[3] = (ca.left.blockLight + ca.frontLeft.blockLight + ca.bottomLeft.blockLight + ca.frontBottomLeft.blockLight) / 60.0f;
+        leftFA.skyLight[0] = (ca.left.skyLight + ca.backLeft.skyLight + ca.bottomLeft.skyLight + ca.backBottomLeft.skyLight) / 60.0f;
+        leftFA.skyLight[1] = (ca.left.skyLight + ca.backLeft.skyLight + ca.topLeft.skyLight + ca.backTopLeft.skyLight) / 60.0f;
+        leftFA.skyLight[2] = (ca.left.skyLight + ca.frontLeft.skyLight + ca.topLeft.skyLight + ca.frontTopLeft.skyLight) / 60.0f;
+        leftFA.skyLight[3] = (ca.left.skyLight + ca.frontLeft.skyLight + ca.bottomLeft.skyLight + ca.frontBottomLeft.skyLight) / 60.0f;
+        leftFA.blockLight[0] = (ca.left.blockLight + ca.backLeft.blockLight + ca.bottomLeft.blockLight + ca.backBottomLeft.blockLight) / 60.0f;
+        leftFA.blockLight[1] = (ca.left.blockLight + ca.backLeft.blockLight + ca.topLeft.blockLight + ca.backTopLeft.blockLight) / 60.0f;
+        leftFA.blockLight[2] = (ca.left.blockLight + ca.frontLeft.blockLight + ca.topLeft.blockLight + ca.frontTopLeft.blockLight) / 60.0f;
+        leftFA.blockLight[3] = (ca.left.blockLight + ca.frontLeft.blockLight + ca.bottomLeft.blockLight + ca.frontBottomLeft.blockLight) / 60.0f;
 
         Rotation rotation = GetFrontRotationByData(ca.blockData);
         if (rotation == Rotation.Right)
-            fa.uv = uv_right;
+            leftFA.uv = uv_right;
         else
-            fa.uv = uv_zero;
+            leftFA.uv = uv_zero;
+        UnityEngine.Profiling.Profiler.EndSample();
 
-        return fa;
+        return leftFA;
     }
+    FaceAttributes rightFA = new FaceAttributes()
+    {
+        skyLight = new float[4],
+        blockLight = new float[4]
+    };
     protected virtual FaceAttributes GetRightFaceAttributes(NBTChunk chunk, NBTMesh mesh, CubeAttributes ca)
     {
-        FaceAttributes fa = new FaceAttributes();
-        fa.pos = rightVertices;
-        fa.faceIndex = GetRightIndexByData(chunk, ca.blockData);
-        fa.color = GetRightTintColorByData(chunk, ca.pos, ca.blockData);
-        fa.normal = Vector3.right;
+        UnityEngine.Profiling.Profiler.BeginSample("GetRightFaceAttributes");
+        rightFA.pos = rightVertices;
+        rightFA.faceIndex = GetRightIndexByData(chunk, ca.blockData);
+        rightFA.color = GetRightTintColorByData(chunk, ca.pos, ca.blockData);
+        rightFA.normal = Vector3.right;
 
         //nearBottomRight, nearTopRight, farTopRight, farBottomRight
-        fa.skyLight = new float[4];
-        fa.skyLight[0] = (ca.right.skyLight + ca.frontRight.skyLight + ca.bottomRight.skyLight + ca.frontBottomRight.skyLight) / 60.0f;
-        fa.skyLight[1] = (ca.right.skyLight + ca.frontRight.skyLight + ca.topRight.skyLight + ca.frontTopRight.skyLight) / 60.0f;
-        fa.skyLight[2] = (ca.right.skyLight + ca.backRight.skyLight + ca.topRight.skyLight + ca.backTopRight.skyLight) / 60.0f;
-        fa.skyLight[3] = (ca.right.skyLight + ca.backRight.skyLight + ca.bottomRight.skyLight + ca.backBottomRight.skyLight) / 60.0f;
-        fa.blockLight = new float[4];
-        fa.blockLight[0] = (ca.right.blockLight + ca.frontRight.blockLight + ca.bottomRight.blockLight + ca.frontBottomRight.blockLight) / 60.0f;
-        fa.blockLight[1] = (ca.right.blockLight + ca.frontRight.blockLight + ca.topRight.blockLight + ca.frontTopRight.blockLight) / 60.0f;
-        fa.blockLight[2] = (ca.right.blockLight + ca.backRight.blockLight + ca.topRight.blockLight + ca.backTopRight.blockLight) / 60.0f;
-        fa.blockLight[3] = (ca.right.blockLight + ca.backRight.blockLight + ca.bottomRight.blockLight + ca.backBottomRight.blockLight) / 60.0f;
+        rightFA.skyLight[0] = (ca.right.skyLight + ca.frontRight.skyLight + ca.bottomRight.skyLight + ca.frontBottomRight.skyLight) / 60.0f;
+        rightFA.skyLight[1] = (ca.right.skyLight + ca.frontRight.skyLight + ca.topRight.skyLight + ca.frontTopRight.skyLight) / 60.0f;
+        rightFA.skyLight[2] = (ca.right.skyLight + ca.backRight.skyLight + ca.topRight.skyLight + ca.backTopRight.skyLight) / 60.0f;
+        rightFA.skyLight[3] = (ca.right.skyLight + ca.backRight.skyLight + ca.bottomRight.skyLight + ca.backBottomRight.skyLight) / 60.0f;
+        rightFA.blockLight[0] = (ca.right.blockLight + ca.frontRight.blockLight + ca.bottomRight.blockLight + ca.frontBottomRight.blockLight) / 60.0f;
+        rightFA.blockLight[1] = (ca.right.blockLight + ca.frontRight.blockLight + ca.topRight.blockLight + ca.frontTopRight.blockLight) / 60.0f;
+        rightFA.blockLight[2] = (ca.right.blockLight + ca.backRight.blockLight + ca.topRight.blockLight + ca.backTopRight.blockLight) / 60.0f;
+        rightFA.blockLight[3] = (ca.right.blockLight + ca.backRight.blockLight + ca.bottomRight.blockLight + ca.backBottomRight.blockLight) / 60.0f;
 
         Rotation rotation = GetFrontRotationByData(ca.blockData);
         if (rotation == Rotation.Right)
-            fa.uv = uv_right;
+            rightFA.uv = uv_right;
         else
-            fa.uv = uv_zero;
+            rightFA.uv = uv_zero;
+        UnityEngine.Profiling.Profiler.EndSample();
 
-        return fa;
+        return rightFA;
     }
 
     public virtual void OnAddBlock(RaycastHit hit)

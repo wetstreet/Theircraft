@@ -66,6 +66,7 @@ public class NBTBed : NBTBlock
 
     public override void AddCube(NBTChunk chunk, byte blockData, Vector3Int pos, NBTGameObject nbtGO)
     {
+        Debug.Log("bed addcube");
         Mesh mesh = GetMesh(blockData);
         GameObject bed = new GameObject("bed");
         bed.transform.parent = chunk.special.transform;
