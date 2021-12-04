@@ -19,7 +19,7 @@ public class ChatPanel : MonoBehaviour
     static Queue<string> _message = new Queue<string>();
 
     public static readonly string ErrorCode = "<color=#FF5555>";
-    public static readonly string HideCode = "[hide]";
+    public static readonly string ShowCode = "[show]";
 
     static ChatPanel instance;
 
@@ -42,7 +42,7 @@ public class ChatPanel : MonoBehaviour
 
         if (type == LogType.Log)
         {
-            if (!logString.StartsWith(HideCode))
+            if (logString.StartsWith(ShowCode))
             {
                 AddLine("<Log>" + logString.Replace('\n', ' '));
             }

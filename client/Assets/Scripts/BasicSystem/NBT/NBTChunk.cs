@@ -426,6 +426,9 @@ public class NBTChunk
 
     public async void RebuildMeshAsync(bool checkBorder = true)
     {
+        RebuildMesh(UpdateFlags.All, checkBorder);
+        return;
+
         if (checkBorder)
         {
             CheckBorder();

@@ -2,6 +2,8 @@
 using TMPro;
 using UnityEngine;
 using System.Text;
+using System.Reflection;
+using GameFramework;
 
 public class DebugUI : MonoBehaviour
 {
@@ -52,33 +54,21 @@ public class DebugUI : MonoBehaviour
         return fps;
     }
 
-    StringBuilder sb = new StringBuilder();
+    string template = "Theircraft {0}\n" +
+        "{1} fps\n" +
+        "XYZ: {2} / {3} / {4}\n" +
+        "Block: {5} {6} {7}\n";
+    string template2 = "Chunk: {0} {1} {2} in {3} {4} {5}\n" +
+        "Light: {6} ({7} sky, {8} block)\n";
+    string template3 = "Looking at: {0} {1} {2}\n" +
+        "Type: {3}\n" +
+        "Data: {4}";
 
     // Update is called once per frame
     void Update()
     {
-        sb.Clear();
-        sb.Append("Theircraft ");
-        sb.Append(Application.version);
-        sb.Append("\n");
-        sb.Append(GetFPS());
-        sb.Append(" fps");
-
         Vector3 pos = PlayerController.instance.transform.position;
-        sb.Append("\nXYZ: ");
-        sb.Append(pos.x);
-        sb.Append(" / ");
-        sb.Append(pos.y);
-        sb.Append(" / ");
-        sb.Append(pos.z);
-
         Vector3Int curBlock = PlayerController.GetCurrentBlock();
-        sb.Append("\nBlock: ");
-        sb.Append(curBlock.x);
-        sb.Append(" ");
-        sb.Append(curBlock.y);
-        sb.Append(" ");
-        sb.Append(curBlock.z);
 
         int chunkX = Mathf.FloorToInt(curBlock.x / 16f);
         int chunkY = Mathf.FloorToInt(curBlock.y / 16f);
@@ -86,51 +76,25 @@ public class DebugUI : MonoBehaviour
         int xInChunk = curBlock.x - chunkX * 16;
         int yInChunk = curBlock.y - chunkY * 16;
         int zInChunk = curBlock.z - chunkZ * 16;
-        sb.Append("\nChunk: ");
-        sb.Append(xInChunk);
-        sb.Append(" ");
-        sb.Append(yInChunk);
-        sb.Append(" ");
-        sb.Append(zInChunk);
-        sb.Append(" in ");
-        sb.Append(chunkX);
-        sb.Append(" ");
-        sb.Append(chunkY);
-        sb.Append(" ");
-        sb.Append(chunkZ);
 
         Vector3Int posInt = pos.ToVector3Int();
         NBTHelper.GetLightsByte(posInt.x, posInt.y, posInt.z, out byte skyLight, out byte blockLight);
         byte maxLight = skyLight > blockLight ? skyLight : blockLight;
-        sb.Append("\nLight: ");
-        sb.Append(maxLight);
-        sb.Append(" (");
-        sb.Append(skyLight);
-        sb.Append(" sky, ");
-        sb.Append(blockLight);
-        sb.Append(" block)");
 
-
-        if (WireFrameHelper.render)
+        UnityEngine.Profiling.Profiler.BeginSample("zstring");
+        using (zstring.Block())
         {
-            sb.Append("\nLooking at: ");
-            sb.Append(WireFrameHelper.pos.x);
-            sb.Append(" ");
-            sb.Append(WireFrameHelper.pos.y);
-            sb.Append(" ");
-            sb.Append(WireFrameHelper.pos.z);
-            
-            sb.Append("\nType: ");
-            NBTBlock generator = WireFrameHelper.generator;
-            sb.Append(generator.name);
+            zstring text = zstring.Format(template, Application.version, GetFPS(), pos.x, pos.y, pos.z, curBlock.x, curBlock.y, curBlock.z);
+            text += zstring.Format(template2, xInChunk, yInChunk, zInChunk, chunkX, chunkY, chunkZ, maxLight, skyLight, blockLight);
+            if (WireFrameHelper.render)
+            {
+                text += zstring.Format(template3, WireFrameHelper.pos.x, WireFrameHelper.pos.y, WireFrameHelper.pos.z, WireFrameHelper.generator.name, WireFrameHelper.data);
+            }
+            label.text = text;
 
-            sb.Append("\nData: ");
-            sb.Append(WireFrameHelper.data);
+            label2.text = ChunkRefresher.GetChunkUpdatesCount() + (zstring)" chunk updates";
         }
-
-        label.text = sb.ToString();
-
-        label2.text = ChunkRefresher.GetChunkUpdatesCount() + " chunk updates";
+        UnityEngine.Profiling.Profiler.EndSample();
     }
 
     public static void HandleInput()
