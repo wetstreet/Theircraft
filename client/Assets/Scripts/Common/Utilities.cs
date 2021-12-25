@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using protocol.cs_theircraft;
 using UnityEngine.UI;
 using System;
 
@@ -24,31 +23,6 @@ public static class Utilities
             t = go.AddComponent<T>();
         }
         return t;
-    }
-
-    public static Vector3 ToVector3(this CSVector3 csv)
-    {
-        return new Vector3(csv.x, csv.y, csv.z);
-    }
-
-    public static CSVector3 ToCSVector3(this Vector3 csv)
-    {
-        return new CSVector3 { x = csv.x, y = csv.y, z = csv.z };
-    }
-
-    public static Vector2Int ToVector2Int(this CSVector2Int csv)
-    {
-        return new Vector2Int(csv.x, csv.y);
-    }
-
-    public static Vector3Int ToVector3Int(this CSVector3Int csv)
-    {
-        return new Vector3Int(csv.x, csv.y, csv.z);
-    }
-
-    public static CSVector3Int ToCSVector3Int(this Vector3Int v)
-    {
-        return new CSVector3Int { x = v.x, y = v.y, z = v.z };
     }
 
     public static List<Vector2Int> GetSurroudingChunks(Vector2Int chunk, int chunkRange)

@@ -1,8 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
-using protocol.cs_enum;
-using protocol.cs_theircraft;
 using TMPro;
 
 public class ChatPanel : MonoBehaviour
@@ -78,7 +76,6 @@ public class ChatPanel : MonoBehaviour
     void Start ()
     {
         initialized = true;
-        NetworkManager.Register(ENUM_CMD.CS_MESSAGE_NOTIFY, OnMessageNotify);
 
         scrollview = transform.Find("container/Scroll View").GetComponent<RectTransform>();
         floatingScrollview = transform.Find("container/floatingScrollview").GetComponent<RectTransform>();
@@ -224,42 +221,16 @@ public class ChatPanel : MonoBehaviour
                 GM.Process(text);
             }
             else
-                SendMessageReq(inputField.text);
+            {
+                inputField.text = "";
+                inputField.ActivateInputField();
+                HideInput();
+                AddLine("<Steve> " + inputField.text);
+            }
         }
         else
         {
             FastTips.Show(1);
         }
-    }
-
-    void SendMessageReq(string content)
-    {
-        CSSendMessageReq req = new CSSendMessageReq
-        {
-            Content = content
-        };
-        NetworkManager.SendPkgToServer(ENUM_CMD.CS_SEND_MESSAGE_REQ, req, OnSendMessageRes);
-    }
-
-    void OnSendMessageRes(object data)
-    {
-        CSSendMessageRes rsp = NetworkManager.Deserialize<CSSendMessageRes>(data);
-        //Debug.Log("OnSendMessageRes,retCode=" + res.RetCode);
-        if (rsp.RetCode == 0)
-        {
-            inputField.text = "";
-            inputField.ActivateInputField();
-            HideInput();
-        }
-        else
-        {
-            FastTips.Show(rsp.RetCode);
-        }
-    }
-    static void OnMessageNotify(object data)
-    {
-        CSMessageNotify notify = NetworkManager.Deserialize<CSMessageNotify>(data);
-        //Debug.Log($"OnMessageNotify,name={notify.Name},content={notify.Content}");
-        AddLine("<" + notify.Name + "> " + notify.Content);
     }
 }

@@ -5,6 +5,7 @@ using UnityEngine;
 public abstract class NBTObject
 {
     public virtual string name { get; }
+
     public virtual string id { get; }
 
     public virtual byte maxStackCount { get { return 64; } }

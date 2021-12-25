@@ -1,6 +1,4 @@
-﻿using protocol.cs_enum;
-using protocol.cs_theircraft;
-using Substrate.Nbt;
+﻿using Substrate.Nbt;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -180,11 +178,6 @@ public class PlayerController : MonoBehaviour
         chunkPos.x = Mathf.FloorToInt(block.x / 16f);
         chunkPos.y = Mathf.FloorToInt(block.z / 16f);
         return chunkPos;
-    }
-
-    public static Chunk GetCurrentChunk()
-    {
-        return ChunkManager.GetChunk(GetCurrentChunkPos());
     }
 
     // get the dot product between the player front vector and chunk to player vector.
@@ -476,8 +469,6 @@ public class PlayerController : MonoBehaviour
     bool isRun = false;
 
     float timeInterval = 0.2f;
-    bool needUpdate;
-    float lastUpdateTime;
     float lastSpace;
     float lastW;
     void Update()
@@ -550,18 +541,6 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.F2))
         {
             Utilities.Capture();
-        }
-
-        if (needUpdate && Time.realtimeSinceStartup - lastUpdateTime > timeInterval)
-        {
-            needUpdate = false;
-            lastUpdateTime = Time.realtimeSinceStartup;
-            CSHeroMoveReq req = new CSHeroMoveReq
-            {
-                Position = new CSVector3 { x = transform.position.x, y = transform.position.y, z = transform.position.z },
-                Rotation = new CSVector3 { x = 0, y = transform.localEulerAngles.y, z = camera.transform.localEulerAngles.x }
-            };
-            NetworkManager.SendPkgToServer(ENUM_CMD.CS_HERO_MOVE_REQ, req);
         }
     }
 
@@ -783,10 +762,7 @@ public class PlayerController : MonoBehaviour
         }
         Vector3 verticalMovement = verticalSpeed * Time.fixedDeltaTime;
 
-        //有移动则告诉服务器
         float precision = 0.001f;
-        if (verticalMovement.sqrMagnitude > precision || horizontalMovement != Vector3.zero)
-            needUpdate = true;
 
         if (horizontalMovement != Vector3.zero)
         {
@@ -852,7 +828,6 @@ public class PlayerController : MonoBehaviour
             camera.transform.localRotation *= Quaternion.Euler(-y, 0, 0);
             camera.transform.localRotation = ClampRotationAroundXAxis(camera.transform.localRotation);
             transform.localRotation *= Quaternion.Euler(0, x, 0);
-            needUpdate = true;
         }
     }
 

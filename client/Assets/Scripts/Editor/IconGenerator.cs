@@ -1,5 +1,4 @@
-﻿using protocol.cs_theircraft;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;

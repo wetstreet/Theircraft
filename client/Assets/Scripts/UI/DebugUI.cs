@@ -1,5 +1,4 @@
-﻿using protocol.cs_theircraft;
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 using System.Text;
 using System.Reflection;

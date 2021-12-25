@@ -1,5 +1,4 @@
-﻿using protocol.cs_theircraft;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public enum SoundMaterial
