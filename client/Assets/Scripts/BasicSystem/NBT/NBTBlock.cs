@@ -349,7 +349,6 @@ public abstract class NBTBlock : NBTObject
         UnityEngine.Profiling.Profiler.BeginSample("InitBlockAttributes");
 
         ca.front = InitBlockLightAttributes(chunk, ca.pos.x, ca.pos.y, ca.pos.z - 1);
-        ca.front = InitBlockLightAttributes(chunk, ca.pos.x, ca.pos.y, ca.pos.z - 1);
         ca.back = InitBlockLightAttributes(chunk, ca.pos.x, ca.pos.y, ca.pos.z + 1);
         ca.left = InitBlockLightAttributes(chunk, ca.pos.x - 1, ca.pos.y, ca.pos.z);
         ca.right = InitBlockLightAttributes(chunk, ca.pos.x + 1, ca.pos.y, ca.pos.z);
