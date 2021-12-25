@@ -26,17 +26,19 @@ public class NBTHelper
 
     private static Dictionary<Vector2Int, NBTChunk> chunkDict = new Dictionary<Vector2Int, NBTChunk>();
 
-    static string savePath { get
+    static string savePath
+    {
+        get
         {
-#if UNITY_EDITOR
-            string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            path = Path.Combine(path, ".minecraft");
-            path = Path.Combine(path, "saves");
-            path = Path.Combine(path, "New World1");
-#else
+//#if UNITY_EDITOR
+//            string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+//            path = Path.Combine(path, ".minecraft");
+//            path = Path.Combine(path, "saves");
+//            path = Path.Combine(path, "New World1");
+//#else
             string path = Path.Combine(Application.streamingAssetsPath, "saves");
             path = Path.Combine(path, "New World1");
-#endif
+//#endif
             return path;
         }
     }
