@@ -1,3 +1,6 @@
+using Substrate.Core;
+using Substrate.Nbt;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -91,16 +94,36 @@ public class SelectWorldUI : MonoBehaviour
                 item.time = unitTrans.Find("time").GetComponent<Label>();
                 item.mode = unitTrans.Find("mode").GetComponent<Label>();
                 item.select = unitTrans.Find("select").gameObject;
+
+                NBTFile levelFile = new NBTFile(Path.Combine(subdir.FullName, "level.dat"));
+                NbtTree levelTree = new NbtTree();
+                using (Stream stream = levelFile.GetDataInputStream())
+                {
+                    levelTree.ReadFrom(stream);
+                }
+                TagNodeCompound levelDat = levelTree.Root["Data"] as TagNodeCompound;
+                TagNodeString name = levelDat["LevelName"] as TagNodeString;
+
+                item.go.SetActive(true);
+                item.name.text = name;
+
+                TagNodeLong time = levelDat["LastPlayed"] as TagNodeLong;
+                DateTime startTime = TimeZone.CurrentTimeZone.ToLocalTime(new DateTime(1970, 1, 1));
+                DateTime dateTime = startTime.AddMilliseconds(time.Data);
+                item.time.text = subdir.Name + " (" + dateTime + ")";
+
+                TagNodeInt mode = levelDat["GameType"] as TagNodeInt;
+                item.mode.text = mode == 0 ? "Survival Mode" : "Creative Mode";
+
+                byte[] bytes = File.ReadAllBytes(Path.Combine(subdir.FullName, "icon.png"));
+                Texture2D texture = new Texture2D(2, 2);
+                texture.LoadImage(bytes);
+                texture.filterMode = FilterMode.Point;
+                item.icon.texture = texture;
+
                 items.Add(item);
             }
-            items[i].go.SetActive(true);
             items[i].select.SetActive(i == curSelectIndex);
-            items[i].name.text = subdir.Name;
-        }
-
-        for (int i = dirs.Length; i < items.Count; i++)
-        {
-            items[i].go.SetActive(false);
         }
 
         playButton.interactable = curSelectIndex != -1;
@@ -151,6 +174,22 @@ public class SelectWorldUI : MonoBehaviour
         RefreshUI();
     }
 
+    void OnClickCancel()
+    {
+        Close();
+    }
+
+    void OnClickDelete()
+    {
+        string destination = Path.Combine(Application.persistentDataPath, "saves", items[curSelectIndex].name.text);
+        Directory.Delete(destination, true);
+
+        Destroy(items[curSelectIndex].go);
+        items.RemoveAt(curSelectIndex);
+
+        curSelectIndex = -1;
+    }
+
     private static void DirectoryCopy(string sourceDirName, string destDirName, bool copySubDirs)
     {
         // Get the subdirectories for the specified directory.
@@ -173,6 +212,10 @@ public class SelectWorldUI : MonoBehaviour
         foreach (FileInfo file in files)
         {
             string tempPath = Path.Combine(destDirName, file.Name);
+            if (file.Extension == ".meta")
+            {
+                continue;
+            }
             file.CopyTo(tempPath, false);
         }
 
@@ -185,18 +228,5 @@ public class SelectWorldUI : MonoBehaviour
                 DirectoryCopy(subdir.FullName, tempPath, copySubDirs);
             }
         }
-    }
-
-    void OnClickCancel()
-    {
-        Close();
-    }
-
-    void OnClickDelete()
-    {
-        string destination = Path.Combine(Application.persistentDataPath, "saves", items[curSelectIndex].name.text);
-        Directory.Delete(destination, true);
-        RefreshUI();
-        curSelectIndex = -1;
     }
 }

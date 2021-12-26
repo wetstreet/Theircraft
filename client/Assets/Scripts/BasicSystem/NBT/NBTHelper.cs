@@ -57,11 +57,17 @@ public class NBTHelper
         }
         playerFile = new PlayerFile(files[0]);
         playerData = new NbtTree();
-        playerData.ReadFrom(playerFile.GetDataInputStream());
+        using (Stream stream = playerFile.GetDataInputStream())
+        {
+            playerData.ReadFrom(stream);
+        }
 
         levelFile = new NBTFile(Path.Combine(savePath, "level.dat"));
         levelTree = new NbtTree();
-        levelTree.ReadFrom(levelFile.GetDataInputStream());
+        using (Stream stream = levelFile.GetDataInputStream())
+        {
+            levelTree.ReadFrom(stream);
+        }
         levelDat = levelTree.Root["Data"] as TagNodeCompound;
     }
 
