@@ -24,7 +24,7 @@ public class MainMenu : MonoBehaviour
     {
         Utilities.SetClickCallback(transform, "ButtonSingle", OnClickSingle);
         Utilities.SetClickCallback(transform, "ButtonQuit", OnClickQuit);
-        Utilities.SetClickCallback(transform, "ButtonClear", OnClickClear);
+        //Utilities.SetClickCallback(transform, "ButtonClear", OnClickClear);
         Utilities.SetClickCallback(transform, "ButtonLanguage", OnClickLanguage);
         
         TextMeshProUGUI text = transform.Find("version").GetComponent<TextMeshProUGUI>();
@@ -33,13 +33,7 @@ public class MainMenu : MonoBehaviour
 
     void OnClickSingle()
     {
-        DataCenter.name = "Steve";
-        DataCenter.spawnPosition = NBTHelper.GetPlayerPos();
-        DataCenter.spawnRotation = NBTHelper.GetPlayerRot();
-        MainMenu.Close();
-        LoadingUI.Show();
-        SceneManager.LoadScene("GameScene");
-        //ChatPanel.AddLine(DataCenter.name + ", welcome!");
+        SelectWorldUI.Show();
     }
 
     void OnClickQuit()

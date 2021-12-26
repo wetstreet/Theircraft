@@ -36,11 +36,43 @@ public class NBTHelper
 //            path = Path.Combine(path, "saves");
 //            path = Path.Combine(path, "New World1");
 //#else
-            string path = Path.Combine(Application.streamingAssetsPath, "saves");
-            path = Path.Combine(path, "New World1");
+            string path = Path.Combine(Application.persistentDataPath, "saves", save);
 //#endif
             return path;
         }
+    }
+
+    static PlayerFile playerFile;
+    static NbtTree playerData;
+    static NBTFile levelFile;
+    static NbtTree levelTree;
+    static TagNodeCompound levelDat;
+    public static void Init()
+    {
+        string[] files = Directory.GetFiles(Path.Combine(savePath, "playerdata"));
+
+        if (files.Length == 0)
+        {
+            throw new Exception("no player data");
+        }
+        playerFile = new PlayerFile(files[0]);
+        playerData = new NbtTree();
+        playerData.ReadFrom(playerFile.GetDataInputStream());
+
+        levelFile = new NBTFile(Path.Combine(savePath, "level.dat"));
+        levelTree = new NbtTree();
+        levelTree.ReadFrom(levelFile.GetDataInputStream());
+        levelDat = levelTree.Root["Data"] as TagNodeCompound;
+    }
+
+    public static TagNodeCompound GetPlayerData()
+    {
+        return playerData.Root;
+    }
+
+    public static TagNodeCompound GetLevelDat()
+    {
+        return levelDat;
     }
 
     public static void SaveToDisk()
@@ -85,26 +117,6 @@ public class NBTHelper
                 kvPair.Value.WriteTo(stream);
             }
         }
-    }
-
-    static PlayerFile playerFile;
-    static NbtTree playerData;
-    public static TagNodeCompound GetPlayerData()
-    {
-        if (playerData == null)
-        {
-            string path = Path.Combine(savePath, "playerdata");
-            string[] files = Directory.GetFiles(path);
-
-            if (files.Length == 0)
-            {
-                throw new Exception("no player data");
-            }
-            playerFile = new PlayerFile(files[0]);
-            playerData = new NbtTree();
-            playerData.ReadFrom(playerFile.GetDataInputStream());
-        }
-        return playerData.Root;
     }
 
     public static Vector3 GetPlayerPos()
@@ -346,22 +358,6 @@ public class NBTHelper
             int newData = (arr[index / 2] & 0x0F) | (data << 4 & 0xF0);
             arr[index / 2] = (byte)newData;
         }
-    }
-
-    static NBTFile levelFile;
-    static NbtTree levelTree;
-    static TagNodeCompound levelDat;
-    public static TagNodeCompound GetLevelDat()
-    {
-        if (levelDat == null)
-        {
-            string path = Path.Combine(savePath, "level.dat");
-            levelFile = new NBTFile(path);
-            levelTree = new NbtTree();
-            levelTree.ReadFrom(levelFile.GetDataInputStream());
-            levelDat = levelTree.Root["Data"] as TagNodeCompound;
-        }
-        return levelDat;
     }
 
     public static Dictionary<Vector2Int, RegionFile> regionDict = new Dictionary<Vector2Int, RegionFile>();
