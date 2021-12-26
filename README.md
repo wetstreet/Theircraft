@@ -70,6 +70,12 @@ Add "client" folder to your Unity Hub, and open the project.
 
 Open "Scenes/StartScene.unity" and run.
 
+### Contributing
+
+Feel free to make contribution to this project.
+
+It can be new features, bug fixes, performance optimizations or better namings, etc.
+
 ### Screenshots
 
 <img src="screenshots/screenshot1.png"/>
