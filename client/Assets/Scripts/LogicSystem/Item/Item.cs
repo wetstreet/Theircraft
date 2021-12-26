@@ -1,5 +1,4 @@
-﻿using protocol.cs_theircraft;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class Item : MonoBehaviour
@@ -11,7 +10,6 @@ public class Item : MonoBehaviour
     }
 
     [HideInInspector] public float coolDownTime = 2f;
-    [HideInInspector] public CSBlockType type;
     [HideInInspector] public NBTObject generator;
     [HideInInspector] public byte blockData;
     [HideInInspector] public bool destroyed;

@@ -1,8 +1,0 @@
-table Test { list:[Test_Item]; }
-table Test_Item { 
-		ID:int;
-		Name:string;
-		Money:double;
-		Desc:string;
-}
-root_type Test;

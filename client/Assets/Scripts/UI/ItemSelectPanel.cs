@@ -1,8 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using protocol.cs_theircraft;
 using System.Collections.Generic;
-using protocol.cs_enum;
 using TMPro;
 
 public class ItemSelectPanel : MonoBehaviour
@@ -19,7 +17,6 @@ public class ItemSelectPanel : MonoBehaviour
     public static uint curIndex;
 
     private SlotItem[] itemList = new SlotItem[9];
-    public static CSBlockType[] dataList = new CSBlockType[9];
     public static int[] countList = new int[9];
 
     // health and food level
@@ -35,74 +32,6 @@ public class ItemSelectPanel : MonoBehaviour
     TextMeshProUGUI level;
     Image exp;
     Transform survival;
-
-    public static void Init(uint index, List<CSItem> items)
-    {
-        curIndex = index;
-        for (int i = 0; i < 9; i++)
-        {
-            dataList[i] = items[i].Type;
-            countList[i] = (int)items[i].Count;
-        }
-    }
-
-    public static void AddItem(CSBlockType type, int count)
-    {
-        uint firstEmpty = 0;
-        bool hasEmpty = false;
-        for (uint i = 0; i < 9; i++)
-        {
-            if (dataList[i] == type)
-            {
-                SetSlotItem(i, type, count);
-                return;
-            }
-            else if (dataList[i] == CSBlockType.None && !hasEmpty)
-            {
-                hasEmpty = true;
-                firstEmpty = i;
-            }
-        }
-        if (hasEmpty)
-        {
-            SetSlotItem(firstEmpty, type, count);
-        }
-    }
-    
-    public static void DropCurItem(int count = 1)
-    {
-        if (dataList[curIndex] != CSBlockType.None)
-        {
-            //Item.CreatePlayerDropItem(dataList[curIndex]);
-            int left = countList[curIndex] - count;
-            if (left <= 0)
-            {
-                SetSlotItem(curIndex, CSBlockType.None);
-            }
-            else
-            {
-                SetSlotItem(curIndex, dataList[curIndex], -1);
-            }
-        }
-    }
-
-    public static void SetSlotItem(uint index, CSBlockType type, int count = 1)
-    {
-        if (dataList[index] != type)
-        {
-            countList[index] = 0;
-        }
-        dataList[index] = type;
-        countList[index] = type == CSBlockType.None ? 0 : countList[index] + count;
-        //CSHeroChangeSelectItemReq req = new CSHeroChangeSelectItemReq
-        //{
-        //    Index = index,
-        //    Item = type,
-        //    Count = (uint)countList[index],
-        //};
-        //NetworkManager.SendPkgToServer(ENUM_CMD.CS_HERO_CHANGE_SELECT_ITEM_REQ, req);
-        instance.RefreshUI();
-    }
 
     public static ItemSelectPanel instance;
     public static void Show()

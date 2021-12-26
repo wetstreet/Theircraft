@@ -9,9 +9,7 @@ public class GameStart : MonoBehaviour
     {
         SettingsPanel.Init();
         ChunkRefresher.Init();
-        ChunkManager.Init();
         ChunkPool.Init();
-        OtherPlayerManager.Init();
         ItemSelectPanel.Show();
         ChatPanel.ShowChatPanel();
         InventorySystem.Init();
@@ -25,7 +23,6 @@ public class GameStart : MonoBehaviour
         ChunkRefresher.ForceRefreshAll();
     }
 
-    public static Queue<Chunk> rebuildQueue = new Queue<Chunk>();
     void Update()
     {
         if (PlayerController.isInitialized)
@@ -42,7 +39,6 @@ public class GameStart : MonoBehaviour
 
     private void OnDestroy()
     {
-        ChunkManager.Uninit();
         ChunkPool.Uninit();
         InputManager.Destroy();
         UISystem.DestroyUIRoot();

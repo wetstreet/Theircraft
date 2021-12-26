@@ -38,7 +38,6 @@ public class DeleteWorldUI : MonoBehaviour
 
     void OnClickDelete()
     {
-        LocalServer.ClearData();
         //FastTips.Show("Clear Map Data & Player Data Done!");
         Close();
     }

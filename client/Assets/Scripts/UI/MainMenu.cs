@@ -1,5 +1,6 @@
 ﻿using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour
 {
@@ -22,8 +23,6 @@ public class MainMenu : MonoBehaviour
     void Start()
     {
         Utilities.SetClickCallback(transform, "ButtonSingle", OnClickSingle);
-        //Utilities.SetClickCallback(transform, "ButtonLogin", OnClickLogin);
-        //Utilities.SetClickCallback(transform, "ButtonRegister", OnClickRegister);
         Utilities.SetClickCallback(transform, "ButtonQuit", OnClickQuit);
         Utilities.SetClickCallback(transform, "ButtonClear", OnClickClear);
         Utilities.SetClickCallback(transform, "ButtonLanguage", OnClickLanguage);
@@ -34,17 +33,13 @@ public class MainMenu : MonoBehaviour
 
     void OnClickSingle()
     {
-        LoginSystem.LoginSingle();
-    }
-
-    void OnClickLogin()
-    {
-        LoginPanel.ShowLoginPanel();
-    }
-
-    void OnClickRegister()
-    {
-        RegisterAccountUI.Show();
+        DataCenter.name = "Steve";
+        DataCenter.spawnPosition = NBTHelper.GetPlayerPos();
+        DataCenter.spawnRotation = NBTHelper.GetPlayerRot();
+        MainMenu.Close();
+        LoadingUI.Show();
+        SceneManager.LoadScene("GameScene");
+        //ChatPanel.AddLine(DataCenter.name + ", welcome!");
     }
 
     void OnClickQuit()

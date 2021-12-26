@@ -1,5 +1,4 @@
-﻿using protocol.cs_theircraft;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.AI;
 
 public class Player : MonoBehaviour
@@ -22,18 +21,6 @@ public class Player : MonoBehaviour
     Vector3 moveDir = Vector3.zero;
 
     public float angularSpeed = 300f;
-
-    public static Player CreatePlayer(CSPlayer p)
-    {
-        GameObject prefab = Resources.Load<GameObject>("Prefabs/OtherPlayer");
-        GameObject go = Instantiate(prefab);
-        Player player = go.AddComponent<Player>();
-        player.id = p.PlayerID;
-        player.playerName = p.Name;
-        player.position = p.Position.ToVector3();
-        player.rotation = p.Rotation.ToVector3();
-        return player;
-    }
 
     private void Start()
     {

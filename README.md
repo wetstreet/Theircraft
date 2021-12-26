@@ -1,46 +1,82 @@
-# Theircraft
+## Theircraft
 
-This is a Unity project I made to recreate some of the features in Minecraft.
+This is a Unity project I made to recreate some features in Minecraft.
 
-All the resources (textures, sounds) are from Minecraft and owned by Mojang.
+All resources are from Minecraft and owned by Mojang.
 
-I use a library from https://github.com/jaquadro/NBTExplorer to read/write a Minecraft save file, so data structures are the same with Minecraft 1.12, but I have not read Minecraft's code (setting up environments to decompile Minecraft in China is more difficult than it is in other countries, and I don't have the patience). What I do is read the Minecraft wiki and do experiments in Minecraft to figure out its mechanism.
+I use library from [NBTExplorer](https://github.com/jaquadro/NBTExplorer) to read/write Minecraft saves.
 
-Terrain generation has not been implemented so the game could not generate new chunks.
+Terrain generation has not been implemented yet.
 
-Unity version: 2021.1.12f1c1
+### Versions
 
-## Implemented Features
+Unity Version: Unity 2021.1.12f1c1
 
-CPU Ambient Occlusion
+Compatible Minecraft Version: Minecraft 1.12
 
-CPU Lighting
+### Features
 
-Crafting
+* CPU Ambient Occlusion
+* CPU Lighting
+* Clouds
+* Day-Night Cycle
+* Crafting
+* Stairs
+* Slab
+* Door
+* Fence
+* Wall
+* Torch
+* Ladder
+* Tools (Axe, Pickaxe)
 
-Different Tools
+### Controls
 
-Clouds
+* WASD to move.
+* W twice to run.
+* Space to jump.
+* Left click to destroy block.
+* Right click to place block.
+* 1-9 to select blocks.
+* Scrollwheel to cycle through blocks.
+* E to open inventory.
+* ESC to open menu.
+* T to type text into chat.
+* Forward slash (/) to enter command.
+* Space twice to fly (in creative mode).
+* F2 to take screenshot.
 
-Day-Night Cycle
+### Chat Commands
 
-## Not Implemented Features
+    /time <value>
 
-Terrain Generation
+Set current time.
 
-Multiple Saves
+    /gamemode <mode>
 
-Multiplayer
+Change game mode.
 
-Block Behavior (Furnace, Crops)
+    /kill
 
-Monster Generation
+Suicide.
 
-Fog
+    /zombie
 
-Sun and Stars in skybox
+Summon a zombie.
 
-## Screenshots
+### Run
+
+Add "client" folder to your Unity Hub, and open the project.
+
+Open "Scenes/StartScene.unity" and run.
+
+### Contributing
+
+Feel free to make contribution to this project.
+
+It can be new features, bug fixes, performance optimizations or better namings, etc.
+
+### Screenshots
 
 <img src="screenshots/screenshot1.png"/>
 
