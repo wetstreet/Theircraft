@@ -4,23 +4,21 @@ using UnityEngine;
 
 public class NBTWoodenPressurePlate : NBTBlock
 {
-    public override string name { get { return "Wooden Pressure Plate"; } }
-    public override string id { get { return "minecraft:wooden_pressure_plate"; } }
+    public override string name => "Wooden Pressure Plate";
+    public override string id => "minecraft:wooden_pressure_plate";
 
     public override string GetDropItemByData(byte data) { return "minecraft:wooden_pressure_plate"; }
 
-    public override string topName { get { return "planks_oak"; } }
-    public override string bottomName { get { return "planks_oak"; } }
-    public override string frontName { get { return "planks_oak"; } }
-    public override string backName { get { return "planks_oak"; } }
-    public override string leftName { get { return "planks_oak"; } }
-    public override string rightName { get { return "planks_oak"; } }
+    public override string allName => "planks_oak";
 
     public override bool isTransparent => true;
 
-    public override SoundMaterial soundMaterial { get { return SoundMaterial.Stone; } }
+    public override float hardness => 0.5f;
 
-    public override string GetBreakEffectTexture(byte data) { return "lapis_ore"; }
+    public override BlockMaterial blockMaterial => BlockMaterial.Wood;
+    public override SoundMaterial soundMaterial => SoundMaterial.Wood;
+
+    public override string GetBreakEffectTexture(byte data) { return "planks_oak"; }
 
     protected static Vector3 nearBottomLeft_1 = new Vector3(-0.4375f, -0.5f, -0.4375f);
     protected static Vector3 nearBottomRight_1 = new Vector3(0.4375f, -0.5f, -0.4375f);

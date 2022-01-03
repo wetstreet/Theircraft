@@ -4,8 +4,13 @@ using UnityEngine;
 
 public class NBTDoubleWoodenSlab : NBTBlock
 {
-    public override string name { get { return "Double Wooden Slab"; } }
-    public override string id { get { return "minecraft:double_wooden_slab"; } }
+    public override string name => "Double Wooden Slab";
+    public override string id => "minecraft:double_wooden_slab";
+
+    public override float hardness => 2f;
+
+    public override BlockMaterial blockMaterial => BlockMaterial.Wood;
+    public override SoundMaterial soundMaterial => SoundMaterial.Wood;
 
     string GetNameByData(int data)
     {
@@ -33,12 +38,6 @@ public class NBTDoubleWoodenSlab : NBTBlock
     public override int GetBackIndexByData(NBTChunk chunk, int data) { return TextureArrayManager.GetIndexByName(GetNameByData(data)); }
     public override int GetLeftIndexByData(NBTChunk chunk, int data) { return TextureArrayManager.GetIndexByName(GetNameByData(data)); }
     public override int GetRightIndexByData(NBTChunk chunk, int data) { return TextureArrayManager.GetIndexByName(GetNameByData(data)); }
-
-    public override float hardness => 2f;
-
-    public override BlockMaterial blockMaterial => BlockMaterial.Wood;
-
-    public override SoundMaterial soundMaterial { get { return SoundMaterial.Wood; } }
 
     public override string GetDropItemByData(byte data)
     {

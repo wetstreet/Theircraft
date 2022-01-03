@@ -4,21 +4,15 @@ using UnityEngine;
 
 public class NBTDiamondOre : NBTBlock
 {
-    public override string name { get { return "Diamond Ore"; } }
-    public override string id { get { return "minecraft:diamond_ore"; } }
+    public override string name => "Diamond Ore";
+    public override string id => "minecraft:diamond_ore";
 
-    public override string topName { get { return "diamond_ore"; } }
-    public override string bottomName { get { return "diamond_ore"; } }
-    public override string frontName { get { return "diamond_ore"; } }
-    public override string backName { get { return "diamond_ore"; } }
-    public override string leftName { get { return "diamond_ore"; } }
-    public override string rightName { get { return "diamond_ore"; } }
+    public override string allName => "diamond_ore";
 
     public override float hardness => 3;
 
     public override BlockMaterial blockMaterial => BlockMaterial.RockIII;
-
-    public override SoundMaterial soundMaterial { get { return SoundMaterial.Stone; } }
+    public override SoundMaterial soundMaterial => SoundMaterial.Stone;
 
     public override string GetBreakEffectTexture(byte data) { return "diamond_ore"; }
 }

@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class NBTOakDoor : NBTBlock
 {
-    public override string name { get { return "Oak Door"; } }
-    public override string id { get { return "minecraft:wooden_door"; } }
+    public override string name => "Oak Door";
+    public override string id => "minecraft:wooden_door";
 
     public override string GetIconPathByData(short data) { return "door_wood"; }
 
@@ -15,7 +15,7 @@ public class NBTOakDoor : NBTBlock
 
     public override string pathPrefix => "GUI/items/";
 
-    public override bool isTransparent { get { return true; } }
+    public override bool isTransparent => true;
 
     public override BlockMaterial blockMaterial => BlockMaterial.Wood;
     public override SoundMaterial soundMaterial => SoundMaterial.Wood;

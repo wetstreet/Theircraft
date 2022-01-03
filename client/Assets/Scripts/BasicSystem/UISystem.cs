@@ -60,8 +60,6 @@ public class UISystem : MonoBehaviour
         UniversalAdditionalCameraData camData = camera.gameObject.AddMissingComponent<UniversalAdditionalCameraData>();
         camData.renderType = CameraRenderType.Overlay;
         UniversalAdditionalCameraData mainCamData = Camera.main.gameObject.AddMissingComponent<UniversalAdditionalCameraData>();
-        //Debug.Log("mainCamData=" + mainCamData);
-        //Debug.Log("mainCamData.cameraStack=" + mainCamData.cameraStack);
         mainCamData.cameraStack.Add(camera);
     }
 
@@ -136,13 +134,4 @@ public class UISystem : MonoBehaviour
         rt.anchorMax = Vector2.one;
         return uiobj;
     }
-
-    #if UNITY_EDITOR
-    public static GameObject InstantiatePrefab(GameObject prefab)
-    {
-        GameObject uiobj = PrefabUtility.InstantiatePrefab(prefab) as GameObject;
-        return InstantiateUI(uiobj);
-    }
-    #endif
-
 }

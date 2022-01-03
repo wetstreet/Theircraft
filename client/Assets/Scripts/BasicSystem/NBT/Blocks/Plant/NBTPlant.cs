@@ -30,19 +30,19 @@ public class NBTPlant : NBTBlock
 
     public override float hardness => 0;
 
-    public override SoundMaterial soundMaterial { get { return SoundMaterial.Grass; } }
+    public override SoundMaterial soundMaterial => SoundMaterial.Grass;
 
-    public override bool isTransparent { get { return true; } }
+    public override bool isTransparent => true;
 
-    public override bool isCollidable { get { return false; } }
+    public override bool isCollidable => false;
 
-    public override bool hasDropItem { get { return false; } }
+    public override bool hasDropItem => false;
     public override Vector3 itemSize => Vector3.one;
 
 
     protected PlantCorners corners;
-    protected virtual int size { get { return 8; } }
-    protected virtual int height { get { return 16; } }
+    protected virtual int size => 8;
+    protected virtual int height => 16;
 
     public override void Init()
     {
@@ -142,7 +142,7 @@ public class NBTPlant : NBTBlock
         AddFace(mesh, antidiagonalFA, ca);
     }
     
-    public override string pathPrefix { get { return "GUI/block/"; } }
+    public override string pathPrefix => "GUI/block/";
 
     public override Material GetItemMaterial(byte data)
     {

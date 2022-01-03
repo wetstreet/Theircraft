@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class NBTYellowFlower : NBTPlant
 {
-    public override string name { get { return "Yellow Flower"; } }
-    public override string id { get { return "minecraft:yellow_flower"; } }
+    public override string name => "Yellow Flower";
+    public override string id => "minecraft:yellow_flower";
 
     protected override int size => 4;
     protected override int height => 8;

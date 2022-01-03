@@ -4,10 +4,13 @@ using UnityEngine;
 
 public class NBTBed : NBTBlock
 {
-    public override string name { get { return "Bed"; } }
-    public override string id { get { return "minecraft:bed"; } }
+    public override string name => "Bed";
+    public override string id => "minecraft:bed";
 
+    public override BlockMaterial blockMaterial => BlockMaterial.Wood;
     public override SoundMaterial soundMaterial => SoundMaterial.Wood;
+
+    public override float hardness => 0.2f;
 
     public override bool isTileEntity => true;
 

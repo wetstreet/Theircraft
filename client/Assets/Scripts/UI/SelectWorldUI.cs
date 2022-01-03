@@ -34,6 +34,7 @@ public class SelectWorldUI : MonoBehaviour
         public GameObject go;
         public RawImage icon;
         public Label name;
+        public string path;
         public Label time;
         public Label mode;
         public GameObject select;
@@ -95,6 +96,8 @@ public class SelectWorldUI : MonoBehaviour
                 item.mode = unitTrans.Find("mode").GetComponent<Label>();
                 item.select = unitTrans.Find("select").gameObject;
 
+                item.path = subdir.Name;
+
                 NBTFile levelFile = new NBTFile(Path.Combine(subdir.FullName, "level.dat"));
                 NbtTree levelTree = new NbtTree();
                 using (Stream stream = levelFile.GetDataInputStream())
@@ -110,7 +113,7 @@ public class SelectWorldUI : MonoBehaviour
                 TagNodeLong time = levelDat["LastPlayed"] as TagNodeLong;
                 DateTime startTime = TimeZone.CurrentTimeZone.ToLocalTime(new DateTime(1970, 1, 1));
                 DateTime dateTime = startTime.AddMilliseconds(time.Data);
-                item.time.text = subdir.Name + " (" + dateTime + ")";
+                item.time.text = item.path + " (" + dateTime + ")";
 
                 TagNodeInt mode = levelDat["GameType"] as TagNodeInt;
                 item.mode.text = mode == 0 ? "Survival Mode" : "Creative Mode";
@@ -149,7 +152,7 @@ public class SelectWorldUI : MonoBehaviour
 
     void Play()
     {
-        NBTHelper.save = items[curSelectIndex].name.text;
+        NBTHelper.save = items[curSelectIndex].path;
         NBTHelper.Init();
 
         DataCenter.name = "Steve";

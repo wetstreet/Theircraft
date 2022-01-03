@@ -4,21 +4,15 @@ using UnityEngine;
 
 public class NBTGravel : NBTBlock
 {
-    public override string name { get { return "Gravel"; } }
-    public override string id { get { return "minecraft:gravel"; } }
+    public override string name => "Gravel";
+    public override string id => "minecraft:gravel";
 
-    public override string topName { get { return "gravel"; } }
-    public override string bottomName { get { return "gravel"; } }
-    public override string frontName { get { return "gravel"; } }
-    public override string backName { get { return "gravel"; } }
-    public override string leftName { get { return "gravel"; } }
-    public override string rightName { get { return "gravel"; } }
+    public override string allName => "gravel";
 
     public override float hardness => 0.6f;
 
     public override BlockMaterial blockMaterial => BlockMaterial.Ground;
-
-    public override SoundMaterial soundMaterial { get { return SoundMaterial.Gravel; } }
+    public override SoundMaterial soundMaterial => SoundMaterial.Gravel;
 
     public override string GetBreakEffectTexture(byte data) { return "gravel"; }
 }

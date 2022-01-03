@@ -4,15 +4,20 @@ using UnityEngine;
 
 public class NBTPumpkin : NBTBlock
 {
-    public override string name { get { return "Pumpkin"; } }
-    public override string id { get { return "minecraft:pumpkin"; } }
+    public override string name => "Pumpkin";
+    public override string id => "minecraft:pumpkin";
 
-    public override string topName { get { return "pumpkin_top"; } }
-    public override string bottomName { get { return "pumpkin_top"; } }
-    public override string frontName { get { return "pumpkin_face_off"; } }
-    public override string backName { get { return "pumpkin_side"; } }
-    public override string leftName { get { return "pumpkin_side"; } }
-    public override string rightName { get { return "pumpkin_side"; } }
+    public override string topName => "pumpkin_top";
+    public override string bottomName => "pumpkin_top";
+    public override string frontName => "pumpkin_face_off";
+    public override string backName => "pumpkin_side";
+    public override string leftName => "pumpkin_side";
+    public override string rightName => "pumpkin_side";
+
+    public override float hardness => 1;
+
+    public override BlockMaterial blockMaterial => BlockMaterial.Wood;
+    public override SoundMaterial soundMaterial => SoundMaterial.Wood;
 
     public override int GetFrontIndexByData(NBTChunk chunk, int data)
     {
@@ -42,12 +47,6 @@ public class NBTPumpkin : NBTBlock
         else
             return TextureArrayManager.GetIndexByName("pumpkin_side");
     }
-
-    public override float hardness => 1;
-
-    public override BlockMaterial blockMaterial => BlockMaterial.Wood;
-
-    public override SoundMaterial soundMaterial { get { return SoundMaterial.Wood; } }
 
     public override string GetBreakEffectTexture(byte data) { return "pumpkin_face_off"; }
 

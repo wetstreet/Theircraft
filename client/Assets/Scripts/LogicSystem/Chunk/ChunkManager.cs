@@ -4,13 +4,7 @@ using System.Linq;
 
 public class ChunkManager
 {
-    public static void UnloadChunk(int x, int z)
-    {
-        //Debug.Log("UnloadChunk,x=" + x + ",z=" + z);
-        NBTHelper.RemoveChunk(x, z);
-    }
-
-    public async static void ChunksEnterLeaveViewReq(List<Vector2Int> enterViewChunks, List<Vector2Int> leaveViewChunks = null)
+    public async static void ChunksEnterLeaveView(List<Vector2Int> enterViewChunks, List<Vector2Int> leaveViewChunks = null)
     {
         List<NBTChunk> chunks = new List<NBTChunk>();
         foreach (Vector2Int chunkPos in enterViewChunks)
@@ -25,7 +19,7 @@ public class ChunkManager
         {
             foreach (Vector2Int chunk in leaveViewChunks)
             {
-                UnloadChunk(chunk.x, chunk.y);
+                NBTHelper.RemoveChunk(chunk.x, chunk.y);
             }
         }
     }

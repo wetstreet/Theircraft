@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class NBTMonsterEgg : NBTBlock
 {
-    public override string name { get { return "Monster Egg"; } }
-    public override string id { get { return "minecraft:monster_egg"; } }
+    public override string name => "Monster Egg";
+    public override string id => "minecraft:monster_egg";
 
     public override string GetIconPathByData(short data)
     {
@@ -20,9 +20,10 @@ public class NBTMonsterEgg : NBTBlock
         throw new System.Exception("no icon,data=" + data);
     }
 
-    public override float hardness { get { return 1.5f; } }
+    public override float hardness => 1.5f;
 
-    public override SoundMaterial soundMaterial { get { return SoundMaterial.Stone; } }
+    public override BlockMaterial blockMaterial => BlockMaterial.RockI;
+    public override SoundMaterial soundMaterial => SoundMaterial.Stone;
 
     public override string GetBreakEffectTexture(byte data) { return "stone"; }
 

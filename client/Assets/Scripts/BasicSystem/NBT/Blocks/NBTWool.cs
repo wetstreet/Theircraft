@@ -4,10 +4,13 @@ using UnityEngine;
 
 public class NBTWool : NBTBlock
 {
-    public override string name { get { return "Wool"; } }
-    public override string id { get { return "minecraft:wool"; } }
+    public override string name => "Wool";
+    public override string id => "minecraft:wool";
 
     public override float hardness => 0.8f;
+
+    public override BlockMaterial blockMaterial => BlockMaterial.Wool;
+    public override SoundMaterial soundMaterial => SoundMaterial.Snow;
 
     public override string GetNameByData(short data)
     {
@@ -95,8 +98,6 @@ public class NBTWool : NBTBlock
     public override int GetBackIndexByData(NBTChunk chunk, int data) { return TextureArrayManager.GetIndexByName(GetTextureNameByData(data)); }
     public override int GetLeftIndexByData(NBTChunk chunk, int data) { return TextureArrayManager.GetIndexByName(GetTextureNameByData(data)); }
     public override int GetRightIndexByData(NBTChunk chunk, int data) { return TextureArrayManager.GetIndexByName(GetTextureNameByData(data)); }
-
-    public override SoundMaterial soundMaterial { get { return SoundMaterial.Snow; } }
 
     public override string GetBreakEffectTexture(byte data) { return GetTextureNameByData(data); }
 }

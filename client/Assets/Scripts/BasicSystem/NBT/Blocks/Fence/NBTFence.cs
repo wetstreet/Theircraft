@@ -4,13 +4,14 @@ using UnityEngine;
 
 public class NBTFence : NBTBlock
 {
-    public virtual string fenceName { get { return "planks_oak"; } }
-    public override string name { get { return "Oak Fence"; } }
-    public override string id { get { return "minecraft:fence"; } }
+    public virtual string fenceName => "planks_oak";
+    public override string name => "Oak Fence";
+    public override string id => "minecraft:fence";
 
     public override float hardness => 2;
 
     public override BlockMaterial blockMaterial => BlockMaterial.Wood;
+    public override SoundMaterial soundMaterial => SoundMaterial.Wood;
 
     MeshData[] meshes = new MeshData[16];
     public override void Init()
@@ -32,8 +33,6 @@ public class NBTFence : NBTBlock
         meshes[14] = Resources.Load<Mesh>("Meshes/blocks/fence/wall_1110").ToMeshData();
         meshes[15] = Resources.Load<Mesh>("Meshes/blocks/fence/wall_1111").ToMeshData();
     }
-
-    public override SoundMaterial soundMaterial { get { return SoundMaterial.Wood; } }
 
     public override string GetBreakEffectTexture(NBTChunk chunk, byte data) { return "planks_birch"; }
 

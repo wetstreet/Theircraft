@@ -6,8 +6,8 @@ using UnityEngine.Rendering;
 
 public class NBTSapling : NBTPlant
 {
-    public override string name { get { return "Sapling"; } }
-    public override string id { get { return "minecraft:sapling"; } }
+    public override string name => "Sapling";
+    public override string id => "minecraft:sapling";
 
     public override Material GetItemMaterial(byte data)
     {
@@ -38,7 +38,7 @@ public class NBTSapling : NBTPlant
         return null;
     }
 
-    public override bool hasDropItem { get { return true; } }
+    public override bool hasDropItem => true;
 
     public override int GetPlantIndexByData(int data)
     {

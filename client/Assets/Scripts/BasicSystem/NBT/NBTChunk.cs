@@ -168,21 +168,6 @@ public class NBTChunk
         return;
     }
 
-    TagNodeCompound GetSection(int yInChunk)
-    {
-        int sectionIndex = Mathf.FloorToInt(yInChunk / 16f);
-        if (sectionIndex <= Sections.Count)
-        {
-            return Sections[sectionIndex] as TagNodeCompound;
-        }
-        return null;
-    }
-
-    int GetBlockPos(int xInSection, int yInSection, int zInSection)
-    {
-        return yInSection * 16 * 16 + zInSection * 16 + xInSection;
-    }
-
     //input is local position
     public bool HasOpaqueBlock(int xInChunk, int worldY, int zInChunk)
     {
@@ -211,6 +196,11 @@ public class NBTChunk
 
     void AddCube(NBTBlock generator, byte blockData, UpdateFlags updateFlag)
     {
+        if (water.nbtMesh == null || collidable == null || notCollidable == null)
+        {
+            Debug.LogError("no mesh");
+            return;
+        }
         UnityEngine.Profiling.Profiler.BeginSample("AddCube");
         if (generator is NBTStationaryWater)
         {

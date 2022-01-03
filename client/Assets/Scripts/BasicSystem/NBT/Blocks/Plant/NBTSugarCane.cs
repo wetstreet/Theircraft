@@ -5,7 +5,6 @@ using UnityEngine;
 public class NBTSugarCane : NBTPlant
 {
     public override string name => "Sugar Cane";
-
     public override string id => "minecraft:reeds";
 
     public override int GetPlantIndexByData(int data)

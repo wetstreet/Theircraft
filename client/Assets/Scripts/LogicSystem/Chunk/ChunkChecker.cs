@@ -54,7 +54,7 @@ public static class ChunkChecker
 
             if (loadChunks.Count > 0 || unloadChunks.Count > 0)
             {
-                ChunkManager.ChunksEnterLeaveViewReq(loadChunks, unloadChunks);
+                ChunkManager.ChunksEnterLeaveView(loadChunks, unloadChunks);
             }
             else
             {

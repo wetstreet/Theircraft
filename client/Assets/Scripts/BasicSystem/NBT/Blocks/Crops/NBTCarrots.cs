@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class NBTCarrots : NBTCrops
 {
-    public override string name { get { return "Carrot"; } }
-    public override string id { get { return "minecraft:carrot"; } }
+    public override string name => "Carrot";
+    public override string id => "minecraft:carrot";
 
     public override string GetIconPathByData(short data) { return "carrot"; }
 

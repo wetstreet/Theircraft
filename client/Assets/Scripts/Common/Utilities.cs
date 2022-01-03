@@ -3,7 +3,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 
-public struct Tag {
+public struct Tag
+{
     public static string Player = "Player";
 }
 

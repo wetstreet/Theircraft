@@ -4,27 +4,26 @@ using UnityEngine;
 
 public class NBTGrassPath : NBTBlock
 {
-    public override string name { get { return "Grass Path"; } }
-    public override string id { get { return "minecraft:grass_path"; } }
+    public override string name => "Grass Path";
+    public override string id => "minecraft:grass_path";
 
     public override string GetDropItemByData(byte data) { return "minecraft:dirt"; }
 
     public override bool isTransparent => true;
 
-    public override string topName { get { return "grass_path_top"; } }
-    public override string bottomName { get { return "dirt"; } }
-    public override string frontName { get { return "grass_path_side"; } }
-    public override string backName { get { return "grass_path_side"; } }
-    public override string leftName { get { return "grass_path_side"; } }
-    public override string rightName { get { return "grass_path_side"; } }
+    public override string topName => "grass_path_top";
+    public override string bottomName => "dirt";
+    public override string frontName => "grass_path_side";
+    public override string backName => "grass_path_side";
+    public override string leftName => "grass_path_side";
+    public override string rightName => "grass_path_side";
 
-    public override float hardness { get { return 0.65f; } }
+    public override float hardness => 0.65f;
 
     public override BlockMaterial blockMaterial => BlockMaterial.Ground;
+    public override SoundMaterial soundMaterial => SoundMaterial.Grass;
 
     public override Color GetTopTintColorByData(NBTChunk chunk, Vector3Int pos, byte data) { return Color.white; }
-
-    public override SoundMaterial soundMaterial { get { return SoundMaterial.Grass; } }
 
     public override string GetBreakEffectTexture(byte data) { return "dirt"; }
 

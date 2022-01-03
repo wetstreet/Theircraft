@@ -4,13 +4,12 @@ using UnityEngine;
 
 public class NBTChest : NBTBlock
 {
-    public override string name { get { return "Chest"; } }
-    public override string id { get { return "minecraft:chest"; } }
+    public override string name => "Chest";
+    public override string id => "minecraft:chest";
 
     public override float hardness => 2.5f;
 
     public override BlockMaterial blockMaterial => BlockMaterial.Wood;
-
     public override SoundMaterial soundMaterial => SoundMaterial.Wood;
 
     public override bool isTileEntity => true;

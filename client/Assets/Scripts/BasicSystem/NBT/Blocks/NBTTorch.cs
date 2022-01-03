@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class NBTTorch : NBTBlock
 {
-    public override string name { get { return "Torch"; } }
-    public override string id { get { return "minecraft:torch"; } }
+    public override string name => "Torch";
+    public override string id => "minecraft:torch";
 
     public override float hardness => 0;
 

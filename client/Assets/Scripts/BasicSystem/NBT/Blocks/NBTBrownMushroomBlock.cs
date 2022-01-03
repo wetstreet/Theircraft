@@ -4,10 +4,15 @@ using UnityEngine;
 
 public class NBTBrownMushroomBlock : NBTBlock
 {
-    public override string name { get { return "Brown Mushroom Block"; } }
-    public override string id { get { return "minecraft:brown_mushroom_block"; } }
+    public override string name => "Brown Mushroom Block";
+    public override string id => "minecraft:brown_mushroom_block";
 
-    public override float hardness { get { return 0.2f; } }
+    public override float hardness => 0.2f;
+
+    public override BlockMaterial blockMaterial => BlockMaterial.Wood;
+    public override SoundMaterial soundMaterial => SoundMaterial.Wood;
+
+    public override string GetBreakEffectTexture(byte data) { return "mushroom_block_inside"; }
 
     public override int GetTopIndexByData(NBTChunk chunk, int data)
     {
@@ -59,9 +64,4 @@ public class NBTBrownMushroomBlock : NBTBlock
             return TextureArrayManager.GetIndexByName("mushroom_block_inside");
     }
 
-    public override BlockMaterial blockMaterial => BlockMaterial.Wood;
-
-    public override SoundMaterial soundMaterial { get { return SoundMaterial.Wood; } }
-
-    public override string GetBreakEffectTexture(byte data) { return "mushroom_block_inside"; }
 }

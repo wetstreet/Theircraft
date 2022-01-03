@@ -58,6 +58,13 @@ public class SoundManager : MonoBehaviour
         AkSoundEngine.SetSwitch("Materials", material, go);
     }
 
+    public static void PlayAddSound(byte type, GameObject gameObject)
+    {
+        string material = NBTGeneratorManager.GetMeshGenerator(type).soundMaterial.ToString();
+        AkSoundEngine.SetSwitch("Materials", material, gameObject);
+        AkSoundEngine.PostEvent("Player_Place", gameObject);
+    }
+
     public static void PlayBreakSound(byte type, GameObject gameObject)
     {
         string material = NBTGeneratorManager.GetMeshGenerator(type).soundMaterial.ToString();

@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class NBTLargeFlowers : NBTPlant
 {
-    public override string name { get { return "Large Flowers"; } }
-    public override string id { get { return "minecraft:double_plant"; } }
+    public override string name => "Large Flowers";
+    public override string id => "minecraft:double_plant";
 
     protected override Color GetTintColorByData(NBTChunk chunk, Vector3Int pos, byte data)
     {

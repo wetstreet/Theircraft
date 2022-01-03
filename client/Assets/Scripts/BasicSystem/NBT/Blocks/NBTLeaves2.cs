@@ -4,14 +4,15 @@ using UnityEngine;
 
 public class NBTLeaves2 : NBTBlock
 {
-    public override string name { get { return "Leaves (Acacia/Dark Oak)"; } }
-    public override string id { get { return "minecraft:leaves2"; } }
+    public override string name => "Leaves (Acacia/Dark Oak)";
+    public override string id => "minecraft:leaves2";
 
-    public override float hardness { get { return 0.2f; } }
+    public override float hardness => 0.2f;
 
-    public override SoundMaterial soundMaterial { get { return SoundMaterial.Grass; } }
+    public override BlockMaterial blockMaterial => BlockMaterial.Leaves;
+    public override SoundMaterial soundMaterial => SoundMaterial.Grass;
 
-    public override bool isTransparent { get { return true; } }
+    public override bool isTransparent => true;
 
     public override bool willReduceLight => true;
 

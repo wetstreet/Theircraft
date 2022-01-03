@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class NBTTallGrass : NBTPlant
 {
-    public override string name { get { return "Grass"; } }
-    public override string id { get { return "minecraft:tallgrass"; } }
+    public override string name => "Grass";
+    public override string id => "minecraft:tallgrass";
 
     protected override Color GetTintColorByData(NBTChunk chunk, byte data)
     {
@@ -17,7 +17,7 @@ public class NBTTallGrass : NBTPlant
         return TextureArrayManager.GetIndexByName("tallgrass");
     }
 
-    protected override string itemMeshPath { get { return "grass"; } }
+    protected override string itemMeshPath => "grass";
 
     public override string GetIconPathByData(short data) { return "tallgrass"; }
 

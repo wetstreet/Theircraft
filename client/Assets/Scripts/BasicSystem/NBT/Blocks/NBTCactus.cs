@@ -4,15 +4,14 @@ using UnityEngine;
 
 public class NBTCactus : NBTBlock
 {
-    public override string name { get { return "Cactus"; } }
+    public override string name => "Cactus";
+    public override string id => "minecraft:cactus";
 
-    public override string id { get { return "minecraft:cactus"; } }
-
-    public override SoundMaterial soundMaterial { get { return SoundMaterial.Grass; } }
-
-    public override bool isTransparent { get { return true; } }
+    public override bool isTransparent => true;
 
     public override float hardness => 0.4f;
+
+    public override SoundMaterial soundMaterial => SoundMaterial.Grass;
 
     public override string topName => "cactus_top";
     public override string bottomName => "cactus_bottom";

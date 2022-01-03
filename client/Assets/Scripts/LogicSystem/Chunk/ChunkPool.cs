@@ -21,11 +21,6 @@ public class ChunkPool
 
     public static NBTChunk GetChunk()
     {
-        if (!isInited)
-        {
-            Init();
-        }
-
         if (chunks.Count <= 0)
         {
             for (int i = 0; i < 100; i++)

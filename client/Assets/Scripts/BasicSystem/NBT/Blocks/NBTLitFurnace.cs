@@ -4,12 +4,13 @@ using UnityEngine;
 
 public class NBTLitFurnace : NBTBlock
 {
-    public override string name { get { return "Furnace"; } }
-    public override string id { get { return "minecraft:lit_furnace"; } }
+    public override string name => "Furnace";
+    public override string id => "minecraft:lit_furnace";
 
-    public override float hardness { get { return 3.5f; } }
+    public override float hardness => 3.5f;
 
     public override BlockMaterial blockMaterial => BlockMaterial.RockI;
+    public override SoundMaterial soundMaterial => SoundMaterial.Stone;
 
     public override string frontName => "furnace_front_on";
     public override string backName => "furnace_side";
@@ -17,8 +18,6 @@ public class NBTLitFurnace : NBTBlock
     public override string rightName => "furnace_side";
     public override string topName => "furnace_top";
     public override string bottomName => "furnace_top";
-
-    public override SoundMaterial soundMaterial { get { return SoundMaterial.Stone; } }
 
     public override string GetBreakEffectTexture(byte data)
     {

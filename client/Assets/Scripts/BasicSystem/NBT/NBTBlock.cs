@@ -19,14 +19,17 @@ public enum BlockMaterial
 {
     Default,
     Ground,
+    Snow,
     Wood,
     Leaves,
     Web,
+    Wool,
     RockI,
     RockII,
     RockIII,
     RockIV,
     Glass,
+    Other
 }
 
 public struct BlockLightAttributes
@@ -90,12 +93,14 @@ public struct FaceAttributes
 
 public abstract class NBTBlock : NBTObject
 {
-    public virtual string topName { get; }
-    public virtual string bottomName { get; }
-    public virtual string frontName { get; }
-    public virtual string backName { get; }
-    public virtual string leftName { get; }
-    public virtual string rightName { get; }
+    public virtual string topName { get { return allName; } }
+    public virtual string bottomName { get { return allName; } }
+    public virtual string frontName { get { return allName; } }
+    public virtual string backName { get { return allName; } }
+    public virtual string leftName { get { return allName; } }
+    public virtual string rightName { get { return allName; } }
+
+    public virtual string allName { get; }
 
     public virtual float hardness { get { return 1; } }
 

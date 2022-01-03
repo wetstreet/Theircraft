@@ -4,12 +4,13 @@ using UnityEngine;
 
 public class NBTPlanks : NBTBlock
 {
-    public override string name { get { return "Planks"; } }
-    public override string id { get { return "minecraft:planks"; } }
+    public override string name => "Planks";
+    public override string id => "minecraft:planks";
 
     public override float hardness => 2;
 
     public override BlockMaterial blockMaterial => BlockMaterial.Wood;
+    public override SoundMaterial soundMaterial => SoundMaterial.Wood;
 
     public override string GetNameByData(short data)
     {
@@ -57,8 +58,6 @@ public class NBTPlanks : NBTBlock
     public override int GetBackIndexByData(NBTChunk chunk, int data) { return GetIndexByData(data); }
     public override int GetLeftIndexByData(NBTChunk chunk, int data) { return GetIndexByData(data); }
     public override int GetRightIndexByData(NBTChunk chunk, int data) { return GetIndexByData(data); }
-
-    public override SoundMaterial soundMaterial { get { return SoundMaterial.Wood; } }
 
     public override string GetBreakEffectTexture(byte data)
     {

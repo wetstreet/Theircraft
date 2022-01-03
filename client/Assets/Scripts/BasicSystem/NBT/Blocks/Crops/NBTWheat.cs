@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class NBTWheat : NBTCrops
 {
-    public override string name { get { return "Wheat"; } }
-    public override string id { get { return "minecraft:wheat"; } }
+    public override string name => "Wheat";
+    public override string id => "minecraft:wheat";
 
     public override string GetIconPathByData(short data) { return "wheat"; }
 

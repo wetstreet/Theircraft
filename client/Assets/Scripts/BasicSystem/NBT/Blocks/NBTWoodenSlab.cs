@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class NBTWoodenSlab : NBTBlock
 {
-    public override string name { get { return "Wooden Slab"; } }
-    public override string id { get { return "minecraft:wooden_slab"; } }
+    public override string name => "Wooden Slab";
+    public override string id => "minecraft:wooden_slab";
 
-    public override bool isTransparent { get { return true; } }
+    public override bool isTransparent => true;
 
     public override string GetNameByData(short data)
     {
@@ -29,10 +29,10 @@ public class NBTWoodenSlab : NBTBlock
         return "Wood Slab";
     }
 
-    public override float hardness { get { return 2f; } }
-    public override BlockMaterial blockMaterial => BlockMaterial.Wood;
+    public override float hardness => 2f;
 
-    public override SoundMaterial soundMaterial { get { return SoundMaterial.Wood; } }
+    public override BlockMaterial blockMaterial => BlockMaterial.Wood;
+    public override SoundMaterial soundMaterial => SoundMaterial.Wood;
 
     public override byte GetDropItemData(byte data)
     {

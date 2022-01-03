@@ -4,9 +4,7 @@ using UnityEngine;
 
 public class NBTStationaryWater : NBTBlock
 {
-    public override SoundMaterial soundMaterial { get { return SoundMaterial.Grass; } }
-
-    public override bool isTransparent { get { return true; } }
+    public override bool isTransparent => true;
 
     public override bool willReduceLight => true;
 

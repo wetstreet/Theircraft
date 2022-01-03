@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class NBTLog : NBTBlock
 {
-    public override string name { get { return "Log"; } }
-    public override string id { get { return "minecraft:log"; } }
+    public override string name => "Log";
+    public override string id => "minecraft:log";
 
     public override string GetNameByData(short data)
     {
@@ -23,12 +23,12 @@ public class NBTLog : NBTBlock
         throw new System.Exception("no name, data=" + data);
     }
 
-
     public override byte GetDropItemData(byte data) { return (byte)(data % 4); }
 
-    public override float hardness { get { return 2f; } }
+    public override float hardness => 2f;
 
     public override BlockMaterial blockMaterial => BlockMaterial.Wood;
+    public override SoundMaterial soundMaterial => SoundMaterial.Wood;
 
     protected override Rotation GetTopRotationByData(byte data)
     {
@@ -286,8 +286,6 @@ public class NBTLog : NBTBlock
         }
         return TextureArrayManager.GetIndexByName("log_oak");
     }
-
-    public override SoundMaterial soundMaterial { get { return SoundMaterial.Wood; } }
 
     public override string GetBreakEffectTexture(byte data)
     {

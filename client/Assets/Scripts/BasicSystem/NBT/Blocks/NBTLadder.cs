@@ -4,8 +4,14 @@ using UnityEngine;
 
 public class NBTLadder : NBTBlock
 {
-    public override string name { get { return "Ladder"; } }
-    public override string id { get { return "minecraft:ladder"; } }
+    public override string name => "Ladder";
+    public override string id => "minecraft:ladder";
+
+    public override bool isTransparent => true;
+
+    public override BlockMaterial blockMaterial => BlockMaterial.Wood;
+    public override SoundMaterial soundMaterial => SoundMaterial.Wood;
+    public override float hardness => 0.4f;
 
     public override string pathPrefix => "GUI/block/";
     public override string GetIconPathByData(short data) { return "ladder"; }
@@ -13,12 +19,6 @@ public class NBTLadder : NBTBlock
     public override byte GetDropItemData(byte data) { return 0; }
 
     public override string GetBreakEffectTexture(byte data) { return "ladder"; }
-
-    public override bool isTransparent { get { return true; } }
-
-    public override BlockMaterial blockMaterial => BlockMaterial.Wood;
-    public override SoundMaterial soundMaterial => SoundMaterial.Wood;
-    public override float hardness => 0.4f;
 
     protected static Vector3 nearBottomLeft_1 = new Vector3(-0.4375f, -0.5f, -0.4375f);
     protected static Vector3 nearBottomRight_1 = new Vector3(0.4375f, -0.5f, -0.4375f);

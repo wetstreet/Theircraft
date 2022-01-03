@@ -4,25 +4,25 @@ using UnityEngine;
 
 public class NBTGrassBlock : NBTBlock
 {
-    public override string name { get { return "Grass Block"; } }
-    public override string id { get { return "minecraft:grass"; } }
+    public override string name => "Grass Block";
+    public override string id => "minecraft:grass";
 
     public override string GetDropItemByData(byte data) { return "minecraft:dirt"; }
 
-    public override string topName { get { return "grass_top"; } }
-    public override string bottomName { get { return "dirt"; } }
-    public override string frontName { get { return "grass_side"; } }
-    public override string backName { get { return "grass_side"; } }
-    public override string leftName { get { return "grass_side"; } }
-    public override string rightName { get { return "grass_side"; } }
+    public override string topName => "grass_top";
+    public override string bottomName => "dirt";
+    public override string frontName => "grass_side";
+    public override string backName => "grass_side";
+    public override string leftName => "grass_side";
+    public override string rightName => "grass_side";
 
-    public override float hardness { get { return 0.6f; } }
+    public override float hardness => 0.6f;
 
     public override BlockMaterial blockMaterial => BlockMaterial.Ground;
 
+    public override SoundMaterial soundMaterial => SoundMaterial.Grass;
+
     public override Color GetTopTintColorByData(NBTChunk chunk, Vector3Int pos, byte data) { return TintManager.tintColor; }
-     
-    public override SoundMaterial soundMaterial { get { return SoundMaterial.Grass; } }
 
     public override string GetBreakEffectTexture(byte data) { return "dirt"; }
 

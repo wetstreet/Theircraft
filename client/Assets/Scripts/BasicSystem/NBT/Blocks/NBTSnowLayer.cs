@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class NBTSnowLayer : NBTBlock
 {
-    public override string name { get { return "Snow Layer"; } }
-    public override string id { get { return "minecraft:snow_layer"; } }
+    public override string name => "Snow Layer";
+    public override string id => "minecraft:snow_layer";
 
     public override string GetIconPathByData(short data) { return "QuartzSlab"; }
 
@@ -14,16 +14,12 @@ public class NBTSnowLayer : NBTBlock
     public override bool isTransparent => true;
     public override bool isCollidable => false;
 
-    public override string topName { get { return "snow"; } }
-    public override string bottomName { get { return "snow"; } }
-    public override string frontName { get { return "snow"; } }
-    public override string backName { get { return "snow"; } }
-    public override string leftName { get { return "snow"; } }
-    public override string rightName { get { return "snow"; } }
+    public override string allName => "snow";
 
     public override float hardness => 0.1f;
 
-    public override SoundMaterial soundMaterial { get { return SoundMaterial.Snow; } }
+    public override BlockMaterial blockMaterial => BlockMaterial.Snow;
+    public override SoundMaterial soundMaterial => SoundMaterial.Snow;
 
     public override string GetBreakEffectTexture(byte data) { return "snow"; }
 
