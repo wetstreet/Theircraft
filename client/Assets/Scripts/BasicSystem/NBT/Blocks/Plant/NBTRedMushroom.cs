@@ -12,5 +12,10 @@ public class NBTRedMushroom : NBTPlant
         return TextureArrayManager.GetIndexByName("mushroom_red");
     }
 
+    public override string GetTexName(NBTChunk chunk, Vector3Int pos, int data)
+    {
+        return "mushroom_red";
+    }
+
     public override string GetBreakEffectTexture(byte data) { return "mushroom_red"; }
 }

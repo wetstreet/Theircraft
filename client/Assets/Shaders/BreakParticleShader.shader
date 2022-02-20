@@ -3,6 +3,7 @@ Shader "Custom/BreakParticleShader"
     Properties
     {
         _Array ("Texture", 2DArray) = "" {}
+        _MainTex ("_MainTex", 2D) = "white" {}
         _Slice ("Slice", Range(0, 460)) = 0
         _Color ("Color Tint", Color) = (1, 1, 1, 1)
         _Cutoff ("Cut Off", Range(0, 1)) = 0.5
@@ -41,6 +42,7 @@ Shader "Custom/BreakParticleShader"
             };
 
             TEXTURE2D_ARRAY(_Array);  SAMPLER(sampler_Array);
+            sampler2D _MainTex;
             float _Slice;
             float _Cutoff;
             half4 _Color;
@@ -62,6 +64,7 @@ Shader "Custom/BreakParticleShader"
             half4 frag (v2f i) : SV_Target
             {
                 half4 col = SAMPLE_TEXTURE2D_ARRAY(_Array, sampler_Array, i.uv, _Slice);
+                // half4 col = tex2D(_MainTex, i.uv);
                 clip(col.a - _Cutoff);
 
                 half4 dayLight = tex2D(_DayLightTexture, half2(_BlockLight, 1 - _SkyLight));

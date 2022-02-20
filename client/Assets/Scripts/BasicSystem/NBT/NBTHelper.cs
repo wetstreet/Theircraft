@@ -652,6 +652,11 @@ public class NBTHelper
         int zInChunk = z - chunkZ * 16;
 
         NBTChunk chunk = GetChunk(chunkX, chunkZ);
+        if (chunk == null)
+        {
+            Debug.LogError("no chunk! x=" + x + ",y=" + y + ",z=" + z);
+            return 0;
+        }
         return chunk.GetSkyLightByte(xInChunk, y, zInChunk);
     }
 

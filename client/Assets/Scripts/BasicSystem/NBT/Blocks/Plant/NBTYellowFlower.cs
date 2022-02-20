@@ -27,7 +27,7 @@ public class NBTYellowFlower : NBTPlant
         throw new System.Exception("no index");
     }
 
-    public override string GetBreakEffectTexture(byte data)
+    public override string GetTexName(NBTChunk chunk, Vector3Int pos, int data)
     {
         if (data == 0)
         {
@@ -42,6 +42,11 @@ public class NBTYellowFlower : NBTPlant
             return "flower_oxeye_daisy";
         }
         throw new System.Exception("no texture");
+    }
+
+    public override string GetBreakEffectTexture(byte data)
+    {
+        return GetTexName(null, Vector3Int.zero, data);
     }
 
     public override string GetIconPathByData(short data)

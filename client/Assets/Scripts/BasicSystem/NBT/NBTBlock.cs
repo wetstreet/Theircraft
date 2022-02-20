@@ -128,12 +128,19 @@ public abstract class NBTBlock : NBTObject
 
     public virtual string GetBreakEffectTexture(NBTChunk chunk, Vector3Int pos, byte data) { return GetBreakEffectTexture(chunk, data); }
 
-    public virtual int GetTopIndexByData(NBTChunk chunk, int data) { return TextureArrayManager.GetIndexByName(topName); }
-    public virtual int GetBottomIndexByData(NBTChunk chunk, int data) { return TextureArrayManager.GetIndexByName(bottomName); }
-    public virtual int GetFrontIndexByData(NBTChunk chunk, int data) { return TextureArrayManager.GetIndexByName(frontName); }
-    public virtual int GetBackIndexByData(NBTChunk chunk, int data) { return TextureArrayManager.GetIndexByName(backName); }
-    public virtual int GetLeftIndexByData(NBTChunk chunk, int data) { return TextureArrayManager.GetIndexByName(leftName); }
-    public virtual int GetRightIndexByData(NBTChunk chunk, int data) { return TextureArrayManager.GetIndexByName(rightName); }
+    public virtual string GetTopTexName(NBTChunk chunk, int data) { return topName; }
+    public virtual string GetBottomTexName(NBTChunk chunk, int data) { return bottomName; }
+    public virtual string GetFrontTexName(NBTChunk chunk, int data) { return frontName; }
+    public virtual string GetBackTexName(NBTChunk chunk, int data) { return backName; }
+    public virtual string GetLeftTexName(NBTChunk chunk, int data) { return leftName; }
+    public virtual string GetRightTexName(NBTChunk chunk, int data) { return rightName; }
+
+    public virtual int GetTopIndexByData(NBTChunk chunk, int data) { return TextureArrayManager.GetIndexByName(GetTopTexName(chunk, data)); }
+    public virtual int GetBottomIndexByData(NBTChunk chunk, int data) { return TextureArrayManager.GetIndexByName(GetBottomTexName(chunk, data)); }
+    public virtual int GetFrontIndexByData(NBTChunk chunk, int data) { return TextureArrayManager.GetIndexByName(GetFrontTexName(chunk, data)); }
+    public virtual int GetBackIndexByData(NBTChunk chunk, int data) { return TextureArrayManager.GetIndexByName(GetBackTexName(chunk, data)); }
+    public virtual int GetLeftIndexByData(NBTChunk chunk, int data) { return TextureArrayManager.GetIndexByName(GetLeftTexName(chunk, data)); }
+    public virtual int GetRightIndexByData(NBTChunk chunk, int data) { return TextureArrayManager.GetIndexByName(GetRightTexName(chunk, data)); }
 
     public virtual Color GetTopTintColorByData(NBTChunk chunk, Vector3Int pos, byte data) { return GetTopTintColorByData(data); }
     public virtual Color GetBottomTintColorByData(NBTChunk chunk, Vector3Int pos, byte data) { return GetBottomTintColorByData(data); }
@@ -188,7 +195,7 @@ public abstract class NBTBlock : NBTObject
 
     public virtual Mesh GetBreakingEffectMesh(NBTChunk chunk, Vector3Int pos, byte blockData)
     {
-        return GetItemMesh(chunk, pos, blockData);
+        return GetItemMesh(chunk, pos, blockData, true);
     }
 
     protected static float[] skylight_default = new float[] { 1, 1, 1, 1 };
@@ -262,6 +269,12 @@ public abstract class NBTBlock : NBTObject
     // for break effect & drop item (will be affected by light)
     public override Mesh GetItemMesh(NBTChunk chunk, Vector3Int pos, byte blockData)
     {
+        return GetItemMesh(chunk, pos, blockData, false);
+    }
+
+    // for break effect & drop item (will be affected by light)
+    public Mesh GetItemMesh(NBTChunk chunk, Vector3Int pos, byte blockData, bool breakingEffectMesh)
+    {
         CubeAttributes ca = new CubeAttributes();
         //ca.pos = pos;
         ca.blockData = blockData;
@@ -273,12 +286,7 @@ public abstract class NBTBlock : NBTObject
         FaceAttributes fa = new FaceAttributes();
         fa.skyLight = new float[] { skyLight, skyLight, skyLight, skyLight };
         fa.blockLight = new float[] { blockLight, blockLight, blockLight, blockLight };
-
-        Rotation rotation = GetFrontRotationByData(ca.blockData);
-        if (rotation == Rotation.Right)
-            fa.uv = uv_right;
-        else
-            fa.uv = uv_zero;
+        fa.uv = uv_zero;
 
         try
         {
@@ -286,36 +294,48 @@ public abstract class NBTBlock : NBTObject
             fa.normal = Vector3.forward;
             fa.faceIndex = GetFrontIndexByData(chunk, ca.blockData);
             fa.color = GetFrontTintColorByData(chunk, pos, ca.blockData);
+            if (!breakingEffectMesh)
+                fa.uv = TextureArrayManager.GetUVByName(GetFrontTexName(chunk, ca.blockData));
             AddFace(nbtMesh, fa, ca);
 
             fa.pos = backVertices;
             fa.normal = Vector3.back;
             fa.faceIndex = GetBackIndexByData(chunk, ca.blockData);
             fa.color = GetBackTintColorByData(chunk, pos, ca.blockData);
+            if (!breakingEffectMesh)
+                fa.uv = TextureArrayManager.GetUVByName(GetBackTexName(chunk, ca.blockData));
             AddFace(nbtMesh, fa, ca);
 
             fa.pos = topVertices;
             fa.normal = Vector3.up;
             fa.faceIndex = GetTopIndexByData(chunk, ca.blockData);
             fa.color = GetTopTintColorByData(chunk, pos, ca.blockData);
+            if (!breakingEffectMesh)
+                fa.uv = TextureArrayManager.GetUVByName(GetTopTexName(chunk, ca.blockData));
             AddFace(nbtMesh, fa, ca);
 
             fa.pos = bottomVertices;
             fa.normal = Vector3.down;
             fa.faceIndex = GetBottomIndexByData(chunk, ca.blockData);
             fa.color = GetBottomTintColorByData(chunk, pos, ca.blockData);
+            if (!breakingEffectMesh)
+                fa.uv = TextureArrayManager.GetUVByName(GetBottomTexName(chunk, ca.blockData));
             AddFace(nbtMesh, fa, ca);
 
             fa.pos = leftVertices;
             fa.normal = Vector3.left;
             fa.faceIndex = GetLeftIndexByData(chunk, ca.blockData);
             fa.color = GetLeftTintColorByData(chunk, pos, ca.blockData);
+            if (!breakingEffectMesh)
+                fa.uv = TextureArrayManager.GetUVByName(GetLeftTexName(chunk, ca.blockData));
             AddFace(nbtMesh, fa, ca);
 
             fa.pos = rightVertices;
             fa.normal = Vector3.right;
             fa.faceIndex = GetRightIndexByData(chunk, ca.blockData);
             fa.color = GetRightTintColorByData(chunk, pos, ca.blockData);
+            if (!breakingEffectMesh)
+                fa.uv = TextureArrayManager.GetUVByName(GetRightTexName(chunk, ca.blockData));
             AddFace(nbtMesh, fa, ca);
         }
         catch (System.Exception e)
@@ -431,26 +451,22 @@ public abstract class NBTBlock : NBTObject
     }
 
     protected void SetVertex(NBTMesh mesh, Vector3 pos, int faceIndex, Vector2 texcoord,
-        float skyLight, float blockLight, Vector4 color, Vector3 normal)
+        float skyLight, float blockLight, Color32 color, Vector3 normal)
     {
-        Vertex vert = mesh.vertexArray[mesh.vertexCount];
-        vert.pos.x = pos.x;
-        vert.pos.y = pos.y;
-        vert.pos.z = pos.z;
-        vert.pos.w = faceIndex;
-        vert.texcoord.x = texcoord.x;
-        vert.texcoord.y = texcoord.y;
-        vert.texcoord.z = skyLight;
-        vert.texcoord.w = blockLight;
-        vert.color = color;
-        vert.normal = normal;
-        mesh.vertexArray[mesh.vertexCount++] = vert;
+        mesh.vertexArray[mesh.vertexCount] = pos;
+        mesh.colorArray[mesh.vertexCount] = color;
+        mesh.uvArray[mesh.vertexCount] = texcoord;
+        mesh.uv2Array[mesh.vertexCount] = new Vector2(skyLight, blockLight);
+        mesh.normalArray[mesh.vertexCount] = normal;
+
+        mesh.vertexCount++;
     }
 
     protected void AddFace(NBTMesh mesh, FaceAttributes fa, CubeAttributes ca)
     {
         UnityEngine.Profiling.Profiler.BeginSample("AddFace");
-        ushort startIndex = mesh.vertexCount;
+
+        int startIndex = mesh.vertexCount;
 
         if (fa.skyLight == null)
         {
@@ -467,11 +483,12 @@ public abstract class NBTBlock : NBTObject
         SetVertex(mesh, fa.pos[3] + ca.pos, fa.faceIndex, fa.uv[3], fa.skyLight[3], fa.blockLight[3], fa.color, fa.normal);
 
         mesh.triangleArray[mesh.triangleCount++] = startIndex;
-        mesh.triangleArray[mesh.triangleCount++] = (ushort)(startIndex + 1);
-        mesh.triangleArray[mesh.triangleCount++] = (ushort)(startIndex + 2);
+        mesh.triangleArray[mesh.triangleCount++] = startIndex + 1;
+        mesh.triangleArray[mesh.triangleCount++] = startIndex + 2;
         mesh.triangleArray[mesh.triangleCount++] = startIndex;
-        mesh.triangleArray[mesh.triangleCount++] = (ushort)(startIndex + 2);
-        mesh.triangleArray[mesh.triangleCount++] = (ushort)(startIndex + 3);
+        mesh.triangleArray[mesh.triangleCount++] = startIndex + 2;
+        mesh.triangleArray[mesh.triangleCount++] = startIndex + 3;
+
         UnityEngine.Profiling.Profiler.EndSample();
     }
 
@@ -499,11 +516,12 @@ public abstract class NBTBlock : NBTObject
         frontFA.blockLight[2] = (ca.front.blockLight + ca.frontTop.blockLight + ca.frontRight.blockLight + ca.frontTopRight.blockLight) / 60.0f;
         frontFA.blockLight[3] = (ca.front.blockLight + ca.frontBottom.blockLight + ca.frontRight.blockLight + ca.frontBottomRight.blockLight) / 60.0f;
 
-        Rotation rotation = GetFrontRotationByData(ca.blockData);
-        if (rotation == Rotation.Right)
-            frontFA.uv = uv_right;
-        else
-            frontFA.uv = uv_zero;
+        frontFA.uv = TextureArrayManager.GetUVByName(GetFrontTexName(chunk, ca.blockData));
+        //Rotation rotation = GetFrontRotationByData(ca.blockData);
+        //if (rotation == Rotation.Right)
+        //    frontFA.uv = uv_right;
+        //else
+        //    frontFA.uv = uv_zero;
 
         UnityEngine.Profiling.Profiler.EndSample();
 
@@ -532,11 +550,13 @@ public abstract class NBTBlock : NBTObject
         backFA.blockLight[2] = (ca.back.blockLight + ca.backTop.blockLight + ca.backLeft.blockLight + ca.backTopLeft.blockLight) / 60.0f;
         backFA.blockLight[3] = (ca.back.blockLight + ca.backBottom.blockLight + ca.backLeft.blockLight + ca.backBottomLeft.blockLight) / 60.0f;
 
-        Rotation rotation = GetFrontRotationByData(ca.blockData);
-        if (rotation == Rotation.Right)
-            backFA.uv = uv_right;
-        else
-            backFA.uv = uv_zero;
+        backFA.uv = TextureArrayManager.GetUVByName(GetBackTexName(chunk, ca.blockData));
+        //Rotation rotation = GetFrontRotationByData(ca.blockData);
+        //if (rotation == Rotation.Right)
+        //    backFA.uv = uv_right;
+        //else
+        //    backFA.uv = uv_zero;
+
         UnityEngine.Profiling.Profiler.EndSample();
 
         return backFA;
@@ -564,11 +584,13 @@ public abstract class NBTBlock : NBTObject
         topFA.blockLight[2] = (ca.top.blockLight + ca.frontTop.blockLight + ca.topLeft.blockLight + ca.frontTopLeft.blockLight) / 60.0f;
         topFA.blockLight[3] = (ca.top.blockLight + ca.backTop.blockLight + ca.topLeft.blockLight + ca.backTopLeft.blockLight) / 60.0f;
 
-        Rotation rotation = GetFrontRotationByData(ca.blockData);
-        if (rotation == Rotation.Right)
-            topFA.uv = uv_right;
-        else
-            topFA.uv = uv_zero;
+        topFA.uv = TextureArrayManager.GetUVByName(GetTopTexName(chunk, ca.blockData));
+        //Rotation rotation = GetFrontRotationByData(ca.blockData);
+        //if (rotation == Rotation.Right)
+        //    topFA.uv = uv_right;
+        //else
+        //    topFA.uv = uv_zero;
+
         UnityEngine.Profiling.Profiler.EndSample();
 
         return topFA;
@@ -596,11 +618,13 @@ public abstract class NBTBlock : NBTObject
         bottomFA.blockLight[2] = (ca.bottom.blockLight + ca.backBottom.blockLight + ca.bottomLeft.blockLight + ca.backBottomLeft.blockLight) / 60.0f;
         bottomFA.blockLight[3] = (ca.bottom.blockLight + ca.frontBottom.blockLight + ca.bottomLeft.blockLight + ca.frontBottomLeft.blockLight) / 60.0f;
 
-        Rotation rotation = GetFrontRotationByData(ca.blockData);
-        if (rotation == Rotation.Right)
-            bottomFA.uv = uv_right;
-        else
-            bottomFA.uv = uv_zero;
+        bottomFA.uv = TextureArrayManager.GetUVByName(GetBottomTexName(chunk, ca.blockData));
+        //Rotation rotation = GetFrontRotationByData(ca.blockData);
+        //if (rotation == Rotation.Right)
+        //    bottomFA.uv = uv_right;
+        //else
+        //    bottomFA.uv = uv_zero;
+
         UnityEngine.Profiling.Profiler.EndSample();
 
         return bottomFA;
@@ -628,11 +652,13 @@ public abstract class NBTBlock : NBTObject
         leftFA.blockLight[2] = (ca.left.blockLight + ca.frontLeft.blockLight + ca.topLeft.blockLight + ca.frontTopLeft.blockLight) / 60.0f;
         leftFA.blockLight[3] = (ca.left.blockLight + ca.frontLeft.blockLight + ca.bottomLeft.blockLight + ca.frontBottomLeft.blockLight) / 60.0f;
 
-        Rotation rotation = GetFrontRotationByData(ca.blockData);
-        if (rotation == Rotation.Right)
-            leftFA.uv = uv_right;
-        else
-            leftFA.uv = uv_zero;
+        leftFA.uv = TextureArrayManager.GetUVByName(GetLeftTexName(chunk, ca.blockData));
+        //Rotation rotation = GetFrontRotationByData(ca.blockData);
+        //if (rotation == Rotation.Right)
+        //    leftFA.uv = uv_right;
+        //else
+        //    leftFA.uv = uv_zero;
+
         UnityEngine.Profiling.Profiler.EndSample();
 
         return leftFA;
@@ -660,11 +686,13 @@ public abstract class NBTBlock : NBTObject
         rightFA.blockLight[2] = (ca.right.blockLight + ca.backRight.blockLight + ca.topRight.blockLight + ca.backTopRight.blockLight) / 60.0f;
         rightFA.blockLight[3] = (ca.right.blockLight + ca.backRight.blockLight + ca.bottomRight.blockLight + ca.backBottomRight.blockLight) / 60.0f;
 
-        Rotation rotation = GetFrontRotationByData(ca.blockData);
-        if (rotation == Rotation.Right)
-            rightFA.uv = uv_right;
-        else
-            rightFA.uv = uv_zero;
+        rightFA.uv = TextureArrayManager.GetUVByName(GetRightTexName(chunk, ca.blockData));
+        //Rotation rotation = GetFrontRotationByData(ca.blockData);
+        //if (rotation == Rotation.Right)
+        //    rightFA.uv = uv_right;
+        //else
+        //    rightFA.uv = uv_zero;
+
         UnityEngine.Profiling.Profiler.EndSample();
 
         return rightFA;

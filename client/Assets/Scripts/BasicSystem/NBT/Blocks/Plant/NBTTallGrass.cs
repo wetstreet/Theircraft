@@ -7,6 +7,8 @@ public class NBTTallGrass : NBTPlant
     public override string name => "Grass";
     public override string id => "minecraft:tallgrass";
 
+    public override string GetTexName(NBTChunk chunk, Vector3Int pos, int data) { return "tallgrass"; }
+
     protected override Color GetTintColorByData(NBTChunk chunk, byte data)
     {
         return TintManager.tintColor;

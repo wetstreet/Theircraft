@@ -76,6 +76,15 @@ public class TextureArrayManager
         }
         return 0;
     }
+    public static Rect GetRectByName(string name)
+    {
+        if (name2index.ContainsKey(name))
+        {
+            int index = name2index[name];
+            return rects[index];
+        }
+        throw new System.Exception();
+    }
 
     static Dictionary<string, int> name2index;
     static List<Texture2D> textureList;
@@ -112,15 +121,40 @@ public class TextureArrayManager
 
         return textureList.ToArray();
     }
-    
+
+    static Dictionary<string, Vector2[]> name2uv;
+    public static Vector2[] GetUVByName(string name)
+    {
+        if (!name2uv.ContainsKey(name))
+        {
+            Rect rect = TextureArrayManager.GetRectByName(name);
+            Vector2[] uv = new Vector2[]
+            {
+            new Vector2(rect.xMin, rect.yMin),
+            new Vector2(rect.xMin, rect.yMax),
+            new Vector2(rect.xMax, rect.yMax),
+            new Vector2(rect.xMax, rect.yMin),
+            };
+            name2uv[name] = uv;
+        }
+        return name2uv[name];
+    }
+
+    public static Texture2D atlas;
+    public static Rect[] rects;
     public static void Init()
     {
         name2index = new Dictionary<string, int>();
         textureList = new List<Texture2D>();
+        name2uv = new Dictionary<string, Vector2[]>();
 
         int size = 16;
         Texture2D[] textures = GetTextures(size);
         CreateArray(textures, size);
+
+        atlas = new Texture2D(1024, 1024);
+        atlas.filterMode = FilterMode.Point;
+        rects = atlas.PackTextures(textures, 0);
     }
 
     public static void Uninit()

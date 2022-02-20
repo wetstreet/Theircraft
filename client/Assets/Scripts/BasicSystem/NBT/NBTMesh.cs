@@ -6,27 +6,37 @@ using UnityEngine.Rendering;
 
 public class NBTMesh
 {
-    public NativeArray<Vertex> vertexArray;
-    public NativeArray<ushort> triangleArray;
-    Vector3[] positions;
-    public ushort vertexCount = 0;
-    public ushort triangleCount = 0;
+    public Vector3[] vertexArray;
+    public Color32[] colorArray;
+    public Vector2[] uvArray;
+    public Vector2[] uv2Array;
+    public Vector3[] normalArray;
+    public int[] triangleArray;
+    public int vertexCount;
+    public int triangleCount;
 
     public Mesh mesh;
 
     public NBTMesh(int size)
     {
-        vertexArray = new NativeArray<Vertex>(size, Allocator.Persistent);
-        triangleArray = new NativeArray<ushort>(size, Allocator.Persistent);
-
         mesh = new Mesh();
-        positions = new Vector3[size];
+
+        vertexArray = new Vector3[size];
+        colorArray = new Color32[size];
+        uvArray = new Vector2[size];
+        uv2Array = new Vector2[size];
+        normalArray = new Vector3[size];
+        triangleArray = new int[size];
     }
 
     public void Dispose()
     {
-        vertexArray.Dispose();
-        triangleArray.Dispose();
+        vertexArray = null;
+        colorArray = null;
+        uvArray = null;
+        uv2Array = null;
+        normalArray = null;
+        triangleArray = null;
     }
 
     public void Clear()
@@ -35,66 +45,15 @@ public class NBTMesh
         triangleCount = 0;
     }
 
-    static VertexAttributeDescriptor[] vertexAttributes;
-    SubMeshDescriptor desc = new SubMeshDescriptor
-    {
-        indexStart = 0,
-        baseVertex = 0,
-        topology = MeshTopology.Triangles,
-    };
-
     public void Refresh()
     {
         mesh.Clear();
 
-        if (vertexCount > 0)
-        {
-            if (vertexAttributes == null)
-            {
-                vertexAttributes = new[] {
-                    new VertexAttributeDescriptor(VertexAttribute.Position, VertexAttributeFormat.Float32, 4, 0),
-                    new VertexAttributeDescriptor(VertexAttribute.Normal, VertexAttributeFormat.Float32, 3, 0),
-                    new VertexAttributeDescriptor(VertexAttribute.Color, VertexAttributeFormat.Float32, 4, 0),
-                    new VertexAttributeDescriptor(VertexAttribute.TexCoord0, VertexAttributeFormat.Float32, 4, 0),
-                };
-            }
-
-            mesh.SetVertexBufferParams(vertexCount, vertexAttributes);
-            try
-            {
-                mesh.SetVertexBufferData(vertexArray, 0, 0, vertexCount, 0);
-            }
-            catch (System.Exception e)
-            {
-                Debug.LogError(e.Message + "\nlength=" + vertexArray.Length + ",vertexcount=" + vertexCount + ",bytes=" + (14 * 4 * vertexCount));
-            }
-
-            mesh.SetIndexBufferParams(triangleCount, IndexFormat.UInt16);
-            try
-            {
-                mesh.SetIndexBufferData(triangleArray, 0, 0, triangleCount);
-            }
-            catch (System.Exception e)
-            {
-                Debug.LogError(e.Message + "\nlength=" + triangleArray.Length + ",triangleCount=" + triangleCount + ",vertexcount=" + vertexCount);
-                throw e;
-            }
-
-            mesh.subMeshCount = 1;
-            desc.indexCount = triangleCount;
-            mesh.SetSubMesh(0, desc);
-
-            for (int i = 0; i < vertexCount; i++)
-            {
-                Vertex vert = vertexArray[i];
-                positions[i] = vert.pos;
-            }
-            for (int i = vertexCount; i < positions.Length; i++)
-            {
-                positions[i] = Vector3.zero;
-            }
-            Bounds bounds = GeometryUtility.CalculateBounds(positions, Matrix4x4.identity);
-            mesh.bounds = bounds;
-        }
+        mesh.SetVertices(vertexArray, 0, vertexCount);
+        mesh.SetColors(colorArray, 0, vertexCount);
+        mesh.SetUVs(0, uvArray, 0, vertexCount);
+        mesh.SetUVs(1, uv2Array, 0, vertexCount);
+        mesh.SetNormals(normalArray, 0, vertexCount);
+        mesh.SetTriangles(triangleArray, 0, triangleCount, 0, true);
     }
 }

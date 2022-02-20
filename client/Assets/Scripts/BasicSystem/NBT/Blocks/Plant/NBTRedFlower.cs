@@ -10,12 +10,16 @@ public class NBTRedFlower : NBTPlant
     protected override int size => 4;
     protected override int height => 12;
 
-    string GetNameByData(int data)
+    public override string GetTexName(NBTChunk chunk, Vector3Int pos, int data)
     {
         switch (data)
         {
             case 0:
                 return "flower_rose";
+            case 1:
+                return "flower_blue_orchid";
+            case 2:
+                return "flower_allium";
             case 3:
                 return "flower_houstonia";
             case 4:
@@ -34,7 +38,7 @@ public class NBTRedFlower : NBTPlant
 
     public override int GetPlantIndexByData(int data)
     {
-        return TextureArrayManager.GetIndexByName(GetNameByData(data));
+        return TextureArrayManager.GetIndexByName(GetTexName(null, Vector3Int.zero, data));
     }
 
     public override string GetBreakEffectTexture(byte data)
@@ -53,6 +57,10 @@ public class NBTRedFlower : NBTPlant
         {
             case 0:
                 return "Rose";
+            case 1:
+                return "Orchid";
+            case 2:
+                return "Allium";
             case 3:
                 return "Houstonia";
             case 4:

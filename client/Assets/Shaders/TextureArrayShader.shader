@@ -2,6 +2,7 @@ Shader "Custom/TextureArrayShader"
 {
     Properties
     {
+        _MainTex ("_MainTex", 2D) = "white" {}
         _Array ("Texture", 2DArray) = "" {}
         _Slice ("Slice", Range(0, 460)) = 0
         _TileX ("Tile X", Float) = 1
@@ -33,9 +34,10 @@ Shader "Custom/TextureArrayShader"
 
             struct appdata
             {
-                float4 vertex : POSITION;
+                float3 vertex : POSITION;
                 float4 color : COLOR;
-                float4 uv : TEXCOORD0;
+                float2 uv : TEXCOORD0;
+                float2 uv1 : TEXCOORD0;
                 float3 normal : NORMAL;
             };
 
@@ -48,6 +50,7 @@ Shader "Custom/TextureArrayShader"
                 half4 light : TEXCOORD2;
             };
 
+            sampler2D _MainTex;
             TEXTURE2D_ARRAY(_Array);  SAMPLER(sampler_Array);
             float _Slice;
             float _TileX;
@@ -63,16 +66,13 @@ Shader "Custom/TextureArrayShader"
                 v2f o;
                 o.vertex = TransformObjectToHClip(v.vertex.xyz);
                 o.uv.xy = v.uv.xy * float2(_TileX, _TileY);
-                o.uv.z = v.vertex.w;
-                o.uv.w = v.uv.z;
                 o.color = v.color;
 
                 o.worldNormal.xyz = TransformObjectToWorldNormal(v.normal);
-                o.worldNormal.w = v.uv.w;
 
                 // skylight
-                float skylight = v.uv.z;
-                half blockLight = v.uv.w;
+                float skylight = v.uv1.x;
+                half blockLight = v.uv1.y;
 
                 half4 dayLight = tex2Dlod(_DayLightTexture, half4(blockLight, 1 - skylight, 0, 0));
                 half4 nightLight = tex2Dlod(_NightLightTexture, half4(blockLight, 1 - skylight, 0, 0));
@@ -85,7 +85,7 @@ Shader "Custom/TextureArrayShader"
             half4 frag (v2f i) : SV_Target
             {
                 // sample the texture
-                half4 col = SAMPLE_TEXTURE2D_ARRAY(_Array, sampler_Array, i.uv.xy, i.uv.z);
+                half4 col = tex2D(_MainTex, i.uv.xy);
 
                 col.rgb *= i.color.rgb;
 

@@ -178,18 +178,18 @@ public class NBTStairs : NBTBlock
 
         int faceIndex = TextureArrayManager.GetIndexByName(stairsName);
 
-        chunk.GetLights(localPosition.x, localPosition.y + 1, localPosition.z, out float skyLight, out float blockLight);
+        //chunk.GetLights(localPosition.x, localPosition.y + 1, localPosition.z, out float skyLight, out float blockLight);
 
-        NBTMesh nbtMesh = nbtGO.nbtMesh;
-        ushort startIndex = nbtMesh.vertexCount;
-        for (int i = 0; i < mesh.vertices.Length; i++)
-        {
-            SetVertex(nbtMesh, mesh.vertices[i] + localPosition, faceIndex, mesh.uv[i], skyLight, blockLight, Color.white, Vector3.zero);
-        }
-        foreach (int index in mesh.triangles)
-        {
-            nbtMesh.triangleArray[nbtMesh.triangleCount++] = (ushort)(startIndex + index);
-        }
+        //NBTMesh nbtMesh = nbtGO.nbtMesh;
+        //ushort startIndex = nbtMesh.vertexCount;
+        //for (int i = 0; i < mesh.vertices.Length; i++)
+        //{
+        //    SetVertex(nbtMesh, mesh.vertices[i] + localPosition, faceIndex, mesh.uv[i], skyLight, blockLight, Color.white, Vector3.zero);
+        //}
+        //foreach (int index in mesh.triangles)
+        //{
+        //    nbtMesh.triangleArray[nbtMesh.triangleCount++] = (ushort)(startIndex + index);
+        //}
     }
 
     public override Mesh GetItemMesh(byte data = 0)

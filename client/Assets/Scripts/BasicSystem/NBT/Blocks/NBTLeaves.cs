@@ -55,47 +55,28 @@ public class NBTLeaves : NBTBlock
     public override Color GetLeftTintColorByData(byte data) { return GetTintColorByData(data); }
     public override Color GetRightTintColorByData(byte data) { return GetTintColorByData(data); }
 
-    int GetIndexByData(int data)
+    string GetTexName(int data)
     {
         switch (data % 4)
         {
             case 0:
-                return TextureArrayManager.GetIndexByName("leaves_oak");
+                return "leaves_oak";
             case 1:
-                return TextureArrayManager.GetIndexByName("leaves_spruce");
+                return "leaves_spruce";
             case 2:
-                return TextureArrayManager.GetIndexByName("leaves_birch");
+                return "leaves_birch";
             case 3:
-                return TextureArrayManager.GetIndexByName("leaves_jungle");
+                return "leaves_jungle";
         }
-        return TextureArrayManager.GetIndexByName("leaves_oak");
+        throw new System.Exception();
     }
 
-    public override int GetTopIndexByData(NBTChunk chunk, int data) { return GetIndexByData(data); }
-    public override int GetBottomIndexByData(NBTChunk chunk, int data) { return GetIndexByData(data); }
-    public override int GetFrontIndexByData(NBTChunk chunk, int data) { return GetIndexByData(data); }
-    public override int GetBackIndexByData(NBTChunk chunk, int data) { return GetIndexByData(data); }
-    public override int GetLeftIndexByData(NBTChunk chunk, int data) { return GetIndexByData(data); }
-    public override int GetRightIndexByData(NBTChunk chunk, int data) { return GetIndexByData(data); }
+    public override string GetTopTexName(NBTChunk chunk, int data) { return GetTexName(data); }
+    public override string GetBottomTexName(NBTChunk chunk, int data) { return GetTexName(data); }
+    public override string GetFrontTexName(NBTChunk chunk, int data) { return GetTexName(data); }
+    public override string GetBackTexName(NBTChunk chunk, int data) { return GetTexName(data); }
+    public override string GetLeftTexName(NBTChunk chunk, int data) { return GetTexName(data); }
+    public override string GetRightTexName(NBTChunk chunk, int data) { return GetTexName(data); }
 
-    public override string GetBreakEffectTexture(byte data)
-    {
-        string texture = "";
-        switch (data % 4)
-        {
-            case 0:
-                texture = "leaves_oak";
-                break;
-            case 1:
-                texture = "leaves_spruce";
-                break;
-            case 2:
-                texture = "leaves_birch";
-                break;
-            case 3:
-                texture = "leaves_jungle";
-                break;
-        }
-        return texture;
-    }
+    public override string GetBreakEffectTexture(byte data) { return GetTexName(data); }
 }

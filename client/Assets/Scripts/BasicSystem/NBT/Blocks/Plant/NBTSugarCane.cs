@@ -12,6 +12,11 @@ public class NBTSugarCane : NBTPlant
         return TextureArrayManager.GetIndexByName("reeds");
     }
 
+    public override string GetTexName(NBTChunk chunk, Vector3Int pos, int data)
+    {
+        return "reeds";
+    }
+
     public override string pathPrefix => "GUI/items/";
 
     public override string GetIconPathByData(short data = 0)

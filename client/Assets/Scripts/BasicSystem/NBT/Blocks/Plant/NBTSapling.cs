@@ -56,7 +56,7 @@ public class NBTSapling : NBTPlant
         throw new System.Exception("no index");
     }
 
-    public override string GetBreakEffectTexture(byte data)
+    public override string GetTexName(NBTChunk chunk, Vector3Int pos, int data)
     {
         switch (data % 4)
         {
@@ -69,7 +69,11 @@ public class NBTSapling : NBTPlant
             case 3:
                 return "sapling_jungle";
         }
-        Debug.Log("no break effect texture, data=" + data);
-        return "sapling_oak";
+        throw new System.Exception();
+    }
+
+    public override string GetBreakEffectTexture(byte data)
+    {
+        return GetTexName(null, Vector3Int.zero, data);
     }
 }

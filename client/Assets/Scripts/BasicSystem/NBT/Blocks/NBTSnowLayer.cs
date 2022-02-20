@@ -67,9 +67,6 @@ public class NBTSnowLayer : NBTBlock
     static Vector2 leftMid = new Vector2(0, 0.125f);
     static Vector2 rightMid = new Vector2(1, 0.125f);
 
-    static Vector2[] uv_full = new Vector2[4] { Vector2.zero, Vector2.up, Vector2.one, Vector2.right };
-    static Vector2[] uv_bot = new Vector2[4] { Vector2.zero, leftMid, rightMid, Vector2.right };
-
     static Vector3[] frontVertices_snow = new Vector3[] { nearBottomLeft, nearMiddleLeft, nearMiddleRight, nearBottomRight };
     static Vector3[] backVertices_snow = new Vector3[] { farBottomRight, farMiddleRight, farMiddleLeft, farBottomLeft };
     static Vector3[] topVertices_snow = new Vector3[] { farMiddleRight, nearMiddleRight, nearMiddleLeft, farMiddleLeft };
@@ -77,6 +74,23 @@ public class NBTSnowLayer : NBTBlock
     static Vector3[] leftVertices_snow = new Vector3[] { farBottomLeft, farMiddleLeft, nearMiddleLeft, nearBottomLeft };
     static Vector3[] rightVertices_snow = new Vector3[] { nearBottomRight, nearMiddleRight, farMiddleRight, farBottomRight };
 
+    Vector2[] uv_bot = null;
+    Vector2[] botUV
+    {
+        get
+        {
+            if (uv_bot == null)
+            {
+                Vector2[] fullUV = TextureArrayManager.GetUVByName(allName);
+                Vector2 size = fullUV[2] - fullUV[0];
+                Vector2 unit = size / 16.0f;
+                Vector2 middleLeft = fullUV[0] + new Vector2(0, unit.y * 2);
+                Vector2 middleRight = fullUV[3] + new Vector2(0, unit.y * 2);
+                uv_bot = new Vector2[] { fullUV[0], middleLeft, middleRight, fullUV[3] };
+            }
+            return uv_bot;
+        }
+    }
 
     protected override FaceAttributes GetFrontFaceAttributes(NBTChunk chunk, NBTMesh mesh, CubeAttributes ca)
     {
@@ -89,7 +103,7 @@ public class NBTSnowLayer : NBTBlock
         fa.skyLight = new float[] { skyLight, skyLight, skyLight, skyLight };
         fa.blockLight = new float[] { blockLight, blockLight, blockLight, blockLight };
         fa.normal = Vector3.forward;
-        fa.uv = uv_bot;
+        fa.uv = botUV;
 
         return fa;
     }
@@ -104,7 +118,7 @@ public class NBTSnowLayer : NBTBlock
         fa.skyLight = new float[] { skyLight, skyLight, skyLight, skyLight };
         fa.blockLight = new float[] { blockLight, blockLight, blockLight, blockLight };
         fa.normal = Vector3.back;
-        fa.uv = uv_bot;
+        fa.uv = botUV;
 
         return fa;
     }
@@ -119,7 +133,7 @@ public class NBTSnowLayer : NBTBlock
         fa.skyLight = new float[] { skyLight, skyLight, skyLight, skyLight };
         fa.blockLight = new float[] { blockLight, blockLight, blockLight, blockLight };
         fa.normal = Vector3.up;
-        fa.uv = uv_full;
+        fa.uv = TextureArrayManager.GetUVByName(allName);
 
         return fa;
     }
@@ -134,7 +148,7 @@ public class NBTSnowLayer : NBTBlock
         fa.skyLight = new float[] { skyLight, skyLight, skyLight, skyLight };
         fa.blockLight = new float[] { blockLight, blockLight, blockLight, blockLight };
         fa.normal = Vector3.down;
-        fa.uv = uv_full;
+        fa.uv = TextureArrayManager.GetUVByName(allName);
 
         return fa;
     }
@@ -149,7 +163,7 @@ public class NBTSnowLayer : NBTBlock
         fa.skyLight = new float[] { skyLight, skyLight, skyLight, skyLight };
         fa.blockLight = new float[] { blockLight, blockLight, blockLight, blockLight };
         fa.normal = Vector3.left;
-        fa.uv = uv_bot;
+        fa.uv = botUV;
 
         return fa;
     }
@@ -164,7 +178,7 @@ public class NBTSnowLayer : NBTBlock
         fa.skyLight = new float[] { skyLight, skyLight, skyLight, skyLight };
         fa.blockLight = new float[] { blockLight, blockLight, blockLight, blockLight };
         fa.normal = Vector3.right;
-        fa.uv = uv_bot;
+        fa.uv = botUV;
 
         return fa;
     }

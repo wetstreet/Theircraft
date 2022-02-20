@@ -7,6 +7,8 @@ public class NBTMonsterEgg : NBTBlock
     public override string name => "Monster Egg";
     public override string id => "minecraft:monster_egg";
 
+    public override string allName => "cobblestone";
+
     public override string GetIconPathByData(short data)
     {
         switch (data)

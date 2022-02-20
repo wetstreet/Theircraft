@@ -24,6 +24,40 @@ public class NBTLargeFlowers : NBTPlant
         return Color.white;
     }
 
+    public override string GetTexName(NBTChunk chunk, Vector3Int pos, int data)
+    {
+        switch (data)
+        {
+            case 1:
+                return "double_plant_syringa_bottom";
+            case 2:
+                return "double_plant_grass_bottom";
+            case 3:
+                return "double_plant_fern_bottom";
+            case 4:
+                return "double_plant_rose_bottom";
+            case 5:
+                return "double_plant_paeonia_bottom";
+            case 10:
+                chunk.GetBlockData(pos.x, pos.y - 1, pos.z, out byte bottomType, out byte bottomData);
+                switch (bottomData)
+                {
+                    case 1:
+                        return "double_plant_syringa_top";
+                    case 2:
+                        return "double_plant_syringa_top";
+                    case 3:
+                        return "double_plant_fern_top";
+                    case 4:
+                        return "double_plant_rose_top";
+                    case 5:
+                        return "double_plant_paeonia_top";
+                }
+                throw new System.Exception("bottomData=" + bottomData);
+        }
+        throw new System.Exception("data=" + data);
+    }
+
     public override int GetPlantIndexByData(NBTChunk chunk, Vector3Int pos, int data)
     {
         switch (data)
@@ -60,37 +94,7 @@ public class NBTLargeFlowers : NBTPlant
 
     public override string GetBreakEffectTexture(NBTChunk chunk, Vector3Int pos, byte data)
     {
-        switch (data)
-        {
-            case 1:
-                return "double_plant_syringa_bottom";
-            case 2:
-                return "double_plant_grass_bottom";
-            case 3:
-                return "double_plant_fern_bottom";
-            case 4:
-                return "double_plant_rose_bottom";
-            case 5:
-                return "double_plant_paeonia_bottom";
-            case 10:
-                chunk.GetBlockData(pos.x, pos.y - 1, pos.z, out byte bottomType, out byte bottomData);
-                switch (bottomData)
-                {
-                    case 1:
-                        return "double_plant_syringa_top";
-                    case 2:
-                        return "double_plant_syringa_top";
-                    case 3:
-                        return "double_plant_fern_top";
-                    case 4:
-                        return "double_plant_rose_top";
-                    case 5:
-                        return "double_plant_paeonia_top";
-                }
-                break;
-        }
-        Debug.Log("large flowers no break effect texture, data=" + data);
-        return "double_plant_syringa_bottom";
+        return GetTexName(chunk, pos, data);
     }
 
     public override string GetIconPathByData(short data)

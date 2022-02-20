@@ -2,6 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum LogAxis
+{
+    X, Y, Z
+}
+
 public class NBTLog : NBTBlock
 {
     public override string name => "Log";
@@ -121,171 +126,28 @@ public class NBTLog : NBTBlock
         }
     }
 
-    public override int GetTopIndexByData(NBTChunk chunk, int data)
+    string[] woodNames = new string[] { "log_oak", "log_spruce", "log_birch", "log_jungle" };
+
+    string GetNameByData(int data, LogAxis axis)
     {
-        switch (data)
+        int wood_type = data & 0b0011;
+        int dir = data & 0b1100;
+        string name = woodNames[wood_type];
+        if ((axis == LogAxis.X && dir == 1) ||
+            (axis == LogAxis.Y && dir == 0) ||
+            (axis == LogAxis.Z && dir == 2))
         {
-            case 0:
-                return TextureArrayManager.GetIndexByName("log_oak_top");
-            case 1:
-                return TextureArrayManager.GetIndexByName("log_spruce_top");
-            case 2:
-                return TextureArrayManager.GetIndexByName("log_birch_top");
-            case 3:
-                return TextureArrayManager.GetIndexByName("log_jungle_top");
-            case 4:
-            case 8:
-                return TextureArrayManager.GetIndexByName("log_oak");
-            case 5:
-            case 9:
-                return TextureArrayManager.GetIndexByName("log_spruce");
-            case 6:
-            case 10:
-                return TextureArrayManager.GetIndexByName("log_birch");
-            case 7:
-            case 11:
-                return TextureArrayManager.GetIndexByName("log_jungle");
+            name += "_top";
         }
-        return TextureArrayManager.GetIndexByName("log_oak_top");
+        return name;
     }
 
-    public override int GetBottomIndexByData(NBTChunk chunk, int data)
-    {
-        switch (data)
-        {
-            case 0:
-                return TextureArrayManager.GetIndexByName("log_oak_top");
-            case 1:
-                return TextureArrayManager.GetIndexByName("log_spruce_top");
-            case 2:
-                return TextureArrayManager.GetIndexByName("log_birch_top");
-            case 3:
-                return TextureArrayManager.GetIndexByName("log_jungle_top");
-            case 4:
-            case 8:
-                return TextureArrayManager.GetIndexByName("log_oak");
-            case 5:
-            case 9:
-                return TextureArrayManager.GetIndexByName("log_spruce");
-            case 6:
-            case 10:
-                return TextureArrayManager.GetIndexByName("log_birch");
-            case 7:
-            case 11:
-                return TextureArrayManager.GetIndexByName("log_jungle");
-        }
-        return TextureArrayManager.GetIndexByName("log_oak_top");
-    }
-    public override int GetFrontIndexByData(NBTChunk chunk, int data)
-    {
-        switch (data)
-        {
-            case 0:
-            case 4:
-                return TextureArrayManager.GetIndexByName("log_oak");
-            case 1:
-            case 5:
-                return TextureArrayManager.GetIndexByName("log_spruce");
-            case 2:
-            case 6:
-                return TextureArrayManager.GetIndexByName("log_birch");
-            case 3:
-            case 7:
-                return TextureArrayManager.GetIndexByName("log_jungle");
-            case 8:
-                return TextureArrayManager.GetIndexByName("log_oak_top");
-            case 9:
-                return TextureArrayManager.GetIndexByName("log_spruce_top");
-            case 10:
-                return TextureArrayManager.GetIndexByName("log_birch_top");
-            case 11:
-                return TextureArrayManager.GetIndexByName("log_jungle_top");
-        }
-        return TextureArrayManager.GetIndexByName("log_oak");
-    }
-
-    public override int GetBackIndexByData(NBTChunk chunk, int data)
-    {
-        switch (data)
-        {
-            case 0:
-            case 4:
-                return TextureArrayManager.GetIndexByName("log_oak");
-            case 1:
-            case 5:
-                return TextureArrayManager.GetIndexByName("log_spruce");
-            case 2:
-            case 6:
-                return TextureArrayManager.GetIndexByName("log_birch");
-            case 3:
-            case 7:
-                return TextureArrayManager.GetIndexByName("log_jungle");
-            case 8:
-                return TextureArrayManager.GetIndexByName("log_oak_top");
-            case 9:
-                return TextureArrayManager.GetIndexByName("log_spruce_top");
-            case 10:
-                return TextureArrayManager.GetIndexByName("log_birch_top");
-            case 11:
-                return TextureArrayManager.GetIndexByName("log_jungle_top");
-        }
-        return TextureArrayManager.GetIndexByName("log_oak");
-    }
-    public override int GetLeftIndexByData(NBTChunk chunk, int data)
-    {
-        switch (data)
-        {
-            case 0:
-            case 8:
-                return TextureArrayManager.GetIndexByName("log_oak");
-            case 1:
-            case 9:
-                return TextureArrayManager.GetIndexByName("log_spruce");
-            case 2:
-            case 10:
-                return TextureArrayManager.GetIndexByName("log_birch");
-            case 3:
-            case 11:
-                return TextureArrayManager.GetIndexByName("log_jungle");
-            case 4:
-                return TextureArrayManager.GetIndexByName("log_oak_top");
-            case 5:
-                return TextureArrayManager.GetIndexByName("log_spruce_top");
-            case 6:
-                return TextureArrayManager.GetIndexByName("log_birch_top");
-            case 7:
-                return TextureArrayManager.GetIndexByName("log_jungle_top");
-        }
-        return TextureArrayManager.GetIndexByName("log_oak");
-    }
-
-    public override int GetRightIndexByData(NBTChunk chunk, int data)
-    {
-        switch (data)
-        {
-            case 0:
-            case 8:
-                return TextureArrayManager.GetIndexByName("log_oak");
-            case 1:
-            case 9:
-                return TextureArrayManager.GetIndexByName("log_spruce");
-            case 2:
-            case 10:
-                return TextureArrayManager.GetIndexByName("log_birch");
-            case 3:
-            case 11:
-                return TextureArrayManager.GetIndexByName("log_jungle");
-            case 4:
-                return TextureArrayManager.GetIndexByName("log_oak_top");
-            case 5:
-                return TextureArrayManager.GetIndexByName("log_spruce_top");
-            case 6:
-                return TextureArrayManager.GetIndexByName("log_birch_top");
-            case 7:
-                return TextureArrayManager.GetIndexByName("log_jungle_top");
-        }
-        return TextureArrayManager.GetIndexByName("log_oak");
-    }
+    public override string GetLeftTexName(NBTChunk chunk, int data) { return GetNameByData(data, LogAxis.X); }
+    public override string GetRightTexName(NBTChunk chunk, int data) { return GetNameByData(data, LogAxis.X); }
+    public override string GetTopTexName(NBTChunk chunk, int data) { return GetNameByData(data, LogAxis.Y); }
+    public override string GetBottomTexName(NBTChunk chunk, int data) { return GetNameByData(data, LogAxis.Y); }
+    public override string GetFrontTexName(NBTChunk chunk, int data) { return GetNameByData(data, LogAxis.Z); }
+    public override string GetBackTexName(NBTChunk chunk, int data) { return GetNameByData(data, LogAxis.Z); }
 
     public override string GetBreakEffectTexture(byte data)
     {
