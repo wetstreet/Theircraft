@@ -25,7 +25,6 @@ public class BreakBlockEffect : MonoBehaviour
         effect.blockLight = blockLight / 15f;
     }
 
-    public Vector2 uv = Vector2.zero;
     public float skyLight = 1;
     public float blockLight = 1;
     public string texturePath;
@@ -33,10 +32,7 @@ public class BreakBlockEffect : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        GetComponent<Renderer>().material.SetTexture("_Array", TextureArrayManager.GetArray());
-        GetComponent<Renderer>().material.SetInt("_Slice", TextureArrayManager.GetIndexByName(texturePath));
-        //GetComponent<Renderer>().material.SetTexture("_MainTex", TextureArrayManager.atlas);
-        //GetComponent<Renderer>().material.SetVector("_UV", TextureArrayManager.GetUVByName());
+        GetComponent<Renderer>().material.SetTexture("_MainTex", TextureArrayManager.GetTexture(texturePath));
         GetComponent<Renderer>().material.SetColor("_Color", tintColor);
         GetComponent<Renderer>().material.SetFloat("_SkyLight", skyLight);
         GetComponent<Renderer>().material.SetFloat("_BlockLight", blockLight);

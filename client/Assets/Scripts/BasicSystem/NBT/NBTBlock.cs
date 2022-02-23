@@ -39,7 +39,7 @@ public struct BlockLightAttributes
     public byte blockLight;
 }
 
-public struct CubeAttributes
+public class CubeAttributes
 {
     public Vector3Int pos;
     public Vector3Int worldPos;
@@ -214,42 +214,42 @@ public abstract class NBTBlock : NBTObject
         {
             fa.pos = frontVertices;
             fa.normal = Vector3.forward;
-            fa.faceIndex = GetFrontIndexByData(null, data);
+            //fa.faceIndex = GetFrontIndexByData(null, data);
             fa.uv = GetFrontRotationByData(data) == Rotation.Right ? uv_right : uv_zero;
             fa.color = GetFrontTintColorByData(data);
             AddFace(nbtMesh, fa, ca);
 
             fa.pos = backVertices;
             fa.normal = Vector3.back;
-            fa.faceIndex = GetBackIndexByData(null, data);
+            //fa.faceIndex = GetBackIndexByData(null, data);
             fa.uv = GetBackRotationByData(data) == Rotation.Right ? uv_right : uv_zero;
             fa.color = GetBackTintColorByData(data);
             AddFace(nbtMesh, fa, ca);
 
             fa.pos = topVertices;
             fa.normal = Vector3.up;
-            fa.faceIndex = GetTopIndexByData(null, data);
+            //fa.faceIndex = GetTopIndexByData(null, data);
             fa.uv = GetTopRotationByData(data) == Rotation.Right ? uv_right : uv_zero;
             fa.color = GetTopTintColorByData(data);
             AddFace(nbtMesh, fa, ca);
 
             fa.pos = bottomVertices;
             fa.normal = Vector3.down;
-            fa.faceIndex = GetBottomIndexByData(null, data);
+            //fa.faceIndex = GetBottomIndexByData(null, data);
             fa.uv = GetBottomRotationByData(data) == Rotation.Right ? uv_right : uv_zero;
             fa.color = GetBottomTintColorByData(data);
             AddFace(nbtMesh, fa, ca);
 
             fa.pos = leftVertices;
             fa.normal = Vector3.left;
-            fa.faceIndex = GetLeftIndexByData(null, data);
+            //fa.faceIndex = GetLeftIndexByData(null, data);
             fa.uv = GetLeftRotationByData(data) == Rotation.Right ? uv_right : uv_zero;
             fa.color = GetLeftTintColorByData(data);
             AddFace(nbtMesh, fa, ca);
 
             fa.pos = rightVertices;
             fa.normal = Vector3.right;
-            fa.faceIndex = GetRightIndexByData(null, data);
+            //fa.faceIndex = GetRightIndexByData(null, data);
             fa.uv = GetRightRotationByData(data) == Rotation.Right ? uv_right : uv_zero;
             fa.color = GetRightTintColorByData(data);
             AddFace(nbtMesh, fa, ca);
@@ -292,7 +292,7 @@ public abstract class NBTBlock : NBTObject
         {
             fa.pos = frontVertices;
             fa.normal = Vector3.forward;
-            fa.faceIndex = GetFrontIndexByData(chunk, ca.blockData);
+            //fa.faceIndex = GetFrontIndexByData(chunk, ca.blockData);
             fa.color = GetFrontTintColorByData(chunk, pos, ca.blockData);
             if (!breakingEffectMesh)
                 fa.uv = TextureArrayManager.GetUVByName(GetFrontTexName(chunk, ca.blockData));
@@ -300,7 +300,7 @@ public abstract class NBTBlock : NBTObject
 
             fa.pos = backVertices;
             fa.normal = Vector3.back;
-            fa.faceIndex = GetBackIndexByData(chunk, ca.blockData);
+            //fa.faceIndex = GetBackIndexByData(chunk, ca.blockData);
             fa.color = GetBackTintColorByData(chunk, pos, ca.blockData);
             if (!breakingEffectMesh)
                 fa.uv = TextureArrayManager.GetUVByName(GetBackTexName(chunk, ca.blockData));
@@ -308,7 +308,7 @@ public abstract class NBTBlock : NBTObject
 
             fa.pos = topVertices;
             fa.normal = Vector3.up;
-            fa.faceIndex = GetTopIndexByData(chunk, ca.blockData);
+            //fa.faceIndex = GetTopIndexByData(chunk, ca.blockData);
             fa.color = GetTopTintColorByData(chunk, pos, ca.blockData);
             if (!breakingEffectMesh)
                 fa.uv = TextureArrayManager.GetUVByName(GetTopTexName(chunk, ca.blockData));
@@ -316,7 +316,7 @@ public abstract class NBTBlock : NBTObject
 
             fa.pos = bottomVertices;
             fa.normal = Vector3.down;
-            fa.faceIndex = GetBottomIndexByData(chunk, ca.blockData);
+            //fa.faceIndex = GetBottomIndexByData(chunk, ca.blockData);
             fa.color = GetBottomTintColorByData(chunk, pos, ca.blockData);
             if (!breakingEffectMesh)
                 fa.uv = TextureArrayManager.GetUVByName(GetBottomTexName(chunk, ca.blockData));
@@ -324,7 +324,7 @@ public abstract class NBTBlock : NBTObject
 
             fa.pos = leftVertices;
             fa.normal = Vector3.left;
-            fa.faceIndex = GetLeftIndexByData(chunk, ca.blockData);
+            //fa.faceIndex = GetLeftIndexByData(chunk, ca.blockData);
             fa.color = GetLeftTintColorByData(chunk, pos, ca.blockData);
             if (!breakingEffectMesh)
                 fa.uv = TextureArrayManager.GetUVByName(GetLeftTexName(chunk, ca.blockData));
@@ -332,7 +332,7 @@ public abstract class NBTBlock : NBTObject
 
             fa.pos = rightVertices;
             fa.normal = Vector3.right;
-            fa.faceIndex = GetRightIndexByData(chunk, ca.blockData);
+            //fa.faceIndex = GetRightIndexByData(chunk, ca.blockData);
             fa.color = GetRightTintColorByData(chunk, pos, ca.blockData);
             if (!breakingEffectMesh)
                 fa.uv = TextureArrayManager.GetUVByName(GetRightTexName(chunk, ca.blockData));
@@ -409,9 +409,10 @@ public abstract class NBTBlock : NBTObject
         UnityEngine.Profiling.Profiler.EndSample();
     }
 
-    protected CubeAttributes ca = new CubeAttributes();
     public virtual void AddCube(NBTChunk chunk, byte blockData, Vector3Int pos, NBTGameObject nbtGO)
     {
+        CubeAttributes ca = chunk.ca;
+
         ca.pos = pos;
         ca.worldPos.Set(pos.x + chunk.x * 16, pos.y, pos.z + chunk.z * 16);
         ca.blockData = blockData;
@@ -450,7 +451,7 @@ public abstract class NBTBlock : NBTObject
         }
     }
 
-    protected void SetVertex(NBTMesh mesh, Vector3 pos, int faceIndex, Vector2 texcoord,
+    protected void SetVertex(NBTMesh mesh, Vector3 pos, Vector2 texcoord,
         float skyLight, float blockLight, Color32 color, Vector3 normal)
     {
         mesh.vertexArray[mesh.vertexCount] = pos;
@@ -477,10 +478,10 @@ public abstract class NBTBlock : NBTObject
             fa.blockLight = blocklight_default;
         }
 
-        SetVertex(mesh, fa.pos[0] + ca.pos, fa.faceIndex, fa.uv[0], fa.skyLight[0], fa.blockLight[0], fa.color, fa.normal);
-        SetVertex(mesh, fa.pos[1] + ca.pos, fa.faceIndex, fa.uv[1], fa.skyLight[1], fa.blockLight[1], fa.color, fa.normal);
-        SetVertex(mesh, fa.pos[2] + ca.pos, fa.faceIndex, fa.uv[2], fa.skyLight[2], fa.blockLight[2], fa.color, fa.normal);
-        SetVertex(mesh, fa.pos[3] + ca.pos, fa.faceIndex, fa.uv[3], fa.skyLight[3], fa.blockLight[3], fa.color, fa.normal);
+        SetVertex(mesh, fa.pos[0] + ca.pos, fa.uv[0], fa.skyLight[0], fa.blockLight[0], fa.color, fa.normal);
+        SetVertex(mesh, fa.pos[1] + ca.pos, fa.uv[1], fa.skyLight[1], fa.blockLight[1], fa.color, fa.normal);
+        SetVertex(mesh, fa.pos[2] + ca.pos, fa.uv[2], fa.skyLight[2], fa.blockLight[2], fa.color, fa.normal);
+        SetVertex(mesh, fa.pos[3] + ca.pos, fa.uv[3], fa.skyLight[3], fa.blockLight[3], fa.color, fa.normal);
 
         mesh.triangleArray[mesh.triangleCount++] = startIndex;
         mesh.triangleArray[mesh.triangleCount++] = startIndex + 1;
@@ -502,7 +503,7 @@ public abstract class NBTBlock : NBTObject
         UnityEngine.Profiling.Profiler.BeginSample("GetFrontFaceAttributes");
 
         frontFA.pos = frontVertices;
-        frontFA.faceIndex = GetFrontIndexByData(chunk, ca.blockData);
+        //frontFA.faceIndex = GetFrontIndexByData(chunk, ca.blockData);
         frontFA.color = GetFrontTintColorByData(chunk, ca.pos, ca.blockData);
         frontFA.normal = Vector3.forward;
 
@@ -536,7 +537,7 @@ public abstract class NBTBlock : NBTObject
     {
         UnityEngine.Profiling.Profiler.BeginSample("GetBackFaceAttributes");
         backFA.pos = backVertices;
-        backFA.faceIndex = GetBackIndexByData(chunk, ca.blockData);
+        //backFA.faceIndex = GetBackIndexByData(chunk, ca.blockData);
         backFA.color = GetBackTintColorByData(chunk, ca.pos, ca.blockData);
         backFA.normal = Vector3.back;
 
@@ -570,7 +571,7 @@ public abstract class NBTBlock : NBTObject
     {
         UnityEngine.Profiling.Profiler.BeginSample("GetTopFaceAttributes");
         topFA.pos = topVertices;
-        topFA.faceIndex = GetTopIndexByData(chunk, ca.blockData);
+        //topFA.faceIndex = GetTopIndexByData(chunk, ca.blockData);
         topFA.color = GetTopTintColorByData(chunk, ca.pos, ca.blockData);
         topFA.normal = Vector3.up;
 
@@ -604,7 +605,7 @@ public abstract class NBTBlock : NBTObject
     {
         UnityEngine.Profiling.Profiler.BeginSample("GetBottomFaceAttributes");
         bottomFA.pos = bottomVertices;
-        bottomFA.faceIndex = GetBottomIndexByData(chunk, ca.blockData);
+        //bottomFA.faceIndex = GetBottomIndexByData(chunk, ca.blockData);
         bottomFA.color = GetBottomTintColorByData(chunk, ca.pos, ca.blockData);
         bottomFA.normal = Vector3.down;
 
@@ -638,7 +639,7 @@ public abstract class NBTBlock : NBTObject
     {
         UnityEngine.Profiling.Profiler.BeginSample("GetLeftFaceAttributes");
         leftFA.pos = leftVertices;
-        leftFA.faceIndex = GetLeftIndexByData(chunk, ca.blockData);
+        //leftFA.faceIndex = GetLeftIndexByData(chunk, ca.blockData);
         leftFA.color = GetLeftTintColorByData(chunk, ca.pos, ca.blockData);
         leftFA.normal = Vector3.left;
 
@@ -672,7 +673,7 @@ public abstract class NBTBlock : NBTObject
     {
         UnityEngine.Profiling.Profiler.BeginSample("GetRightFaceAttributes");
         rightFA.pos = rightVertices;
-        rightFA.faceIndex = GetRightIndexByData(chunk, ca.blockData);
+        //rightFA.faceIndex = GetRightIndexByData(chunk, ca.blockData);
         rightFA.color = GetRightTintColorByData(chunk, ca.pos, ca.blockData);
         rightFA.normal = Vector3.right;
 

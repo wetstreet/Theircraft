@@ -31,6 +31,7 @@ public class NBTSnowLayer : NBTBlock
 
     public override void AddCube(NBTChunk chunk, byte blockData, Vector3Int pos, NBTGameObject nbtGO)
     {
+        CubeAttributes ca = chunk.ca;
         ca.pos = pos;
         ca.blockData = blockData;
 
@@ -98,7 +99,7 @@ public class NBTSnowLayer : NBTBlock
 
         FaceAttributes fa = new FaceAttributes();
         fa.pos = frontVertices_snow;
-        fa.faceIndex = GetFrontIndexByData(chunk, ca.blockData);
+        //fa.faceIndex = GetFrontIndexByData(chunk, ca.blockData);
         fa.color = GetFrontTintColorByData(chunk, ca.pos, ca.blockData);
         fa.skyLight = new float[] { skyLight, skyLight, skyLight, skyLight };
         fa.blockLight = new float[] { blockLight, blockLight, blockLight, blockLight };
@@ -113,7 +114,7 @@ public class NBTSnowLayer : NBTBlock
 
         FaceAttributes fa = new FaceAttributes();
         fa.pos = backVertices_snow;
-        fa.faceIndex = GetBackIndexByData(chunk, ca.blockData);
+        //fa.faceIndex = GetBackIndexByData(chunk, ca.blockData);
         fa.color = GetBackTintColorByData(chunk, ca.pos, ca.blockData);
         fa.skyLight = new float[] { skyLight, skyLight, skyLight, skyLight };
         fa.blockLight = new float[] { blockLight, blockLight, blockLight, blockLight };
@@ -128,7 +129,7 @@ public class NBTSnowLayer : NBTBlock
 
         FaceAttributes fa = new FaceAttributes();
         fa.pos = topVertices_snow;
-        fa.faceIndex = GetTopIndexByData(chunk, ca.blockData);
+        //fa.faceIndex = GetTopIndexByData(chunk, ca.blockData);
         fa.color = GetTopTintColorByData(chunk, ca.pos, ca.blockData);
         fa.skyLight = new float[] { skyLight, skyLight, skyLight, skyLight };
         fa.blockLight = new float[] { blockLight, blockLight, blockLight, blockLight };
@@ -143,7 +144,7 @@ public class NBTSnowLayer : NBTBlock
 
         FaceAttributes fa = new FaceAttributes();
         fa.pos = bottomVertices_snow;
-        fa.faceIndex = GetBottomIndexByData(chunk, ca.blockData);
+        //fa.faceIndex = GetBottomIndexByData(chunk, ca.blockData);
         fa.color = GetBottomTintColorByData(chunk, ca.pos, ca.blockData);
         fa.skyLight = new float[] { skyLight, skyLight, skyLight, skyLight };
         fa.blockLight = new float[] { blockLight, blockLight, blockLight, blockLight };
@@ -158,7 +159,7 @@ public class NBTSnowLayer : NBTBlock
 
         FaceAttributes fa = new FaceAttributes();
         fa.pos = leftVertices_snow;
-        fa.faceIndex = GetLeftIndexByData(chunk, ca.blockData);
+        //fa.faceIndex = GetLeftIndexByData(chunk, ca.blockData);
         fa.color = GetLeftTintColorByData(chunk, ca.pos, ca.blockData);
         fa.skyLight = new float[] { skyLight, skyLight, skyLight, skyLight };
         fa.blockLight = new float[] { blockLight, blockLight, blockLight, blockLight };
@@ -173,7 +174,7 @@ public class NBTSnowLayer : NBTBlock
 
         FaceAttributes fa = new FaceAttributes();
         fa.pos = rightVertices_snow;
-        fa.faceIndex = GetRightIndexByData(chunk, ca.blockData);
+        //fa.faceIndex = GetRightIndexByData(chunk, ca.blockData);
         fa.color = GetRightTintColorByData(chunk, ca.pos, ca.blockData);
         fa.skyLight = new float[] { skyLight, skyLight, skyLight, skyLight };
         fa.blockLight = new float[] { blockLight, blockLight, blockLight, blockLight };

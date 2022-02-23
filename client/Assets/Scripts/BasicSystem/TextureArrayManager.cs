@@ -49,6 +49,7 @@ public class TextureArrayManager
         "sapling_oak", "sapling_spruce", "sapling_birch", "sapling_jungle",
         "reeds",
         "tallgrass",
+        "web",
 
         "wool_colored_white",
         "wool_colored_orange",
@@ -101,6 +102,11 @@ public class TextureArrayManager
             name2index.Add(name, textureList.Count);
             textureList.Add(tex);
         }
+    }
+
+    public static Texture2D GetTexture(string name)
+    {
+        return textureList[name2index[name]];
     }
 
     static Texture2D[] GetTextures(int size)

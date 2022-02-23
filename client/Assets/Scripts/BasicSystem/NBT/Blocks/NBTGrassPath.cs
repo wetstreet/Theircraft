@@ -44,6 +44,7 @@ public class NBTGrassPath : NBTBlock
 
     public override void AddCube(NBTChunk chunk, byte blockData, Vector3Int pos, NBTGameObject nbtGO)
     {
+        CubeAttributes ca = chunk.ca;
         ca.pos = pos;
         ca.blockData = blockData;
 
@@ -106,34 +107,34 @@ public class NBTGrassPath : NBTBlock
         {
             fa.pos = frontVertices;
             fa.normal = Vector3.forward;
-            fa.faceIndex = TextureArrayManager.GetIndexByName(frontName);
+            fa.uv = TextureArrayManager.GetUVByName(frontName);
             AddFace(nbtMesh, fa, ca);
 
             fa.pos = backVertices;
             fa.normal = Vector3.back;
-            fa.faceIndex = TextureArrayManager.GetIndexByName(backName);
+            fa.uv = TextureArrayManager.GetUVByName(backName);
             AddFace(nbtMesh, fa, ca);
 
             fa.pos = topVertices;
             fa.normal = Vector3.up;
-            fa.faceIndex = TextureArrayManager.GetIndexByName(topName);
+            fa.uv = TextureArrayManager.GetUVByName(topName);
             fa.color = TintManager.tintColor;
             AddFace(nbtMesh, fa, ca);
             fa.color = Color.white;
 
             fa.pos = bottomVertices;
             fa.normal = Vector3.down;
-            fa.faceIndex = TextureArrayManager.GetIndexByName(bottomName);
+            fa.uv = TextureArrayManager.GetUVByName(bottomName);
             AddFace(nbtMesh, fa, ca);
 
             fa.pos = leftVertices;
             fa.normal = Vector3.left;
-            fa.faceIndex = TextureArrayManager.GetIndexByName(leftName);
+            fa.uv = TextureArrayManager.GetUVByName(leftName);
             AddFace(nbtMesh, fa, ca);
 
             fa.pos = rightVertices;
             fa.normal = Vector3.right;
-            fa.faceIndex = TextureArrayManager.GetIndexByName(rightName);
+            fa.uv = TextureArrayManager.GetUVByName(rightName);
             AddFace(nbtMesh, fa, ca);
         }
         catch (System.Exception e)

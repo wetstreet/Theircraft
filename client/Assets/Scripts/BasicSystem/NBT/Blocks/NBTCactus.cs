@@ -47,6 +47,7 @@ public class NBTCactus : NBTBlock
 
     public override void AddCube(NBTChunk chunk, byte blockData, Vector3Int localPosition, NBTGameObject nbtGO)
     {
+        CubeAttributes ca = chunk.ca;
         ca.pos = localPosition;
         ca.worldPos = new Vector3Int(localPosition.x + chunk.x * 16, localPosition.y, localPosition.z + chunk.z * 16);
         ca.blockData = blockData;

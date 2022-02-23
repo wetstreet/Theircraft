@@ -219,6 +219,12 @@ public class PlayerController : MonoBehaviour
         instance.blockMeshFilter.transform.gameObject.SetActive(true);
     }
 
+    public void SetPosition(Vector3 pos)
+    {
+        transform.position = pos;
+        lastPosOnGround = pos;
+    }
+
     Vector3 lastPosOnGround;
     void PositionCorrection()
     {
@@ -235,6 +241,8 @@ public class PlayerController : MonoBehaviour
         if (transform.position.y < -10)
         {
             transform.position = lastPosOnGround;
+            horizontalSpeed = Vector3.zero;
+            verticalSpeed = Vector3.zero;
             FastTips.Show("Position has been corrected!");
         }
     }
@@ -344,8 +352,7 @@ public class PlayerController : MonoBehaviour
         int z = player["SpawnZ"] as TagNodeInt;
 
         Vector3 spawnVec = new Vector3(x, y, z);
-        transform.position = spawnVec;
-        lastPosOnGround = spawnVec;
+        SetPosition(spawnVec);
 
         NBTHelper.RespawnRefreshChunks();
 

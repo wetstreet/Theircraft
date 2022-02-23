@@ -44,6 +44,7 @@ public class NBTGeneratorManager : MonoBehaviour
             { 21, new NBTLapisOre() },
             { 24, new NBTSandStone() },
             { 26, new NBTBed() },
+            { 30, new NBTWeb() },
             { 31, new NBTTallGrass() },
             { 32, new NBTDeadBush() },
             { 35, new NBTWool() },

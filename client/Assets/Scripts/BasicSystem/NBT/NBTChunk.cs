@@ -27,7 +27,11 @@ public class NBTChunk
     public NBTGameObject water;
     public GameObject special;
 
+    public CubeAttributes ca = new CubeAttributes();
+
     public bool isBorderChunk = false;
+
+    bool isBuilding = false;
 
     public NBTChunk()
     {
@@ -186,12 +190,6 @@ public class NBTChunk
             tileEntityList.Remove(pos);
             Object.Destroy(obj);
         }
-    }
-
-
-    public void RefreshMeshDataAsync()
-    {
-        RefreshMeshData(UpdateFlags.All);
     }
 
     void AddCube(NBTBlock generator, byte blockData, UpdateFlags updateFlag)
@@ -378,6 +376,10 @@ public class NBTChunk
 
     public void RebuildMesh(UpdateFlags updateFlags = UpdateFlags.All, bool checkBorder = true)
     {
+        if (isBuilding)
+            return;
+        isBuilding = true;
+
         UnityEngine.Profiling.Profiler.BeginSample("RebuildMesh");
 
         if (checkBorder)
@@ -387,21 +389,27 @@ public class NBTChunk
         }
 
         RefreshMeshData(updateFlags);
-
         try
         {
             InitTileEntity();
-            if (updateFlags.HasFlag(UpdateFlags.Collidable))
+            try
             {
-                collidable.Refresh();
+                if (updateFlags.HasFlag(UpdateFlags.Collidable))
+                {
+                    collidable.Refresh();
+                }
+                if (updateFlags.HasFlag(UpdateFlags.NotCollidable))
+                {
+                    notCollidable.Refresh();
+                }
+                if (updateFlags.HasFlag(UpdateFlags.Water))
+                {
+                    water.Refresh();
+                }
             }
-            if (updateFlags.HasFlag(UpdateFlags.NotCollidable))
+            catch (System.Exception e)
             {
-                notCollidable.Refresh();
-            }
-            if (updateFlags.HasFlag(UpdateFlags.Water))
-            {
-                water.Refresh();
+                Debug.LogError("refresh error,chunk=" + x + "," + z + ", message=" + e.Message);
             }
         }
         catch (System.Exception e)
@@ -411,12 +419,15 @@ public class NBTChunk
         //water.Refresh();
 
         UnityEngine.Profiling.Profiler.EndSample();
+
+        isBuilding = false;
     }
 
     public async void RebuildMeshAsync(bool checkBorder = true)
     {
-        RebuildMesh(UpdateFlags.All, checkBorder);
-        return;
+        if (isBuilding)
+            return;
+        isBuilding = true;
 
         if (checkBorder)
         {
@@ -424,7 +435,9 @@ public class NBTChunk
             CheckNearbyChunks();
         }
 
-        await Task.Run(RefreshMeshDataAsync);
+        await Task.Run(()=> {
+            RefreshMeshData(UpdateFlags.All);
+        });
         try
         {
             InitTileEntity();
@@ -443,6 +456,8 @@ public class NBTChunk
         {
             Debug.Log("RebuildMeshAsync notCollidable chunk=" + x + ",z=" + z);
         }
+
+        isBuilding = false;
     }
 
     public void ClearData()

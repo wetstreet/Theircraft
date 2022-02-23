@@ -281,6 +281,7 @@ public class NBTOakDoor : NBTBlock
 
     public override Mesh GetBreakingEffectMesh(NBTChunk chunk, Vector3Int pos, byte blockData)
     {
+        CubeAttributes ca = chunk.ca;
         ca.pos.Set(pos.x - chunk.x * 16, pos.y, pos.z - chunk.z * 16);
         ca.worldPos = pos;
         ca.blockData = blockData;
@@ -298,6 +299,7 @@ public class NBTOakDoor : NBTBlock
 
     public override Mesh GetItemMesh(NBTChunk chunk, Vector3Int pos, byte blockData)
     {
+        CubeAttributes ca = chunk.ca;
         ca.worldPos = pos;
         ca.blockData = blockData;
         ca.isItemMesh = true;
@@ -319,6 +321,7 @@ public class NBTOakDoor : NBTBlock
 
     public override void AddCube(NBTChunk chunk, byte blockData, Vector3Int pos, NBTGameObject nbtGO)
     {
+        CubeAttributes ca = chunk.ca;
         ca.pos = pos;
         ca.blockData = blockData;
 

@@ -2,9 +2,7 @@ Shader "Custom/BreakParticleShader"
 {
     Properties
     {
-        _Array ("Texture", 2DArray) = "" {}
         _MainTex ("_MainTex", 2D) = "white" {}
-        _Slice ("Slice", Range(0, 460)) = 0
         _Color ("Color Tint", Color) = (1, 1, 1, 1)
         _Cutoff ("Cut Off", Range(0, 1)) = 0.5
         [Enum(UnityEngine.Rendering.CullMode)] _Culling ("Culling", Float) = 2
@@ -63,8 +61,7 @@ Shader "Custom/BreakParticleShader"
 
             half4 frag (v2f i) : SV_Target
             {
-                half4 col = SAMPLE_TEXTURE2D_ARRAY(_Array, sampler_Array, i.uv, _Slice);
-                // half4 col = tex2D(_MainTex, i.uv);
+                half4 col = tex2D(_MainTex, i.uv);
                 clip(col.a - _Cutoff);
 
                 half4 dayLight = tex2D(_DayLightTexture, half2(_BlockLight, 1 - _SkyLight));

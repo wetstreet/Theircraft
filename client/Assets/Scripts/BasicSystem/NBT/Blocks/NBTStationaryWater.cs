@@ -26,6 +26,7 @@ public class NBTStationaryWater : NBTBlock
     };
     public override void AddCube(NBTChunk chunk, byte blockData, Vector3Int pos, NBTGameObject nbtGO)
     {
+        CubeAttributes ca = chunk.ca;
         ca.pos = pos;
         ca.blockData = blockData;
 

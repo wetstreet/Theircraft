@@ -27,9 +27,25 @@ public class GM
             case "ao":
                 AO(gm_params);
                 break;
+            case "tp":
+                TP(gm_params);
+                break;
             default:
                 ChatPanel.AddLine(ChatPanel.ErrorCode + "Unknown command.");
                 break;
+        }
+    }
+
+    static void TP(string[] gm_params)
+    {
+        if (gm_params.Length == 4)
+        {
+            float x = float.Parse(gm_params[1]);
+            float y = float.Parse(gm_params[2]);
+            float z = float.Parse(gm_params[3]);
+            Vector3 dest = new Vector3(x, y, z);
+
+            PlayerController.instance.SetPosition(dest);
         }
     }
 
