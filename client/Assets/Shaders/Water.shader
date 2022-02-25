@@ -2,10 +2,11 @@
 {
     Properties
     {
-        _Color ("Color Tint", Color) = (1, 1, 1, 1)
+        _Color ("Color Tint", Color) = (0.24706, 0.46275, 0.89412, 1)
         _AlphaBoost ("Alpha Boost", Range(0, 0.5)) = 0
         _Angle("旋转角度", Range(-180, 180)) = 0
-        _MainTex ("Texture", 2D) = "white" {}
+        _WaterTex ("Texture", 2D) = "white" {}
+        _Alpha ("Alpha", Range(0, 1)) = 0.70588
         _Speed ("Speed", Range(10, 20)) = 15
     }
     SubShader
@@ -45,12 +46,13 @@
             CBUFFER_START(UnityPerMaterial)
             half4 _Color;
             float _AlphaBoost;
-            float4 _MainTex_ST;
+            float4 _WaterTex_ST;
             float _Speed;
             float _Angle;
+            float _Alpha;
             CBUFFER_END
 
-            sampler2D _MainTex;
+            sampler2D _WaterTex;
 
             float2 Rotate(float2 input)
             {
@@ -74,7 +76,7 @@
             {
                 v2f o;
                 o.vertex = TransformObjectToHClip(v.vertex);
-                o.uv = TRANSFORM_TEX(v.texcoord, _MainTex);
+                o.uv = TRANSFORM_TEX(v.texcoord, _WaterTex);
                 o.worldNormal = TransformObjectToWorldNormal(v.normal);
                 o.worldPos = mul(unity_ObjectToWorld, v.vertex);
                 return o;
@@ -88,8 +90,12 @@
                 uv.y += index / 32.f;
 
                 // sample the texture
-                half4 col = tex2D(_MainTex, uv) * _Color;
-                col.rgb *= _SkyLightColor.rgb;
+                half4 col = 0;
+                col.rgb = tex2D(_WaterTex, uv).a * _Color.rgb;
+                // col.rgb *= _SkyLightColor.rgb;
+                col.a = _Alpha;
+
+                col.rgb = SRGBToLinear(col.rgb);
 
                 return col;
             }
