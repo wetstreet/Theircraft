@@ -23,6 +23,8 @@ public class TextureArrayManager
         "grass_top", "grass_side", "dirt", "snow", "grass_side_snowed",
         "ladder",
 
+        "double_plant_sunflower_bottom",
+        "double_plant_sunflower_top",
         "double_plant_grass_bottom",
         "double_plant_grass_top",
         "double_plant_fern_bottom",
@@ -106,6 +108,10 @@ public class TextureArrayManager
 
     public static Texture2D GetTexture(string name)
     {
+        if (!name2index.ContainsKey(name))
+        {
+            Debug.Log("not contain texture,name=" + name);
+        }
         return textureList[name2index[name]];
     }
 

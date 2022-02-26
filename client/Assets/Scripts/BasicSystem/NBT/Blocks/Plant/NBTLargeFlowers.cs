@@ -28,6 +28,8 @@ public class NBTLargeFlowers : NBTPlant
     {
         switch (data)
         {
+            case 0:
+                return "double_plant_sunflower_bottom";
             case 1:
                 return "double_plant_syringa_bottom";
             case 2:
@@ -42,10 +44,12 @@ public class NBTLargeFlowers : NBTPlant
                 chunk.GetBlockData(pos.x, pos.y - 1, pos.z, out byte bottomType, out byte bottomData);
                 switch (bottomData)
                 {
+                    case 0:
+                        return "double_plant_sunflower_top";
                     case 1:
                         return "double_plant_syringa_top";
                     case 2:
-                        return "double_plant_syringa_top";
+                        return "double_plant_grass_top";
                     case 3:
                         return "double_plant_fern_top";
                     case 4:

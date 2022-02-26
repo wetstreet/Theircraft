@@ -37,7 +37,7 @@ Shader "Custom/TextureArrayShader"
                 float3 vertex : POSITION;
                 float4 color : COLOR;
                 float2 uv : TEXCOORD0;
-                float2 uv1 : TEXCOORD0;
+                float2 uv1 : TEXCOORD1;
                 float3 normal : NORMAL;
             };
 

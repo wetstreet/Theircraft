@@ -90,6 +90,7 @@ public class DebugUI : MonoBehaviour
                 text += zstring.Format(template3, WireFrameHelper.pos.x, WireFrameHelper.pos.y, WireFrameHelper.pos.z, WireFrameHelper.generator.name, WireFrameHelper.data);
             }
             label.text = text;
+            label.ForceMeshUpdate();
 
             label2.text = ChunkRefresher.GetChunkUpdatesCount() + (zstring)" chunk updates";
         }

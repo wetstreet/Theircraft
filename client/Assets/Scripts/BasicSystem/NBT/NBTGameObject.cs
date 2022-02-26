@@ -71,7 +71,14 @@ public class NBTGameObject : MonoBehaviour
         nbtMesh.Refresh();
 
         //GetComponent<MeshRenderer>().sharedMaterial.SetTexture("_Array", TextureArrayManager.GetArray());
-        GetComponent<MeshRenderer>().sharedMaterial.mainTexture = TextureArrayManager.atlas;
+        MeshRenderer mr = GetComponent<MeshRenderer>();
+        mr.sharedMaterial.mainTexture = TextureArrayManager.atlas;
+        Material[] materials = new Material[nbtMesh.subMeshCount];
+        for (int i = 0;i < nbtMesh.subMeshCount; i++)
+        {
+            materials[i] = mat;
+        }
+        mr.sharedMaterials = materials;
         GetComponent<MeshFilter>().sharedMesh = nbtMesh.mesh;
         if (isCollidable)
         {

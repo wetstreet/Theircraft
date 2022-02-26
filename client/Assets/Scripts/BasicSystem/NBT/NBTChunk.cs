@@ -243,6 +243,10 @@ public class NBTChunk
             water.Clear();
         }
 
+        collidable.nbtMesh.subMeshCount = Sections.Count;
+        notCollidable.nbtMesh.subMeshCount = Sections.Count;
+        water.nbtMesh.subMeshCount = Sections.Count;
+
         for (int sectionIndex = 0; sectionIndex < Sections.Count; sectionIndex++)
         {
             TagNodeCompound Section = Sections[sectionIndex] as TagNodeCompound;
@@ -294,6 +298,9 @@ public class NBTChunk
                     }
                 }
             }
+            collidable.nbtMesh.triangleIndexes[sectionIndex] = collidable.nbtMesh.triangleCount;
+            notCollidable.nbtMesh.triangleIndexes[sectionIndex] = notCollidable.nbtMesh.triangleCount;
+            water.nbtMesh.triangleIndexes[sectionIndex] = water.nbtMesh.triangleCount;
         }
 
         UnityEngine.Profiling.Profiler.EndSample();
@@ -389,34 +396,19 @@ public class NBTChunk
         }
 
         RefreshMeshData(updateFlags);
-        try
+        InitTileEntity();
+        if (updateFlags.HasFlag(UpdateFlags.Collidable))
         {
-            InitTileEntity();
-            try
-            {
-                if (updateFlags.HasFlag(UpdateFlags.Collidable))
-                {
-                    collidable.Refresh();
-                }
-                if (updateFlags.HasFlag(UpdateFlags.NotCollidable))
-                {
-                    notCollidable.Refresh();
-                }
-                if (updateFlags.HasFlag(UpdateFlags.Water))
-                {
-                    water.Refresh();
-                }
-            }
-            catch (System.Exception e)
-            {
-                Debug.LogError("refresh error,chunk=" + x + "," + z + ", message=" + e.Message);
-            }
+            collidable.Refresh();
         }
-        catch (System.Exception e)
+        if (updateFlags.HasFlag(UpdateFlags.NotCollidable))
         {
-            Debug.Log("RebuildMesh chunk=" + x + ",z=" + z);
+            notCollidable.Refresh();
         }
-        //water.Refresh();
+        if (updateFlags.HasFlag(UpdateFlags.Water))
+        {
+            water.Refresh();
+        }
 
         UnityEngine.Profiling.Profiler.EndSample();
 
@@ -438,24 +430,10 @@ public class NBTChunk
         await Task.Run(()=> {
             RefreshMeshData(UpdateFlags.All);
         });
-        try
-        {
-            InitTileEntity();
-            collidable.Refresh();
-        }
-        catch (System.Exception e)
-        {
-            Debug.Log("RebuildMeshAsync collidable chunk=" + x + ",z=" + z);
-        }
-        try
-        {
-            notCollidable.Refresh();
-            water.Refresh();
-        }
-        catch (System.Exception e)
-        {
-            Debug.Log("RebuildMeshAsync notCollidable chunk=" + x + ",z=" + z);
-        }
+        InitTileEntity();
+        collidable.Refresh();
+        notCollidable.Refresh();
+        water.Refresh();
 
         isBuilding = false;
     }

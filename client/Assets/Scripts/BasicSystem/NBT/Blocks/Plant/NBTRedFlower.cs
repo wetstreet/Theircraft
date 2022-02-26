@@ -43,7 +43,7 @@ public class NBTRedFlower : NBTPlant
 
     public override string GetBreakEffectTexture(byte data)
     {
-        return GetNameByData(data);
+        return GetTexName(null, Vector3Int.zero, data);
     }
 
     public override string GetIconPathByData(short data)
