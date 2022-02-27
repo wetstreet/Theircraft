@@ -12,8 +12,6 @@ public class TimeOfDay : MonoBehaviour
     public Gradient lightColor;
     public Gradient skyTopColor;
     public Gradient skyBottomColor;
-    public float skyHeight = 1000;
-    public float skyTransition = 1000;
 
     public static TimeOfDay instance;
 
@@ -59,9 +57,16 @@ public class TimeOfDay : MonoBehaviour
 
         Shader.SetGlobalFloat("_DayNight01", dayNight01);
         Shader.SetGlobalColor("_SkyLightColor", lightColor.Evaluate(time01));
-        Shader.SetGlobalColor("_SkyTopColor", skyTopColor.Evaluate(time01).linear);
-        Shader.SetGlobalColor("_SkyBottomColor", skyBottomColor.Evaluate(time01).linear);
-        Shader.SetGlobalFloat("_SkyHeight", skyHeight);
-        Shader.SetGlobalFloat("_SkyTransition", skyTransition);
+        Shader.SetGlobalColor("_SkyColor", skyTopColor.Evaluate(time01));
+
+        Color fogColor = skyBottomColor.Evaluate(time01);
+        Camera.main.backgroundColor = fogColor.gamma;
+        Shader.SetGlobalFloat("_SkyFogEnd", SettingsPanel.RenderDistance * 16);
+
+        float fogEnd = (SettingsPanel.RenderDistance - 1) * 16;
+        float diff = 8 + Mathf.Max(SettingsPanel.RenderDistance - 3, 0) * 4;
+        Shader.SetGlobalFloat("_FogEnd", fogEnd);
+        Shader.SetGlobalFloat("_FogStart", fogEnd - diff);
+        Shader.SetGlobalColor("_FogColor", fogColor);
     }
 }

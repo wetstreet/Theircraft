@@ -61,7 +61,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Alpha: 0.864
+    - _Alpha: 0.70588
     - _AlphaBoost: 0.182
     - _Angle: 0
     - _BlendOp: 0
@@ -100,7 +100,7 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _CameraFadeParams: {r: 0, g: Infinity, b: 0, a: 0}
-    - _Color: {r: 0.27631575, g: 0.517544, b: 1, a: 1}
+    - _Color: {r: 0.24706, g: 0.46275, b: 0.89412, a: 1}
     - _ColorAddSubDiff: {r: 0, g: 0, b: 0, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _SoftParticleFadeParams: {r: 0, g: 0, b: 0, a: 0}

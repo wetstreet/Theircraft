@@ -41,6 +41,7 @@
                 float2 uv : TEXCOORD0;
                 float3 worldNormal : TEXCOORD1;
                 float3 worldPos : TEXCOORD2;
+                half4 light : TEXCOORD3;
             };
 
             CBUFFER_START(UnityPerMaterial)
@@ -53,6 +54,10 @@
             CBUFFER_END
 
             sampler2D _WaterTex;
+
+            sampler2D _DayLightTexture;
+            sampler2D _NightLightTexture;
+            float _DayNight01;
 
             float2 Rotate(float2 input)
             {
@@ -79,6 +84,13 @@
                 o.uv = TRANSFORM_TEX(v.texcoord, _WaterTex);
                 o.worldNormal = TransformObjectToWorldNormal(v.normal);
                 o.worldPos = mul(unity_ObjectToWorld, v.vertex);
+
+                float blockLight = 0;
+                float skylight = 1;
+                half4 dayLight = tex2Dlod(_DayLightTexture, half4(blockLight, 1 - skylight, 0, 0));
+                half4 nightLight = tex2Dlod(_NightLightTexture, half4(blockLight, 1 - skylight, 0, 0));
+                o.light = lerp(dayLight, nightLight, saturate(_DayNight01));
+
                 return o;
             }
 
@@ -92,10 +104,8 @@
                 // sample the texture
                 half4 col = 0;
                 col.rgb = tex2D(_WaterTex, uv).a * _Color.rgb;
-                // col.rgb *= _SkyLightColor.rgb;
+                col.rgb *= i.light.rgb;
                 col.a = _Alpha;
-
-                col.rgb = SRGBToLinear(col.rgb);
 
                 return col;
             }

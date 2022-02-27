@@ -134,6 +134,7 @@ public class TextureArrayManager
         return textureList.ToArray();
     }
 
+    static float epsilon = 0.0001f;
     static Dictionary<string, Vector2[]> name2uv;
     public static Vector2[] GetUVByName(string name)
     {
@@ -142,10 +143,10 @@ public class TextureArrayManager
             Rect rect = TextureArrayManager.GetRectByName(name);
             Vector2[] uv = new Vector2[]
             {
-            new Vector2(rect.xMin, rect.yMin),
-            new Vector2(rect.xMin, rect.yMax),
-            new Vector2(rect.xMax, rect.yMax),
-            new Vector2(rect.xMax, rect.yMin),
+            new Vector2(rect.xMin + epsilon, rect.yMin + epsilon),
+            new Vector2(rect.xMin + epsilon, rect.yMax - epsilon),
+            new Vector2(rect.xMax - epsilon, rect.yMax - epsilon),
+            new Vector2(rect.xMax - epsilon, rect.yMin + epsilon),
             };
             name2uv[name] = uv;
         }

@@ -33,7 +33,7 @@ Shader "Custom/Cloud"
 
             struct appdata
             {
-                float4 vertex : POSITION;
+                float3 vertex : POSITION;
                 float3 normal : NORMAL;
             };
 
@@ -42,6 +42,7 @@ Shader "Custom/Cloud"
                 float4 vertex : SV_POSITION;
                 float3 worldPos : TEXCOORD0;
                 float3 worldNormal : TEXCOORD1;
+                float vertexDistance : TEXCOORD2;
             };
 
             half4 _Color;
@@ -49,9 +50,12 @@ Shader "Custom/Cloud"
             v2f vert (appdata v)
             {
                 v2f o;
-                o.vertex = TransformObjectToHClip(v.vertex.xyz);
-                o.worldPos = mul(unity_ObjectToWorld, v.vertex.xyz);
+                o.vertex = TransformObjectToHClip(v.vertex);
+                o.worldPos = mul(unity_ObjectToWorld, v.vertex);
                 o.worldNormal = TransformObjectToWorldNormal(v.normal);
+
+                o.vertexDistance = length((mul(UNITY_MATRIX_MV, float4(v.vertex, 1)).xyz));
+
                 return o;
             }
 
@@ -76,6 +80,8 @@ Shader "Custom/Cloud"
                 {
                     col.rgb *= 0.2;
                 }
+
+                col = linear_fog(col, i.vertexDistance);
                 
                 return col;
             }

@@ -16,4 +16,25 @@ half3 GetSkyLight(half skylight)
 }
 
 
+float _FogStart;
+float _FogEnd;
+float4 _FogColor;
+
+float4 linear_fog(float4 inColor, float vertexDistance, float fogStart, float fogEnd)
+{
+    if (vertexDistance <= fogStart)
+    {
+        return inColor;
+    }
+
+    float fogValue = vertexDistance < fogEnd ? smoothstep(fogStart, fogEnd, vertexDistance) : 1.0;
+    return float4(lerp(inColor.rgb, _FogColor.rgb, fogValue * _FogColor.a), inColor.a);
+}
+
+float4 linear_fog(float4 inColor, float vertexDistance)
+{
+    return linear_fog(inColor, vertexDistance, _FogStart, _FogEnd);
+}
+
+
 #endif // COMMON_INCLUDED

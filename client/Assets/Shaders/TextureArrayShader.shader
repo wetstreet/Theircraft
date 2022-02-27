@@ -48,6 +48,7 @@ Shader "Custom/TextureArrayShader"
                 float4 worldNormal : TEXCOORD1;
                 half4 color : COLOR;
                 half4 light : TEXCOORD2;
+                float vertexDistance : TEXCOORD3;
             };
 
             sampler2D _MainTex;
@@ -74,6 +75,8 @@ Shader "Custom/TextureArrayShader"
                 float skylight = v.uv1.x;
                 half blockLight = v.uv1.y;
 
+                o.vertexDistance = length((mul(UNITY_MATRIX_MV, float4(v.vertex, 1)).xyz));
+
                 half4 dayLight = tex2Dlod(_DayLightTexture, half4(blockLight, 1 - skylight, 0, 0));
                 half4 nightLight = tex2Dlod(_NightLightTexture, half4(blockLight, 1 - skylight, 0, 0));
 
@@ -86,6 +89,8 @@ Shader "Custom/TextureArrayShader"
             {
                 // sample the texture
                 half4 col = tex2D(_MainTex, i.uv.xy);
+
+                clip(col.a - _Cutoff);
 
                 col.rgb *= i.color.rgb;
 
@@ -113,7 +118,7 @@ Shader "Custom/TextureArrayShader"
                     col.rgb *= 0.2;
                 }
 
-                clip(col.a - _Cutoff);
+                col = linear_fog(col, i.vertexDistance);
 
                 return col;
             }

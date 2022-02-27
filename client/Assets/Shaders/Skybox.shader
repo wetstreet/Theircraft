@@ -8,7 +8,9 @@ Shader "Custom/Skybox" {
 
     SubShader {
         Tags { "Queue"="Background" "RenderType"="Background" "PreviewType"="Skybox" }
-        Cull Off ZWrite Off
+        Cull Off
+        ZWrite Off
+        ZTest Always
 
         Pass {
 
@@ -18,11 +20,8 @@ Shader "Custom/Skybox" {
 
             #include "Common.hlsl"
 
-            half4 _SkyTopColor;
-            half4 _SkyBottomColor;
-
-            float _SkyHeight;
-            float _SkyTransition;
+            half4 _SkyColor;
+            float _SkyFogEnd;
 
             struct appdata
             {
@@ -32,23 +31,19 @@ Shader "Custom/Skybox" {
 
             struct v2f {
                 float4 pos : SV_POSITION;
-                float2 uv : TEXCOORD0;
-                float3 worldPos : TEXCOORD1;
+                float vertexDistance : TEXCOORD0;
             };
 
             v2f vert(appdata v) {
                 v2f o;
                 o.pos = TransformObjectToHClip(v.vertex);
-                o.worldPos = mul(unity_ObjectToWorld, v.vertex);
-                o.uv = v.uv;
+                o.vertexDistance = length((mul(UNITY_MATRIX_MV, v.vertex).xyz));
+
                 return o;
             }
 
             half4 frag(v2f i) : SV_TARGET {
-                return lerp(_SkyBottomColor, _SkyTopColor, smoothstep(_SkyHeight, _SkyHeight + _SkyTransition, i.worldPos.y));
-                // float val = saturate(i.uv.y);
-                // return lerp(_Color2, _Color, pow(val, 0.5f));
-                // return pow(i.uv.y, 0.5f);
+                return linear_fog(_SkyColor, i.vertexDistance, 0, _SkyFogEnd);
             }
 
             ENDHLSL
