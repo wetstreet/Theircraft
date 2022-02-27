@@ -22,6 +22,28 @@ public class NBTStone : NBTBlock
 
     public override string allName => "stone";
 
+    public override string GetNameByData(short data)
+    {
+        switch (data)
+        {
+            case 0:
+                return "Stone";
+            case 1:
+                return "Granite";
+            case 2:
+                return "Polished Granite";
+            case 3:
+                return "Diorite";
+            case 4:
+                return "Polished Diorite";
+            case 5:
+                return "Andesite";
+            case 6:
+                return "Polished Andesite";
+        }
+        throw new System.Exception("no tex for data!");
+    }
+
     string GetTexByData(int data)
     {
         switch (data)

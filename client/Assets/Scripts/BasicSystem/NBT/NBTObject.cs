@@ -30,9 +30,8 @@ public abstract class NBTObject
     {
         if (commonItemMat == null)
         {
-            commonItemMat = new Material(Shader.Find("Custom/TextureArrayShader"));
+            commonItemMat = new Material(Shader.Find("Custom/BlockShader"));
             commonItemMat.SetTexture("_MainTex", TextureArrayManager.atlas);
-            //commonItemMat.SetTexture("_Array", TextureArrayManager.GetArray());
         }
         return commonItemMat;
     }

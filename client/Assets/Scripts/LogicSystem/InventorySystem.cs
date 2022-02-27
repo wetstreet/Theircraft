@@ -27,43 +27,6 @@ public class InventorySystem
 
     public static InventoryItem grabItem;
 
-    static NBTObject UpperLeft
-    {
-        get
-        {
-            if (items[36].id != null)
-                return NBTGeneratorManager.GetObjectGenerator(items[36].id);
-            return null;
-        }
-    }
-    static NBTObject UpperRight
-    {
-        get
-        {
-            if (items[37].id != null)
-                return NBTGeneratorManager.GetObjectGenerator(items[37].id);
-            return null;
-        }
-    }
-    static NBTObject BottomLeft
-    {
-        get
-        {
-            if (items[38].id != null)
-                return NBTGeneratorManager.GetObjectGenerator(items[38].id);
-            return null;
-        }
-    }
-    static NBTObject BottomRight
-    {
-        get
-        {
-            if (items[39].id != null)
-                return NBTGeneratorManager.GetObjectGenerator(items[39].id);
-            return null;
-        }
-    }
-
     public static void Init()
     {
         TagNodeCompound playerData = NBTHelper.GetPlayerData();

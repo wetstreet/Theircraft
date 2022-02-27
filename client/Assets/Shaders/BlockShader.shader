@@ -19,6 +19,8 @@
             #pragma vertex vert
             #pragma fragment frag
 
+            #pragma enable_d3d11_debug_symbols
+
             #include "Common.hlsl"
 
             struct appdata
@@ -26,7 +28,8 @@
                 float4 positionOS : POSITION;
                 float4 color : COLOR;
                 float3 normal : NORMAL;
-                float4 texcoord : TEXCOORD0;
+                float2 texcoord : TEXCOORD0;
+                float2 texcoord1 : TEXCOORD1;
             };
 
             struct v2f
@@ -51,7 +54,7 @@
                 v2f o;
                 o.positionCS = TransformObjectToHClip(v.positionOS.xyz);
                 o.uv.xy = TRANSFORM_TEX(v.texcoord, _MainTex);
-                o.uv.zw = v.texcoord.zw;
+                o.uv.zw = v.texcoord1;
 
                 o.color = v.color;
                 o.worldNormal = TransformObjectToWorldNormal(v.normal);
@@ -63,29 +66,16 @@
             {
                 half4 col = tex2D(_MainTex, i.uv.xy);
 
-                i.uv.w = 1.f;
-                // skylight
-                float skylight = i.uv.w;
-                // col.rgb *= GetSkyLight(skylight);
-
-                if (i.worldNormal.y == 1)
-                {
-                    col.rgb *= 1;
-                }
-                else if (i.worldNormal.z == 1 || i.worldNormal.z == -1)
-                {
-                    col.rgb *= 0.6;
-                }
-                else if (i.worldNormal.x == 1 || i.worldNormal.x == -1)
-                {
-                    col.rgb *= 0.3;
-                }
-                else if (i.worldNormal.y == -1)
-                {
-                    col.rgb *= 0.2;
-                }
-
                 clip(col.a - _Cutoff);
+
+                // float skylight = i.uv.z;
+                // col.rgb *= GetSkyLight(skylight);
+                
+                float3 lightDir = float3(-0.44029, 0.69466, -0.56855);
+
+                float nl = max(dot(i.worldNormal, lightDir), 0.2);
+
+                col.rgb *= nl;
 
                 return col;
             }

@@ -12,6 +12,7 @@ public class ItemSelectPanel : MonoBehaviour
         public TextMeshProUGUI count;
         public RawImage damage;
         public GameObject damageObj;
+        public GameObject blockObj;
     }
 
     public static uint curIndex;
@@ -57,6 +58,7 @@ public class ItemSelectPanel : MonoBehaviour
                 count = trans.Find("Text").GetComponent<TextMeshProUGUI>(),
                 damageObj = trans.Find("damage_bg").gameObject,
                 damage = trans.Find("damage_bg/damage").GetComponent<RawImage>(),
+                blockObj = trans.Find("block").gameObject
             };
             item.icon.gameObject.SetActive(false);
             item.select.SetActive(false);
@@ -158,23 +160,24 @@ public class ItemSelectPanel : MonoBehaviour
                 itemList[i].icon.gameObject.SetActive(false);
                 itemList[i].count.gameObject.SetActive(false);
                 itemList[i].damageObj.SetActive(false);
+                itemList[i].blockObj.SetActive(false);
             }
             else
             {
-                itemList[i].icon.texture = BlockIconHelper.GetIcon(item.id, item.damage);
-                itemList[i].icon.gameObject.SetActive(true);
-                if (item.count > 1)
-                {
-                    itemList[i].count.gameObject.SetActive(true);
-                    itemList[i].count.text = item.count.ToString();
-                }
-                else
-                {
-                    itemList[i].count.gameObject.SetActive(false);
-                }
 
                 NBTObject generator = NBTGeneratorManager.GetObjectGenerator(item.id);
-                if (generator != null && generator is NBTItem)
+                bool isBlock = generator is NBTBlock;
+                itemList[i].blockObj.SetActive(isBlock);
+                itemList[i].icon.gameObject.SetActive(!isBlock);
+                if (isBlock)
+                {
+                    NBTBlock blockGenerator = generator as NBTBlock;
+                    byte data = (byte)item.damage;
+                    itemList[i].blockObj.GetComponent<MeshFilter>().sharedMesh = blockGenerator.GetItemMesh(data);
+                    itemList[i].blockObj.GetComponent<MeshRenderer>().sharedMaterial = blockGenerator.GetItemMaterial(data);
+                    itemList[i].damageObj.SetActive(false);
+                }
+                else
                 {
                     NBTItem nbtItem = generator as NBTItem;
 
@@ -189,6 +192,17 @@ public class ItemSelectPanel : MonoBehaviour
                         itemList[i].damage.rectTransform.sizeDelta = new Vector2(13 * process, 1);
                         itemList[i].damage.color = Color.Lerp(Color.red, Color.green, process);
                     }
+                    itemList[i].icon.texture = BlockIconHelper.GetIcon(item.id, item.damage);
+                }
+
+                if (item.count > 1)
+                {
+                    itemList[i].count.gameObject.SetActive(true);
+                    itemList[i].count.text = item.count.ToString();
+                }
+                else
+                {
+                    itemList[i].count.gameObject.SetActive(false);
                 }
             }
             itemList[i].select.SetActive(i == curIndex);

@@ -203,6 +203,7 @@ public abstract class NBTBlock : NBTObject
     public virtual Mesh GetItemMesh(byte data = 0)
     {
         CubeAttributes ca = new CubeAttributes();
+        ca.blockData = data;
 
         NBTMesh nbtMesh = new NBTMesh(256);
 
@@ -214,43 +215,37 @@ public abstract class NBTBlock : NBTObject
         {
             fa.pos = frontVertices;
             fa.normal = Vector3.forward;
-            //fa.faceIndex = GetFrontIndexByData(null, data);
-            fa.uv = GetFrontRotationByData(data) == Rotation.Right ? uv_right : uv_zero;
+            fa.uv = TextureArrayManager.GetUVByName(GetFrontTexName(null, ca.blockData));
             fa.color = GetFrontTintColorByData(data);
             AddFace(nbtMesh, fa, ca);
 
             fa.pos = backVertices;
             fa.normal = Vector3.back;
-            //fa.faceIndex = GetBackIndexByData(null, data);
-            fa.uv = GetBackRotationByData(data) == Rotation.Right ? uv_right : uv_zero;
+            fa.uv = TextureArrayManager.GetUVByName(GetBackTexName(null, ca.blockData));
             fa.color = GetBackTintColorByData(data);
             AddFace(nbtMesh, fa, ca);
 
             fa.pos = topVertices;
             fa.normal = Vector3.up;
-            //fa.faceIndex = GetTopIndexByData(null, data);
-            fa.uv = GetTopRotationByData(data) == Rotation.Right ? uv_right : uv_zero;
+            fa.uv = TextureArrayManager.GetUVByName(GetTopTexName(null, ca.blockData));
             fa.color = GetTopTintColorByData(data);
             AddFace(nbtMesh, fa, ca);
 
             fa.pos = bottomVertices;
             fa.normal = Vector3.down;
-            //fa.faceIndex = GetBottomIndexByData(null, data);
-            fa.uv = GetBottomRotationByData(data) == Rotation.Right ? uv_right : uv_zero;
+            fa.uv = TextureArrayManager.GetUVByName(GetBottomTexName(null, ca.blockData));
             fa.color = GetBottomTintColorByData(data);
             AddFace(nbtMesh, fa, ca);
 
             fa.pos = leftVertices;
             fa.normal = Vector3.left;
-            //fa.faceIndex = GetLeftIndexByData(null, data);
-            fa.uv = GetLeftRotationByData(data) == Rotation.Right ? uv_right : uv_zero;
+            fa.uv = TextureArrayManager.GetUVByName(GetLeftTexName(null, ca.blockData));
             fa.color = GetLeftTintColorByData(data);
             AddFace(nbtMesh, fa, ca);
 
             fa.pos = rightVertices;
             fa.normal = Vector3.right;
-            //fa.faceIndex = GetRightIndexByData(null, data);
-            fa.uv = GetRightRotationByData(data) == Rotation.Right ? uv_right : uv_zero;
+            fa.uv = TextureArrayManager.GetUVByName(GetRightTexName(null, ca.blockData));
             fa.color = GetRightTintColorByData(data);
             AddFace(nbtMesh, fa, ca);
         }

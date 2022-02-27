@@ -69,6 +69,15 @@ public class NBTHelper
             levelTree.ReadFrom(stream);
         }
         levelDat = levelTree.Root["Data"] as TagNodeCompound;
+
+        if (!playerData.Root.ContainsKey("SpawnX"))
+        {
+            TagNodeList Pos = playerData.Root["Pos"] as TagNodeList;
+            playerData.Root.Add("SpawnX", new TagNodeInt((int)((TagNodeDouble)Pos[0]).Data));
+            playerData.Root.Add("SpawnY", new TagNodeInt((int)((TagNodeDouble)Pos[1]).Data));
+            playerData.Root.Add("SpawnZ", new TagNodeInt((int)((TagNodeDouble)Pos[2]).Data));
+            Debug.Log("no spawn pos, using saved pos as spawn pos");
+        }
     }
 
     public static TagNodeCompound GetPlayerData()
@@ -81,7 +90,7 @@ public class NBTHelper
         return levelDat;
     }
 
-    public static void SaveToDisk()
+    public static void SavePlayerData()
     {
         TagNodeList Pos = playerData.Root["Pos"] as TagNodeList;
         Pos[0] = (TagNodeDouble)PlayerController.instance.transform.position.x;
@@ -97,6 +106,11 @@ public class NBTHelper
         {
             playerData.WriteTo(stream);
         }
+    }
+
+    public static void SaveToDisk()
+    {
+        SavePlayerData();
 
         TagNodeCompound player = levelDat["Player"] as TagNodeCompound;
         TagNodeCompound abilities = player["abilities"] as TagNodeCompound;
@@ -447,7 +461,7 @@ public class NBTHelper
         {
             chunk.GetBlockData(xInChunk, y + 1, zInChunk, out byte topType, out byte topData);
             NBTBlock topGenerator = NBTGeneratorManager.GetMeshGenerator(topType);
-            if (topGenerator != null && topGenerator is NBTPlant)
+            if (topGenerator != null && topGenerator is NBTPlant || topGenerator is NBTSnowLayer)
             {
                 BreakBlockEffect.Create(topType, topData, new Vector3(x, y + 1, z));
                 chunk.SetBlockByte(xInChunk, y + 1, zInChunk, 0);
@@ -500,7 +514,7 @@ public class NBTHelper
         {
             chunk.GetBlockData(xInChunk, y + 1, zInChunk, out byte topType, out byte topData);
             NBTBlock topGenerator = NBTGeneratorManager.GetMeshGenerator(topType);
-            if (topGenerator != null && topGenerator.isTransparent)
+            if (topGenerator != null && topGenerator is NBTPlant || topGenerator is NBTSnowLayer)
             {
                 BreakBlockEffect.Create(topType, topData, new Vector3(x, y + 1, z));
                 chunk.SetBlockByte(xInChunk, y + 1, zInChunk, 0);
