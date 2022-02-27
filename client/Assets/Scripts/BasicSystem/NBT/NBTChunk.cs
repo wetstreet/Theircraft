@@ -309,7 +309,7 @@ public class NBTChunk
     void CheckBorder()
     {
         NBTChunk leftChunk = NBTHelper.GetChunk(x - 1, z);
-        NBTChunk rightChunk = NBTHelper.GetChunk(x - 1, z);
+        NBTChunk rightChunk = NBTHelper.GetChunk(x + 1, z);
         NBTChunk frontChunk = NBTHelper.GetChunk(x, z + 1);
         NBTChunk backChunk = NBTHelper.GetChunk(x, z - 1);
 
@@ -330,7 +330,7 @@ public class NBTChunk
     void CheckNearbyChunks()
     {
         NBTChunk leftChunk = NBTHelper.GetChunk(x - 1, z);
-        NBTChunk rightChunk = NBTHelper.GetChunk(x - 1, z);
+        NBTChunk rightChunk = NBTHelper.GetChunk(x + 1, z);
         NBTChunk frontChunk = NBTHelper.GetChunk(x, z + 1);
         NBTChunk backChunk = NBTHelper.GetChunk(x, z - 1);
 

@@ -40,8 +40,9 @@ public class TextureArrayManager
         "leaves_acacia", "leaves_big_oak",
         "log_oak_top", "log_oak", "log_spruce_top", "log_spruce", "log_birch_top", "log_birch", "log_jungle_top", "log_jungle",
         "log_acacia_top", "log_acacia", "log_big_oak_top", "log_big_oak",
-
-        "stone", "cobblestone",
+        
+        "stone","stone_granite","stone_granite_smooth","stone_diorite","stone_diorite_smooth","stone_andesite","stone_andesite_smooth",
+        "cobblestone",
         "door_wood_lower", "door_wood_upper",
         "planks_oak", "planks_spruce", "planks_birch", "planks_jungle", "planks_acacia", "planks_big_oak",
 

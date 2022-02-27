@@ -85,7 +85,7 @@ public class ChunkRefresher
     {
         foreach (NBTChunk chunk in refreshChunkList)
         {
-            chunk.RebuildMesh(UpdateFlags.All, false);
+            chunk.RebuildMesh(UpdateFlags.All);
         }
         refreshChunkList.Clear();
     }

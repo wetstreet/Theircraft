@@ -42,6 +42,7 @@
                 float3 worldNormal : TEXCOORD1;
                 float3 worldPos : TEXCOORD2;
                 half4 light : TEXCOORD3;
+                float vertexDistance : TEXCOORD4;
             };
 
             CBUFFER_START(UnityPerMaterial)
@@ -91,6 +92,8 @@
                 half4 nightLight = tex2Dlod(_NightLightTexture, half4(blockLight, 1 - skylight, 0, 0));
                 o.light = lerp(dayLight, nightLight, saturate(_DayNight01));
 
+                o.vertexDistance = length((mul(UNITY_MATRIX_MV, v.vertex).xyz));
+
                 return o;
             }
 
@@ -106,6 +109,8 @@
                 col.rgb = tex2D(_WaterTex, uv).a * _Color.rgb;
                 col.rgb *= i.light.rgb;
                 col.a = _Alpha;
+
+                col = linear_fog(col, i.vertexDistance);
 
                 return col;
             }
