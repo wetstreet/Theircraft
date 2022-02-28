@@ -9,9 +9,9 @@ public class NBTWheat : NBTCrops
 
     public override string GetIconPathByData(short data) { return "wheat"; }
 
-    public override int GetPlantIndexByData(int data)
+    public override string GetTexName(NBTChunk chunk, Vector3Int pos, int data)
     {
-        return TextureArrayManager.GetIndexByName("wheat_stage_7");
+        return "wheat_stage_7";
     }
 
     public override string GetBreakEffectTexture(byte data) { return "wheat_stage_7"; }

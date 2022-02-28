@@ -40,22 +40,6 @@ public class NBTSapling : NBTPlant
 
     public override bool hasDropItem => true;
 
-    public override int GetPlantIndexByData(int data)
-    {
-        switch (data % 4)
-        {
-            case 0:
-                return TextureArrayManager.GetIndexByName("sapling_oak");
-            case 1:
-                return TextureArrayManager.GetIndexByName("sapling_spruce");
-            case 2:
-                return TextureArrayManager.GetIndexByName("sapling_birch");
-            case 3:
-                return TextureArrayManager.GetIndexByName("sapling_jungle");
-        }
-        throw new System.Exception("no index");
-    }
-
     public override string GetTexName(NBTChunk chunk, Vector3Int pos, int data)
     {
         switch (data % 4)

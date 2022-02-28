@@ -9,11 +9,6 @@ public class NBTRedMushroom : NBTPlant
     protected override int size => 6;
     protected override int height => 8;
 
-    public override int GetPlantIndexByData(int data)
-    {
-        return TextureArrayManager.GetIndexByName("mushroom_red");
-    }
-
     public override string GetTexName(NBTChunk chunk, Vector3Int pos, int data)
     {
         return "mushroom_red";

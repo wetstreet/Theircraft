@@ -7,11 +7,6 @@ public class NBTSugarCane : NBTPlant
     public override string name => "Sugar Cane";
     public override string id => "minecraft:reeds";
 
-    public override int GetPlantIndexByData(int data)
-    {
-        return TextureArrayManager.GetIndexByName("reeds");
-    }
-
     public override string GetTexName(NBTChunk chunk, Vector3Int pos, int data)
     {
         return "reeds";

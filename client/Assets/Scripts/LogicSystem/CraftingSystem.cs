@@ -117,6 +117,37 @@ public class CraftingSystem : MonoBehaviour
         "golden_axe",
         "diamond_axe",
 
+        "wooden_sword",
+        "stone_sword",
+        "iron_sword",
+        "golden_sword",
+        "diamond_sword",
+
+        "leather_helmet",
+        "iron_helmet",
+        "golden_helmet",
+        "diamond_helmet",
+
+        "leather_boots",
+        "iron_boots",
+        "golden_boots",
+        "diamond_boots",
+
+        "leather_chestplate",
+        "iron_chestplate",
+        "golden_chestplate",
+        "diamond_chestplate",
+
+        "leather_leggings",
+        "iron_leggings",
+        "golden_leggings",
+        "diamond_leggings",
+
+        "iron_block",
+        "iron_ingot_from_block",
+
+        "torch",
+
         "furnace",
         "stick",
         "crafting_table",

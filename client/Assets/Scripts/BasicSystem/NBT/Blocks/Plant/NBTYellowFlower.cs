@@ -10,23 +10,6 @@ public class NBTYellowFlower : NBTPlant
     protected override int size => 4;
     protected override int height => 8;
 
-    public override int GetPlantIndexByData(int data)
-    {
-        if (data == 0)
-        {
-            return TextureArrayManager.GetIndexByName("flower_dandelion");
-        }
-        else if (data == 3)
-        {
-            return TextureArrayManager.GetIndexByName("flower_houstonia");
-        }
-        else if (data == 8)
-        {
-            return TextureArrayManager.GetIndexByName("flower_oxeye_daisy");
-        }
-        throw new System.Exception("no index");
-    }
-
     public override string GetTexName(NBTChunk chunk, Vector3Int pos, int data)
     {
         if (data == 0)

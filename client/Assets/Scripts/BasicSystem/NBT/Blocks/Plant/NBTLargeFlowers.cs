@@ -62,40 +62,6 @@ public class NBTLargeFlowers : NBTPlant
         throw new System.Exception("data=" + data);
     }
 
-    public override int GetPlantIndexByData(NBTChunk chunk, Vector3Int pos, int data)
-    {
-        switch (data)
-        {
-            case 1:
-                return TextureArrayManager.GetIndexByName("double_plant_syringa_bottom");
-            case 2:
-                return TextureArrayManager.GetIndexByName("double_plant_grass_bottom");
-            case 3:
-                return TextureArrayManager.GetIndexByName("double_plant_fern_bottom");
-            case 4:
-                return TextureArrayManager.GetIndexByName("double_plant_rose_bottom");
-            case 5:
-                return TextureArrayManager.GetIndexByName("double_plant_paeonia_bottom");
-            case 10:
-                chunk.GetBlockData(pos.x, pos.y - 1, pos.z, out byte bottomType, out byte bottomData);
-                switch (bottomData)
-                {
-                    case 1:
-                        return TextureArrayManager.GetIndexByName("double_plant_syringa_top");
-                    case 2:
-                        return TextureArrayManager.GetIndexByName("double_plant_grass_top");
-                    case 3:
-                        return TextureArrayManager.GetIndexByName("double_plant_fern_top");
-                    case 4:
-                        return TextureArrayManager.GetIndexByName("double_plant_rose_top");
-                    case 5:
-                        return TextureArrayManager.GetIndexByName("double_plant_paeonia_top");
-                }
-                break;
-        }
-        throw new System.Exception("no index, data=" + data + ",pos=" + pos);
-    }
-
     public override string GetBreakEffectTexture(NBTChunk chunk, Vector3Int pos, byte data)
     {
         return GetTexName(chunk, pos, data);

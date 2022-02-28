@@ -38,8 +38,18 @@ public class NBTGrassPath : NBTBlock
     protected static Vector3[] leftVertices = new Vector3[] { farBottomLeft, farTopLeft, nearTopLeft, nearBottomLeft };
     protected static Vector3[] rightVertices = new Vector3[] { nearBottomRight, nearTopRight, farTopRight, farBottomRight };
 
-
-    protected static Vector2[] uv_side = new Vector2[4] { Vector2.zero, new Vector2(0, 0.9375f), new Vector2(1, 0.9375f), Vector2.right };
+    static Vector2[] _uv_side;
+    protected static Vector2[] uv_side
+    {
+        get
+        {
+            if (_uv_side == null)
+            {
+                _uv_side = new Vector2[4] { Vector2.zero, new Vector2(0, 0.9375f), new Vector2(1, 0.9375f), Vector2.right };
+            }
+            return _uv_side;
+        }
+    }
 
 
     public override void AddCube(NBTChunk chunk, byte blockData, Vector3Int pos, NBTGameObject nbtGO)

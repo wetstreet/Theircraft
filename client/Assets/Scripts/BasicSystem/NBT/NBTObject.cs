@@ -13,6 +13,7 @@ public abstract class NBTObject
     public virtual string GetNameByData(short data) { return name; }
 
     public virtual string pathPrefix { get { return "GUI/icon/"; } }
+    public bool useBlockOnUI { get { return pathPrefix == "GUI/icon/"; } }
 
     public virtual string GetIconPathByData(short data = 0) { return GetNameByData(data).Trim(); }
 

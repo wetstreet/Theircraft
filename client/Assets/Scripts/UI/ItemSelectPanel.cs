@@ -166,7 +166,7 @@ public class ItemSelectPanel : MonoBehaviour
             {
 
                 NBTObject generator = NBTGeneratorManager.GetObjectGenerator(item.id);
-                bool isBlock = generator is NBTBlock;
+                bool isBlock = generator.useBlockOnUI;
                 itemList[i].blockObj.SetActive(isBlock);
                 itemList[i].icon.gameObject.SetActive(!isBlock);
                 if (isBlock)
@@ -179,9 +179,10 @@ public class ItemSelectPanel : MonoBehaviour
                 }
                 else
                 {
-                    NBTItem nbtItem = generator as NBTItem;
+                    itemList[i].icon.texture = BlockIconHelper.GetIcon(item.id, item.damage);
 
-                    if (nbtItem.durability == -1 || item.damage == 0)
+                    NBTItem nbtItem = generator as NBTItem;
+                    if (nbtItem == null || nbtItem.durability == -1 || item.damage == 0)
                     {
                         itemList[i].damageObj.SetActive(false);
                     }
@@ -192,7 +193,6 @@ public class ItemSelectPanel : MonoBehaviour
                         itemList[i].damage.rectTransform.sizeDelta = new Vector2(13 * process, 1);
                         itemList[i].damage.color = Color.Lerp(Color.red, Color.green, process);
                     }
-                    itemList[i].icon.texture = BlockIconHelper.GetIcon(item.id, item.damage);
                 }
 
                 if (item.count > 1)

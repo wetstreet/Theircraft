@@ -9,9 +9,9 @@ public class NBTPotatoes : NBTCrops
 
     public override string GetIconPathByData(short data) { return "potato"; }
 
-    public override int GetPlantIndexByData(int data)
+    public override string GetTexName(NBTChunk chunk, Vector3Int pos, int data)
     {
-        return TextureArrayManager.GetIndexByName("potatoes_stage_3");
+        return "potatoes_stage_3";
     }
 
     public override string GetBreakEffectTexture(byte data) { return "potatoes_stage_3"; }

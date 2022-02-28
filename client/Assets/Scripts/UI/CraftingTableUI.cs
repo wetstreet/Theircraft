@@ -88,15 +88,7 @@ public class CraftingTableUI : InventoryUI
 
         foreach (int i in indexList)
         {
-            Transform trans = Instantiate(unit);
-            trans.name = i.ToString();
-            trans.SetParent(craftGrid, false);
-            trans.localScale = Vector3.one;
-            trans.gameObject.SetActive(true);
-
-            items[i].highlight = trans.Find("highlight").GetComponent<RawImage>();
-            items[i].icon = trans.GetComponent<RawImage>();
-            items[i].count = trans.Find("text").GetComponent<TextMeshProUGUI>();
+            InitItem(i, craftGrid);
         }
 
         Transform resultTrans = transform.Find("CraftingResult/result");
@@ -104,6 +96,7 @@ public class CraftingTableUI : InventoryUI
         items[resultIndex].highlight = resultTrans.Find("highlight").GetComponent<RawImage>();
         items[resultIndex].icon = resultTrans.GetComponent<RawImage>();
         items[resultIndex].count = resultTrans.Find("text").GetComponent<TextMeshProUGUI>();
+        items[resultIndex].blockObj = resultTrans.Find("block").gameObject;
     }
 
     int[] refreshIndex = new int[] {
@@ -118,27 +111,7 @@ public class CraftingTableUI : InventoryUI
 
         foreach (int i in refreshIndex)
         {
-            InventoryItem item = InventorySystem.items[i];
-            if (item.id != null)
-            {
-                items[i].icon.enabled = true;
-                items[i].icon.texture = BlockIconHelper.GetIcon(item.id, item.damage);
-                if (item.count > 1)
-                {
-                    items[i].count.enabled = true;
-                    items[i].count.text = item.count.ToString();
-                }
-                else
-                {
-                    items[i].count.enabled = false;
-                }
-            }
-            else
-            {
-                items[i].icon.enabled = false;
-                items[i].count.enabled = false;
-            }
-            items[i].highlight.color = i == highlightIndex ? highlightColor : Color.clear;
+            RefreshItem(i);
         }
     }
 

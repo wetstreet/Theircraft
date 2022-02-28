@@ -20,7 +20,7 @@ public class NBTChest : NBTBlock
     {
         if (!itemMeshDict.ContainsKey(0))
         {
-            itemMeshDict[0] = Resources.Load<Mesh>("Meshes/blocks/bed/bed_foot_south");
+            itemMeshDict[0] = Resources.Load<Mesh>("Meshes/entity/chest/chest");
         }
         return itemMeshDict[0];
     }
@@ -28,7 +28,7 @@ public class NBTChest : NBTBlock
     {
         if (!itemMaterialDict.ContainsKey(0))
         {
-            itemMaterialDict[0] = Resources.Load<Material>("Materials/bed");
+            itemMaterialDict[0] = Resources.Load<Material>("Materials/entity/chest/chest");
         }
         return itemMaterialDict[0];
     }

@@ -9,10 +9,5 @@ public class NBTBrownMushroom : NBTPlant
 
     public override string GetTexName(NBTChunk chunk, Vector3Int pos, int data) { return "mushroom_brown"; }
 
-    public override int GetPlantIndexByData(int data)
-    {
-        return TextureArrayManager.GetIndexByName("mushroom_brown");
-    }
-
     public override string GetBreakEffectTexture(byte data) { return "mushroom_brown"; }
 }

@@ -39,12 +39,11 @@ public class NBTCrops : NBTPlant
         chunk.GetLights(pos.x, pos.y, pos.z, out float skyLight, out float blockLight);
 
         FaceAttributes fa = new FaceAttributes();
-        fa.faceIndex = GetPlantIndexByData(chunk, blockData);
         fa.color = Color.white;
         fa.skyLight = new float[] { skyLight, skyLight, skyLight, skyLight };
         fa.blockLight = new float[] { blockLight, blockLight, blockLight, blockLight };
         fa.normal = Vector3.zero;
-        fa.uv = uv_zero;
+        fa.uv = TextureArrayManager.GetUVByName(GetTexName(chunk, pos, blockData));
 
         try
         {

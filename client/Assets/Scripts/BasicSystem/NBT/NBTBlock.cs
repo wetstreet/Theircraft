@@ -498,7 +498,6 @@ public abstract class NBTBlock : NBTObject
         UnityEngine.Profiling.Profiler.BeginSample("GetFrontFaceAttributes");
 
         frontFA.pos = frontVertices;
-        //frontFA.faceIndex = GetFrontIndexByData(chunk, ca.blockData);
         frontFA.color = GetFrontTintColorByData(chunk, ca.pos, ca.blockData);
         frontFA.normal = Vector3.forward;
 
@@ -532,7 +531,6 @@ public abstract class NBTBlock : NBTObject
     {
         UnityEngine.Profiling.Profiler.BeginSample("GetBackFaceAttributes");
         backFA.pos = backVertices;
-        //backFA.faceIndex = GetBackIndexByData(chunk, ca.blockData);
         backFA.color = GetBackTintColorByData(chunk, ca.pos, ca.blockData);
         backFA.normal = Vector3.back;
 
@@ -566,7 +564,6 @@ public abstract class NBTBlock : NBTObject
     {
         UnityEngine.Profiling.Profiler.BeginSample("GetTopFaceAttributes");
         topFA.pos = topVertices;
-        //topFA.faceIndex = GetTopIndexByData(chunk, ca.blockData);
         topFA.color = GetTopTintColorByData(chunk, ca.pos, ca.blockData);
         topFA.normal = Vector3.up;
 
@@ -600,7 +597,6 @@ public abstract class NBTBlock : NBTObject
     {
         UnityEngine.Profiling.Profiler.BeginSample("GetBottomFaceAttributes");
         bottomFA.pos = bottomVertices;
-        //bottomFA.faceIndex = GetBottomIndexByData(chunk, ca.blockData);
         bottomFA.color = GetBottomTintColorByData(chunk, ca.pos, ca.blockData);
         bottomFA.normal = Vector3.down;
 
@@ -634,7 +630,6 @@ public abstract class NBTBlock : NBTObject
     {
         UnityEngine.Profiling.Profiler.BeginSample("GetLeftFaceAttributes");
         leftFA.pos = leftVertices;
-        //leftFA.faceIndex = GetLeftIndexByData(chunk, ca.blockData);
         leftFA.color = GetLeftTintColorByData(chunk, ca.pos, ca.blockData);
         leftFA.normal = Vector3.left;
 
@@ -668,7 +663,6 @@ public abstract class NBTBlock : NBTObject
     {
         UnityEngine.Profiling.Profiler.BeginSample("GetRightFaceAttributes");
         rightFA.pos = rightVertices;
-        //rightFA.faceIndex = GetRightIndexByData(chunk, ca.blockData);
         rightFA.color = GetRightTintColorByData(chunk, ca.pos, ca.blockData);
         rightFA.normal = Vector3.right;
 

@@ -36,11 +36,6 @@ public class NBTRedFlower : NBTPlant
         throw new System.Exception("no index, data=" + data);
     }
 
-    public override int GetPlantIndexByData(int data)
-    {
-        return TextureArrayManager.GetIndexByName(GetTexName(null, Vector3Int.zero, data));
-    }
-
     public override string GetBreakEffectTexture(byte data)
     {
         return GetTexName(null, Vector3Int.zero, data);

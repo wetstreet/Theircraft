@@ -14,6 +14,7 @@ public class InventoryUI : MonoBehaviour
 
     protected RawImage holdItemImage;
     protected TextMeshProUGUI holdItemCount;
+    public GameObject holdItemBlock;
 
     protected struct SlotItem
     {
@@ -21,6 +22,7 @@ public class InventoryUI : MonoBehaviour
         public RawImage highlight;
         public GameObject select;
         public TextMeshProUGUI count;
+        public GameObject blockObj;
     }
 
     // 0-35 is bag(36)
@@ -40,31 +42,29 @@ public class InventoryUI : MonoBehaviour
     protected static int oreIndex = 100;
     protected static int fuelIndex = 101;
 
+    protected void InitItem(int i, Transform parent)
+    {
+        Transform trans = Instantiate(unit);
+        trans.name = i.ToString();
+        trans.SetParent(parent, false);
+        trans.localScale = Vector3.one;
+        trans.gameObject.SetActive(true);
+
+        items[i].highlight = trans.Find("highlight").GetComponent<RawImage>();
+        items[i].icon = trans.GetComponent<RawImage>();
+        items[i].count = trans.Find("text").GetComponent<TextMeshProUGUI>();
+        items[i].blockObj = trans.Find("block").gameObject;
+    }
+
     protected virtual void InitGrid()
     {
         for (int i = 0; i < 9; i++)
         {
-            Transform trans = Instantiate(unit);
-            trans.name = i.ToString();
-            trans.SetParent(selectGrid, false);
-            trans.localScale = Vector3.one;
-            trans.gameObject.SetActive(true);
-
-            items[i].highlight = trans.Find("highlight").GetComponent<RawImage>();
-            items[i].icon = trans.GetComponent<RawImage>();
-            items[i].count = trans.Find("text").GetComponent<TextMeshProUGUI>();
+            InitItem(i, selectGrid);
         }
         for (int i = 9; i < 36; i++)
         {
-            Transform trans = Instantiate(unit);
-            trans.name = i.ToString();
-            trans.SetParent(grid, false);
-            trans.localScale = Vector3.one;
-            trans.gameObject.SetActive(true);
-
-            items[i].highlight = trans.Find("highlight").GetComponent<RawImage>();
-            items[i].icon = trans.GetComponent<RawImage>();
-            items[i].count = trans.Find("text").GetComponent<TextMeshProUGUI>();
+            InitItem(i, grid);
         }
     }
 
@@ -81,6 +81,7 @@ public class InventoryUI : MonoBehaviour
         unit.gameObject.SetActive(false);
         holdItemImage = transform.Find("holdItem").GetComponent<RawImage>();
         holdItemCount = transform.Find("holdItem/text").GetComponent<TextMeshProUGUI>();
+        holdItemBlock = transform.Find("holdItem/block").gameObject;
     }
 
     GraphicRaycaster gr;
@@ -95,31 +96,52 @@ public class InventoryUI : MonoBehaviour
     }
 
     protected Color highlightColor = new Color(1, 1, 1, 0.2f);
+    protected void RefreshItem(int i)
+    {
+        InventoryItem item = InventorySystem.items[i];
+        if (item.id != null)
+        {
+            NBTObject generator = NBTGeneratorManager.GetObjectGenerator(item.id);
+            bool isBlock = generator.useBlockOnUI;
+            items[i].blockObj.SetActive(isBlock);
+            items[i].icon.enabled = !isBlock;
+
+            if (isBlock)
+            {
+                NBTBlock blockGenerator = generator as NBTBlock;
+                byte data = (byte)item.damage;
+                items[i].blockObj.GetComponent<MeshFilter>().sharedMesh = blockGenerator.GetItemMesh(data);
+                items[i].blockObj.GetComponent<MeshRenderer>().sharedMaterial = blockGenerator.GetItemMaterial(data);
+            }
+            else
+            {
+                items[i].icon.texture = BlockIconHelper.GetIcon(item.id, item.damage);
+            }
+
+            if (item.count > 1)
+            {
+                items[i].count.enabled = true;
+                items[i].count.text = item.count.ToString();
+            }
+            else
+            {
+                items[i].count.enabled = false;
+            }
+        }
+        else
+        {
+            items[i].icon.enabled = false;
+            items[i].count.enabled = false;
+            items[i].blockObj.SetActive(false);
+        }
+        items[i].highlight.color = i == highlightIndex ? highlightColor : Color.clear;
+    }
+
     protected virtual void RefreshUI()
     {
         for (int i = 0; i < 36; i++)
         {
-            InventoryItem item = InventorySystem.items[i];
-            if (item.id != null)
-            {
-                items[i].icon.enabled = true;
-                items[i].icon.texture = BlockIconHelper.GetIcon(item.id, item.damage);
-                if (item.count > 1)
-                {
-                    items[i].count.enabled = true;
-                    items[i].count.text = item.count.ToString();
-                }
-                else
-                {
-                    items[i].count.enabled = false;
-                }
-            }
-            else
-            {
-                items[i].icon.enabled = false;
-                items[i].count.enabled = false;
-            }
-            items[i].highlight.color = i == highlightIndex ? highlightColor : Color.clear;
+            RefreshItem(i);
         }
     }
 
@@ -234,8 +256,22 @@ public class InventoryUI : MonoBehaviour
     {
         if (InventorySystem.grabItem.id != null)
         {
-            holdItemImage.enabled = true;
-            holdItemImage.texture = BlockIconHelper.GetIcon(InventorySystem.grabItem.id, InventorySystem.grabItem.damage);
+            NBTObject generator = NBTGeneratorManager.GetObjectGenerator(InventorySystem.grabItem.id);
+            bool isBlock = generator.useBlockOnUI;
+            holdItemBlock.SetActive(isBlock);
+            holdItemImage.enabled = !isBlock;
+
+            if (isBlock)
+            {
+                NBTBlock blockGenerator = generator as NBTBlock;
+                byte data = (byte)InventorySystem.grabItem.damage;
+                holdItemBlock.GetComponent<MeshFilter>().sharedMesh = blockGenerator.GetItemMesh(data);
+                holdItemBlock.GetComponent<MeshRenderer>().sharedMaterial = blockGenerator.GetItemMaterial(data);
+            }
+            else
+            {
+                holdItemImage.texture = BlockIconHelper.GetIcon(InventorySystem.grabItem.id, InventorySystem.grabItem.damage);
+            }
 
             if (InventorySystem.grabItem.count > 1)
             {
@@ -251,6 +287,7 @@ public class InventoryUI : MonoBehaviour
         {
             holdItemImage.enabled = false;
             holdItemCount.enabled = false;
+            holdItemBlock.SetActive(false);
         }
     }
 

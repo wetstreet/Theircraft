@@ -6,12 +6,6 @@ using UnityEngine.Rendering;
 
 public class NBTPlant : NBTBlock
 {
-    public virtual int GetPlantIndexByData(NBTChunk chunk, Vector3Int pos, int data) { return GetPlantIndexByData(chunk, data); }
-
-    public virtual int GetPlantIndexByData(NBTChunk chunk, int data) { return GetPlantIndexByData(data); }
-
-    public virtual int GetPlantIndexByData(int data) { return 0; }
-
     public virtual string GetTexName(NBTChunk chunk, Vector3Int pos, int data) { return ""; }
 
     public override float hardness => 0;
@@ -101,7 +95,6 @@ public class NBTPlant : NBTBlock
         chunk.GetLights(ca.pos.x, ca.pos.y, ca.pos.z, out float skyLight, out float blockLight);
 
         diagonalFA.pos = diagonalFace;
-        diagonalFA.faceIndex = GetPlantIndexByData(chunk, ca.pos, ca.blockData);
         diagonalFA.color = GetTintColorByData(chunk, ca.pos, ca.blockData);
         diagonalFA.skyLight[0] = skyLight;
         diagonalFA.skyLight[1] = skyLight;
@@ -127,7 +120,6 @@ public class NBTPlant : NBTBlock
         chunk.GetLights(ca.pos.x, ca.pos.y, ca.pos.z, out float skyLight, out float blockLight);
 
         antidiagonalFA.pos = antiDiagonalFace;
-        antidiagonalFA.faceIndex = GetPlantIndexByData(chunk, ca.pos, ca.blockData);
         antidiagonalFA.color = GetTintColorByData(chunk, ca.pos, ca.blockData);
         antidiagonalFA.skyLight[0] = skyLight;
         antidiagonalFA.skyLight[1] = skyLight;

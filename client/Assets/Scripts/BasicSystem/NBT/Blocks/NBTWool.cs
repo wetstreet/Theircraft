@@ -92,12 +92,12 @@ public class NBTWool : NBTBlock
         return "wool_colored_white";
     }
 
-    public override int GetTopIndexByData(NBTChunk chunk, int data) { return TextureArrayManager.GetIndexByName(GetTextureNameByData(data)); }
-    public override int GetBottomIndexByData(NBTChunk chunk, int data) { return TextureArrayManager.GetIndexByName(GetTextureNameByData(data)); }
-    public override int GetFrontIndexByData(NBTChunk chunk, int data) { return TextureArrayManager.GetIndexByName(GetTextureNameByData(data)); }
-    public override int GetBackIndexByData(NBTChunk chunk, int data) { return TextureArrayManager.GetIndexByName(GetTextureNameByData(data)); }
-    public override int GetLeftIndexByData(NBTChunk chunk, int data) { return TextureArrayManager.GetIndexByName(GetTextureNameByData(data)); }
-    public override int GetRightIndexByData(NBTChunk chunk, int data) { return TextureArrayManager.GetIndexByName(GetTextureNameByData(data)); }
+    public override string GetTopTexName(NBTChunk chunk, int data) { return GetTextureNameByData(data); }
+    public override string GetBottomTexName(NBTChunk chunk, int data) { return GetTextureNameByData(data); }
+    public override string GetFrontTexName(NBTChunk chunk, int data) { return GetTextureNameByData(data); }
+    public override string GetBackTexName(NBTChunk chunk, int data) { return GetTextureNameByData(data); }
+    public override string GetLeftTexName(NBTChunk chunk, int data) { return GetTextureNameByData(data); }
+    public override string GetRightTexName(NBTChunk chunk, int data) { return GetTextureNameByData(data); }
 
     public override string GetBreakEffectTexture(byte data) { return GetTextureNameByData(data); }
 }

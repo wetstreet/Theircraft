@@ -14,11 +14,6 @@ public class NBTTallGrass : NBTPlant
         return TintManager.tintColor;
     }
 
-    public override int GetPlantIndexByData(int data)
-    {
-        return TextureArrayManager.GetIndexByName("tallgrass");
-    }
-
     protected override string itemMeshPath => "grass";
 
     public override string GetIconPathByData(short data) { return "tallgrass"; }

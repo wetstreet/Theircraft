@@ -80,6 +80,7 @@ public class TextureArrayManager
         }
         return 0;
     }
+
     public static Rect GetRectByName(string name)
     {
         if (name2index.ContainsKey(name))
@@ -141,7 +142,7 @@ public class TextureArrayManager
     {
         if (!name2uv.ContainsKey(name))
         {
-            Rect rect = TextureArrayManager.GetRectByName(name);
+            Rect rect = GetRectByName(name);
             Vector2[] uv = new Vector2[]
             {
             new Vector2(rect.xMin + epsilon, rect.yMin + epsilon),
@@ -164,11 +165,16 @@ public class TextureArrayManager
 
         int size = 16;
         Texture2D[] textures = GetTextures(size);
-        CreateArray(textures, size);
+        //CreateArray(textures, size);
 
-        atlas = new Texture2D(1024, 1024);
+        Texture2D temp = new Texture2D(1024, 1024);
+        temp.filterMode = FilterMode.Point;
+        rects = temp.PackTextures(textures, 0);
+
+        atlas = new Texture2D(temp.width, temp.height, TextureFormat.RGBA32, 5, false);
         atlas.filterMode = FilterMode.Point;
-        rects = atlas.PackTextures(textures, 0);
+        atlas.SetPixels32(temp.GetPixels32());
+        atlas.Apply();
     }
 
     public static void Uninit()
@@ -181,68 +187,5 @@ public class TextureArrayManager
 
         name2index = null;
         textureList = null;
-    }
-
-    static void CreateArray(Texture2D[] textures, int size)
-    {
-        Texture2DArray newArray = new Texture2DArray(size, size, textures.Length, TextureFormat.ARGB32, true);
-        newArray.filterMode = FilterMode.Point;
-        newArray.wrapMode = TextureWrapMode.Clamp;
-        newArray.anisoLevel = 3;
-
-        try
-        {
-            int mip = GetMipCountBySize(size);
-            RenderTexture rt = RenderTexture.GetTemporary(size, size, 0, RenderTextureFormat.ARGB32);
-            Texture2D temp = new Texture2D(rt.width, rt.height, TextureFormat.ARGB32, true);
-
-            for (int i = 0; i < textures.Length; i++)
-            {
-                Texture2D tex = textures[i];
-
-                Graphics.Blit(tex, rt);
-
-                RenderTexture.active = rt;
-                temp.ReadPixels(new Rect(0, 0, rt.width, rt.height), 0, 0);
-                temp.Apply(true);
-
-                for (int j = 0; j < mip; j++)
-                {
-                    Graphics.CopyTexture(temp, 0, j, newArray, i, j);
-                }
-            }
-            RenderTexture.ReleaseTemporary(rt);
-            Object.DestroyImmediate(temp);
-            temp = null;
-
-            if (array != null)
-            {
-                Object.DestroyImmediate(array);
-            }
-            array = newArray;
-        }
-        catch (System.Exception e)
-        {
-            Debug.LogError(e.ToString());
-        }
-    }
-
-    static Texture2D toTexture2D(RenderTexture rt)
-    {
-        Texture2D tex = new Texture2D(rt.width, rt.height, TextureFormat.ARGB32, true);
-        RenderTexture.active = rt;
-        tex.ReadPixels(new Rect(0, 0, rt.width, rt.height), 0, 0);
-        tex.Apply(true);
-        return tex;
-    }
-
-    public static Texture2DArray GetArray()
-    {
-        return array;
-    }
-
-    static int GetMipCountBySize(int size)
-    {
-        return (int)Mathf.Log(size, 2) + 1;
     }
 }

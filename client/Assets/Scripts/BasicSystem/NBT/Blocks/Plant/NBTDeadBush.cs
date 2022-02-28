@@ -10,10 +10,5 @@ public class NBTDeadBush : NBTPlant
 
     public override string GetTexName(NBTChunk chunk, Vector3Int pos, int data) { return "deadbush"; }
 
-    public override int GetPlantIndexByData(int data)
-    {
-        return TextureArrayManager.GetIndexByName("deadbush");
-    }
-
     public override string GetBreakEffectTexture(byte data) { return "deadbush"; }
 }
