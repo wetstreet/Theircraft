@@ -155,6 +155,15 @@ public class NBTGeneratorManager : MonoBehaviour
         }
     }
 
+    public static void AfterTexutreInit()
+    {
+        foreach (KeyValuePair<byte, NBTBlock> keyValue in generatorDict)
+        {
+            NBTBlock generator = keyValue.Value;
+            generator.AfterTextureInit();
+        }
+    }
+
     public static void Uninit()
     {
         generatorDict = null;

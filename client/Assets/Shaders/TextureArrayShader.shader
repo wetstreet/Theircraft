@@ -28,7 +28,7 @@ Shader "Custom/TextureArrayShader"
 
             #pragma multi_compile _ DEBUG_AO
 
-            // #pragma enable_d3d11_debug_symbols
+            #pragma enable_d3d11_debug_symbols
 
             #include "Common.hlsl"
 

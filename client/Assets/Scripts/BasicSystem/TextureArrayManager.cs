@@ -44,6 +44,7 @@ public class TextureArrayManager
         "stone","stone_granite","stone_granite_smooth","stone_diorite","stone_diorite_smooth","stone_andesite","stone_andesite_smooth",
         "cobblestone",
         "door_wood_lower", "door_wood_upper",
+        "door_spruce_lower", "door_spruce_upper",
         "planks_oak", "planks_spruce", "planks_birch", "planks_jungle", "planks_acacia", "planks_big_oak",
 
         "flower_rose", "flower_houstonia", "flower_tulip_red", "flower_tulip_orange", "flower_tulip_pink", "flower_tulip_white", "flower_oxeye_daisy",

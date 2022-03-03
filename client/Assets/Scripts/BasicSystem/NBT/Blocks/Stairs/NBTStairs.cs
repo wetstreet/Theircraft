@@ -33,6 +33,19 @@ public class NBTStairs : NBTBlock
         meshes[15] = Resources.Load<Mesh>("Meshes/blocks/stair/stair_+y+x-z_outer").ToMeshData();
     }
 
+    public override void AfterTextureInit()
+    {
+        Rect rect = TextureArrayManager.GetRectByName(stairsName);
+        foreach (var mesh in meshes)
+        {
+            for (int i = 0; i < mesh.vertices.Length; i++)
+            {
+                Vector2 uv = new Vector2(rect.xMin + mesh.uv[i].x * rect.width, rect.yMin + mesh.uv[i].y * rect.height);
+                mesh.uv[i] = uv;
+            }
+        }
+    }
+
     MeshData GetMesh(NBTChunk chunk, Vector3Int localPosition, byte blockData)
     {
         MeshData mesh = meshes[blockData];
@@ -176,20 +189,18 @@ public class NBTStairs : NBTBlock
     {
         MeshData mesh = GetMesh(chunk, localPosition, blockData);
 
-        int faceIndex = TextureArrayManager.GetIndexByName(stairsName);
+        chunk.GetLights(localPosition.x, localPosition.y + 1, localPosition.z, out float skyLight, out float blockLight);
 
-        //chunk.GetLights(localPosition.x, localPosition.y + 1, localPosition.z, out float skyLight, out float blockLight);
-
-        //NBTMesh nbtMesh = nbtGO.nbtMesh;
-        //ushort startIndex = nbtMesh.vertexCount;
-        //for (int i = 0; i < mesh.vertices.Length; i++)
-        //{
-        //    SetVertex(nbtMesh, mesh.vertices[i] + localPosition, faceIndex, mesh.uv[i], skyLight, blockLight, Color.white, Vector3.zero);
-        //}
-        //foreach (int index in mesh.triangles)
-        //{
-        //    nbtMesh.triangleArray[nbtMesh.triangleCount++] = (ushort)(startIndex + index);
-        //}
+        NBTMesh nbtMesh = nbtGO.nbtMesh;
+        int startIndex = nbtMesh.vertexCount;
+        for (int i = 0; i < mesh.vertices.Length; i++)
+        {
+            SetVertex(nbtMesh, mesh.vertices[i] + localPosition, mesh.uv[i], skyLight, blockLight, Color.white, Vector3.zero);
+        }
+        foreach (int index in mesh.triangles)
+        {
+            nbtMesh.triangleArray[nbtMesh.triangleCount++] = startIndex + index;
+        }
     }
 
     public override Mesh GetItemMesh(byte data = 0)

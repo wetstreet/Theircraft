@@ -10,6 +10,7 @@ public class Main : MonoBehaviour
         LocalizationManager.Init();
         NBTGeneratorManager.Init();
         TextureArrayManager.Init();
+        NBTGeneratorManager.AfterTexutreInit();
         CraftingSystem.Init();
 
         SceneManager.LoadScene("LoginScene");
