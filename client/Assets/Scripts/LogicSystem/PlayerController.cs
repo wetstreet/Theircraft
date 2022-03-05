@@ -333,9 +333,18 @@ public class PlayerController : MonoBehaviour
                 if (id != null)
                 {
                     NBTBlock generator = NBTGeneratorManager.GetMeshGenerator(id);
-                    if (generator != null)
+                    Vector3Int pos = WireFrameHelper.pos + Vector3Int.RoundToInt(hit.normal);
+                    if (generator != null && generator.CanAddBlock(pos))
                     {
+                        PlayHandAnimation();
+
                         generator.OnAddBlock(hit);
+
+                        // decrese count
+                        InventorySystem.DecrementCurrent();
+                        ItemSelectPanel.instance.RefreshUI();
+
+                        // play sound
                         SoundManager.SetSwitch(generator);
                         SoundManager.Play2DSound("Player_Place");
                     }

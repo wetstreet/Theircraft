@@ -381,6 +381,15 @@ public class NBTChunk
         hasInitTileEntity = true;
     }
 
+    public void AddTileEntity(Vector3Int pos, NBTBlock generator, byte data)
+    {
+        if (!tileEntityObjs.ContainsKey(pos))
+        {
+            GameObject obj = generator.GetTileEntityGameObject(this, data, pos);
+            tileEntityObjs[pos] = obj;
+        }
+    }
+
     public void RebuildMesh(UpdateFlags updateFlags = UpdateFlags.All, bool checkBorder = true)
     {
         if (isBuilding)

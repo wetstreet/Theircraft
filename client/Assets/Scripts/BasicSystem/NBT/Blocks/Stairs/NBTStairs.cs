@@ -225,83 +225,75 @@ public class NBTStairs : NBTBlock
     {
         Vector3Int pos = WireFrameHelper.pos + Vector3Int.RoundToInt(hit.normal);
 
-        if (CanAddBlock(pos))
+        byte type = NBTGeneratorManager.id2type[id];
+        byte data = 0;
+
+        Vector3 playerPos = PlayerController.instance.position;
+        Vector2 dir = (new Vector2(playerPos.x, playerPos.z) - new Vector2(pos.x, pos.z)).normalized;
+        if (dir.x > 0)
         {
-            PlayerController.instance.PlayHandAnimation();
-
-            byte type = NBTGeneratorManager.id2type[id];
-            byte data = 0;
-
-            Vector3 playerPos = PlayerController.instance.position;
-            Vector2 dir = (new Vector2(playerPos.x, playerPos.z) - new Vector2(pos.x, pos.z)).normalized;
-            if (dir.x > 0)
+            if (dir.y > 0)
             {
-                if (dir.y > 0)
+                if (dir.y > dir.x)
                 {
-                    if (dir.y > dir.x)
-                    {
-                        // positive z
-                        data = 3;
-                    }
-                    else
-                    {
-                        // positive x
-                        data = 1;
-                    }
+                    // positive z
+                    data = 3;
                 }
                 else
                 {
-                    if (-dir.y > dir.x)
-                    {
-                        // negative z
-                        data = 2;
-                    }
-                    else
-                    {
-                        // positive x
-                        data = 1;
-                    }
+                    // positive x
+                    data = 1;
                 }
             }
             else
             {
-                if (dir.y > 0)
+                if (-dir.y > dir.x)
                 {
-                    if (dir.y > -dir.x)
-                    {
-                        // positive z
-                        data = 3;
-                    }
-                    else
-                    {
-                        // negative x
-                        data = 0;
-                    }
+                    // negative z
+                    data = 2;
                 }
                 else
                 {
-                    if (-dir.y > -dir.x)
-                    {
-                        // negative z
-                        data = 2;
-                    }
-                    else
-                    {
-                        // negative x
-                        data = 0;
-                    }
+                    // positive x
+                    data = 1;
                 }
             }
-
-            if (hit.point.y - pos.y > 0)
-            {
-                data += 4;
-            }
-
-            NBTHelper.SetBlockData(pos, type, data);
-
-            InventorySystem.DecrementCurrent();
-            ItemSelectPanel.instance.RefreshUI();
         }
+        else
+        {
+            if (dir.y > 0)
+            {
+                if (dir.y > -dir.x)
+                {
+                    // positive z
+                    data = 3;
+                }
+                else
+                {
+                    // negative x
+                    data = 0;
+                }
+            }
+            else
+            {
+                if (-dir.y > -dir.x)
+                {
+                    // negative z
+                    data = 2;
+                }
+                else
+                {
+                    // negative x
+                    data = 0;
+                }
+            }
+        }
+
+        if (hit.point.y - pos.y > 0)
+        {
+            data += 4;
+        }
+
+        NBTHelper.SetBlockData(pos, type, data);
     }
 }

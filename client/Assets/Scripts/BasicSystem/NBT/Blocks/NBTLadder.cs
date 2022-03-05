@@ -39,12 +39,11 @@ public class NBTLadder : NBTBlock
         chunk.GetLights(ca.pos.x, ca.pos.y, ca.pos.z, out float skyLight, out float blockLight);
 
         FaceAttributes fa = new FaceAttributes();
-        fa.faceIndex = TextureArrayManager.GetIndexByName("ladder");
         fa.color = Color.white;
         fa.skyLight = new float[] { skyLight, skyLight, skyLight, skyLight };
         fa.blockLight = new float[] { blockLight, blockLight, blockLight, blockLight };
         fa.normal = Vector3.zero;
-        fa.uv = uv_zero;
+        fa.uv = TextureArrayManager.GetUVByName("ladder");
 
         if (ca.blockData == 2)
         {
@@ -126,35 +125,26 @@ public class NBTLadder : NBTBlock
 
         Vector3Int pos = WireFrameHelper.pos + Vector3Int.RoundToInt(hit.normal);
 
+        byte type = NBTGeneratorManager.id2type[id];
+        byte data = 0;
 
-        if (CanAddBlock(pos))
+        if (hit.normal == Vector3.back)
         {
-            PlayerController.instance.PlayHandAnimation();
-
-            byte type = NBTGeneratorManager.id2type[id];
-            byte data = 0;
-
-            if (hit.normal == Vector3.back)
-            {
-                data = 2;
-            }
-            else if (hit.normal == Vector3.forward)
-            {
-                data = 3;
-            }
-            else if (hit.normal == Vector3.left)
-            {
-                data = 4;
-            }
-            else if (hit.normal == Vector3.right)
-            {
-                data = 5;
-            }
-            NBTHelper.SetBlockData(pos, type, data);
-
-            InventorySystem.DecrementCurrent();
-            ItemSelectPanel.instance.RefreshUI();
+            data = 2;
         }
+        else if (hit.normal == Vector3.forward)
+        {
+            data = 3;
+        }
+        else if (hit.normal == Vector3.left)
+        {
+            data = 4;
+        }
+        else if (hit.normal == Vector3.right)
+        {
+            data = 5;
+        }
+        NBTHelper.SetBlockData(pos, type, data);
     }
 
     public override void RenderWireframe(byte blockData)

@@ -694,20 +694,12 @@ public abstract class NBTBlock : NBTObject
     {
         Vector3Int pos = WireFrameHelper.pos + Vector3Int.RoundToInt(hit.normal);
 
-        if (CanAddBlock(pos))
-        {
-            PlayerController.instance.PlayHandAnimation();
-
-            byte type = NBTGeneratorManager.id2type[id];
-            byte data = (byte)InventorySystem.items[ItemSelectPanel.curIndex].damage;
-            NBTHelper.SetBlockData(pos, type, data);
-
-            InventorySystem.DecrementCurrent();
-            ItemSelectPanel.instance.RefreshUI();
-        }
+        byte type = NBTGeneratorManager.id2type[id];
+        byte data = (byte)InventorySystem.items[ItemSelectPanel.curIndex].damage;
+        NBTHelper.SetBlockData(pos, type, data);
     }
 
-    protected bool CanAddBlock(Vector3Int pos)
+    public virtual bool CanAddBlock(Vector3Int pos)
     {
         byte type = NBTHelper.GetBlockByte(pos);
         NBTBlock targetGenerator = NBTGeneratorManager.GetMeshGenerator(type);

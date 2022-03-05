@@ -293,7 +293,7 @@ public class NBTWoodenSlab : NBTBlock
             finalPos = WireFrameHelper.pos;
         }
 
-        if (targetType == 0 && CanAddBlock(pos))
+        if (targetType == 0)
         {
             canAdd = true;
             if (WireFrameHelper.hitPos.y - pos.y > 0)
@@ -304,12 +304,7 @@ public class NBTWoodenSlab : NBTBlock
 
         if (canAdd)
         {
-            PlayerController.instance.PlayHandAnimation();
-
             NBTHelper.SetBlockData(finalPos, type, data);
-
-            InventorySystem.DecrementCurrent();
-            ItemSelectPanel.instance.RefreshUI();
         }
     }
 

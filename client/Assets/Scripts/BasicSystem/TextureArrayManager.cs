@@ -36,6 +36,8 @@ public class TextureArrayManager
         "double_plant_paeonia_bottom",
         "double_plant_paeonia_top",
 
+        "torch_on",
+
         "leaves_oak", "leaves_spruce", "leaves_birch", "leaves_jungle",
         "leaves_acacia", "leaves_big_oak",
         "log_oak_top", "log_oak", "log_spruce_top", "log_spruce", "log_birch_top", "log_birch", "log_jungle_top", "log_jungle",
@@ -89,7 +91,7 @@ public class TextureArrayManager
             int index = name2index[name];
             return rects[index];
         }
-        throw new System.Exception();
+        throw new System.Exception("GetRectByName no texture,name=" + name);
     }
 
     static Dictionary<string, int> name2index;

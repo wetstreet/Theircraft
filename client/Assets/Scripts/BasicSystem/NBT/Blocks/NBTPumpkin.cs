@@ -63,17 +63,8 @@ public class NBTPumpkin : NBTBlock
 
         Vector3Int pos = WireFrameHelper.pos + Vector3Int.RoundToInt(hit.normal);
 
-
-        if (CanAddBlock(pos))
-        {
-            PlayerController.instance.PlayHandAnimation();
-
-            byte type = NBTGeneratorManager.id2type[id];
-            byte data = CalcBlockDirection(pos, 0, 1, 2, 3);
-            NBTHelper.SetBlockData(pos, type, data);
-
-            InventorySystem.DecrementCurrent();
-            ItemSelectPanel.instance.RefreshUI();
-        }
+        byte type = NBTGeneratorManager.id2type[id];
+        byte data = CalcBlockDirection(pos, 0, 1, 2, 3);
+        NBTHelper.SetBlockData(pos, type, data);
     }
 }

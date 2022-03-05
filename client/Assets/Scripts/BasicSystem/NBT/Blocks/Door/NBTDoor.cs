@@ -144,7 +144,7 @@ public class NBTDoor : NBTBlock
         {
             NBTHelper.GetBlockData(WireFrameHelper.pos.x, WireFrameHelper.pos.y - 1, WireFrameHelper.pos.z, out byte belowType, out byte belowData);
             NBTBlock generator = NBTGeneratorManager.GetMeshGenerator(belowType);
-            if (generator is NBTOakDoor)
+            if (generator is NBTDoor)
             {
                 isOpen = (belowData & 0b0100) > 0;
                 direction = belowData & 0b0011;
@@ -210,7 +210,7 @@ public class NBTDoor : NBTBlock
         {
             chunk.GetBlockData(ca.pos.x, ca.pos.y - 1, ca.pos.z, out byte belowType, out byte belowData);
             NBTBlock generator = NBTGeneratorManager.GetMeshGenerator(belowType);
-            if (generator is NBTOakDoor)
+            if (generator is NBTDoor)
             {
                 isOpen = (belowData & 0b0100) > 0;
                 direction = (DoorDirection)(belowData & 0b0011);
@@ -385,8 +385,6 @@ public class NBTDoor : NBTBlock
             return;
         }
 
-        PlayerController.instance.PlayHandAnimation();
-
         byte type = NBTGeneratorManager.id2type[id];
         byte upperData = 0b1000;
         byte lowerData = 0b0000;
@@ -465,9 +463,6 @@ public class NBTDoor : NBTBlock
 
         NBTHelper.SetBlockData(pos + Vector3Int.up, type, upperData);
         NBTHelper.SetBlockData(pos, type, lowerData);
-
-        InventorySystem.DecrementCurrent();
-        ItemSelectPanel.instance.RefreshUI();
     }
 
     public override void RenderWireframe(byte blockData)

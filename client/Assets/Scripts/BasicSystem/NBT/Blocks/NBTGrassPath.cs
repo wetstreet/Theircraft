@@ -32,7 +32,23 @@ public class NBTGrassPath : NBTBlock
     protected static Vector3 farTopLeft = new Vector3(-0.5f, 0.4375f, 0.5f);
     protected static Vector3 farTopRight = new Vector3(0.5f, 0.4375f, 0.5f);
 
+    protected static Vector3[] frontVertices = new Vector3[] { nearBottomLeft, nearTopLeft, nearTopRight, nearBottomRight };
+    protected static Vector3[] backVertices = new Vector3[] { farBottomRight, farTopRight, farTopLeft, farBottomLeft };
     protected static Vector3[] topVertices = new Vector3[] { farTopRight, nearTopRight, nearTopLeft, farTopLeft };
+    protected static Vector3[] leftVertices = new Vector3[] { farBottomLeft, farTopLeft, nearTopLeft, nearBottomLeft };
+    protected static Vector3[] rightVertices = new Vector3[] { nearBottomRight, nearTopRight, farTopRight, farBottomRight };
+
+    Vector2[] uv_side = new Vector2[4];
+    Vector2[] _uv_side = new Vector2[4] { Vector2.zero, new Vector2(0, 0.9375f), new Vector2(1, 0.9375f), Vector2.right};
+
+    public override void AfterTextureInit()
+    {
+        Rect rect = TextureArrayManager.GetRectByName("grass_path_side");
+        for (int i = 0; i < 4; i++)
+        {
+            uv_side[i] = new Vector2(rect.xMin + _uv_side[i].x * rect.width, rect.yMin + _uv_side[i].y * rect.height);
+        }
+    }
 
 
     public override void AddCube(NBTChunk chunk, byte blockData, Vector3Int pos, NBTGameObject nbtGO)
@@ -46,21 +62,29 @@ public class NBTGrassPath : NBTBlock
         if (!chunk.HasOpaqueBlock(pos.x, pos.y, pos.z - 1))
         {
             FaceAttributes fa = GetFrontFaceAttributes(chunk, nbtGO.nbtMesh, ca);
+            fa.pos = frontVertices;
+            fa.uv = uv_side;
             AddFace(nbtGO.nbtMesh, fa, ca);
         }
         if (!chunk.HasOpaqueBlock(pos.x + 1, pos.y, pos.z))
         {
             FaceAttributes fa = GetRightFaceAttributes(chunk, nbtGO.nbtMesh, ca);
+            fa.pos = rightVertices;
+            fa.uv = uv_side;
             AddFace(nbtGO.nbtMesh, fa, ca);
         }
         if (!chunk.HasOpaqueBlock(pos.x - 1, pos.y, pos.z))
         {
             FaceAttributes fa = GetLeftFaceAttributes(chunk, nbtGO.nbtMesh, ca);
+            fa.pos = leftVertices;
+            fa.uv = uv_side;
             AddFace(nbtGO.nbtMesh, fa, ca);
         }
         if (!chunk.HasOpaqueBlock(pos.x, pos.y, pos.z + 1))
         {
             FaceAttributes fa = GetBackFaceAttributes(chunk, nbtGO.nbtMesh, ca);
+            fa.pos = backVertices;
+            fa.uv = uv_side;
             AddFace(nbtGO.nbtMesh, fa, ca);
         }
         if (!chunk.HasOpaqueBlock(pos.x, pos.y + 1, pos.z))

@@ -36,8 +36,18 @@ public class NBTWoodenPressurePlate : NBTBlock
     protected static Vector3[] leftVertices_1 = new Vector3[] { farBottomLeft_1, farTopLeft_1, nearTopLeft_1, nearBottomLeft_1 };
     protected static Vector3[] rightVertices_1 = new Vector3[] { nearBottomRight_1, nearTopRight_1, farTopRight_1, farBottomRight_1 };
 
-    protected static Vector2[] uv_side = new Vector2[4] { Vector2.zero, new Vector2(0, 0.0625f), new Vector2(1, 0.0625f), Vector2.right };
 
+    protected static Vector2[] uv_side = new Vector2[4];
+    protected static Vector2[] _uv_side = new Vector2[4] { Vector2.zero, new Vector2(0, 0.0625f), new Vector2(1, 0.0625f), Vector2.right };
+
+    public override void AfterTextureInit()
+    {
+        Rect rect = TextureArrayManager.GetRectByName(allName);
+        for (int i = 0; i < 4; i++)
+        {
+            uv_side[i] = new Vector2(rect.xMin + _uv_side[i].x * rect.width, rect.yMin + _uv_side[i].y * rect.height);
+        }
+    }
 
 
     public override void AddCube(NBTChunk chunk, byte data, Vector3Int pos, NBTGameObject nbtGO)
@@ -53,42 +63,36 @@ public class NBTWoodenPressurePlate : NBTBlock
 
         fa.pos = frontVertices_1;
         fa.normal = Vector3.forward;
-        fa.faceIndex = GetFrontIndexByData(null, data);
         fa.uv = uv_side;
         fa.color = GetFrontTintColorByData(data);
         AddFace(nbtGO.nbtMesh, fa, ca);
 
         fa.pos = backVertices_1;
         fa.normal = Vector3.back;
-        fa.faceIndex = GetBackIndexByData(null, data);
         fa.uv = uv_side;
         fa.color = GetBackTintColorByData(data);
         AddFace(nbtGO.nbtMesh, fa, ca);
 
         fa.pos = topVertices_1;
         fa.normal = Vector3.up;
-        fa.faceIndex = GetTopIndexByData(null, data);
-        fa.uv = GetTopRotationByData(data) == Rotation.Right ? uv_right : uv_zero;
+        fa.uv = TextureArrayManager.GetUVByName(allName);
         fa.color = GetTopTintColorByData(data);
         AddFace(nbtGO.nbtMesh, fa, ca);
 
         fa.pos = bottomVertices_1;
         fa.normal = Vector3.down;
-        fa.faceIndex = GetBottomIndexByData(null, data);
-        fa.uv = GetBottomRotationByData(data) == Rotation.Right ? uv_right : uv_zero;
+        fa.uv = TextureArrayManager.GetUVByName(allName);
         fa.color = GetBottomTintColorByData(data);
         AddFace(nbtGO.nbtMesh, fa, ca);
 
         fa.pos = leftVertices_1;
         fa.normal = Vector3.left;
-        fa.faceIndex = GetLeftIndexByData(null, data);
         fa.uv = uv_side;
         fa.color = GetLeftTintColorByData(data);
         AddFace(nbtGO.nbtMesh, fa, ca);
 
         fa.pos = rightVertices_1;
         fa.normal = Vector3.right;
-        fa.faceIndex = GetRightIndexByData(null, data);
         fa.uv = uv_side;
         fa.color = GetRightTintColorByData(data);
         AddFace(nbtGO.nbtMesh, fa, ca);

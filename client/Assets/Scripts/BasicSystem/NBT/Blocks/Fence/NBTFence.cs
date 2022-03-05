@@ -34,6 +34,19 @@ public class NBTFence : NBTBlock
         meshes[15] = Resources.Load<Mesh>("Meshes/blocks/fence/wall_1111").ToMeshData();
     }
 
+    public override void AfterTextureInit()
+    {
+        Rect rect = TextureArrayManager.GetRectByName(fenceName);
+        foreach (var mesh in meshes)
+        {
+            for (int i = 0; i < mesh.vertices.Length; i++)
+            {
+                Vector2 uv = new Vector2(rect.xMin + mesh.uv[i].x * rect.width, rect.yMin + mesh.uv[i].y * rect.height);
+                mesh.uv[i] = uv;
+            }
+        }
+    }
+
     public override string GetBreakEffectTexture(NBTChunk chunk, byte data) { return "planks_birch"; }
 
     public override bool isTransparent => true;
@@ -62,22 +75,20 @@ public class NBTFence : NBTBlock
     {
         UnityEngine.Profiling.Profiler.BeginSample(GetType().Name + " AddCube");
 
-        int faceIndex = TextureArrayManager.GetIndexByName(fenceName);
+        MeshData mesh = GetMesh(chunk, pos);
 
-        //MeshData mesh = GetMesh(chunk, pos);
+        chunk.GetLights(pos.x, pos.y, pos.z, out float skyLight, out float blockLight);
 
-        //chunk.GetLights(pos.x, pos.y, pos.z, out float skyLight, out float blockLight);
-
-        //NBTMesh nbtMesh = nbtGO.nbtMesh;
-        //ushort startIndex = nbtMesh.vertexCount;
-        //for (int i = 0; i < mesh.vertices.Length; i++)
-        //{
-        //    SetVertex(nbtMesh, mesh.vertices[i] + pos, faceIndex, mesh.uv[i], skyLight, blockLight, Color.white, mesh.normals[i]);
-        //}
-        //foreach (int index in mesh.triangles)
-        //{
-        //    nbtMesh.triangleArray[nbtMesh.triangleCount++] = (ushort)(startIndex + index);
-        //}
+        NBTMesh nbtMesh = nbtGO.nbtMesh;
+        int startIndex = nbtMesh.vertexCount;
+        for (int i = 0; i < mesh.vertices.Length; i++)
+        {
+            SetVertex(nbtMesh, mesh.vertices[i] + pos, mesh.uv[i], skyLight, blockLight, Color.white, mesh.normals[i]);
+        }
+        foreach (int index in mesh.triangles)
+        {
+            nbtMesh.triangleArray[nbtMesh.triangleCount++] = startIndex + index;
+        }
 
         UnityEngine.Profiling.Profiler.EndSample();
     }

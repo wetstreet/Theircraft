@@ -26,6 +26,47 @@ public class NBTTorch : NBTBlock
 
     public override string pathPrefix => "GUI/block/";
 
+    public override string GetBreakEffectTexture(byte data)
+    {
+        return "torch_on";
+    }
+
+    public override bool CanAddBlock(Vector3Int pos)
+    {
+        byte type = NBTHelper.GetBlockByte(pos);
+        return type == 0;
+    }
+
+    public override void OnAddBlock(RaycastHit hit)
+    {
+        Vector3Int pos = WireFrameHelper.pos + Vector3Int.RoundToInt(hit.normal);
+
+        byte type = NBTGeneratorManager.id2type[id];
+        byte data = (byte)InventorySystem.items[ItemSelectPanel.curIndex].damage;
+        if (hit.normal == Vector3.back)
+        {
+            data = 4;
+        }
+        else if (hit.normal == Vector3.forward)
+        {
+            data = 3;
+        }
+        else if (hit.normal == Vector3.left)
+        {
+            data = 2;
+        }
+        else if (hit.normal == Vector3.right)
+        {
+            data = 1;
+        }
+
+        NBTChunk chunk = NBTHelper.GetChunk(pos);
+        pos.x -= chunk.x * 16;
+        pos.z -= chunk.z * 16;
+        chunk.SetBlockData(pos.x, pos.y, pos.z, type, data);
+        chunk.AddTileEntity(pos, this, data);
+    }
+
     Material GetMaterial(byte blockData)
     {
         if (!itemMaterialDict.ContainsKey(0))
@@ -87,13 +128,60 @@ public class NBTTorch : NBTBlock
 
     public override void RenderWireframe(byte blockData)
     {
-        float top = 0.135f;
-        float bottom = -0.501f;
-        float left = -0.0725f;
-        float right = 0.0725f;
-        float front = 0.0725f;
-        float back = -0.0725f;
+        if (blockData == 0)
+        {
+            float top = 0.135f;
+            float bottom = -0.501f;
+            float left = -0.1f;
+            float right = 0.1f;
+            float front = 0.1f;
+            float back = -0.1f;
 
-        RenderWireframeByVertex(top, bottom, left, right, front, back);
+            RenderWireframeByVertex(top, bottom, left, right, front, back);
+        }
+        else if (blockData == 1)
+        {
+            float top = 0.3125f;
+            float bottom = -0.3125f;
+            float left = -0.5f;
+            float right = -0.185f;
+            float front = 0.15f;
+            float back = -0.15f;
+
+            RenderWireframeByVertex(top, bottom, left, right, front, back);
+        }
+        else if (blockData == 2)
+        {
+            float top = 0.3125f;
+            float bottom = -0.3125f;
+            float left = 0.185f;
+            float right = 0.5f;
+            float front = 0.15f;
+            float back = -0.15f;
+
+            RenderWireframeByVertex(top, bottom, left, right, front, back);
+        }
+        else if (blockData == 3)
+        {
+            float top = 0.3125f;
+            float bottom = -0.3125f;
+            float left = -0.15f;
+            float right = 0.15f;
+            float front = -0.185f;
+            float back = -0.5f;
+
+            RenderWireframeByVertex(top, bottom, left, right, front, back);
+        }
+        else if (blockData == 4)
+        {
+            float top = 0.3125f;
+            float bottom = -0.3125f;
+            float left = -0.15f;
+            float right = 0.15f;
+            float front = 0.5f;
+            float back = 0.185f;
+
+            RenderWireframeByVertex(top, bottom, left, right, front, back);
+        }
     }
 }
