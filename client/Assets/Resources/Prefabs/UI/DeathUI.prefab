@@ -412,6 +412,7 @@ GameObject:
   - component: {fileID: 299311763247782809}
   - component: {fileID: 5008914240812566655}
   - component: {fileID: 895482572147052704}
+  - component: {fileID: 5581434270416397599}
   m_Layer: 5
   m_Name: TextMeshPro Text
   m_TagString: Untagged
@@ -536,6 +537,19 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &5581434270416397599
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5462411054129266486}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d08abfd14c4a6d3499c4d178546fbfd3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  key: deathScreen.respawn
 --- !u!1 &6390308098066033287
 GameObject:
   m_ObjectHideFlags: 0
@@ -547,6 +561,7 @@ GameObject:
   - component: {fileID: 3687812980951421226}
   - component: {fileID: 2906214512575133228}
   - component: {fileID: 5882183630087310215}
+  - component: {fileID: 143287364167555668}
   m_Layer: 5
   m_Name: label
   m_TagString: Untagged
@@ -671,6 +686,19 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &143287364167555668
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6390308098066033287}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d08abfd14c4a6d3499c4d178546fbfd3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  key: deathScreen.title
 --- !u!1 &6478220502903822541
 GameObject:
   m_ObjectHideFlags: 0
@@ -682,6 +710,7 @@ GameObject:
   - component: {fileID: 7452271065212199260}
   - component: {fileID: 2916166048787911200}
   - component: {fileID: 2095400903163605307}
+  - component: {fileID: 6354633957204037698}
   m_Layer: 5
   m_Name: TextMeshPro Text
   m_TagString: Untagged
@@ -806,6 +835,19 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &6354633957204037698
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6478220502903822541}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d08abfd14c4a6d3499c4d178546fbfd3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  key: deathScreen.titleScreen
 --- !u!1 &7577320616933298858
 GameObject:
   m_ObjectHideFlags: 0

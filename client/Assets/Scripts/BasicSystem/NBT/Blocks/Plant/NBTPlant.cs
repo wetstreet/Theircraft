@@ -41,25 +41,28 @@ public class NBTPlant : NBTBlock
         antiDiagonalFace = new Vector3[] { nearBottomLeft, nearTopLeft, farTopRight, farBottomRight };
     }
 
+    Dictionary<string, Vector2[]> uv_dict = new Dictionary<string, Vector2[]>();
     protected Vector2[] GetUV(NBTChunk chunk, Vector3Int pos, int data)
     {
-        if (uv_plant == null)
+        string name = GetTexName(chunk, pos, data);
+        if (!uv_dict.ContainsKey(name))
         {
-            Rect rect = TextureArrayManager.GetRectByName(GetTexName(chunk, pos, data));
+            Rect rect = TextureArrayManager.GetRectByName(name);
 
             float left = rect.center.x - size * rect.width / 16;
             float right = rect.center.x + size * rect.width / 16;
             float bottom = rect.yMin;
             float top = rect.yMin + height * rect.height / 16;
-            uv_plant = new Vector2[]
+            Vector2[] uv_plant = new Vector2[]
             {
-            new Vector2(left, bottom),
-            new Vector2(left, top),
-            new Vector2(right, top),
-            new Vector2(right, bottom),
+                new Vector2(left, bottom),
+                new Vector2(left, top),
+                new Vector2(right, top),
+                new Vector2(right, bottom),
             };
+            uv_dict.Add(name, uv_plant);
         }
-        return uv_plant;
+        return uv_dict[name];
     }
 
     public override void AddCube(NBTChunk chunk, byte blockData, Vector3Int pos, NBTGameObject nbtGO)
@@ -79,8 +82,6 @@ public class NBTPlant : NBTBlock
     {
         return GetTintColorByData(chunk, pos, data);
     }
-
-    protected Vector2[] uv_plant;
 
     Vector3[] diagonalFace;
     Vector3[] antiDiagonalFace;

@@ -184,7 +184,7 @@ public class SelectWorldUI : MonoBehaviour
 
     void OnClickDelete()
     {
-        string destination = Path.Combine(Application.persistentDataPath, "saves", items[curSelectIndex].name.text);
+        string destination = Path.Combine(Application.persistentDataPath, "saves", items[curSelectIndex].path);
         Directory.Delete(destination, true);
 
         Destroy(items[curSelectIndex].go);

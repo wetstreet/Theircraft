@@ -26,9 +26,10 @@ public class LocalizationReplacer : MonoBehaviour
 
     public void Refresh()
     {
-        if (label != null)
+        if (label != null && !string.IsNullOrEmpty(key))
         {
             label.text = LocalizationManager.GetText(key);
+            label.ForceMeshUpdate();
         }
     }
 }

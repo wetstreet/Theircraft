@@ -21,6 +21,7 @@ MonoBehaviour:
   m_SourceFontFile: {fileID: 0}
   m_AtlasPopulationMode: 0
   m_FaceInfo:
+    m_FaceIndex: 0
     m_FamilyName: Minecraft
     m_StyleName: 
     m_PointSize: 75
@@ -1738,6 +1739,7 @@ MonoBehaviour:
   - {fileID: 28637114988027088}
   m_AtlasTextureIndex: 0
   m_IsMultiAtlasTexturesEnabled: 0
+  m_ClearDynamicDataOnBuild: 0
   m_UsedGlyphRects: []
   m_FreeGlyphRects: []
   m_fontInfo:
@@ -2620,7 +2622,7 @@ MonoBehaviour:
     m_GlyphPairAdjustmentRecords: []
   fallbackFontAssets: []
   m_FallbackFontAssetTable:
-  - {fileID: 11400000, guid: 05baa39a527f075488260e1209f2c02d, type: 2}
+  - {fileID: 11400000, guid: 198fa5bdd6d583a43a752c36abc0ee9c, type: 2}
   m_CreationSettings:
     sourceFontFileName: 
     sourceFontFileGUID: 19224ee68e196764d916918d479c6b4b
@@ -2725,6 +2727,7 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    m_Ints: []
     m_Floats:
     - _Ambient: 0.5
     - _Bevel: 0.5

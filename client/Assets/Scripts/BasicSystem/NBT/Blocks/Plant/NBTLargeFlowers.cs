@@ -24,6 +24,55 @@ public class NBTLargeFlowers : NBTPlant
         return Color.white;
     }
 
+    public override void AddCube(NBTChunk chunk, byte blockData, Vector3Int pos, NBTGameObject nbtGO)
+    {
+        CubeAttributes ca = chunk.ca;
+        ca.pos = pos;
+        ca.blockData = blockData;
+
+        AddDiagonalFace(chunk, nbtGO.nbtMesh, ca);
+        AddAntiDiagonalFace(chunk, nbtGO.nbtMesh, ca);
+
+        if (blockData == 10)
+        {
+            chunk.GetBlockData(pos.x, pos.y - 1, pos.z, out byte bottomType, out byte bottomData);
+            if (bottomData == 0)
+            {
+                AddSunflowerFace(chunk, nbtGO.nbtMesh, ca);
+            }
+        }
+    }
+
+    FaceAttributes sunflowerFA = new FaceAttributes()
+    {
+        skyLight = new float[4],
+        blockLight = new float[4],
+    };
+
+    Vector3[] sunflowerFace = new Vector3[] {   new Vector3(-0.5f, -0.5f, -0.5f),
+                                                new Vector3(-0.5f, 0.5f, 0f),
+                                                new Vector3(0.5f, 0.5f, 0f),
+                                                new Vector3(0.5f, -0.5f, -0.5f) };
+    protected void AddSunflowerFace(NBTChunk chunk, NBTMesh mesh, CubeAttributes ca)
+    {
+        chunk.GetLights(ca.pos.x, ca.pos.y, ca.pos.z, out float skyLight, out float blockLight);
+
+        sunflowerFA.pos = sunflowerFace;
+        sunflowerFA.color = Color.white;
+        sunflowerFA.skyLight[0] = skyLight;
+        sunflowerFA.skyLight[1] = skyLight;
+        sunflowerFA.skyLight[2] = skyLight;
+        sunflowerFA.skyLight[3] = skyLight;
+        sunflowerFA.blockLight[0] = blockLight;
+        sunflowerFA.blockLight[1] = blockLight;
+        sunflowerFA.blockLight[2] = blockLight;
+        sunflowerFA.blockLight[3] = blockLight;
+        sunflowerFA.normal = Vector3.zero;
+        sunflowerFA.uv = TextureArrayManager.GetUVByName("double_plant_sunflower_front");
+
+        AddFace(mesh, sunflowerFA, ca);
+    }
+
     public override string GetTexName(NBTChunk chunk, Vector3Int pos, int data)
     {
         switch (data)

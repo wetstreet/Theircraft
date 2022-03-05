@@ -452,6 +452,12 @@ public class NBTChunk
         collidable.GetComponent<MeshFilter>().sharedMesh = null;
         notCollidable.GetComponent<MeshFilter>().sharedMesh = null;
         water.GetComponent<MeshFilter>().sharedMesh = null;
+        foreach (var obj in tileEntityObjs)
+        {
+            Object.Destroy(obj.Value);
+        }
+        tileEntityObjs.Clear();
+        tileEntityList.Clear();
     }
 
     public byte GetSkyLightByte(int xInChunk, int yInChunk, int zInChunk, bool extends = false)

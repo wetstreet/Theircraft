@@ -25,6 +25,8 @@ public class TextureArrayManager
 
         "double_plant_sunflower_bottom",
         "double_plant_sunflower_top",
+        "double_plant_sunflower_front",
+        "double_plant_sunflower_back",
         "double_plant_grass_bottom",
         "double_plant_grass_top",
         "double_plant_fern_bottom",
@@ -168,7 +170,6 @@ public class TextureArrayManager
 
         int size = 16;
         Texture2D[] textures = GetTextures(size);
-        //CreateArray(textures, size);
 
         Texture2D temp = new Texture2D(1024, 1024);
         temp.filterMode = FilterMode.Point;
