@@ -29,7 +29,7 @@ public class NBTMesh
         uvArray = new Vector2[size];
         uv2Array = new Vector2[size];
         normalArray = new Vector3[size];
-        triangleArray = new int[size * 2];
+        triangleArray = new int[size + 1000];
     }
 
     public void Dispose()

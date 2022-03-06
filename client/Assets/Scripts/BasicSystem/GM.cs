@@ -30,6 +30,9 @@ public class GM
             case "tp":
                 TP(gm_params);
                 break;
+            case "chunkdebug":
+                NBTHelper.DebugInfo();
+                break;
             default:
                 ChatPanel.AddLine(ChatPanel.ErrorCode + "Unknown command.");
                 break;

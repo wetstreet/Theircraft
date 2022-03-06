@@ -1,13 +1,10 @@
 ﻿using Substrate.Core;
 using Substrate.Nbt;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using Unity.Jobs;
 using UnityEngine;
 
 [Flags] public enum UpdateFlags
@@ -30,14 +27,14 @@ public class NBTHelper
     {
         get
         {
-//#if UNITY_EDITOR
-//            string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-//            path = Path.Combine(path, ".minecraft");
-//            path = Path.Combine(path, "saves");
-//            path = Path.Combine(path, "New World1");
-//#else
+#if UNITY_EDITOR
+            string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            path = Path.Combine(path, ".minecraft");
+            path = Path.Combine(path, "saves");
+            path = Path.Combine(path, "New World1");
+#else
             string path = Path.Combine(Application.persistentDataPath, "saves", save);
-//#endif
+#endif
             return path;
         }
     }
@@ -806,6 +803,50 @@ public class NBTHelper
 
         //float end = Time.realtimeSinceStartup;
         //Debug.Log("time cost =" + (end - start) + ", actual propagation count=" + count + ",setcount=" + setcount);
+    }
+
+    public static void DebugInfo()
+    {
+        int collidableMaxVertexCount = 0;
+        int collidableMaxTriangleCount = 0;
+        int notCollidableMaxVertexCount = 0;
+        int notCollidableMaxTriangleCount = 0;
+        int waterMaxVertexCount = 0;
+        int waterMaxTriangleCount = 0;
+        foreach (var item in chunkDict)
+        {
+            NBTChunk chunk = item.Value;
+            if (chunk.collidable.nbtMesh.vertexCount > collidableMaxVertexCount)
+            {
+                collidableMaxVertexCount = chunk.collidable.nbtMesh.vertexCount;
+            }
+            if (chunk.collidable.nbtMesh.triangleCount > collidableMaxTriangleCount)
+            {
+                collidableMaxTriangleCount = chunk.collidable.nbtMesh.triangleCount;
+            }
+            if (chunk.notCollidable.nbtMesh.vertexCount > notCollidableMaxVertexCount)
+            {
+                notCollidableMaxVertexCount = chunk.notCollidable.nbtMesh.vertexCount;
+            }
+            if (chunk.notCollidable.nbtMesh.triangleCount > notCollidableMaxTriangleCount)
+            {
+                notCollidableMaxTriangleCount = chunk.notCollidable.nbtMesh.triangleCount;
+            }
+            if (chunk.water.nbtMesh.vertexCount > waterMaxVertexCount)
+            {
+                waterMaxVertexCount = chunk.water.nbtMesh.vertexCount;
+            }
+            if (chunk.water.nbtMesh.triangleCount > waterMaxTriangleCount)
+            {
+                waterMaxTriangleCount = chunk.water.nbtMesh.triangleCount;
+            }
+        }
+        Debug.Log("collidableMaxVertexCount=" + collidableMaxVertexCount);
+        Debug.Log("collidableMaxTriangleCount=" + collidableMaxTriangleCount);
+        Debug.Log("notCollidableMaxVertexCount=" + notCollidableMaxVertexCount);
+        Debug.Log("notCollidableMaxTriangleCount=" + notCollidableMaxTriangleCount);
+        Debug.Log("waterMaxVertexCount=" + waterMaxVertexCount);
+        Debug.Log("waterMaxTriangleCount=" + waterMaxTriangleCount);
     }
 
     public static void Uninit()

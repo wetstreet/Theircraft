@@ -38,9 +38,9 @@ public class NBTChunk
         gameObject = new GameObject("chunk (" + x + "," + z + ")");
         transform = gameObject.transform;
 
-        collidable = NBTGameObject.Create("Collidable", this, LayerMask.NameToLayer("Chunk"));
-        notCollidable = NBTGameObject.Create("NotCollidable", this, LayerMask.NameToLayer("Plant"), false);
-        water = NBTGameObject.CreateWater("Water", this, LayerMask.NameToLayer("Water"));
+        collidable = NBTCollidable.Create(this);
+        notCollidable = NBTNotCollidable.Create(this);
+        water = NBTWater.Create(this);
         special = new GameObject("special");
         special.transform.parent = transform;
         special.transform.localPosition = Vector3.zero;
