@@ -12,6 +12,16 @@ public class NBTFarmland : NBTBlock
     public override BlockMaterial blockMaterial => BlockMaterial.Ground;
     public override SoundMaterial soundMaterial => SoundMaterial.Gravel;
 
+    public override string GetDropItemByData(byte data)
+    {
+        return "minecraft:dirt";
+    }
+
+    public override byte GetDropItemData(byte data)
+    {
+        return 0;
+    }
+
     public override string GetTopTexName(NBTChunk chunk, int data)
     {
         if (data == 7)

@@ -9,6 +9,11 @@ public class NBTRedMushroomBlock : NBTBlock
 
     public override float hardness => 0.2f;
 
+    public override byte GetDropItemData(byte data)
+    {
+        return 0;
+    }
+
     public override BlockMaterial blockMaterial => BlockMaterial.Wood;
     public override SoundMaterial soundMaterial => SoundMaterial.Wood;
 

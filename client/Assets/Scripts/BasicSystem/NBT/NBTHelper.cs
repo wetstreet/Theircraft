@@ -841,12 +841,12 @@ public class NBTHelper
                 waterMaxTriangleCount = chunk.water.nbtMesh.triangleCount;
             }
         }
-        Debug.Log("collidableMaxVertexCount=" + collidableMaxVertexCount);
-        Debug.Log("collidableMaxTriangleCount=" + collidableMaxTriangleCount);
-        Debug.Log("notCollidableMaxVertexCount=" + notCollidableMaxVertexCount);
-        Debug.Log("notCollidableMaxTriangleCount=" + notCollidableMaxTriangleCount);
-        Debug.Log("waterMaxVertexCount=" + waterMaxVertexCount);
-        Debug.Log("waterMaxTriangleCount=" + waterMaxTriangleCount);
+        Debug.Log(ChatPanel.ShowCode + "collidableMaxVertexCount=" + collidableMaxVertexCount);
+        Debug.Log(ChatPanel.ShowCode + "collidableMaxTriangleCount=" + collidableMaxTriangleCount);
+        Debug.Log(ChatPanel.ShowCode + "notCollidableMaxVertexCount=" + notCollidableMaxVertexCount);
+        Debug.Log(ChatPanel.ShowCode + "notCollidableMaxTriangleCount=" + notCollidableMaxTriangleCount);
+        Debug.Log(ChatPanel.ShowCode + "waterMaxVertexCount=" + waterMaxVertexCount);
+        Debug.Log(ChatPanel.ShowCode + "waterMaxTriangleCount=" + waterMaxTriangleCount);
     }
 
     public static void Uninit()

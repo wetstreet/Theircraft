@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class NBTWater : NBTGameObject
 {
-    public override int meshSize => 2048;
+    public override int meshSize => 8192;
 
     public static NBTGameObject Create(NBTChunk chunk)
     {

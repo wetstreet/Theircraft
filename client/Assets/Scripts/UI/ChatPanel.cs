@@ -42,7 +42,7 @@ public class ChatPanel : MonoBehaviour
         {
             if (logString.StartsWith(ShowCode))
             {
-                AddLine("<Log>" + logString.Replace('\n', ' '));
+                AddLine("<Log>" + logString.Substring(ShowCode.Length).Replace('\n', ' '));
             }
         } else if (type == LogType.Error)
         {

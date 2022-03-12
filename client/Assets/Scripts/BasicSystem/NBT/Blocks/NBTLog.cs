@@ -131,7 +131,7 @@ public class NBTLog : NBTBlock
     string GetNameByData(int data, LogAxis axis)
     {
         int wood_type = data & 0b0011;
-        int dir = data & 0b1100;
+        int dir = (data & 0b1100) >> 2;
         string name = woodNames[wood_type];
         if ((axis == LogAxis.X && dir == 1) ||
             (axis == LogAxis.Y && dir == 0) ||

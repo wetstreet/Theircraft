@@ -513,12 +513,8 @@ public abstract class NBTBlock : NBTObject
         frontFA.blockLight[2] = (ca.front.blockLight + ca.frontTop.blockLight + ca.frontRight.blockLight + ca.frontTopRight.blockLight) / 60.0f;
         frontFA.blockLight[3] = (ca.front.blockLight + ca.frontBottom.blockLight + ca.frontRight.blockLight + ca.frontBottomRight.blockLight) / 60.0f;
 
-        frontFA.uv = TextureArrayManager.GetUVByName(GetFrontTexName(chunk, ca.blockData));
-        //Rotation rotation = GetFrontRotationByData(ca.blockData);
-        //if (rotation == Rotation.Right)
-        //    frontFA.uv = uv_right;
-        //else
-        //    frontFA.uv = uv_zero;
+        Rotation rotation = GetFrontRotationByData(ca.blockData);
+        frontFA.uv = TextureArrayManager.GetUVByName(GetFrontTexName(chunk, ca.blockData), rotation);
 
         UnityEngine.Profiling.Profiler.EndSample();
 
@@ -546,12 +542,8 @@ public abstract class NBTBlock : NBTObject
         backFA.blockLight[2] = (ca.back.blockLight + ca.backTop.blockLight + ca.backLeft.blockLight + ca.backTopLeft.blockLight) / 60.0f;
         backFA.blockLight[3] = (ca.back.blockLight + ca.backBottom.blockLight + ca.backLeft.blockLight + ca.backBottomLeft.blockLight) / 60.0f;
 
-        backFA.uv = TextureArrayManager.GetUVByName(GetBackTexName(chunk, ca.blockData));
-        //Rotation rotation = GetFrontRotationByData(ca.blockData);
-        //if (rotation == Rotation.Right)
-        //    backFA.uv = uv_right;
-        //else
-        //    backFA.uv = uv_zero;
+        Rotation rotation = GetBackRotationByData(ca.blockData);
+        backFA.uv = TextureArrayManager.GetUVByName(GetBackTexName(chunk, ca.blockData), rotation);
 
         UnityEngine.Profiling.Profiler.EndSample();
 
@@ -579,12 +571,8 @@ public abstract class NBTBlock : NBTObject
         topFA.blockLight[2] = (ca.top.blockLight + ca.frontTop.blockLight + ca.topLeft.blockLight + ca.frontTopLeft.blockLight) / 60.0f;
         topFA.blockLight[3] = (ca.top.blockLight + ca.backTop.blockLight + ca.topLeft.blockLight + ca.backTopLeft.blockLight) / 60.0f;
 
-        topFA.uv = TextureArrayManager.GetUVByName(GetTopTexName(chunk, ca.blockData));
-        //Rotation rotation = GetFrontRotationByData(ca.blockData);
-        //if (rotation == Rotation.Right)
-        //    topFA.uv = uv_right;
-        //else
-        //    topFA.uv = uv_zero;
+        Rotation rotation = GetTopRotationByData(ca.blockData);
+        topFA.uv = TextureArrayManager.GetUVByName(GetTopTexName(chunk, ca.blockData), rotation);
 
         UnityEngine.Profiling.Profiler.EndSample();
 
@@ -612,12 +600,8 @@ public abstract class NBTBlock : NBTObject
         bottomFA.blockLight[2] = (ca.bottom.blockLight + ca.backBottom.blockLight + ca.bottomLeft.blockLight + ca.backBottomLeft.blockLight) / 60.0f;
         bottomFA.blockLight[3] = (ca.bottom.blockLight + ca.frontBottom.blockLight + ca.bottomLeft.blockLight + ca.frontBottomLeft.blockLight) / 60.0f;
 
-        bottomFA.uv = TextureArrayManager.GetUVByName(GetBottomTexName(chunk, ca.blockData));
-        //Rotation rotation = GetFrontRotationByData(ca.blockData);
-        //if (rotation == Rotation.Right)
-        //    bottomFA.uv = uv_right;
-        //else
-        //    bottomFA.uv = uv_zero;
+        Rotation rotation = GetBottomRotationByData(ca.blockData);
+        bottomFA.uv = TextureArrayManager.GetUVByName(GetBottomTexName(chunk, ca.blockData), rotation);
 
         UnityEngine.Profiling.Profiler.EndSample();
 
@@ -645,12 +629,8 @@ public abstract class NBTBlock : NBTObject
         leftFA.blockLight[2] = (ca.left.blockLight + ca.frontLeft.blockLight + ca.topLeft.blockLight + ca.frontTopLeft.blockLight) / 60.0f;
         leftFA.blockLight[3] = (ca.left.blockLight + ca.frontLeft.blockLight + ca.bottomLeft.blockLight + ca.frontBottomLeft.blockLight) / 60.0f;
 
-        leftFA.uv = TextureArrayManager.GetUVByName(GetLeftTexName(chunk, ca.blockData));
-        //Rotation rotation = GetFrontRotationByData(ca.blockData);
-        //if (rotation == Rotation.Right)
-        //    leftFA.uv = uv_right;
-        //else
-        //    leftFA.uv = uv_zero;
+        Rotation rotation = GetLeftRotationByData(ca.blockData);
+        leftFA.uv = TextureArrayManager.GetUVByName(GetLeftTexName(chunk, ca.blockData), rotation);
 
         UnityEngine.Profiling.Profiler.EndSample();
 
@@ -678,12 +658,8 @@ public abstract class NBTBlock : NBTObject
         rightFA.blockLight[2] = (ca.right.blockLight + ca.backRight.blockLight + ca.topRight.blockLight + ca.backTopRight.blockLight) / 60.0f;
         rightFA.blockLight[3] = (ca.right.blockLight + ca.backRight.blockLight + ca.bottomRight.blockLight + ca.backBottomRight.blockLight) / 60.0f;
 
-        rightFA.uv = TextureArrayManager.GetUVByName(GetRightTexName(chunk, ca.blockData));
-        //Rotation rotation = GetFrontRotationByData(ca.blockData);
-        //if (rotation == Rotation.Right)
-        //    rightFA.uv = uv_right;
-        //else
-        //    rightFA.uv = uv_zero;
+        Rotation rotation = GetRightRotationByData(ca.blockData);
+        rightFA.uv = TextureArrayManager.GetUVByName(GetRightTexName(chunk, ca.blockData), rotation);
 
         UnityEngine.Profiling.Profiler.EndSample();
 

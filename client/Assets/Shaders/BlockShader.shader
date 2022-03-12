@@ -76,6 +76,7 @@
                 float nl = max(dot(i.worldNormal, lightDir), 0.2);
 
                 col.rgb *= nl;
+                col.rgb *= i.color.rgb;
 
                 return col;
             }

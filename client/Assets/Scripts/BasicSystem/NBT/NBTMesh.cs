@@ -29,7 +29,8 @@ public class NBTMesh
         uvArray = new Vector2[size];
         uv2Array = new Vector2[size];
         normalArray = new Vector3[size];
-        triangleArray = new int[size + 1000];
+        int triangleSize = Mathf.FloorToInt(size * 1.5f);
+        triangleArray = new int[triangleSize];
     }
 
     public void Dispose()

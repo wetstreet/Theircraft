@@ -51,8 +51,9 @@ public class TextureArrayManager
         "door_spruce_lower", "door_spruce_upper",
         "planks_oak", "planks_spruce", "planks_birch", "planks_jungle", "planks_acacia", "planks_big_oak",
 
-        "flower_rose", "flower_houstonia", "flower_tulip_red", "flower_tulip_orange", "flower_tulip_pink", "flower_tulip_white", "flower_oxeye_daisy",
-        "flower_dandelion", "flower_oxeye_daisy", "flower_houstonia",
+        "flower_rose", "flower_allium", "flower_blue_orchid",
+        "flower_houstonia", "flower_tulip_red", "flower_tulip_orange", "flower_tulip_pink", "flower_tulip_white", "flower_oxeye_daisy",
+        "flower_dandelion",
 
         "sapling_oak", "sapling_spruce", "sapling_birch", "sapling_jungle",
         "reeds",
@@ -143,21 +144,51 @@ public class TextureArrayManager
 
     static float epsilon = 0.0001f;
     static Dictionary<string, Vector2[]> name2uv;
-    public static Vector2[] GetUVByName(string name)
+    //public static Vector2[] GetUVByName(string name)
+    //{
+    //    if (!name2uv.ContainsKey(name))
+    //    {
+    //        Rect rect = GetRectByName(name);
+    //        Vector2[] uv = new Vector2[]
+    //        {
+    //            new Vector2(rect.xMin + epsilon, rect.yMin + epsilon),
+    //            new Vector2(rect.xMin + epsilon, rect.yMax - epsilon),
+    //            new Vector2(rect.xMax - epsilon, rect.yMax - epsilon),
+    //            new Vector2(rect.xMax - epsilon, rect.yMin + epsilon),
+    //        };
+    //        name2uv[name] = uv;
+    //    }
+    //    return name2uv[name];
+    //}
+
+    static Dictionary<string, Dictionary<Rotation, Vector2[]>> name2uv_rot = new Dictionary<string, Dictionary<Rotation, Vector2[]>>();
+    public static Vector2[] GetUVByName(string name, Rotation rotation = Rotation.Zero)
     {
-        if (!name2uv.ContainsKey(name))
+        if (!name2uv_rot.ContainsKey(name))
+        {
+            name2uv_rot.Add(name, new Dictionary<Rotation, Vector2[]>());
+        }
+        if (!name2uv_rot[name].ContainsKey(rotation))
         {
             Rect rect = GetRectByName(name);
-            Vector2[] uv = new Vector2[]
+            Vector2[] uv = new Vector2[4];
+            if (rotation == Rotation.Zero)
             {
-            new Vector2(rect.xMin + epsilon, rect.yMin + epsilon),
-            new Vector2(rect.xMin + epsilon, rect.yMax - epsilon),
-            new Vector2(rect.xMax - epsilon, rect.yMax - epsilon),
-            new Vector2(rect.xMax - epsilon, rect.yMin + epsilon),
-            };
-            name2uv[name] = uv;
+                uv[0] = new Vector2(rect.xMin + epsilon, rect.yMin + epsilon);
+                uv[1] = new Vector2(rect.xMin + epsilon, rect.yMax - epsilon);
+                uv[2] = new Vector2(rect.xMax - epsilon, rect.yMax - epsilon);
+                uv[3] = new Vector2(rect.xMax - epsilon, rect.yMin + epsilon);
+            }
+            else if (rotation == Rotation.Right)
+            {
+                uv[0] = new Vector2(rect.xMin + epsilon, rect.yMax - epsilon);
+                uv[1] = new Vector2(rect.xMax - epsilon, rect.yMax - epsilon);
+                uv[2] = new Vector2(rect.xMax - epsilon, rect.yMin + epsilon);
+                uv[3] = new Vector2(rect.xMin + epsilon, rect.yMin + epsilon);
+            }
+            name2uv_rot[name].Add(rotation, uv);
         }
-        return name2uv[name];
+        return name2uv_rot[name][rotation];
     }
 
     public static Texture2D atlas;
