@@ -36,7 +36,8 @@ public class InventoryUI : MonoBehaviour
     // 46-72 is small chest(27)
     // 46-99 is big chest(54)
     // 100-101 is furnace ore and fuel
-    protected SlotItem[] items = new SlotItem[102];
+    // 102-146 is creative inventory(45)
+    protected SlotItem[] items = new SlotItem[147];
 
     protected static int resultIndex = 45;
     protected static int oreIndex = 100;
@@ -50,6 +51,16 @@ public class InventoryUI : MonoBehaviour
         trans.localScale = Vector3.one;
         trans.gameObject.SetActive(true);
 
+        items[i].highlight = trans.Find("highlight").GetComponent<RawImage>();
+        items[i].icon = trans.GetComponent<RawImage>();
+        items[i].count = trans.Find("text").GetComponent<TextMeshProUGUI>();
+        items[i].blockObj = trans.Find("block").gameObject;
+    }
+
+    protected void InitItem(int i, string path)
+    {
+        Transform trans = transform.Find(path);
+        trans.name = i.ToString();
         items[i].highlight = trans.Find("highlight").GetComponent<RawImage>();
         items[i].icon = trans.GetComponent<RawImage>();
         items[i].count = trans.Find("text").GetComponent<TextMeshProUGUI>();
@@ -179,6 +190,11 @@ public class InventoryUI : MonoBehaviour
         }
     }
 
+    protected virtual bool IsIndexValid(int index)
+    {
+        return false;
+    }
+
     protected virtual void OnLeftMouseClick()
     {
         if (highlightIndex == -1)
@@ -192,6 +208,35 @@ public class InventoryUI : MonoBehaviour
             }
         }
         if (highlightIndex >= 0 && highlightIndex < 36)
+        {
+            if (InventorySystem.grabItem.id != null &&
+                InventorySystem.items[highlightIndex].id != null &&
+                InventorySystem.grabItem.id == InventorySystem.items[highlightIndex].id &&
+                InventorySystem.grabItem.damage == InventorySystem.items[highlightIndex].damage)
+            {
+                InventorySystem.PutItems(highlightIndex);
+            }
+            else
+            {
+                InventorySystem.MouseGrabItem(highlightIndex);
+            }
+            RefreshGrabItem();
+            RefreshUI();
+            ItemSelectPanel.instance.RefreshUI();
+        }
+
+        if (highlightIndex == resultIndex)
+        {
+            if (InventorySystem.grabItem.id == null ||
+                (InventorySystem.grabItem.id == InventorySystem.items[resultIndex].id &&
+                InventorySystem.grabItem.damage == InventorySystem.items[resultIndex].damage))
+            {
+                CraftingSystem.CraftItems();
+                RefreshGrabItem();
+                RefreshUI();
+            }
+        }
+        if (IsIndexValid(highlightIndex))
         {
             if (InventorySystem.grabItem.id != null &&
                 InventorySystem.items[highlightIndex].id != null &&
@@ -223,6 +268,44 @@ public class InventoryUI : MonoBehaviour
             }
         }
         if (highlightIndex >= 0 && highlightIndex < 36)
+        {
+            if (InventorySystem.grabItem.id != null)
+            {
+                if (InventorySystem.items[highlightIndex].id != null)
+                {
+                    if (InventorySystem.grabItem.id == InventorySystem.items[highlightIndex].id &&
+                        InventorySystem.grabItem.damage == InventorySystem.items[highlightIndex].damage)
+                        InventorySystem.PutOneItem(highlightIndex);
+                    else
+                        InventorySystem.MouseGrabItem(highlightIndex);
+                }
+                else
+                {
+                    InventorySystem.PutOneItem(highlightIndex);
+                }
+                RefreshGrabItem();
+                RefreshUI();
+                ItemSelectPanel.instance.RefreshUI();
+            }
+            else if (InventorySystem.items[highlightIndex].id != null && InventorySystem.items[highlightIndex].count > 1)
+            {
+                InventorySystem.SplitHalf(highlightIndex);
+                RefreshGrabItem();
+                RefreshUI();
+                ItemSelectPanel.instance.RefreshUI();
+            }
+        }
+        if (highlightIndex == resultIndex)
+        {
+            if (InventorySystem.grabItem.id == null)
+            {
+                InventorySystem.MouseGrabItem(highlightIndex);
+                RefreshGrabItem();
+                RefreshUI();
+                ItemSelectPanel.instance.RefreshUI();
+            }
+        }
+        if (IsIndexValid(highlightIndex))
         {
             if (InventorySystem.grabItem.id != null)
             {
@@ -291,6 +374,19 @@ public class InventoryUI : MonoBehaviour
         }
     }
 
+    protected virtual void HideInternal()
+    {
+
+    }
+
+    protected virtual void HandleKeyboardInput()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.E))
+        {
+            HideInternal();
+        }
+    }
+
     // Update is called once per frame
     protected virtual void Update()
     {
@@ -298,6 +394,8 @@ public class InventoryUI : MonoBehaviour
         UpdateDesc();
 
         holdItemImage.rectTransform.anchoredPosition = Input.mousePosition / UISystem.scale;
+
+        HandleKeyboardInput();
     }
 
     protected static Vector3 offset = new Vector3(8, 0, 0);

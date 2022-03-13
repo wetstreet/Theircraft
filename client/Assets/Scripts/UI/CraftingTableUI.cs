@@ -61,13 +61,7 @@ public class CraftingTableUI : InventoryUI
         ItemSelectPanel.instance.RefreshUI();
     }
 
-    void HandleInputUpdate()
-    {
-        if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.E))
-        {
-            Hide();
-        }
-    }
+    protected override void HideInternal() { Hide(); }
 
     protected override void InitComponents()
     {
@@ -91,12 +85,7 @@ public class CraftingTableUI : InventoryUI
             InitItem(i, craftGrid);
         }
 
-        Transform resultTrans = transform.Find("CraftingResult/result");
-        resultTrans.name = resultIndex.ToString();
-        items[resultIndex].highlight = resultTrans.Find("highlight").GetComponent<RawImage>();
-        items[resultIndex].icon = resultTrans.GetComponent<RawImage>();
-        items[resultIndex].count = resultTrans.Find("text").GetComponent<TextMeshProUGUI>();
-        items[resultIndex].blockObj = resultTrans.Find("block").gameObject;
+        InitItem(resultIndex, "CraftingResult/result");
     }
 
     int[] refreshIndex = new int[] {
@@ -115,89 +104,8 @@ public class CraftingTableUI : InventoryUI
         }
     }
 
-    protected override void OnLeftMouseClick()
+    protected override bool IsIndexValid(int index)
     {
-        base.OnLeftMouseClick();
-
-        if (highlightIndex == resultIndex)
-        {
-            if (InventorySystem.grabItem.id == null ||
-                (InventorySystem.grabItem.id == InventorySystem.items[resultIndex].id &&
-                InventorySystem.grabItem.damage == InventorySystem.items[resultIndex].damage))
-            {
-                CraftingSystem.CraftItems();
-                RefreshGrabItem();
-                RefreshUI();
-            }
-        }
-        if (indexList.Contains(highlightIndex))
-        {
-            if (InventorySystem.grabItem.id != null &&
-                InventorySystem.items[highlightIndex].id != null &&
-                InventorySystem.grabItem.id == InventorySystem.items[highlightIndex].id &&
-                InventorySystem.grabItem.damage == InventorySystem.items[highlightIndex].damage)
-            {
-                InventorySystem.PutItems(highlightIndex);
-            }
-            else
-            {
-                InventorySystem.MouseGrabItem(highlightIndex);
-            }
-            RefreshGrabItem();
-            RefreshUI();
-            ItemSelectPanel.instance.RefreshUI();
-        }
-    }
-
-    protected override void OnRightMouseClick()
-    {
-        base.OnRightMouseClick();
-
-        if (highlightIndex == resultIndex)
-        {
-            if (InventorySystem.grabItem.id == null)
-            {
-                InventorySystem.MouseGrabItem(highlightIndex);
-                RefreshGrabItem();
-                RefreshUI();
-                ItemSelectPanel.instance.RefreshUI();
-            }
-        }
-        if (indexList.Contains(highlightIndex))
-        {
-            if (InventorySystem.grabItem.id != null)
-            {
-                if (InventorySystem.items[highlightIndex].id != null)
-                {
-                    if (InventorySystem.grabItem.id == InventorySystem.items[highlightIndex].id &&
-                        InventorySystem.grabItem.damage == InventorySystem.items[highlightIndex].damage)
-                        InventorySystem.PutOneItem(highlightIndex);
-                    else
-                        InventorySystem.MouseGrabItem(highlightIndex);
-                }
-                else
-                {
-                    InventorySystem.PutOneItem(highlightIndex);
-                }
-                RefreshGrabItem();
-                RefreshUI();
-                ItemSelectPanel.instance.RefreshUI();
-            }
-            else if (InventorySystem.items[highlightIndex].id != null && InventorySystem.items[highlightIndex].count > 1)
-            {
-                InventorySystem.SplitHalf(highlightIndex);
-                RefreshGrabItem();
-                RefreshUI();
-                ItemSelectPanel.instance.RefreshUI();
-            }
-        }
-    }
-
-    // Update is called once per frame
-    protected override void Update()
-    {
-        base.Update();
-
-        HandleInputUpdate();
+        return indexList.Contains(index);
     }
 }

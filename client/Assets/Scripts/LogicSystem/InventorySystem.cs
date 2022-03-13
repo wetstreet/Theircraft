@@ -23,7 +23,8 @@ public class InventorySystem
     // 46-72 is small chest(27)
     // 46-99 is big chest(54)
     // 100-101 is furnace ore and fuel
-    public static InventoryItem[] items = new InventoryItem[102];
+    // 102-146 is creative inventory(45)
+    public static InventoryItem[] items = new InventoryItem[147];
 
     public static InventoryItem grabItem;
 
@@ -53,9 +54,9 @@ public class InventorySystem
     {
         if (Input.GetKeyDown(KeyCode.E))
         {
-            //if (GameModeManager.isCreative)
-            //    CreativeInventory.Show();
-            //else
+            if (GameModeManager.isCreative)
+                CreativeInventory.Show();
+            else
                 SurvivalInventory.Show();
         }
     }
@@ -66,7 +67,7 @@ public class InventorySystem
         grabItem = items[index];
         items[index] = tempItem;
 
-        CheckCanCraft();
+        CraftingSystem.CheckCanCraft();
     }
 
     public static void PutOneItem(int index)
@@ -78,11 +79,17 @@ public class InventorySystem
         grabItem.count--;
         if (grabItem.count == 0)
         {
-            grabItem.id = null;
-            grabItem.damage = 0;
+            ClearGrabItem();
         }
 
-        CheckCanCraft();
+        CraftingSystem.CheckCanCraft();
+    }
+
+    public static void ClearGrabItem()
+    {
+        grabItem.id = null;
+        grabItem.damage = 0;
+        grabItem.count = 0;
     }
 
     public static void PutItems(int index)
@@ -90,11 +97,9 @@ public class InventorySystem
         // todo: max stack count
         items[index].count += grabItem.count;
 
-        grabItem.id = null;
-        grabItem.damage = 0;
-        grabItem.count = 0;
+        ClearGrabItem();
 
-        CheckCanCraft();
+        CraftingSystem.CheckCanCraft();
     }
 
     public static void SplitHalf(int index)
@@ -112,9 +117,7 @@ public class InventorySystem
         NBTObject generator = NBTGeneratorManager.GetObjectGenerator(grabItem.id);
         Item.CreatePlayerDropItem(generator, (byte)grabItem.damage, grabItem.count);
 
-        grabItem.id = null;
-        grabItem.damage = 0;
-        grabItem.count = 0;
+        ClearGrabItem();
     }
 
     public static void Increment(NBTObject generator, byte data, byte count)
@@ -181,11 +184,6 @@ public class InventorySystem
             items[slot].id = null;
             items[slot].damage = 0;
         }
-    }
-
-    static void CheckCanCraft()
-    {
-        CraftingSystem.CheckCanCraft();
     }
 
     public static void SaveData(TagNodeList Inventory)

@@ -95,6 +95,7 @@ public class NBTGeneratorManager : MonoBehaviour
             { 175, new NBTLargeFlowers() },
             { 188, new NBTSpruceFence() },
             { 193, new NBTSpruceDoor() },
+            { 207, new NBTBeetroots() },
             { 208, new NBTGrassPath() },
         };
 
@@ -102,6 +103,7 @@ public class NBTGeneratorManager : MonoBehaviour
         {
             new NBTShears(),
             new NBTWheatSeeds(),
+            new NBTBeetrootSeeds(),
             new NBTWoodenHoe(),
             new NBTWoodenShovel(),
 
@@ -201,6 +203,7 @@ public class NBTGeneratorManager : MonoBehaviour
         {
             return id2item[id];
         }
+        Debug.LogError("no generator, id=" + id);
         return null;
     }
 

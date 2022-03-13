@@ -12,15 +12,13 @@ public class ChestUI : InventoryUI
 
     static ChestUI Instance;
 
-    public Vector3Int pos;
     public TagNodeList Items;
 
     public static void Show(Vector3Int pos)
     {
         if (Instance != null)
         {
-            Instance.pos = pos;
-            Instance.InitData();
+            Instance.InitData(pos);
             Instance.gameObject.SetActive(true);
             Instance.RefreshUI();
             Instance.RefreshGrabItem();
@@ -28,8 +26,7 @@ public class ChestUI : InventoryUI
         else
         {
             Instance = UISystem.InstantiateUI("ChestUI").GetComponent<ChestUI>();
-            Instance.pos = pos;
-            Instance.InitData();
+            Instance.InitData(pos);
         }
 
         InputManager.enabled = false;
@@ -52,6 +49,8 @@ public class ChestUI : InventoryUI
 
         SaveData();
     }
+
+    protected override void HideInternal() { Hide(); }
 
     static void SaveData()
     {
@@ -79,14 +78,6 @@ public class ChestUI : InventoryUI
         }
     }
 
-    void HandleInputUpdate()
-    {
-        if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.E))
-        {
-            Hide();
-        }
-    }
-
     protected override void InitComponents()
     {
         base.InitComponents();
@@ -94,7 +85,7 @@ public class ChestUI : InventoryUI
         chestGrid = transform.Find("ChestGrid");
     }
 
-    protected void InitData()
+    void InitData(Vector3Int pos)
     {
         NBTChunk chunk = NBTHelper.GetChunk(pos);
         if (chunk != null && chunk.tileEntityDict.ContainsKey(pos))
@@ -116,15 +107,7 @@ public class ChestUI : InventoryUI
 
         for (int i = 46; i <= 72; i++)
         {
-            Transform trans = Instantiate(unit);
-            trans.name = i.ToString();
-            trans.SetParent(chestGrid, false);
-            trans.localScale = Vector3.one;
-            trans.gameObject.SetActive(true);
-
-            items[i].highlight = trans.Find("highlight").GetComponent<RawImage>();
-            items[i].icon = trans.GetComponent<RawImage>();
-            items[i].count = trans.Find("text").GetComponent<TextMeshProUGUI>();
+            InitItem(i, chestGrid);
         }
     }
 
@@ -134,112 +117,12 @@ public class ChestUI : InventoryUI
 
         for (int i = 46; i <= 72; i++)
         {
-            InventoryItem item = InventorySystem.items[i];
-            if (item.id != null)
-            {
-                items[i].icon.enabled = true;
-                items[i].icon.texture = BlockIconHelper.GetIcon(item.id, item.damage);
-                if (item.count > 1)
-                {
-                    items[i].count.enabled = true;
-                    items[i].count.text = item.count.ToString();
-                }
-                else
-                {
-                    items[i].count.enabled = false;
-                }
-            }
-            else
-            {
-                items[i].icon.enabled = false;
-                items[i].count.enabled = false;
-            }
-            items[i].highlight.color = i == highlightIndex ? highlightColor : Color.clear;
+            RefreshItem(i);
         }
     }
 
-    protected override void OnLeftMouseClick()
+    protected override bool IsIndexValid(int index)
     {
-        base.OnLeftMouseClick();
-
-        if (highlightIndex == resultIndex)
-        {
-            if (InventorySystem.grabItem.id == null)
-            {
-                CraftingSystem.CraftItems();
-                RefreshGrabItem();
-                RefreshUI();
-                ItemSelectPanel.instance.RefreshUI();
-            }
-        }
-        if (highlightIndex >= 46 && highlightIndex <= 72)
-        {
-            if (InventorySystem.grabItem.id != null &&
-                InventorySystem.items[highlightIndex].id != null &&
-                InventorySystem.grabItem.id == InventorySystem.items[highlightIndex].id &&
-                InventorySystem.grabItem.damage == InventorySystem.items[highlightIndex].damage)
-            {
-                InventorySystem.PutItems(highlightIndex);
-            }
-            else
-            {
-                InventorySystem.MouseGrabItem(highlightIndex);
-            }
-            RefreshGrabItem();
-            RefreshUI();
-            ItemSelectPanel.instance.RefreshUI();
-        }
-    }
-
-    protected override void OnRightMouseClick()
-    {
-        base.OnRightMouseClick();
-
-        if (highlightIndex == resultIndex)
-        {
-            if (InventorySystem.grabItem.id == null)
-            {
-                InventorySystem.MouseGrabItem(highlightIndex);
-                RefreshGrabItem();
-                RefreshUI();
-                ItemSelectPanel.instance.RefreshUI();
-            }
-        }
-        if (highlightIndex >= 46 && highlightIndex <= 72)
-        {
-            if (InventorySystem.grabItem.id != null)
-            {
-                if (InventorySystem.items[highlightIndex].id != null)
-                {
-                    if (InventorySystem.grabItem.id == InventorySystem.items[highlightIndex].id &&
-                        InventorySystem.grabItem.damage == InventorySystem.items[highlightIndex].damage)
-                        InventorySystem.PutOneItem(highlightIndex);
-                    else
-                        InventorySystem.MouseGrabItem(highlightIndex);
-                }
-                else
-                {
-                    InventorySystem.PutOneItem(highlightIndex);
-                }
-                RefreshGrabItem();
-                RefreshUI();
-                ItemSelectPanel.instance.RefreshUI();
-            }
-            else if (InventorySystem.items[highlightIndex].id != null && InventorySystem.items[highlightIndex].count > 1)
-            {
-                InventorySystem.SplitHalf(highlightIndex);
-                RefreshGrabItem();
-                RefreshUI();
-                ItemSelectPanel.instance.RefreshUI();
-            }
-        }
-    }
-
-    // Update is called once per frame
-    protected override void Update()
-    {
-        base.Update();
-
-        HandleInputUpdate();
+        return index >= 46 && index <= 72;
     }
 }

@@ -33,6 +33,17 @@ public class NBTChest : NBTBlock
         return itemMaterialDict[0];
     }
 
+
+    public override GameObject GetTileEntityGameObject(NBTChunk chunk, byte blockData, Vector3Int pos)
+    {
+        GameObject chest_prefab = Resources.Load<GameObject>("Meshes/entity/chest/chest_prefab");
+        GameObject chest = Object.Instantiate(chest_prefab);
+        chest.transform.parent = chunk.special.transform;
+        chest.transform.localPosition = pos;
+
+        return chest;
+    }
+
     public override void AddCube(NBTChunk chunk, byte blockData, Vector3Int pos, NBTGameObject nbtGO)
     {
         UnityEngine.Profiling.Profiler.BeginSample(GetType().Name + " AddCube");

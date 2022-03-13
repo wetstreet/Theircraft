@@ -1,393 +1,249 @@
-﻿using System.Collections;
+﻿using Substrate.Nbt;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class CreativeInventory : MonoBehaviour
+public class CreativeInventory : InventoryUI
 {
-    //Transform grid;
-    //Transform unit;
-    //RectTransform descTrans;
-    //TextMeshProUGUI descLabel;
-    //bool holdItem = false;
-    //bool holdSelectItem = false;
-    //Image holdItemImage;
-    //bool showDesc;
-    //bool showSelectDesc;
-    //int showIndex;
-    //int showSelectIndex;
-    //CSBlockType holdItemType;
-    //int holdItemCount;
-    //Slider slider;
+    Transform creativeGrid;
+    Slider slider;
 
-    //struct SlotItem
-    //{
-    //    public Image icon;
-    //    public GameObject select;
-    //    public TextMeshProUGUI count;
-    //}
+    struct CreativeItem
+    {
+        public string id;
+        public short data;
+    }
 
-    //List<SlotItem> itemList = new List<SlotItem>();
-    //SlotItem[] selectItems = new SlotItem[9];
+    CreativeItem[] itemList = new CreativeItem[]
+    {
+        new CreativeItem { id = "minecraft:stone", data = 0 },
+        new CreativeItem { id = "minecraft:stone", data = 1 },
+        new CreativeItem { id = "minecraft:stone", data = 2 },
+        new CreativeItem { id = "minecraft:stone", data = 3 },
+        new CreativeItem { id = "minecraft:stone", data = 4 },
+        new CreativeItem { id = "minecraft:stone", data = 5 },
+        new CreativeItem { id = "minecraft:stone", data = 6 },
+        new CreativeItem { id = "minecraft:grass", data = 0 },
+        new CreativeItem { id = "minecraft:dirt", data = 0 },
+        new CreativeItem { id = "minecraft:cobblestone", data = 0 },
+        new CreativeItem { id = "minecraft:planks", data = 0 },
+        new CreativeItem { id = "minecraft:planks", data = 1 },
+        new CreativeItem { id = "minecraft:planks", data = 2 },
+        new CreativeItem { id = "minecraft:planks", data = 3 },
+        new CreativeItem { id = "minecraft:planks", data = 4 },
+        new CreativeItem { id = "minecraft:planks", data = 5 },
+        new CreativeItem { id = "minecraft:bedrock", data = 0 },
+        new CreativeItem { id = "minecraft:sand", data = 0 },
+        new CreativeItem { id = "minecraft:gravel", data = 0 },
+        new CreativeItem { id = "minecraft:gold_ore", data = 0 },
+        new CreativeItem { id = "minecraft:iron_ore", data = 0 },
+        new CreativeItem { id = "minecraft:coal_ore", data = 0 },
+        new CreativeItem { id = "minecraft:log", data = 0 },
+        new CreativeItem { id = "minecraft:log", data = 1 },
+        new CreativeItem { id = "minecraft:log", data = 2 },
+        new CreativeItem { id = "minecraft:log", data = 3 },
+        new CreativeItem { id = "minecraft:glass", data = 0 },
+        new CreativeItem { id = "minecraft:lapis_ore", data = 0 },
+        new CreativeItem { id = "minecraft:sandstone", data = 0 },
+        new CreativeItem { id = "minecraft:wool", data = 0 },
+        new CreativeItem { id = "minecraft:wool", data = 1 },
+        new CreativeItem { id = "minecraft:wool", data = 2 },
+        new CreativeItem { id = "minecraft:wool", data = 3 },
+        new CreativeItem { id = "minecraft:wool", data = 4 },
+        new CreativeItem { id = "minecraft:wool", data = 5 },
+        new CreativeItem { id = "minecraft:wool", data = 6 },
+        new CreativeItem { id = "minecraft:wool", data = 7 },
+        new CreativeItem { id = "minecraft:wool", data = 8 },
+        new CreativeItem { id = "minecraft:wool", data = 9 },
+        new CreativeItem { id = "minecraft:wool", data = 10 },
+        new CreativeItem { id = "minecraft:wool", data = 11 },
+        new CreativeItem { id = "minecraft:wool", data = 12 },
+        new CreativeItem { id = "minecraft:wool", data = 13 },
+        new CreativeItem { id = "minecraft:wool", data = 14 },
+        new CreativeItem { id = "minecraft:wool", data = 15 },
+        new CreativeItem { id = "minecraft:brick_block", data = 0 },
+        new CreativeItem { id = "minecraft:bookshelf", data = 0 },
+        new CreativeItem { id = "minecraft:mossy_cobblestone", data = 0 },
+        new CreativeItem { id = "minecraft:obsidian", data = 0 },
+        new CreativeItem { id = "minecraft:oak_stairs", data = 0 },
+        new CreativeItem { id = "minecraft:diamond_ore", data = 0 },
+        new CreativeItem { id = "minecraft:stone_stairs", data = 0 },
+        new CreativeItem { id = "minecraft:redstone_ore", data = 0 },
+        new CreativeItem { id = "minecraft:pumpkin", data = 0 },
+        new CreativeItem { id = "minecraft:brick_stairs", data = 0 },
+        //new CreativeItem { id = "minecraft:wooden_slab", data = 0 },
+        //new CreativeItem { id = "minecraft:wooden_slab", data = 1 },
+        //new CreativeItem { id = "minecraft:wooden_slab", data = 2 },
+        //new CreativeItem { id = "minecraft:wooden_slab", data = 3 },
+        //new CreativeItem { id = "minecraft:wooden_slab", data = 4 },
+        //new CreativeItem { id = "minecraft:wooden_slab", data = 5 },
+        new CreativeItem { id = "minecraft:emerald_ore", data = 0 },
+        new CreativeItem { id = "minecraft:spruce_stairs", data = 0 },
+        new CreativeItem { id = "minecraft:birch_stairs", data = 0 },
+        new CreativeItem { id = "minecraft:jungle_stairs", data = 0 },
+    };
 
-    //static CreativeInventory Instance;
+    static CreativeInventory Instance;
 
-    //public static void Show()
-    //{
-    //    if (Instance != null)
-    //    {
-    //        Instance.gameObject.SetActive(true);
-    //        Instance.step = 0;
-    //        Instance.slider.value = 0;
-    //        Instance.RefreshUI();
-    //        Instance.RefreshSelectPanel();
-    //    }
-    //    else
-    //    {
-    //        Instance = UISystem.InstantiateUI("CreativeInventory").GetComponent<CreativeInventory>();
-    //    }
+    public static void Show()
+    {
+        if (Instance != null)
+        {
+            Instance.step = 0;
+            Instance.slider.value = 0;
+            Instance.RefreshData();
+            Instance.gameObject.SetActive(true);
+            Instance.RefreshUI();
+        }
+        else
+        {
+            Instance = UISystem.InstantiateUI("CreativeInventory").GetComponent<CreativeInventory>();
+            Instance.RefreshData();
+        }
 
-    //    InputManager.enabled = false;
-    //    PlayerController.LockCursor(false);
-    //}
+        InputManager.enabled = false;
+        PlayerController.LockCursor(false);
+    }
 
-    //void OnClickClose()
-    //{
-    //    Hide();
-    //}
+    public static void Hide()
+    {
+        InputManager.enabled = true;
+        PlayerController.LockCursor(true);
+        if (Instance != null)
+        {
+            Instance.gameObject.SetActive(false);
+        }
 
-    //public static void Hide()
-    //{
-    //    InputManager.enabled = true;
-    //    PlayerController.LockCursor(true);
-    //    if (Instance != null)
-    //    {
-    //        Instance.gameObject.SetActive(false);
-    //    }
-    //}
+        if (InventorySystem.grabItem.id != null)
+        {
+            InventorySystem.DropGrabItem();
+        }
 
-    //public static void HandleInput()
-    //{
-    //    if (Input.GetKeyDown(KeyCode.E))
-    //    {
-    //        Show();
-    //    }
-    //}
+        ItemSelectPanel.instance.RefreshUI();
+    }
 
-    //void HandleInputUpdate()
-    //{
-    //    float mouseMove = Input.GetAxis("Mouse ScrollWheel");
-    //    if (mouseMove != 0)
-    //    {
-    //        int sign = (int)Mathf.Sign(mouseMove);
-    //        step = Mathf.Clamp(step - sign, 0, steps - 1);
+    protected override void HideInternal() { Hide(); }
 
-    //        RefreshUI();
-    //        slider.value = step / (steps - 1f);
-    //    }
+    protected override void InitComponents()
+    {
+        base.InitComponents();
 
-    //    if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.E))
-    //    {
-    //        Hide();
-    //    }
-    //}
+        creativeGrid = transform.Find("CreativeGrid");
 
-    //private void OnEnable()
-    //{
-    //    showDesc = false;
-    //    showSelectDesc = false;
-    //}
+        slider = transform.Find("Slider").GetComponent<Slider>();
+        slider.onValueChanged.AddListener(OnValueChanged);
 
-    //int steps;
-    //float interval;
-    //int step;
-    //void OnValueChanged(float value)
-    //{
-    //    int newStep = Mathf.Min(Mathf.FloorToInt(value / interval), steps - 1);
-    //    if (newStep != step)
-    //    {
-    //        step = newStep;
-    //        RefreshUI();
-    //    }
-    //}
+        step = 0;
+        steps = 1 + Mathf.CeilToInt((itemList.Length - 45) / 9f);
+        interval = 1f / steps;
+    }
 
-    //void InitGrid()
-    //{
-    //    for (int i = 0; i < 45; i++)
-    //    {
-    //        Transform trans = Instantiate(unit);
-    //        trans.name = i.ToString();
-    //        trans.SetParent(grid, false);
-    //        trans.localScale = Vector3.one;
-    //        trans.gameObject.SetActive(true);
+    protected override void InitGrid()
+    {
+        for (int i = 0; i < 9; i++)
+        {
+            InitItem(i, selectGrid);
+        }
+        for (int i = 102; i < 147; i++)
+        {
+            InitItem(i, creativeGrid);
+        }
+    }
 
-    //        SlotItem item = new SlotItem();
-    //        item.icon = trans.GetComponent<Image>();
-    //        itemList.Add(item);
-    //    }
-    //}
+    void RefreshData()
+    {
+        for (int i = 102; i < 147; i++)
+        {
+            int index = i - 102 + step * 9;
+            if (index < itemList.Length)
+            {
+                InventorySystem.items[i].id = itemList[index].id;
+                InventorySystem.items[i].damage = itemList[index].data;
+                InventorySystem.items[i].count = 1;
+            }
+            else
+            {
+                InventorySystem.items[i].id = null;
+                InventorySystem.items[i].damage = 0;
+                InventorySystem.items[i].count = 0;
+            }
+        }
+    }
 
-    //GraphicRaycaster gr;
-    //GameObject mask;
-    //// Start is called before the first frame update
-    //void Start()
-    //{
-    //    mask = transform.Find("mask").gameObject;
-    //    gr = gameObject.AddComponent<GraphicRaycaster>();
-    //    descTrans = transform.Find("desc").GetComponent<RectTransform>();
-    //    descLabel = descTrans.Find("text").GetComponent<TextMeshProUGUI>();
+    protected override void RefreshUI()
+    {
+        for (int i = 0; i < 9; i++)
+        {
+            RefreshItem(i);
+        }
+        for (int i = 102; i < 147; i++)
+        {
+            RefreshItem(i);
+        }
+    }
 
-    //    slider = transform.Find("Slider").GetComponent<Slider>();
-    //    slider.onValueChanged.AddListener(OnValueChanged);
+    protected override void HandleKeyboardInput()
+    {
+        float mouseMove = Input.GetAxis("Mouse ScrollWheel");
+        if (mouseMove != 0)
+        {
+            int sign = (int)Mathf.Sign(mouseMove);
+            step = Mathf.Clamp(step - sign, 0, steps - 1);
 
-    //    step = 0;
-    //    steps = 1 + Mathf.CeilToInt((blocks.Length - 45) / 9f);
-    //    interval = 1f / steps;
+            RefreshData();
+            RefreshUI();
+            slider.value = step / (steps - 1f);
+        }
 
-    //    grid = transform.Find("BagGrid");
-    //    unit = grid.Find("unit");
-    //    holdItemImage = transform.Find("holdItem").GetComponent<Image>();
-    //    unit.gameObject.SetActive(false);
-        
-    //    InitGrid();
-    //    RefreshUI();
-    //    InitSelectPanel();
-    //    RefreshSelectPanel();
-    //}
+        if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.E))
+        {
+            Hide();
+        }
+    }
 
-    //Transform selectPanel;
-    //void InitSelectPanel()
-    //{
-    //    selectPanel = transform.Find("SelectGrid");
-    //    Transform unit = selectPanel.Find("unit");
-    //    unit.gameObject.SetActive(false);
-    //    for (int i = 0; i < 9; i++)
-    //    {
-    //        Transform trans = Instantiate(unit);
-    //        trans.name = i.ToString();
-    //        trans.gameObject.SetActive(true);
-    //        trans.SetParent(selectPanel, false);
-    //        trans.localScale = Vector3.one;
+    int steps;
+    float interval;
+    int step;
+    void OnValueChanged(float value)
+    {
+        int newStep = Mathf.Min(Mathf.FloorToInt(value / interval), steps - 1);
+        if (newStep != step)
+        {
+            step = newStep;
+            RefreshData();
+            RefreshUI();
+        }
+    }
 
-    //        SlotItem item = new SlotItem();
-    //        item.icon = trans.GetComponent<Image>();
-    //        item.count = trans.GetComponentInChildren<TextMeshProUGUI>();
-    //        selectItems[i] = item;
-    //    }
-    //}
 
-    //void HandleMouseOperation()
-    //{
-    //    PointerEventData ped = new PointerEventData(null) { position = Input.mousePosition };
-    //    List<RaycastResult> results = new List<RaycastResult>();
-    //    gr.Raycast(ped, results);
-    //    showDesc = false;
-    //    showSelectDesc = false;
-    //    foreach (RaycastResult result in results)
-    //    {
-    //        if (result.gameObject.transform.parent == grid.transform)
-    //        {
-    //            int curIndex = int.Parse(result.gameObject.name) + step * 9;
-    //            if (curIndex < blocks.Length)
-    //            {
-    //                showDesc = true;
-    //                if (showIndex != curIndex && !holdItem)
-    //                {
-    //                    showIndex = curIndex;
-    //                }
-    //                if (Input.GetKeyDown(KeyCode.Mouse0))
-    //                {
-    //                    OnItemClick(curIndex);
-    //                }
-    //            }
-    //            break;
-    //        }
-    //        else if (result.gameObject.transform.parent == selectPanel)
-    //        {
-    //            showSelectDesc = true;
-    //            int curIndex = int.Parse(result.gameObject.name);
-    //            if (showSelectIndex != curIndex)
-    //            {
-    //                showSelectIndex = curIndex;
-    //            }
-    //            if (Input.GetKeyDown(KeyCode.Mouse0))
-    //            {
-    //                OnClickSelectItem(curIndex);
-    //            }
-    //            break;
-    //        }
-    //        else if (result.gameObject == mask)
-    //        {
-    //            if (Input.GetKeyDown(KeyCode.Mouse0))
-    //            {
-    //                OnClickMask();
-    //            }
-    //        }
-    //    }
-    //}
-    
-    //// Update is called once per frame
-    //void Update()
-    //{
-    //    HandleMouseOperation();
-    //    HandleInputUpdate();
-    //    UpdateDesc();
+    protected override void OnLeftMouseClick()
+    {
+        base.OnLeftMouseClick();
 
-    //    if (holdItem || holdSelectItem)
-    //    {
-    //        holdItemImage.rectTransform.anchoredPosition = Input.mousePosition / UISystem.scale;
-    //    }
-    //}
 
-    //static Vector3 offset = new Vector3(8, 0, 0);
-    //void UpdateDesc()
-    //{
-    //    if ((showDesc || (showSelectDesc && ItemSelectPanel.dataList[showSelectIndex] != CSBlockType.None)) && !holdItem && !holdSelectItem)
-    //    {
-    //        if (!descTrans.gameObject.activeSelf)
-    //        {
-    //            descTrans.gameObject.SetActive(true);
-    //        }
-    //        descTrans.anchoredPosition = Input.mousePosition / UISystem.scale + offset;
-
-    //        string name = "";
-    //        if (showDesc)
-    //        {
-    //            CSBlockType type = blocks[showIndex];
-    //            name = LocalizationManager.GetBlockName(type);
-    //        }
-    //        else if (showSelectDesc)
-    //        {
-    //            CSBlockType type = ItemSelectPanel.dataList[showSelectIndex];
-    //            name = LocalizationManager.GetBlockName(type);
-    //        }
-    //        descLabel.text = name;
-    //        descTrans.sizeDelta = new Vector2(Mathf.CeilToInt(descLabel.renderedWidth) + 10, 16);
-    //    }
-    //    else
-    //    {
-    //        if (descTrans.gameObject.activeSelf)
-    //        {
-    //            descTrans.gameObject.SetActive(false);
-    //        }
-    //    }
-    //}
-
-    //void RefreshSelectPanel()
-    //{
-    //    for (int i = 0; i < 9; i++)
-    //    {
-    //        CSBlockType type = ItemSelectPanel.dataList[i];
-    //        if (type == CSBlockType.None)
-    //        {
-    //            selectItems[i].icon.color = Color.clear;
-    //            selectItems[i].count.gameObject.SetActive(false);
-    //        }
-    //        else
-    //        {
-    //            selectItems[i].icon.sprite = BlockIconHelper.GetIcon(type);
-    //            selectItems[i].icon.color = Color.white;
-    //            if (ItemSelectPanel.countList[i] > 1)
-    //            {
-    //                selectItems[i].count.gameObject.SetActive(true);
-    //                selectItems[i].count.text = ItemSelectPanel.countList[i].ToString();
-    //            }
-    //            else
-    //            {
-    //                selectItems[i].count.gameObject.SetActive(false);
-    //            }
-    //        }
-    //    }
-    //}
-
-    //void RefreshUI()
-    //{
-    //    for (int i = 0; i < 45; i++)
-    //    {
-    //        int realIndex = i + step * 9;
-    //        if (realIndex < blocks.Length)
-    //        {
-    //            itemList[i].icon.enabled = true;
-    //            itemList[i].icon.sprite = BlockIconHelper.GetIcon(blocks[realIndex]);
-    //        }
-    //        else
-    //        {
-    //            itemList[i].icon.enabled = false;
-    //        }
-    //    }
-    //    UpdateDesc();
-    //}
-
-    //void OnItemClick(int index)
-    //{
-    //    //Debug.Log("click " + index);
-    //    if (holdItem)
-    //    {
-    //        holdItem = false;
-    //        holdItemImage.gameObject.SetActive(false);
-    //    }
-    //    else if (holdSelectItem)
-    //    {
-    //        holdSelectItem = false;
-    //        holdItemImage.gameObject.SetActive(false);
-    //    }
-    //    else
-    //    {
-    //        holdItem = true;
-    //        holdItemType = blocks[index];
-    //        holdItemImage.sprite = BlockIconHelper.GetIcon(holdItemType);
-    //        holdItemImage.gameObject.SetActive(true);
-    //    }
-    //}
-
-    //void OnClickMask()
-    //{
-    //    //Debug.Log("onclickmask");
-    //    if (holdItem)
-    //    {
-    //        holdItem = false;
-    //        //Item.CreatePlayerDropItem(holdItemType, 1);
-    //        holdItemImage.gameObject.SetActive(false);
-    //    }
-    //    else if (holdSelectItem)
-    //    {
-    //        holdSelectItem = false;
-    //        //Item.CreatePlayerDropItem(holdItemType, holdItemCount);
-    //        holdItemImage.gameObject.SetActive(false);
-    //    }
-    //}
-
-    //void OnClickSelectItem(int index)
-    //{
-    //    //Debug.Log("OnClickSelectItem,index=" + index);
-    //    if (holdItem)
-    //    {
-    //        holdItem = false;
-    //        holdItemImage.gameObject.SetActive(false);
-
-    //        ItemSelectPanel.SetSlotItem((uint)index, blocks[showIndex]);
-    //        RefreshSelectPanel();
-    //    }
-    //    else if (holdSelectItem)
-    //    {
-    //        holdSelectItem = false;
-    //        holdItemImage.gameObject.SetActive(false);
-
-    //        ItemSelectPanel.SetSlotItem((uint)index, holdItemType, holdItemCount);
-    //        RefreshSelectPanel();
-    //    }
-    //    else if (ItemSelectPanel.dataList[index] != CSBlockType.None)
-    //    {
-    //        holdSelectItem = true;
-    //        holdItemType = ItemSelectPanel.dataList[index];
-    //        holdItemCount = ItemSelectPanel.countList[index];
-    //        holdItemImage.sprite = selectItems[showSelectIndex].icon.sprite;
-    //        holdItemImage.gameObject.SetActive(true);
-            
-    //        ItemSelectPanel.SetSlotItem((uint)index, CSBlockType.None);
-    //        RefreshSelectPanel();
-    //    }
-    //}
+        if (highlightIndex >= 102 && highlightIndex < 147)
+        {
+            if (InventorySystem.grabItem.id != null)
+            {
+                if (InventorySystem.grabItem.damage == InventorySystem.items[highlightIndex].damage)
+                {
+                    InventorySystem.grabItem.count++;
+                }
+                else
+                {
+                    InventorySystem.ClearGrabItem();
+                }
+            }
+            else
+            {
+                InventorySystem.grabItem = InventorySystem.items[highlightIndex];
+            }
+            RefreshGrabItem();
+            RefreshUI();
+            ItemSelectPanel.instance.RefreshUI();
+        }
+    }
 }

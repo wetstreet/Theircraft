@@ -14,6 +14,7 @@ public class TextureArrayManager
         "mushroom_block_skin_brown", "mushroom_block_inside", "mushroom_block_skin_stem",
         "mushroom_block_skin_red", "mushroom_block_inside", "mushroom_block_skin_stem",
 
+        "beetroots_stage_3",
         "carrots_stage_3",
         "potatoes_stage_3",
         "wheat_stage_7",

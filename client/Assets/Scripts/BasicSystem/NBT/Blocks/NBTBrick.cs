@@ -5,7 +5,7 @@ using UnityEngine;
 public class NBTBrick : NBTBlock
 {
     public override string name => "Brick";
-    public override string id => "minecraft:brick";
+    public override string id => "minecraft:brick_block";
 
     public override float hardness => 2;
 
