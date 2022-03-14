@@ -53,6 +53,7 @@ public class NBTGeneratorManager : MonoBehaviour
             { 39, new NBTBrownMushroom() },
             { 40, new NBTRedMushroom() },
             { 43, new NBTDoubleStoneSlab() },
+            { 44, new NBTStoneSlab() },
             { 45, new NBTBrick() },
             { 47, new NBTBookshelf() },
             { 48, new NBTMossyCobblestone() },

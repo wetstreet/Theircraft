@@ -188,6 +188,14 @@ public class InventoryUI : MonoBehaviour
         {
             OnRightMouseClick();
         }
+        if (Input.GetMouseButton(1))
+        {
+            OnRightMousePressed();
+        }
+        if (Input.GetMouseButtonUp(1))
+        {
+            travelledIndices.Clear();
+        }
     }
 
     protected virtual bool IsIndexValid(int index)
@@ -207,7 +215,7 @@ public class InventoryUI : MonoBehaviour
                 ItemSelectPanel.instance.RefreshUI();
             }
         }
-        if (highlightIndex >= 0 && highlightIndex < 36)
+        if ((highlightIndex >= 0 && highlightIndex < 36) || IsIndexValid(highlightIndex))
         {
             if (InventorySystem.grabItem.id != null &&
                 InventorySystem.items[highlightIndex].id != null &&
@@ -236,23 +244,6 @@ public class InventoryUI : MonoBehaviour
                 RefreshUI();
             }
         }
-        if (IsIndexValid(highlightIndex))
-        {
-            if (InventorySystem.grabItem.id != null &&
-                InventorySystem.items[highlightIndex].id != null &&
-                InventorySystem.grabItem.id == InventorySystem.items[highlightIndex].id &&
-                InventorySystem.grabItem.damage == InventorySystem.items[highlightIndex].damage)
-            {
-                InventorySystem.PutItems(highlightIndex);
-            }
-            else
-            {
-                InventorySystem.MouseGrabItem(highlightIndex);
-            }
-            RefreshGrabItem();
-            RefreshUI();
-            ItemSelectPanel.instance.RefreshUI();
-        }
     }
 
     protected virtual void OnRightMouseClick()
@@ -267,10 +258,11 @@ public class InventoryUI : MonoBehaviour
                 ItemSelectPanel.instance.RefreshUI();
             }
         }
-        if (highlightIndex >= 0 && highlightIndex < 36)
+        if ((highlightIndex >= 0 && highlightIndex < 36) || IsIndexValid(highlightIndex))
         {
             if (InventorySystem.grabItem.id != null)
             {
+                travelledIndices.Add(highlightIndex);
                 if (InventorySystem.items[highlightIndex].id != null)
                 {
                     if (InventorySystem.grabItem.id == InventorySystem.items[highlightIndex].id &&
@@ -305,32 +297,23 @@ public class InventoryUI : MonoBehaviour
                 ItemSelectPanel.instance.RefreshUI();
             }
         }
-        if (IsIndexValid(highlightIndex))
+    }
+
+    int lastIndex = -1;
+    List<int> travelledIndices = new List<int>();
+    protected virtual void OnRightMousePressed()
+    {
+        if (InventorySystem.grabItem.id != null && highlightIndex != -1)
         {
-            if (InventorySystem.grabItem.id != null)
+            bool canPut = InventorySystem.items[highlightIndex].id == null || InventorySystem.items[highlightIndex].id == InventorySystem.grabItem.id;
+            if (lastIndex != highlightIndex && !travelledIndices.Contains(highlightIndex) && canPut)
             {
-                if (InventorySystem.items[highlightIndex].id != null)
-                {
-                    if (InventorySystem.grabItem.id == InventorySystem.items[highlightIndex].id &&
-                        InventorySystem.grabItem.damage == InventorySystem.items[highlightIndex].damage)
-                        InventorySystem.PutOneItem(highlightIndex);
-                    else
-                        InventorySystem.MouseGrabItem(highlightIndex);
-                }
-                else
-                {
-                    InventorySystem.PutOneItem(highlightIndex);
-                }
+                lastIndex = highlightIndex;
+                travelledIndices.Add(highlightIndex);
+
+                InventorySystem.PutOneItem(highlightIndex);
                 RefreshGrabItem();
                 RefreshUI();
-                ItemSelectPanel.instance.RefreshUI();
-            }
-            else if (InventorySystem.items[highlightIndex].id != null && InventorySystem.items[highlightIndex].count > 1)
-            {
-                InventorySystem.SplitHalf(highlightIndex);
-                RefreshGrabItem();
-                RefreshUI();
-                ItemSelectPanel.instance.RefreshUI();
             }
         }
     }

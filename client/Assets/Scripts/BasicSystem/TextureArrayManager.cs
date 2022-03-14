@@ -39,6 +39,11 @@ public class TextureArrayManager
         "double_plant_paeonia_bottom",
         "double_plant_paeonia_top",
 
+        "nether_brick",
+        "stone_slab_top",
+        "stonebrick",
+        "quartz_block_top",
+
         "torch_on",
 
         "leaves_oak", "leaves_spruce", "leaves_birch", "leaves_jungle",
