@@ -58,12 +58,26 @@ public class NBTChunk
 
         foreach (TagNodeCompound node in TileEntities)
         {
-            tileEntityDict[new Vector3Int((TagNodeInt)node["x"], (TagNodeInt)node["y"], (TagNodeInt)node["z"])] = node;
+            Vector3Int pos = new Vector3Int((TagNodeInt)node["x"], (TagNodeInt)node["y"], (TagNodeInt)node["z"]);
+            tileEntityDict.Add(pos, node);
         }
 
         gameObject.name = "chunk (" + x + "," + z + ")";
         transform.localPosition = new Vector3(x * 16, 0, z * 16);
         ClearData();
+    }
+
+    public void AddTileEntity(Vector3Int pos, TagNodeCompound node)
+    {
+        TileEntities.Add(node);
+        tileEntityDict.Add(pos, node);
+    }
+
+    public void RemoveTileEntity(Vector3Int pos)
+    {
+        TagNodeCompound node = tileEntityDict[pos];
+        TileEntities.Remove(node);
+        tileEntityDict.Remove(pos);
     }
 
     public byte GetBlockByte(Vector3Int pos)
@@ -179,7 +193,16 @@ public class NBTChunk
         return !NBTGeneratorManager.IsTransparent(type);
     }
 
-    public void RemoveTileEntity(Vector3Int pos)
+    public void AddTileEntityObj(Vector3Int pos, NBTBlock generator, byte data)
+    {
+        if (!tileEntityObjs.ContainsKey(pos))
+        {
+            GameObject obj = generator.GetTileEntityGameObject(this, data, pos);
+            tileEntityObjs[pos] = obj;
+        }
+    }
+
+    public void RemoveTileEntityObj(Vector3Int pos)
     {
         pos.x -= x * 16;
         pos.z -= z * 16;
@@ -381,15 +404,6 @@ public class NBTChunk
         hasInitTileEntity = true;
     }
 
-    public void AddTileEntity(Vector3Int pos, NBTBlock generator, byte data)
-    {
-        if (!tileEntityObjs.ContainsKey(pos))
-        {
-            GameObject obj = generator.GetTileEntityGameObject(this, data, pos);
-            tileEntityObjs[pos] = obj;
-        }
-    }
-
     public void RebuildMesh(UpdateFlags updateFlags = UpdateFlags.All, bool checkBorder = true)
     {
         if (isBuilding)
@@ -456,6 +470,7 @@ public class NBTChunk
         {
             Object.Destroy(obj.Value);
         }
+        TileEntities.Clear();
         tileEntityObjs.Clear();
         tileEntityList.Clear();
     }

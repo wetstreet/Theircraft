@@ -31,13 +31,14 @@ public class Item : MonoBehaviour
     static float minDistance = 0.2f;
     static float moveTime = 0.2f;
 
-    public static Item CreateBlockDropItem(string id, byte data, Vector3 pos)
+    public static Item CreateBlockDropItem(string id, byte data, Vector3 pos, int count = 1)
     {
         float right = Random.Range(-1f, 1f);
         float forward = Random.Range(-1f, 1f);
         Vector3 dir = Vector3.up + right * Vector3.right + forward * Vector3.forward;
         NBTObject generator = NBTGeneratorManager.GetObjectGenerator(id);
         Item item = Create(generator, data, pos, dir.normalized);
+        item.Count = count;
         item.coolDownTime = 0.5f;
         return item;
     }

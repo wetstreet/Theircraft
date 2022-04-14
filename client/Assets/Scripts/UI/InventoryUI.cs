@@ -263,6 +263,8 @@ public class InventoryUI : MonoBehaviour
             if (InventorySystem.grabItem.id != null)
             {
                 travelledIndices.Add(highlightIndex);
+                lastIndex = highlightIndex;
+
                 if (InventorySystem.items[highlightIndex].id != null)
                 {
                     if (InventorySystem.grabItem.id == InventorySystem.items[highlightIndex].id &&

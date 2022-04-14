@@ -120,10 +120,15 @@ public class NBTGeneratorManager : MonoBehaviour
             new NBTGoldAxe(),
             new NBTDiamondAxe(),
 
+            new NBTWoodenSword(),
+            new NBTStoneSword(),
+            new NBTIronSword(),
+            new NBTGoldSword(),
+            new NBTDiamondSword(),
+
             new NBTStick(),
             new NBTBucket(),
             new NBTWaterBucket(),
-            new NBTDiamondSword(),
             new NBTGunpowder(),
             new NBTPoisonousPotato(),
             new NBTRottonFlesh(),

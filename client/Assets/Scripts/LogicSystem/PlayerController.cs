@@ -289,7 +289,7 @@ public class PlayerController : MonoBehaviour
         if (generator.isTileEntity)
         {
             NBTChunk chunk = NBTHelper.GetChunk(WireFrameHelper.pos);
-            chunk.RemoveTileEntity(WireFrameHelper.pos);
+            chunk.RemoveTileEntityObj(WireFrameHelper.pos);
             NBTHelper.SetBlockByteNoUpdate(WireFrameHelper.pos, 0);
         }
         else

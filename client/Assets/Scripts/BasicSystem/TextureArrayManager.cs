@@ -149,32 +149,15 @@ public class TextureArrayManager
     }
 
     static float epsilon = 0.0001f;
-    static Dictionary<string, Vector2[]> name2uv;
-    //public static Vector2[] GetUVByName(string name)
-    //{
-    //    if (!name2uv.ContainsKey(name))
-    //    {
-    //        Rect rect = GetRectByName(name);
-    //        Vector2[] uv = new Vector2[]
-    //        {
-    //            new Vector2(rect.xMin + epsilon, rect.yMin + epsilon),
-    //            new Vector2(rect.xMin + epsilon, rect.yMax - epsilon),
-    //            new Vector2(rect.xMax - epsilon, rect.yMax - epsilon),
-    //            new Vector2(rect.xMax - epsilon, rect.yMin + epsilon),
-    //        };
-    //        name2uv[name] = uv;
-    //    }
-    //    return name2uv[name];
-    //}
 
-    static Dictionary<string, Dictionary<Rotation, Vector2[]>> name2uv_rot = new Dictionary<string, Dictionary<Rotation, Vector2[]>>();
+    static Dictionary<string, Dictionary<Rotation, Vector2[]>> name2uv = new Dictionary<string, Dictionary<Rotation, Vector2[]>>();
     public static Vector2[] GetUVByName(string name, Rotation rotation = Rotation.Zero)
     {
-        if (!name2uv_rot.ContainsKey(name))
+        if (!name2uv.ContainsKey(name))
         {
-            name2uv_rot.Add(name, new Dictionary<Rotation, Vector2[]>());
+            name2uv.Add(name, new Dictionary<Rotation, Vector2[]>());
         }
-        if (!name2uv_rot[name].ContainsKey(rotation))
+        if (!name2uv[name].ContainsKey(rotation))
         {
             Rect rect = GetRectByName(name);
             Vector2[] uv = new Vector2[4];
@@ -192,9 +175,9 @@ public class TextureArrayManager
                 uv[2] = new Vector2(rect.xMax - epsilon, rect.yMin + epsilon);
                 uv[3] = new Vector2(rect.xMin + epsilon, rect.yMin + epsilon);
             }
-            name2uv_rot[name].Add(rotation, uv);
+            name2uv[name].Add(rotation, uv);
         }
-        return name2uv_rot[name][rotation];
+        return name2uv[name][rotation];
     }
 
     public static Texture2D atlas;
@@ -203,7 +186,6 @@ public class TextureArrayManager
     {
         name2index = new Dictionary<string, int>();
         textureList = new List<Texture2D>();
-        name2uv = new Dictionary<string, Vector2[]>();
 
         int size = 16;
         Texture2D[] textures = GetTextures(size);

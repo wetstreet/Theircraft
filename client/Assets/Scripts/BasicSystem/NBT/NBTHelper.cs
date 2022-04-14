@@ -21,7 +21,11 @@ public class NBTHelper
 {
     public static string save = "New World1";
 
+    public static Dictionary<Vector2Int, RegionFile> regionDict = new Dictionary<Vector2Int, RegionFile>();
     private static Dictionary<Vector2Int, NBTChunk> chunkDict = new Dictionary<Vector2Int, NBTChunk>();
+    private static Dictionary<Vector2Int, NbtTree> chunkDictNBT = new Dictionary<Vector2Int, NbtTree>();
+
+    public static bool IsAlive = false;
 
     static string savePath
     {
@@ -75,6 +79,8 @@ public class NBTHelper
             playerData.Root.Add("SpawnZ", new TagNodeInt((int)((TagNodeDouble)Pos[2]).Data));
             Debug.Log("no spawn pos, using saved pos as spawn pos");
         }
+
+        IsAlive = true;
     }
 
     public static TagNodeCompound GetPlayerData()
@@ -188,6 +194,7 @@ public class NBTHelper
         }
         return null;
     }
+
     public static NBTChunk LoadChunk(int chunkX, int chunkZ)
     {
         UnityEngine.Profiling.Profiler.BeginSample("ChunkChecker.Update");
@@ -306,7 +313,6 @@ public class NBTHelper
                     }
                     UnityEngine.Profiling.Profiler.EndSample();
 
-
                     chunkDictNBT.Add(key, _tree);
                 }
             }
@@ -318,7 +324,6 @@ public class NBTHelper
         return null;
     }
 
-    static Dictionary<Vector2Int, NbtTree> chunkDictNBT = new Dictionary<Vector2Int, NbtTree>();
     public async static Task<TagNodeCompound> GetChunkNodeAsync(int x, int z)
     {
         Vector2Int key = new Vector2Int(x, z);
@@ -336,12 +341,17 @@ public class NBTHelper
                 if (region.HasChunk(_x, _z))
                 {
                     NbtTree _tree = new NbtTree();
-                    Stream stream = region.GetChunkDataInputStream(_x, _z);
 
-                    await Task.Run(() =>
+                    using (Stream stream = region.GetChunkDataInputStream(_x, _z))
                     {
-                        _tree.ReadFrom(stream);
-                    });
+                        await Task.Run(() =>
+                        {
+                            _tree.ReadFrom(stream);
+                        });
+                    }
+
+                    if (!IsAlive)
+                        throw new Exception("exit game scene");
 
                     chunkDictNBT[key] = _tree;
                 }
@@ -376,8 +386,6 @@ public class NBTHelper
             arr[index / 2] = (byte)newData;
         }
     }
-
-    public static Dictionary<Vector2Int, RegionFile> regionDict = new Dictionary<Vector2Int, RegionFile>();
 
     public static RegionFile GetRegion(int regionX, int regionZ)
     {
@@ -851,10 +859,14 @@ public class NBTHelper
 
     public static void Uninit()
     {
+        IsAlive = false;
         foreach (KeyValuePair<Vector2Int, RegionFile> kvPair in regionDict)
         {
             kvPair.Value.Close();
             kvPair.Value.Dispose();
         }
+        regionDict.Clear();
+        chunkDictNBT.Clear();
+        chunkDict.Clear();
     }
 }

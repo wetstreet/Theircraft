@@ -64,7 +64,7 @@ public class NBTTorch : NBTBlock
         pos.x -= chunk.x * 16;
         pos.z -= chunk.z * 16;
         chunk.SetBlockData(pos.x, pos.y, pos.z, type, data);
-        chunk.AddTileEntity(pos, this, data);
+        chunk.AddTileEntityObj(pos, this, data);
     }
 
     Material GetMaterial(byte blockData)

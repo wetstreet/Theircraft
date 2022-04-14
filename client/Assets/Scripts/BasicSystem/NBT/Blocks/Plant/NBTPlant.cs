@@ -41,6 +41,8 @@ public class NBTPlant : NBTBlock
         antiDiagonalFace = new Vector3[] { nearBottomLeft, nearTopLeft, farTopRight, farBottomRight };
     }
 
+    static float epsilon = 0.001f;
+
     Dictionary<string, Vector2[]> uv_dict = new Dictionary<string, Vector2[]>();
     protected Vector2[] GetUV(NBTChunk chunk, Vector3Int pos, int data)
     {
@@ -53,6 +55,17 @@ public class NBTPlant : NBTBlock
             float right = rect.center.x + size * rect.width / 16;
             float bottom = rect.yMin;
             float top = rect.yMin + height * rect.height / 16;
+
+            // prevent uv bleeding
+            if (height == 16)
+                top -= epsilon;
+
+            if (size == 8)
+            {
+                left += epsilon;
+                right -= epsilon;
+            }
+
             Vector2[] uv_plant = new Vector2[]
             {
                 new Vector2(left, bottom),

@@ -153,6 +153,8 @@ public class CraftingSystem : MonoBehaviour
         "crafting_table",
 
         "chest",
+
+        "wooden_door",
     };
 
 
