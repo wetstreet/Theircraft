@@ -100,23 +100,7 @@ Shader "Custom/TextureArrayShader"
 
                 col.rgb *= i.light.rgb;
 
-
-                if (i.worldNormal.y == 1)
-                {
-                    col.rgb *= 1;
-                }
-                else if (i.worldNormal.z == 1 || i.worldNormal.z == -1)
-                {
-                    col.rgb *= 0.6;
-                }
-                else if (i.worldNormal.x == 1 || i.worldNormal.x == -1)
-                {
-                    col.rgb *= 0.3;
-                }
-                else if (i.worldNormal.y == -1)
-                {
-                    col.rgb *= 0.2;
-                }
+                col.rgb *= GetNL(i.worldNormal);
 
                 col = linear_fog(col, i.vertexDistance);
 

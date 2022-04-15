@@ -14,6 +14,8 @@ public class ChestUI : InventoryUI
 
     public TagNodeList Items;
 
+    static Animator animator;
+
     public static void Show(Vector3Int pos)
     {
         if (Instance != null)
@@ -28,15 +30,30 @@ public class ChestUI : InventoryUI
             Instance = UISystem.InstantiateUI("ChestUI").GetComponent<ChestUI>();
             Instance.InitData(pos);
         }
+        animator = GetChestAnimator(pos);
+
+        SoundManager.Play2DSound("Player_Chest_Open");
+        animator?.Play("chest_open");
 
         InputManager.enabled = false;
         PlayerController.LockCursor(false);
     }
 
+    static Animator GetChestAnimator(Vector3Int pos)
+    {
+        NBTChunk chunk = NBTHelper.GetChunk(pos);
+        Vector3Int localPos = new Vector3Int(pos.x - chunk.x * 16, pos.y, pos.z - chunk.z * 16);
+        GameObject go = chunk.GetTileEntityObj(localPos);
+        if (go)
+        {
+            Animator animator = go.GetComponent<Animator>();
+            return animator;
+        }
+        return null;
+    }
+
     public static void Hide()
     {
-        InputManager.enabled = true;
-        PlayerController.LockCursor(true);
         if (Instance != null)
         {
             Instance.gameObject.SetActive(false);
@@ -46,6 +63,12 @@ public class ChestUI : InventoryUI
         {
             InventorySystem.DropGrabItem();
         }
+
+        SoundManager.Play2DSound("Player_Chest_Close");
+        animator?.Play("chest_close");
+
+        InputManager.enabled = true;
+        PlayerController.LockCursor(true);
 
         SaveData();
     }
@@ -76,6 +99,7 @@ public class ChestUI : InventoryUI
                 InventorySystem.items[i].count = 0;
             }
         }
+        Debug.Log("Instance.Items.count=" + Instance.Items.Count);
     }
 
     protected override void InitComponents()

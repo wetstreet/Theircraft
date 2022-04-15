@@ -15,6 +15,32 @@ half3 GetSkyLight(half skylight)
     return saturate(skyLightAtten) * _SkyLightColor.rgb;
 }
 
+bool almost(float a, float b)
+{
+    return abs(a - b) < 0.01;
+}
+
+half GetNL(half3 normal)
+{
+    half nl = 1;
+    if (almost(normal.y, 1))
+    {
+        nl = 1;
+    }
+    else if (almost(normal.z, 1) || almost(normal.z, -1))
+    {
+        nl = 0.6;
+    }
+    else if (almost(normal.x, 1) || almost(normal.x, -1))
+    {
+        nl = 0.3;
+    }
+    else if (almost(normal.y, -1))
+    {
+        nl = 0.2;
+    }
+    return nl;
+}
 
 float _FogStart;
 float _FogEnd;

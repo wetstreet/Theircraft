@@ -19,23 +19,6 @@ public class NBTChest : NBTBlock
 
     GameObject chest_prefab;
 
-    Mesh GetMesh(byte blockData)
-    {
-        if (!itemMeshDict.ContainsKey(0))
-        {
-            itemMeshDict[0] = Resources.Load<Mesh>("Meshes/entity/chest/all");
-        }
-        return itemMeshDict[0];
-    }
-    Material GetMaterial(byte blockData)
-    {
-        if (!itemMaterialDict.ContainsKey(0))
-        {
-            itemMaterialDict[0] = Resources.Load<Material>("Meshes/entity/chest/chest_mat");
-        }
-        return itemMaterialDict[0];
-    }
-
     public override string GetBreakEffectTexture(byte data)
     {
         return "planks_oak";
@@ -50,6 +33,23 @@ public class NBTChest : NBTBlock
         GameObject chest = Object.Instantiate(chest_prefab);
         chest.transform.parent = chunk.special.transform;
         chest.transform.localPosition = pos;
+        int y = 0;
+        switch (blockData)
+        {
+            case 2:
+                y = 0;
+                break;
+            case 3:
+                y = 180;
+                break;
+            case 4:
+                y = 90;
+                break;
+            case 5:
+                y = -90;
+                break;
+        }
+        chest.transform.localEulerAngles = new Vector3(0, y, 0);
 
         return chest;
     }
@@ -102,16 +102,13 @@ public class NBTChest : NBTBlock
         return node;
     }
 
-    public override void AddCube(NBTChunk chunk, byte blockData, Vector3Int pos, NBTGameObject nbtGO)
+    Mesh GetMesh(byte blockData)
     {
-        UnityEngine.Profiling.Profiler.BeginSample(GetType().Name + " AddCube");
-
-        GameObject chest_prefab = Resources.Load<GameObject>("Meshes/entity/chest/chest_prefab");
-        GameObject chest = Object.Instantiate(chest_prefab);
-        chest.transform.parent = chunk.special.transform;
-        chest.transform.localPosition = pos;
-
-        UnityEngine.Profiling.Profiler.EndSample();
+        if (!itemMeshDict.ContainsKey(0))
+        {
+            itemMeshDict[0] = Resources.Load<Mesh>("Meshes/entity/chest/all");
+        }
+        return itemMeshDict[0];
     }
 
     public override Mesh GetItemMesh(byte blockData)
@@ -126,7 +123,11 @@ public class NBTChest : NBTBlock
 
     public override Material GetItemMaterial(byte data)
     {
-        return GetMaterial(data);
+        if (!itemMaterialDict.ContainsKey(0))
+        {
+            itemMaterialDict[0] = Resources.Load<Material>("Meshes/entity/chest/chest_mat");
+        }
+        return itemMaterialDict[0];
     }
 
     public override bool canInteract => true;

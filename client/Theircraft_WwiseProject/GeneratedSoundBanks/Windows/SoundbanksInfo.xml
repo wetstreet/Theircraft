@@ -22,6 +22,8 @@
 			<Path>Main.bnk</Path>
 			<IncludedEvents>
 				<Event Id="1114612066" Name="Player_Break" ObjectPath="\Events\Player\Player_Break"/>
+				<Event Id="1846663137" Name="Player_Chest_Close" ObjectPath="\Events\Player\Player_Chest_Close"/>
+				<Event Id="3873735427" Name="Player_Chest_Open" ObjectPath="\Events\Player\Player_Chest_Open"/>
 				<Event Id="406899944" Name="Player_Door_Close" ObjectPath="\Events\Player\Player_Door_Close"/>
 				<Event Id="2292777164" Name="Player_Door_Open" ObjectPath="\Events\Player\Player_Door_Open"/>
 				<Event Id="2453392179" Name="Player_Footstep" ObjectPath="\Events\Player\Player_Footstep"/>
@@ -174,6 +176,10 @@
 					<ShortName>cloth4.wav</ShortName>
 					<Path>SFX\cloth4_10C4C929.wem</Path>
 				</File>
+				<File Id="375539263" Language="SFX">
+					<ShortName>random\chestopen.wav</ShortName>
+					<Path>SFX\random\chestopen_10C4C929.wem</Path>
+				</File>
 				<File Id="454718198" Language="SFX">
 					<ShortName>28_wav_files (online-audio-converter.com)\snow2.wav</ShortName>
 					<Path>SFX\28_wav_files (online-audio-converter.com)\snow2_10C4C929.wem</Path>
@@ -261,6 +267,10 @@
 				<File Id="741673184" Language="SFX">
 					<ShortName>28_wav_files (online-audio-converter.com)\sand3.wav</ShortName>
 					<Path>SFX\28_wav_files (online-audio-converter.com)\sand3_10C4C929.wem</Path>
+				</File>
+				<File Id="749875852" Language="SFX">
+					<ShortName>random\chestclosed.wav</ShortName>
+					<Path>SFX\random\chestclosed_10C4C929.wem</Path>
 				</File>
 				<File Id="761219274" Language="SFX">
 					<ShortName>6_wav_files (online-audio-converter.com)\grass5.wav</ShortName>

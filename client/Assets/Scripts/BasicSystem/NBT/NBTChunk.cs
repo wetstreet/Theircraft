@@ -215,6 +215,15 @@ public class NBTChunk
         }
     }
 
+    public GameObject GetTileEntityObj(Vector3Int pos)
+    {
+        if (tileEntityObjs.ContainsKey(pos))
+        {
+            return tileEntityObjs[pos];
+        }
+        return null;
+    }
+
     void AddCube(NBTBlock generator, byte blockData, UpdateFlags updateFlag)
     {
         if (water.nbtMesh == null || collidable == null || notCollidable == null)
@@ -463,6 +472,7 @@ public class NBTChunk
 
     public void ClearData()
     {
+        hasInitTileEntity = false;
         collidable.GetComponent<MeshFilter>().sharedMesh = null;
         notCollidable.GetComponent<MeshFilter>().sharedMesh = null;
         water.GetComponent<MeshFilter>().sharedMesh = null;

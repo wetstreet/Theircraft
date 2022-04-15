@@ -91,6 +91,28 @@
 						</Action>
 					</ChildrenList>
 				</Event>
+				<Event Name="Player_Chest_Open" ID="{96657431-9BB2-494E-A4F4-4953777DA96F}">
+					<ChildrenList>
+						<Action Name="" ID="{45BA539A-9F22-4D77-BC69-04069667B49C}" ShortID="712002114">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="chestopen" ID="{BBB3F5F4-AE7A-4628-A216-646230985616}" WorkUnitID="{85FFC83D-636B-4D75-AA57-E58140A12C83}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Player_Chest_Close" ID="{68CA1E01-C7DB-43ED-A7C4-560B1DDFC127}">
+					<ChildrenList>
+						<Action Name="" ID="{51A62BE6-D800-444D-B9E7-6AE3E1601CE3}" ShortID="97126715">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="chestclosed" ID="{448780B9-1E8B-49EA-BE91-3945F3452254}" WorkUnitID="{85FFC83D-636B-4D75-AA57-E58140A12C83}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
 			</ChildrenList>
 		</WorkUnit>
 	</Events>
