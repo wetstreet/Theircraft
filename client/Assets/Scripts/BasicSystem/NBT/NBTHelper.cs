@@ -254,6 +254,19 @@ public class NBTHelper
             ChunkPool.Recover(chunk);
             chunkDict.Remove(key);
         }
+        if (chunkDictNBT.ContainsKey(key))
+        {
+            int regionX = GetRegionCoordinate(chunkX);
+            int regionZ = GetRegionCoordinate(chunkZ);
+            RegionFile region = GetRegion(regionX, regionZ);
+            int _x = chunkX - regionX * 32;
+            int _z = chunkZ - regionZ * 32;
+            using (Stream stream = region.GetChunkDataOutputStream(_x, _z))
+            {
+                chunkDictNBT[key].WriteTo(stream);
+            }
+            chunkDictNBT.Remove(key);
+        }
     }
 
     // get the chunks to be load (chunks should be loaded - chunks already loaded)

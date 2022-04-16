@@ -64,11 +64,14 @@ public class NBTChunk
 
         gameObject.name = "chunk (" + x + "," + z + ")";
         transform.localPosition = new Vector3(x * 16, 0, z * 16);
-        ClearData();
     }
 
     public void AddTileEntity(Vector3Int pos, TagNodeCompound node)
     {
+        if (TileEntities.ValueType != TagType.TAG_COMPOUND)
+        {
+            TileEntities.ChangeValueType(TagType.TAG_COMPOUND);
+        }
         TileEntities.Add(node);
         tileEntityDict.Add(pos, node);
     }
@@ -470,18 +473,24 @@ public class NBTChunk
         isBuilding = false;
     }
 
-    public void ClearData()
+    public void ClearMesh()
     {
-        hasInitTileEntity = false;
         collidable.GetComponent<MeshFilter>().sharedMesh = null;
         notCollidable.GetComponent<MeshFilter>().sharedMesh = null;
         water.GetComponent<MeshFilter>().sharedMesh = null;
+    }
+
+    public void ClearData()
+    {
+        ClearMesh();
+
+        hasInitTileEntity = false;
         foreach (var obj in tileEntityObjs)
         {
             Object.Destroy(obj.Value);
         }
-        TileEntities.Clear();
         tileEntityObjs.Clear();
+        tileEntityDict.Clear();
         tileEntityList.Clear();
     }
 

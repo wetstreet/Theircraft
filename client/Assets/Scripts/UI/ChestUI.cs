@@ -99,7 +99,6 @@ public class ChestUI : InventoryUI
                 InventorySystem.items[i].count = 0;
             }
         }
-        Debug.Log("Instance.Items.count=" + Instance.Items.Count);
     }
 
     protected override void InitComponents()

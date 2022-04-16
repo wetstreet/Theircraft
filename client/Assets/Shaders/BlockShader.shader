@@ -38,6 +38,7 @@
                 float4 uv : TEXCOORD0;
                 float3 worldNormal : TEXCOORD1;
                 half4 color : COLOR;
+                float vertexDistance : TEXCOORD2;
             };
 
             sampler2D _MainTex;
@@ -59,6 +60,8 @@
                 o.color = v.color;
                 o.worldNormal = TransformObjectToWorldNormal(v.normal);
 
+                o.vertexDistance = length(mul(UNITY_MATRIX_MV, v.positionOS).xyz);
+
                 return o;
             }
 
@@ -77,6 +80,8 @@
 
                 col.rgb *= nl;
                 col.rgb *= i.color.rgb;
+
+                col = linear_fog(col, i.vertexDistance);
 
                 return col;
             }

@@ -59,7 +59,8 @@ public class NBTChest : NBTBlock
         Vector3Int pos = WireFrameHelper.pos + Vector3Int.RoundToInt(hit.normal);
 
         byte type = NBTGeneratorManager.id2type[id];
-        byte data = (byte)InventorySystem.items[ItemSelectPanel.curIndex].damage;
+        byte data = CalcBlockDirection(pos, 3, 4, 2, 5);
+
         NBTChunk chunk = NBTHelper.GetChunk(pos);
 
         Vector3Int localPos = new Vector3Int(pos.x - chunk.x * 16, pos.y, pos.z - chunk.z * 16);
