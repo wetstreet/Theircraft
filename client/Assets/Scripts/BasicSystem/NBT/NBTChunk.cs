@@ -17,6 +17,7 @@ public class NBTChunk
     public TagNodeList Sections;
     public TagNodeByteArray Biomes;
     public Dictionary<Vector3Int, TagNodeCompound> tileEntityDict = new Dictionary<Vector3Int, TagNodeCompound>();
+    public Dictionary<Vector3Int, FurnaceData> furnaceDict = new Dictionary<Vector3Int, FurnaceData>();
 
     TagNodeList TileEntities;
     HashSet<Vector3Int> tileEntityList = new HashSet<Vector3Int>();
@@ -60,10 +61,62 @@ public class NBTChunk
         {
             Vector3Int pos = new Vector3Int((TagNodeInt)node["x"], (TagNodeInt)node["y"], (TagNodeInt)node["z"]);
             tileEntityDict.Add(pos, node);
+            if (node["id"].ToTagString() == "minecraft:furnace")
+            {
+                FurnaceData fd = new FurnaceData(node);
+                furnaceDict.Add(pos, fd);
+            }
         }
 
         gameObject.name = "chunk (" + x + "," + z + ")";
         transform.localPosition = new Vector3(x * 16, 0, z * 16);
+    }
+
+
+    public void Tick()
+    {
+        foreach (var furnace in furnaceDict.Values)
+        {
+            if (furnace.burnTime > 0) // has fuel
+            {
+                furnace.burnTime--;
+                furnace.cookTime++;
+                if (furnace.cookTime == furnace.cookTimeTotal) // done one smelting
+                {
+                    furnace.cookTime = 0;
+
+                    if (furnace.source != null)
+                    {
+                        furnace.source.count--;
+                        if (furnace.source.count == 0)
+                        {
+                            furnace.source.id = null;
+                        }
+                    }
+                    if (furnace.result == null)
+                    {
+                        NBTObject sourceObject = NBTGeneratorManager.GetObjectGenerator(furnace.source.id);
+                        if (sourceObject.smeltResult != null)
+                        {
+                            furnace.result = new FurnaceItem(sourceObject.smeltResult);
+                        }
+                    }
+                    furnace.result.count++;
+                    FurnaceUI.Refresh();
+                }
+            }
+            else if (furnace.fuel != null && furnace.fuel.count > 0)
+            {
+                NBTObject fuelItem = NBTGeneratorManager.GetObjectGenerator(furnace.fuel.id);
+                furnace.burnTime = fuelItem.burningTime;
+                furnace.fuel.count--;
+                if (furnace.fuel.count == 0)
+                {
+                    furnace.source.id = null;
+                }
+                FurnaceUI.Refresh();
+            }
+        }
     }
 
     public void AddTileEntity(Vector3Int pos, TagNodeCompound node)
@@ -74,6 +127,12 @@ public class NBTChunk
         }
         TileEntities.Add(node);
         tileEntityDict.Add(pos, node);
+
+        if (node["id"].ToTagString() == "minecraft:furnace")
+        {
+            FurnaceData fd = new FurnaceData(node);
+            furnaceDict.Add(pos, fd);
+        }
     }
 
     public void RemoveTileEntity(Vector3Int pos)
@@ -81,6 +140,11 @@ public class NBTChunk
         TagNodeCompound node = tileEntityDict[pos];
         TileEntities.Remove(node);
         tileEntityDict.Remove(pos);
+
+        if (furnaceDict.ContainsKey(pos))
+        {
+            furnaceDict.Remove(pos);
+        }
     }
 
     public byte GetBlockByte(Vector3Int pos)
@@ -492,6 +556,7 @@ public class NBTChunk
         tileEntityObjs.Clear();
         tileEntityDict.Clear();
         tileEntityList.Clear();
+        furnaceDict.Clear(); // todo: convert to nbt for serialization
     }
 
     public byte GetSkyLightByte(int xInChunk, int yInChunk, int zInChunk, bool extends = false)

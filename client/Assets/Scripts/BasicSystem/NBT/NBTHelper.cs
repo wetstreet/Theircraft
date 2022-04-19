@@ -93,6 +93,15 @@ public class NBTHelper
         return levelDat;
     }
 
+    public static void Tick()
+    {
+        var chunks = chunkDict.Values;
+        foreach (var chunk in chunkDict.Values)
+        {
+            chunk.Tick();
+        }
+    }
+
     public static void SavePlayerData()
     {
         TagNodeList Pos = playerData.Root["Pos"] as TagNodeList;

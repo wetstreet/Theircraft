@@ -9,6 +9,8 @@ public class NBTOakStairs : NBTStairs
 
     public override string stairsName { get { return "planks_oak"; } }
 
+    public override short burningTime => 300;
+
     public override float hardness => 2;
 
     public override BlockMaterial blockMaterial => BlockMaterial.Wood;

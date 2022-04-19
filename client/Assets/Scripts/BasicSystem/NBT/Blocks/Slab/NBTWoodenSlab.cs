@@ -7,6 +7,8 @@ public class NBTWoodenSlab : NBTSlab
     public override string name => "Wooden Slab";
     public override string id => "minecraft:wooden_slab";
 
+    public override short burningTime => 150;
+
     public override string GetNameByData(short data)
     {
         switch (data)

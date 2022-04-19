@@ -82,45 +82,37 @@ public class FurnaceUI : InventoryUI
         InitItem(resultIndex, "CraftingResult/result");
     }
 
-    static short burnTime;
-    static short cookTime;
-    static short cookTimeTotal;
+    FurnaceData furnaceData;
+
+    void UpdateData()
+    {
+        if (furnaceData.source != null)
+        {
+            InventorySystem.items[oreIndex].id = furnaceData.source.id;
+            InventorySystem.items[oreIndex].damage = furnaceData.source.damage;
+            InventorySystem.items[oreIndex].count = furnaceData.source.count;
+        }
+        if (furnaceData.fuel != null)
+        {
+            InventorySystem.items[fuelIndex].id = furnaceData.fuel.id;
+            InventorySystem.items[fuelIndex].damage = furnaceData.fuel.damage;
+            InventorySystem.items[fuelIndex].count = furnaceData.fuel.count;
+        }
+        if (furnaceData.result != null)
+        {
+            InventorySystem.items[resultIndex].id = furnaceData.result.id;
+            InventorySystem.items[resultIndex].damage = furnaceData.result.damage;
+            InventorySystem.items[resultIndex].count = furnaceData.result.count;
+        }
+    }
 
     void InitData()
     {
         NBTChunk chunk = NBTHelper.GetChunk(pos);
-        if (chunk != null && chunk.tileEntityDict.ContainsKey(pos))
+        if (chunk != null && chunk.furnaceDict.ContainsKey(pos))
         {
-            TagNodeCompound furnace = chunk.tileEntityDict[pos];
-
-            burnTime = (TagNodeShort)furnace["BurnTime"];
-            cookTime = (TagNodeShort)furnace["CookTime"];
-            cookTimeTotal = (TagNodeShort)furnace["CookTimeTotal"];
-
-            TagNodeList Items = (TagNodeList)furnace["Items"];
-            foreach (TagNodeCompound item in Items)
-            {
-                int index = -1;
-                byte slot = (TagNodeByte)item["Slot"];
-                switch (slot)
-                {
-                    case 0:
-                        index = oreIndex;
-                        break;
-                    case 1:
-                        index = fuelIndex;
-                        break;
-                    case 2:
-                        index = resultIndex;
-                        break;
-                }
-                if (index != -1)
-                {
-                    InventorySystem.items[index].id = item["id"] as TagNodeString;
-                    InventorySystem.items[index].damage = item["Damage"] as TagNodeShort;
-                    InventorySystem.items[index].count = item["Count"] as TagNodeByte;
-                }
-            }
+            furnaceData = chunk.furnaceDict[pos];
+            UpdateData();
         }
     }
 
@@ -139,10 +131,20 @@ public class FurnaceUI : InventoryUI
     {
         base.Update();
 
-        float burnt = (1600 - burnTime) / 1600.0f;
+        float burnt = (1600 - furnaceData.burnTime) / 1600.0f;
         fire.padding = new Vector4(0, 0, 0, burnt * 14);
-        float progress = cookTime / 200.0f;
+        float progress = furnaceData.cookTime / 200.0f;
+        //Debug.Log("burntime=" + furnaceData.burnTime + ",cooktime=" + furnaceData.cookTime);
         arrow.padding = new Vector4(0, 0, 24 * (1 - progress), 0);
+    }
+
+    public static void Refresh()
+    {
+        if (Instance)
+        {
+            Instance.UpdateData();
+            Instance.RefreshUI();
+        }
     }
 
     int[] refreshIndex = new int[] {

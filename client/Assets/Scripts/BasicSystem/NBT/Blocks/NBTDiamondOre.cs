@@ -14,5 +14,10 @@ public class NBTDiamondOre : NBTBlock
     public override BlockMaterial blockMaterial => BlockMaterial.RockIII;
     public override SoundMaterial soundMaterial => SoundMaterial.Stone;
 
+    public override string GetDropItemByData(byte data)
+    {
+        return "minecraft:diamond";
+    }
+
     public override string GetBreakEffectTexture(byte data) { return "diamond_ore"; }
 }

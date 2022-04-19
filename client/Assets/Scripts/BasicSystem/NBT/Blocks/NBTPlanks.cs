@@ -9,6 +9,8 @@ public class NBTPlanks : NBTBlock
 
     public override float hardness => 2;
 
+    public override short burningTime => 300;
+
     public override BlockMaterial blockMaterial => BlockMaterial.Wood;
     public override SoundMaterial soundMaterial => SoundMaterial.Wood;
 

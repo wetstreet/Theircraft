@@ -10,6 +10,10 @@ public abstract class NBTObject
 
     public virtual byte maxStackCount { get { return 64; } }
 
+    public virtual short burningTime { get { return 0; } }
+
+    public virtual string smeltResult { get { return null; } }
+
     public virtual string GetNameByData(short data) { return name; }
 
     public virtual string pathPrefix { get { return "GUI/icon/"; } }

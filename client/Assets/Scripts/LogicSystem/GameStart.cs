@@ -21,12 +21,19 @@ public class GameStart : MonoBehaviour
         ChunkRefresher.ForceRefreshAll();
     }
 
+    float lastTickTime = 0;
     void Update()
     {
         if (PlayerController.isInitialized)
         {
             ChunkChecker.Update();
             ChunkRefresher.Update();
+
+            if (Time.time - lastTickTime > 0.05f)
+            {
+                NBTHelper.Tick();
+                lastTickTime = Time.time;
+            }
         }
 
         Texture2D day = Resources.Load<Texture2D>("GUI/Day");
