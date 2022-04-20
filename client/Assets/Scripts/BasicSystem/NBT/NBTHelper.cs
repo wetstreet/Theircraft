@@ -135,6 +135,11 @@ public class NBTHelper
             levelTree.WriteTo(stream);
         }
 
+        foreach (var chunk in chunkDict.Values)
+        {
+            chunk.Serialize();
+        }
+
         foreach (KeyValuePair<Vector2Int, NbtTree> kvPair in chunkDictNBT)
         {
             int chunkX = kvPair.Key.x;
@@ -259,6 +264,7 @@ public class NBTHelper
         {
             NBTChunk chunk = chunkDict[key];
             ChunkRefresher.Remove(chunk);
+            chunk.Serialize();
             chunk.ClearData();
             ChunkPool.Recover(chunk);
             chunkDict.Remove(key);

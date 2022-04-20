@@ -92,18 +92,65 @@ public class FurnaceUI : InventoryUI
             InventorySystem.items[oreIndex].damage = furnaceData.source.damage;
             InventorySystem.items[oreIndex].count = furnaceData.source.count;
         }
+        else
+            InventorySystem.items[oreIndex].id = null;
+
         if (furnaceData.fuel != null)
         {
             InventorySystem.items[fuelIndex].id = furnaceData.fuel.id;
             InventorySystem.items[fuelIndex].damage = furnaceData.fuel.damage;
             InventorySystem.items[fuelIndex].count = furnaceData.fuel.count;
         }
+        else
+            InventorySystem.items[fuelIndex].id = null;
+
         if (furnaceData.result != null)
         {
             InventorySystem.items[resultIndex].id = furnaceData.result.id;
             InventorySystem.items[resultIndex].damage = furnaceData.result.damage;
             InventorySystem.items[resultIndex].count = furnaceData.result.count;
         }
+        else
+            InventorySystem.items[resultIndex].id = null;
+    }
+
+    void SyncData()
+    {
+        if (InventorySystem.items[oreIndex].id != null)
+        {
+            if (furnaceData.source == null)
+                furnaceData.source = new FurnaceItem();
+            furnaceData.source.id = InventorySystem.items[oreIndex].id;
+            furnaceData.source.damage = InventorySystem.items[oreIndex].damage;
+            furnaceData.source.count = InventorySystem.items[oreIndex].count;
+        }
+        else
+        {
+            furnaceData.source = null;
+            furnaceData.cookTime = 0;
+        }
+
+        if (InventorySystem.items[fuelIndex].id != null)
+        {
+            if (furnaceData.fuel == null)
+                furnaceData.fuel = new FurnaceItem();
+            furnaceData.fuel.id = InventorySystem.items[fuelIndex].id;
+            furnaceData.fuel.damage = InventorySystem.items[fuelIndex].damage;
+            furnaceData.fuel.count = InventorySystem.items[fuelIndex].count;
+        }
+        else
+            furnaceData.fuel = null;
+
+        if (InventorySystem.items[resultIndex].id != null)
+        {
+            if (furnaceData.result == null)
+                furnaceData.result = new FurnaceItem();
+            furnaceData.result.id = InventorySystem.items[resultIndex].id;
+            furnaceData.result.damage = InventorySystem.items[resultIndex].damage;
+            furnaceData.result.count = InventorySystem.items[resultIndex].count;
+        }
+        else
+            furnaceData.result = null;
     }
 
     void InitData()
@@ -124,6 +171,18 @@ public class FurnaceUI : InventoryUI
             InventorySystem.items[index].damage = 0;
             InventorySystem.items[index].count = 0;
         }
+    }
+
+    protected override void OnLeftMouseClick()
+    {
+        base.OnLeftMouseClick();
+        SyncData();
+    }
+
+    protected override void OnRightMouseClick()
+    {
+        base.OnRightMouseClick();
+        SyncData();
     }
 
     // Update is called once per frame

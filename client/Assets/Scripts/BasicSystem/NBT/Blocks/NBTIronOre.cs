@@ -9,6 +9,8 @@ public class NBTIronOre : NBTBlock
 
     public override string allName => "iron_ore";
 
+    public override string smeltResult => "minecraft:iron_ingot";
+
     public override float hardness => 3;
 
     public override BlockMaterial blockMaterial => BlockMaterial.RockII;

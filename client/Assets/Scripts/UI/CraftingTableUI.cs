@@ -11,6 +11,8 @@ public class CraftingTableUI : InventoryUI
 
     static CraftingTableUI Instance;
 
+    protected override bool checkCraft { get { return true; } }
+
     public static void Show()
     {
         if (Instance != null)

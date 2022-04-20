@@ -61,16 +61,19 @@ public class InventorySystem
         }
     }
 
-    public static void MouseGrabItem(int index)
+    public static void MouseGrabItem(int index, bool checkCraft)
     {
         InventoryItem tempItem = grabItem;
         grabItem = items[index];
         items[index] = tempItem;
 
-        CraftingSystem.CheckCanCraft();
+        if (checkCraft)
+        {
+            CraftingSystem.CheckCanCraft();
+        }
     }
 
-    public static void PutOneItem(int index)
+    public static void PutOneItem(int index, bool checkCraft)
     {
         items[index].id = grabItem.id;
         items[index].damage = grabItem.damage;
@@ -82,7 +85,10 @@ public class InventorySystem
             ClearGrabItem();
         }
 
-        CraftingSystem.CheckCanCraft();
+        if (checkCraft)
+        {
+            CraftingSystem.CheckCanCraft();
+        }
     }
 
     public static void ClearGrabItem()
@@ -92,14 +98,17 @@ public class InventorySystem
         grabItem.count = 0;
     }
 
-    public static void PutItems(int index)
+    public static void PutItems(int index, bool checkCraft)
     {
         // todo: max stack count
         items[index].count += grabItem.count;
 
         ClearGrabItem();
 
-        CraftingSystem.CheckCanCraft();
+        if (checkCraft)
+        {
+            CraftingSystem.CheckCanCraft();
+        }
     }
 
     public static void SplitHalf(int index)

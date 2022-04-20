@@ -77,45 +77,7 @@ public class NBTChunk
     {
         foreach (var furnace in furnaceDict.Values)
         {
-            if (furnace.burnTime > 0) // has fuel
-            {
-                furnace.burnTime--;
-                furnace.cookTime++;
-                if (furnace.cookTime == furnace.cookTimeTotal) // done one smelting
-                {
-                    furnace.cookTime = 0;
-
-                    if (furnace.source != null)
-                    {
-                        furnace.source.count--;
-                        if (furnace.source.count == 0)
-                        {
-                            furnace.source.id = null;
-                        }
-                    }
-                    if (furnace.result == null)
-                    {
-                        NBTObject sourceObject = NBTGeneratorManager.GetObjectGenerator(furnace.source.id);
-                        if (sourceObject.smeltResult != null)
-                        {
-                            furnace.result = new FurnaceItem(sourceObject.smeltResult);
-                        }
-                    }
-                    furnace.result.count++;
-                    FurnaceUI.Refresh();
-                }
-            }
-            else if (furnace.fuel != null && furnace.fuel.count > 0)
-            {
-                NBTObject fuelItem = NBTGeneratorManager.GetObjectGenerator(furnace.fuel.id);
-                furnace.burnTime = fuelItem.burningTime;
-                furnace.fuel.count--;
-                if (furnace.fuel.count == 0)
-                {
-                    furnace.source.id = null;
-                }
-                FurnaceUI.Refresh();
-            }
+            furnace.Tick();
         }
     }
 
@@ -544,6 +506,15 @@ public class NBTChunk
         water.GetComponent<MeshFilter>().sharedMesh = null;
     }
 
+    public void Serialize()
+    {
+        foreach (var pair in furnaceDict)
+        {
+            TagNodeCompound node = tileEntityDict[pair.Key];
+            pair.Value.Serialize(node);
+        }
+    }
+
     public void ClearData()
     {
         ClearMesh();
@@ -556,7 +527,7 @@ public class NBTChunk
         tileEntityObjs.Clear();
         tileEntityDict.Clear();
         tileEntityList.Clear();
-        furnaceDict.Clear(); // todo: convert to nbt for serialization
+        furnaceDict.Clear();
     }
 
     public byte GetSkyLightByte(int xInChunk, int yInChunk, int zInChunk, bool extends = false)

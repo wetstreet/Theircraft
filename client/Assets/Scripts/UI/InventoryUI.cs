@@ -43,6 +43,8 @@ public class InventoryUI : MonoBehaviour
     protected static int oreIndex = 100;
     protected static int fuelIndex = 101;
 
+    protected virtual bool checkCraft {  get { return false; } }
+
     protected void InitItem(int i, Transform parent)
     {
         Transform trans = Instantiate(unit);
@@ -222,11 +224,11 @@ public class InventoryUI : MonoBehaviour
                 InventorySystem.grabItem.id == InventorySystem.items[highlightIndex].id &&
                 InventorySystem.grabItem.damage == InventorySystem.items[highlightIndex].damage)
             {
-                InventorySystem.PutItems(highlightIndex);
+                InventorySystem.PutItems(highlightIndex, checkCraft);
             }
             else
             {
-                InventorySystem.MouseGrabItem(highlightIndex);
+                InventorySystem.MouseGrabItem(highlightIndex, checkCraft);
             }
             RefreshGrabItem();
             RefreshUI();
@@ -269,13 +271,13 @@ public class InventoryUI : MonoBehaviour
                 {
                     if (InventorySystem.grabItem.id == InventorySystem.items[highlightIndex].id &&
                         InventorySystem.grabItem.damage == InventorySystem.items[highlightIndex].damage)
-                        InventorySystem.PutOneItem(highlightIndex);
+                        InventorySystem.PutOneItem(highlightIndex, checkCraft);
                     else
-                        InventorySystem.MouseGrabItem(highlightIndex);
+                        InventorySystem.MouseGrabItem(highlightIndex, checkCraft);
                 }
                 else
                 {
-                    InventorySystem.PutOneItem(highlightIndex);
+                    InventorySystem.PutOneItem(highlightIndex, checkCraft);
                 }
                 RefreshGrabItem();
                 RefreshUI();
@@ -293,7 +295,7 @@ public class InventoryUI : MonoBehaviour
         {
             if (InventorySystem.grabItem.id == null)
             {
-                InventorySystem.MouseGrabItem(highlightIndex);
+                InventorySystem.MouseGrabItem(highlightIndex, checkCraft);
                 RefreshGrabItem();
                 RefreshUI();
                 ItemSelectPanel.instance.RefreshUI();
@@ -313,7 +315,7 @@ public class InventoryUI : MonoBehaviour
                 lastIndex = highlightIndex;
                 travelledIndices.Add(highlightIndex);
 
-                InventorySystem.PutOneItem(highlightIndex);
+                InventorySystem.PutOneItem(highlightIndex, checkCraft);
                 RefreshGrabItem();
                 RefreshUI();
             }

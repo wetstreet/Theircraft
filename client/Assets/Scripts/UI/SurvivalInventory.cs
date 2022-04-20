@@ -14,6 +14,8 @@ public class SurvivalInventory : InventoryUI
 
     static SurvivalInventory Instance;
 
+    protected override bool checkCraft { get { return true; } }
+
     public static void Show()
     {
         if (Instance != null)
