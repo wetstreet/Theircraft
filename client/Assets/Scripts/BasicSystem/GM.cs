@@ -30,12 +30,44 @@ public class GM
             case "tp":
                 TP(gm_params);
                 break;
+            case "give":
+                Give(gm_params);
+                break;
             case "chunkdebug":
                 NBTHelper.DebugInfo();
                 break;
             default:
                 ChatPanel.AddLine(ChatPanel.ErrorCode + "Unknown command.");
                 break;
+        }
+    }
+
+    static void Give(string[] gm_params)
+    {
+        if (gm_params.Length == 1)
+        {
+            ChatPanel.AddLine(ChatPanel.ErrorCode + "Usage: /give id [count]");
+            return;
+        }
+        string id = gm_params[1];
+        int count = 1;
+        if (gm_params.Length > 2)
+        {
+            if (int.TryParse(gm_params[2], out int num))
+            {
+                count = num;
+            }
+        }
+        try
+        {
+            NBTObject generator = NBTGeneratorManager.GetObjectGenerator("minecraft:" + id);
+            InventorySystem.Increment(generator, 0, (byte)count);
+            ItemSelectPanel.instance.RefreshUI();
+            ChatPanel.AddLine("Added " + count + " " + id + " to your inventory.");
+        }
+        catch
+        {
+            ChatPanel.AddLine(ChatPanel.ErrorCode + "No item id=" + id);
         }
     }
 

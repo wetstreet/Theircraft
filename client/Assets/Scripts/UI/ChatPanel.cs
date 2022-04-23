@@ -222,10 +222,10 @@ public class ChatPanel : MonoBehaviour
             }
             else
             {
+                AddLine("<Steve> " + inputField.text);
                 inputField.text = "";
                 inputField.ActivateInputField();
                 HideInput();
-                AddLine("<Steve> " + inputField.text);
             }
         }
         else

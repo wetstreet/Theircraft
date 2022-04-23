@@ -64,43 +64,51 @@ public class FurnaceData
 
             if (source != null)
             {
-                cookTime++;
-                if (cookTime == cookTimeTotal) // done one smelting
+                NBTObject sourceItem = NBTGeneratorManager.GetObjectGenerator(source.id);
+                if (result == null || sourceItem.smeltResult == result.id)
                 {
-                    cookTime = 0;
-
-                    if (result == null)
+                    cookTime++;
+                    if (cookTime == cookTimeTotal) // done one smelting
                     {
-                        NBTObject sourceObject = NBTGeneratorManager.GetObjectGenerator(source.id);
-                        if (sourceObject.smeltResult != null)
+                        cookTime = 0;
+
+                        if (result == null)
                         {
-                            result = new FurnaceItem(sourceObject.smeltResult);
+                            if (sourceItem.smeltResult != null)
+                            {
+                                result = new FurnaceItem(sourceItem.smeltResult);
+                            }
                         }
-                    }
-                    else
-                    {
-                        result.count++;
-                    }
+                        else
+                        {
+                            result.count++;
+                        }
 
-                    source.count--;
-                    if (source.count == 0)
-                    {
-                        source = null;
+                        source.count--;
+                        if (source.count == 0)
+                        {
+                            source = null;
+                        }
+                        FurnaceUI.Refresh();
                     }
-                    FurnaceUI.Refresh();
                 }
             }
         }
         else if (fuel != null && fuel.count > 0 && source != null && source.count > 0)
         {
-            NBTObject fuelItem = NBTGeneratorManager.GetObjectGenerator(fuel.id);
-            burnTime = fuelItem.burningTime;
-            fuel.count--;
-            if (fuel.count == 0)
+            NBTObject sourceItem = NBTGeneratorManager.GetObjectGenerator(source.id);
+            if (sourceItem.smeltResult != null)
             {
-                fuel = null;
+                NBTObject fuelItem = NBTGeneratorManager.GetObjectGenerator(fuel.id);
+                burnTime = fuelItem.burningTime;
+                cookTimeTotal = sourceItem.cookTimeTotal;
+                fuel.count--;
+                if (fuel.count == 0)
+                {
+                    fuel = null;
+                }
+                FurnaceUI.Refresh();
             }
-            FurnaceUI.Refresh();
         }
     }
 
@@ -173,6 +181,64 @@ public class NBTFurnace : NBTBlock
         FurnaceUI.Show(WireFrameHelper.pos);
     }
 
+    public override void AddCube(NBTChunk chunk, byte blockData, Vector3Int pos, NBTGameObject nbtGO)
+    {
+        CubeAttributes ca = chunk.ca;
+
+        ca.pos = pos;
+        ca.worldPos.Set(pos.x + chunk.x * 16, pos.y, pos.z + chunk.z * 16);
+        ca.blockData = blockData;
+
+        InitBlockAttributes(chunk, ref ca);
+
+        if (ca.front.exist == 0)
+        {
+            FaceAttributes fa = GetFrontFaceAttributes(chunk, nbtGO.nbtMesh, ca);
+            if (blockData == 2)
+                fa.uv = TextureArrayManager.GetUVByName("furnace_front_off");
+            else
+                fa.uv = TextureArrayManager.GetUVByName("furnace_side");
+            AddFace(nbtGO.nbtMesh, fa, ca);
+        }
+        if (ca.right.exist == 0)
+        {
+            FaceAttributes fa = GetRightFaceAttributes(chunk, nbtGO.nbtMesh, ca);
+            if (blockData == 5)
+                fa.uv = TextureArrayManager.GetUVByName("furnace_front_off");
+            else
+                fa.uv = TextureArrayManager.GetUVByName("furnace_side");
+            AddFace(nbtGO.nbtMesh, fa, ca);
+        }
+        if (ca.left.exist == 0)
+        {
+            FaceAttributes fa = GetLeftFaceAttributes(chunk, nbtGO.nbtMesh, ca);
+            if (blockData == 4)
+                fa.uv = TextureArrayManager.GetUVByName("furnace_front_off");
+            else
+                fa.uv = TextureArrayManager.GetUVByName("furnace_side");
+            AddFace(nbtGO.nbtMesh, fa, ca);
+        }
+        if (ca.back.exist == 0)
+        {
+            FaceAttributes fa = GetBackFaceAttributes(chunk, nbtGO.nbtMesh, ca);
+            if (blockData == 3)
+                fa.uv = TextureArrayManager.GetUVByName("furnace_front_off");
+            else
+                fa.uv = TextureArrayManager.GetUVByName("furnace_side");
+            AddFace(nbtGO.nbtMesh, fa, ca);
+        }
+        if (ca.top.exist == 0)
+        {
+            FaceAttributes fa = GetTopFaceAttributes(chunk, nbtGO.nbtMesh, ca);
+            AddFace(nbtGO.nbtMesh, fa, ca);
+        }
+        if (ca.bottom.exist == 0)
+        {
+            FaceAttributes fa = GetBottomFaceAttributes(chunk, nbtGO.nbtMesh, ca);
+            AddFace(nbtGO.nbtMesh, fa, ca);
+        }
+    }
+
     public override void OnAddBlock(RaycastHit hit)
     {
         Vector3Int pos = WireFrameHelper.pos + Vector3Int.RoundToInt(hit.normal);
@@ -180,12 +246,9 @@ public class NBTFurnace : NBTBlock
         byte type = NBTGeneratorManager.id2type[id];
         byte data = CalcBlockDirection(pos, 3, 4, 2, 5);
 
+        NBTHelper.SetBlockData(pos, type, data);
+
         NBTChunk chunk = NBTHelper.GetChunk(pos);
-
-        Vector3Int localPos = new Vector3Int(pos.x - chunk.x * 16, pos.y, pos.z - chunk.z * 16);
-        chunk.SetBlockData(localPos.x, localPos.y, localPos.z, type, data);
-        chunk.AddTileEntityObj(localPos, this, data);
-
         TagNodeCompound node = CreateEmptyFurnaceNode(pos);
         chunk.AddTileEntity(pos, node);
     }

@@ -13,6 +13,8 @@ public class NBTChest : NBTBlock
     public override BlockMaterial blockMaterial => BlockMaterial.Wood;
     public override SoundMaterial soundMaterial => SoundMaterial.Wood;
 
+    public override short burningTime => 300;
+
     public override bool isTileEntity => true;
 
     public override bool isTransparent => true;

@@ -11,5 +11,7 @@ public class NBTWoodenSword : NBTItem
 
     public override int durability => 59;
 
+    public override short burningTime => 200;
+
     public override string GetIconPathByData(short data) { return "wood_sword"; }
 }

@@ -12,6 +12,8 @@ public class NBTCraftingTable : NBTBlock
     public override BlockMaterial blockMaterial => BlockMaterial.Wood;
     public override SoundMaterial soundMaterial => SoundMaterial.Wood;
 
+    public override short burningTime => 300;
+
     public override string frontName => "crafting_table_front";
     public override string backName => "crafting_table_side";
     public override string leftName => "crafting_table_side";

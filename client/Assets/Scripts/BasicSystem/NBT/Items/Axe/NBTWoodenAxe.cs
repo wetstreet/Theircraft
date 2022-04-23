@@ -13,6 +13,8 @@ public class NBTWoodenAxe : NBTAxe
 
     public override int durability => 60;
 
+    public override short burningTime => 200;
+
     public override string GetIconPathByData(short data) { return "wood_axe"; }
 }
 

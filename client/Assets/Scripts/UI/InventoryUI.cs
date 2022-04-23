@@ -205,6 +205,11 @@ public class InventoryUI : MonoBehaviour
         return false;
     }
 
+    protected virtual bool IsIDValid(int index, string id)
+    {
+        return true;
+    }
+
     protected virtual void OnLeftMouseClick()
     {
         if (highlightIndex == -1)
@@ -226,7 +231,7 @@ public class InventoryUI : MonoBehaviour
             {
                 InventorySystem.PutItems(highlightIndex, checkCraft);
             }
-            else
+            else if (InventorySystem.grabItem.id == null || IsIDValid(highlightIndex, InventorySystem.grabItem.id))
             {
                 InventorySystem.MouseGrabItem(highlightIndex, checkCraft);
             }

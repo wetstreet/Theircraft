@@ -10,7 +10,9 @@ public abstract class NBTObject
 
     public virtual byte maxStackCount { get { return 64; } }
 
-    public virtual short burningTime { get { return 0; } }
+    public virtual short burningTime { get { return -1; } }
+
+    public virtual short cookTimeTotal { get { return 200; } }
 
     public virtual string smeltResult { get { return null; } }
 

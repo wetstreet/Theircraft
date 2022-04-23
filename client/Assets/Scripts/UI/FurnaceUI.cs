@@ -173,6 +173,16 @@ public class FurnaceUI : InventoryUI
         }
     }
 
+    protected override bool IsIDValid(int index, string id)
+    {
+        if (index == fuelIndex)
+        {
+            NBTObject obj = NBTGeneratorManager.GetObjectGenerator(id);
+            return obj.burningTime != -1;
+        }
+        return true;
+    }
+
     protected override void OnLeftMouseClick()
     {
         base.OnLeftMouseClick();
@@ -192,7 +202,11 @@ public class FurnaceUI : InventoryUI
 
         float burnt = (1600 - furnaceData.burnTime) / 1600.0f;
         fire.padding = new Vector4(0, 0, 0, burnt * 14);
-        float progress = furnaceData.cookTime / 200.0f;
+        float progress = 0;
+        if (furnaceData.cookTimeTotal != 0)
+        {
+            progress = furnaceData.cookTime / (float)furnaceData.cookTimeTotal;
+        }
         //Debug.Log("burntime=" + furnaceData.burnTime + ",cooktime=" + furnaceData.cookTime);
         arrow.padding = new Vector4(0, 0, 24 * (1 - progress), 0);
     }
